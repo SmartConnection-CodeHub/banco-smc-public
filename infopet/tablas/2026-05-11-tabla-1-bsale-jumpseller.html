@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>InfoPet · Tabla #1 · Bsale ↔ Jumpseller</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.55;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1;max-width:1400px;margin:0 auto}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:20px}.crumb a{color:#7dd3fc;text-decoration:none}
+.agents{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;font-size:11px}.agent{padding:4px 10px;background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.08);border-radius:30px;color:#cbd5e1}.agent b{color:#00e5b0}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:8px}h2{font-size:20px;font-weight:700;color:#f1f5f9;margin:40px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px}
+p{color:#94a3b8;margin-bottom:12px;font-size:14px}
+.meta{display:flex;gap:18px;font-size:12px;color:#6b7b8e;margin-bottom:24px;flex-wrap:wrap}.meta span{padding:4px 12px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:30px;color:#00e5b0}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:12.5px}th{background:rgba(0,229,176,.1);color:#00e5b0;padding:10px 12px;text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:top}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}.kpi{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}.kpi-big{font-size:22px;font-weight:800;color:#00e5b0;line-height:1.1}.kpi-lbl{font-size:11px;color:#94a3b8;margin-top:4px}.kpi-src{font-size:9.5px;color:#475569;margin-top:6px;font-style:italic}
+.confidence{display:inline-block;font-size:10px;padding:2px 8px;border-radius:30px;margin-left:6px;font-weight:700}.conf-high{background:rgba(0,229,176,.15);color:#00e5b0}.conf-med{background:rgba(125,211,252,.15);color:#7dd3fc}
+.flow{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:20px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;margin:14px 0}.flow-node{display:inline-block;padding:8px 14px;margin:4px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.3);border-radius:6px;color:#00e5b0;font-weight:700}.flow-arrow{color:#7dd3fc;font-size:14px;margin:0 6px}.flow-mid{display:inline-block;padding:8px 14px;margin:4px;background:rgba(125,211,252,.08);border:1px solid rgba(125,211,252,.3);border-radius:6px;color:#7dd3fc;font-weight:700}
+.radar{background:linear-gradient(135deg,rgba(0,229,176,.05),rgba(0,180,216,.05));border:1px solid rgba(0,229,176,.2);border-radius:12px;padding:24px;margin-top:24px}.radar-section{margin-bottom:22px}.radar-label{font-size:11px;font-weight:700;color:#00e5b0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}.radar-content{font-size:13px;color:#cbd5e1;line-height:1.6}.radar-content b{color:#f1f5f9}
+.fuentes{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;margin-top:24px;font-size:11.5px;color:#94a3b8}.fuentes ul{list-style:none;padding-left:0}.fuentes li{padding:4px 0}.fuentes b{color:#7dd3fc}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../index.html">← InfoPet</a> / Tablas / #1 · Bsale↔Jumpseller</div>
+<div class="agents"><span class="agent">🧠 <b>CEREBRO</b> · orquesta</span><span class="agent">⊡ <b>DATA-BW</b> · benchmark sync</span><span class="agent">🔧 <b>BACKEND</b> · APIs</span></div>
+<h1>🔌 InfoPet · Tabla #1 · Stack integración Bsale ↔ Jumpseller</h1>
+<p>Sincronización stock real-time entre POS Bsale (fuente verdad) y storefront Jumpseller · elimina desync que costaba 10-15% revenue</p>
+<div class="meta"><span>v1 · 2026-05-11</span><span>integración bidireccional</span><span>real-time stock</span></div>
+
+<h2>📊 Mercado pet Chile · contexto</h2>
+<div class="kpi-grid">
+<div class="kpi"><div class="kpi-big">$580M</div><div class="kpi-lbl">USD mercado pet Chile 2024 <span class="confidence conf-high">alta</span></div><div class="kpi-src">Euromonitor Chile pet care 2024</div></div>
+<div class="kpi"><div class="kpi-big">12%</div><div class="kpi-lbl">CAGR mercado pet 2020-2024 <span class="confidence conf-high">alta</span></div><div class="kpi-src">Euromonitor LATAM growth</div></div>
+<div class="kpi"><div class="kpi-big">62%</div><div class="kpi-lbl">Hogares Chile con mascota <span class="confidence conf-high">alta</span></div><div class="kpi-src">INE Chile encuesta 2022</div></div>
+<div class="kpi"><div class="kpi-big">$22K</div><div class="kpi-lbl">ARPU mensual mascota CLP <span class="confidence conf-med">media</span></div><div class="kpi-src">SOFOFA · estudio retail</div></div>
+<div class="kpi"><div class="kpi-big">10-15%</div><div class="kpi-lbl">Revenue perdido por desync stock <span class="confidence conf-med">media</span></div><div class="kpi-src">estimación pre-integración InfoPet</div></div>
+<div class="kpi"><div class="kpi-big">15 min</div><div class="kpi-lbl">Polling frequency Bsale API <span class="confidence conf-high">alta</span></div><div class="kpi-src">Bsale API rate limit docs</div></div>
+</div>
+
+<h2>🔄 Pipeline integración bidireccional</h2>
+<div class="flow">
+<span class="flow-node">Bsale POS · stock</span><span class="flow-arrow">↔</span><span class="flow-mid">InfoPet Next.js</span><span class="flow-arrow">↔</span><span class="flow-node">Jumpseller storefront</span><br>
+<span style="color:#6b7b8e;font-size:10px">stock fuente: Bsale · publicación pública: Jumpseller · cliente compra → webhook Jumpseller → InfoPet → Bsale actualiza</span>
+</div>
+
+<h2>⚙️ Mecanismos de sincronización</h2>
+<table>
+<thead><tr><th>Trigger</th><th>Fuente</th><th>Destino</th><th>Frecuencia</th><th>Mecanismo</th></tr></thead>
+<tbody>
+<tr><td>Stock cambia (venta POS local)</td><td>Bsale</td><td>Jumpseller</td><td>Real-time (Supabase Realtime)</td><td>Webhook Bsale → InfoPet → Jumpseller API</td></tr>
+<tr><td>Stock cambia (compra online)</td><td>Jumpseller</td><td>Bsale</td><td>Real-time</td><td>Webhook Jumpseller → InfoPet → Bsale API</td></tr>
+<tr><td>Producto nuevo</td><td>Bsale (POS · catálogo)</td><td>Jumpseller</td><td>On-demand</td><td>Admin trigger desde InfoPet</td></tr>
+<tr><td>Precio cambia</td><td>Bsale</td><td>Jumpseller</td><td>Polling 15min</td><td>Cron job InfoPet</td></tr>
+<tr><td>Stock = 0</td><td>Cualquiera</td><td>Marca agotado todos canales</td><td>Instantáneo</td><td>Supabase Realtime broadcast</td></tr>
+</tbody>
+</table>
+
+<div class="radar">
+<div class="radar-section"><div class="radar-label">🌐 PRÁCTICA DE MERCADO · DATA-BW analiza</div>
+<div class="radar-content">
+<table>
+<thead><tr><th>Solución</th><th>Costo</th><th>Sync mode</th><th>Limitación</th></tr></thead>
+<tbody>
+<tr><td>Shopify + Stocky</td><td>$29-299 Shopify + Stocky free</td><td>Real-time</td><td>Vendor lock-in · escala costo</td></tr>
+<tr><td>Defontana ERP integrado</td><td>~$200K CLP/mes</td><td>Real-time interno</td><td>Caro para pyme</td></tr>
+<tr><td>Manual planillas</td><td>$0</td><td>Diario manual</td><td>10-15% desync típico · 4-6h/día operario</td></tr>
+<tr><td>InfoPet (SMC custom)</td><td>$2-5M CLP one-time</td><td>Real-time</td><td>Mantención SMC requerida</td></tr>
+</tbody>
+</table>
+<div class="src">⊡ DATA-BW · fuentes: Shopify App Store pricing · Defontana ventas Chile · estimaciones operación pyme</div>
+</div></div>
+
+<div class="radar-section"><div class="radar-label">🎯 ANALOGÍA</div>
+<div class="radar-content">
+<b>🍳 Cocina:</b> Bsale es la despensa (donde guardás stock real). Jumpseller es el menú del restaurante (lo que clientes ven). Sin sincronizar · clientes piden plato que ya se acabó. Resultado: vergüenza · rechazo.<br><br>
+<b>🏗️ Operativa:</b> Es el clásico "single source of truth". Bsale dicta la verdad de stock · Jumpseller la refleja. Sin verdad única · cada canal inventa la suya.<br><br>
+<b>💰 Financiera:</b> 10-15% revenue desync = $2.5M-$4.5M CLP/año para tienda con $30M revenue. Integración paga 1-2 meses. ROI bestial.
+</div></div>
+
+<div class="radar-section"><div class="radar-label">📊 ASSESSMENT</div>
+<div class="radar-content">
+✅ Bsale API + Jumpseller API documentadas · webhooks soportados<br>
+✅ Supabase Realtime resuelve broadcast multi-canal<br>
+✅ Stack productivo desde 2026-04<br>
+🟡 Falta: monitoreo activo desync real (debería ser 0% · medir)<br>
+🟡 OCR facturas: separa flujo · validación humana antes auto-carga Bsale
+</div></div>
+
+<div class="radar-section"><div class="radar-label">📈 KPI</div>
+<div class="radar-content">
+<table>
+<tbody>
+<tr><td>Desync incidentes/mes</td><td>0 (target) · medir vs baseline ~15</td></tr>
+<tr><td>Latencia sync stock</td><td>&lt;5 segundos (Realtime Supabase)</td></tr>
+<tr><td>Revenue recuperado por integración</td><td>+10-15% vs pre-integración</td></tr>
+<tr><td>Tiempo operario carga producto</td><td>De 10 min manual → 1 min via admin InfoPet</td></tr>
+</tbody>
+</table>
+</div></div>
+
+<div class="radar-section"><div class="radar-label">🧪 OWNER</div>
+<div class="radar-content">🔧 Backend mantiene integración · 🐾 Hoku ajusta Tsukai chat IA · 🌐 Infra-Ops monitorea uptime APIs · 👩 User-QAS valida flow E2E mensual</div></div>
+
+<div class="radar-section"><div class="radar-label">📡 STREAMING</div>
+<div class="radar-content">Dashboard live Javier: stock alto/medio/bajo/agotado · alertas push si stock crítico &lt;3 unidades · ventas tiempo real cross-canal · top productos del día</div></div>
+
+<div class="radar-section"><div class="radar-label">🛣️ ROADMAP</div>
+<div class="radar-content">
+<table>
+<tbody>
+<tr><td><b>2026-04 · Fase 1</b></td><td>Bsale + Jumpseller integración base (✅ live)</td></tr>
+<tr><td><b>2026-05</b></td><td>OCR facturas mobile · auto-carga Bsale</td></tr>
+<tr><td><b>2026-06</b></td><td>Reñaca panel local · ranking ventas tienda física</td></tr>
+<tr><td><b>Mes 3-6</b></td><td>Medir revenue recuperado real · documentar caso de éxito</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+
+<div class="fuentes">
+<b>📚 Fuentes DATA-BW</b>
+<ul>
+<li><b>Euromonitor Chile pet care 2024:</b> mercado $580M USD · CAGR 12%</li>
+<li><b>INE Chile encuesta 2022:</b> 62% hogares con mascota</li>
+<li><b>SOFOFA retail:</b> ARPU mensual mascota</li>
+<li><b>Bsale API docs:</b> rate limits · webhooks</li>
+<li><b>Jumpseller API docs:</b> inventory · orders</li>
+<li><b>Shopify App Store · Defontana:</b> alternativas mercado</li>
+</ul>
+</div>
+
+<footer>📚 InfoPet · Tabla #1 · Bsale↔Jumpseller · 2026-05-11 · banco SMC</footer>
+</div></body></html>

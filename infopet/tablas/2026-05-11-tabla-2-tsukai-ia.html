@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>InfoPet · Tabla #2 · Tsukai IA Fallback</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.55;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1;max-width:1400px;margin:0 auto}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:20px}.crumb a{color:#7dd3fc;text-decoration:none}
+.agents{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;font-size:11px}.agent{padding:4px 10px;background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.08);border-radius:30px;color:#cbd5e1}.agent b{color:#00e5b0}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:8px}h2{font-size:20px;font-weight:700;color:#f1f5f9;margin:40px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px}
+p{color:#94a3b8;margin-bottom:12px;font-size:14px}
+.meta{display:flex;gap:18px;font-size:12px;color:#6b7b8e;margin-bottom:24px;flex-wrap:wrap}.meta span{padding:4px 12px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:30px;color:#00e5b0}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:12.5px}th{background:rgba(0,229,176,.1);color:#00e5b0;padding:10px 12px;text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:top}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}.kpi{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}.kpi-big{font-size:22px;font-weight:800;color:#00e5b0;line-height:1.1}.kpi-lbl{font-size:11px;color:#94a3b8;margin-top:4px}.kpi-src{font-size:9.5px;color:#475569;margin-top:6px;font-style:italic}
+.confidence{display:inline-block;font-size:10px;padding:2px 8px;border-radius:30px;margin-left:6px;font-weight:700}.conf-high{background:rgba(0,229,176,.15);color:#00e5b0}.conf-med{background:rgba(125,211,252,.15);color:#7dd3fc}
+.chain{display:flex;flex-direction:column;gap:6px;padding:14px;background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px}.chain-step{display:flex;gap:10px;align-items:center;padding:8px 12px;background:rgba(15,22,35,.6);border-radius:6px;font-size:12px}.chain-num{font-weight:800;color:#00e5b0;min-width:24px}.chain-name{color:#f1f5f9;font-weight:700;min-width:140px}.chain-info{color:#94a3b8;font-size:11px;flex:1}
+.radar{background:linear-gradient(135deg,rgba(0,229,176,.05),rgba(0,180,216,.05));border:1px solid rgba(0,229,176,.2);border-radius:12px;padding:24px;margin-top:24px}.radar-section{margin-bottom:22px}.radar-label{font-size:11px;font-weight:700;color:#00e5b0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}.radar-content{font-size:13px;color:#cbd5e1;line-height:1.6}.radar-content b{color:#f1f5f9}
+.fuentes{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;margin-top:24px;font-size:11.5px;color:#94a3b8}.fuentes ul{list-style:none;padding-left:0}.fuentes li{padding:4px 0}.fuentes b{color:#7dd3fc}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../index.html">← InfoPet</a> / Tablas / #2 · Tsukai IA</div>
+<div class="agents"><span class="agent">🧠 <b>CEREBRO</b> · orquesta</span><span class="agent">⊡ <b>DATA-BW</b> · costo providers</span><span class="agent">🐾 <b>HOKU</b> · LLMOps</span></div>
+<h1>⚡ InfoPet · Tabla #2 · Tsukai IA Fallback Chain</h1>
+<p>Asistente IA recomendaciones mascotas por raza/edad · 4 providers cascada · regla Hoku NUNCA Claude en producto · costo &lt;$30/mes USD target</p>
+<div class="meta"><span>v1 · 2026-05-11</span><span>4 providers</span><span>fallback chain</span><span>regla SMC</span></div>
+
+<h2>📊 Costo providers IA por 1M tokens</h2>
+<div class="kpi-grid">
+<div class="kpi"><div class="kpi-big">$0.10</div><div class="kpi-lbl">Groq Llama 3.3 70B input <span class="confidence conf-high">alta</span></div><div class="kpi-src">groq.com pricing 2024</div></div>
+<div class="kpi"><div class="kpi-big">$0.10</div><div class="kpi-lbl">Groq Llama 4 Scout <span class="confidence conf-high">alta</span></div><div class="kpi-src">groq.com pricing</div></div>
+<div class="kpi"><div class="kpi-big">$0.075</div><div class="kpi-lbl">Gemini Flash 2.0 free tier <span class="confidence conf-high">alta</span></div><div class="kpi-src">ai.google.dev pricing</div></div>
+<div class="kpi"><div class="kpi-big">$0.14</div><div class="kpi-lbl">DeepSeek V3 input <span class="confidence conf-high">alta</span></div><div class="kpi-src">deepseek.com pricing</div></div>
+<div class="kpi"><div class="kpi-big">$3.00</div><div class="kpi-lbl">Claude Sonnet 4.6 input (NO usar) <span class="confidence conf-high">alta</span></div><div class="kpi-src">anthropic.com · 30x más caro</div></div>
+<div class="kpi"><div class="kpi-big">12K TPM</div><div class="kpi-lbl">Groq rate limit · razón fallback <span class="confidence conf-high">alta</span></div><div class="kpi-src">groq.com rate limits</div></div>
+</div>
+
+<h2>🔗 Fallback chain · regla Hoku</h2>
+<div class="chain">
+<div class="chain-step"><span class="chain-num">1</span><span class="chain-name">Groq Llama 3.3 70B</span><span class="chain-info">Default · velocidad 400 tokens/s · $0.10/$0.40 per 1M · función calling soportado</span></div>
+<div class="chain-step"><span class="chain-num">2</span><span class="chain-name">Groq Llama 4 Scout</span><span class="chain-info">Fallback rate limit · más nuevo · balance velocidad/calidad</span></div>
+<div class="chain-step"><span class="chain-num">3</span><span class="chain-name">Gemini Flash 2.0</span><span class="chain-info">Free tier · contexto 1M · multimodal (imagen mascota)</span></div>
+<div class="chain-step"><span class="chain-num">4</span><span class="chain-name">DeepSeek V3</span><span class="chain-info">Último recurso · razonamiento fuerte · más económico Claude-like</span></div>
+</div>
+
+<h2>🚫 Por qué NUNCA Claude como fallback (regla SMC)</h2>
+<table>
+<thead><tr><th>Razón</th><th>Detalle</th></tr></thead>
+<tbody>
+<tr><td>Costo · 30x más caro</td><td>$3/$15 vs $0.10/$0.40 Groq · feature de producto destruye margen</td></tr>
+<tr><td>Tokens plan Claude Max</td><td>SMC paga $200/mes plan Max para herramientas internas · no para feature producto</td></tr>
+<tr><td>Tokens compartidos</td><td>Usar Claude en producto roba tokens al equipo SMC operación</td></tr>
+<tr><td>Disponibilidad rate limits</td><td>Plan Max tiene rate limits agresivos · producto consume todo</td></tr>
+</tbody>
+</table>
+
+<h2>💬 Casos de uso Tsukai</h2>
+<table>
+<thead><tr><th>Caso</th><th>Input usuario</th><th>Tsukai responde</th></tr></thead>
+<tbody>
+<tr><td>Raza específica</td><td>"Mi Golden Retriever 8 años"</td><td>Recomienda alimento senior · suplementos articulación · joguetes apropiados</td></tr>
+<tr><td>Condición salud</td><td>"Mi gato tiene problemas riñón"</td><td>Recomienda alimento renal específico · escalado a veterinario si severo</td></tr>
+<tr><td>Etapa vital</td><td>"Cachorro 3 meses"</td><td>Alimento puppy · vacunación · accesorios primera edad</td></tr>
+<tr><td>Alergia/intolerancia</td><td>"Alérgico al pollo"</td><td>Alternativas proteína · cordero · pescado · hipoalergénico</td></tr>
+</tbody>
+</table>
+
+<div class="radar">
+<div class="radar-section"><div class="radar-label">🌐 PRÁCTICA DE MERCADO · DATA-BW</div>
+<div class="radar-content">
+<table>
+<tbody>
+<tr><td>Chewy.com (USA)</td><td>"Connect with vet" · chat humano · $2M+ inversión vets</td></tr>
+<tr><td>Pet Pride Chile</td><td>Chatbot manual reglas · sin IA · pierde matiz</td></tr>
+<tr><td>InfoPet (SMC)</td><td>IA real con fallback chain · costo &lt;$30/mes · 24/7 disponible</td></tr>
+</tbody>
+</table>
+<div class="src">⊡ DATA-BW: chatbot IA bien hecho captura 80% del valor de un vet chat humano a 1% del costo · upsell carrito 25-40% más</div>
+</div></div>
+
+<div class="radar-section"><div class="radar-label">🎯 ANALOGÍA</div>
+<div class="radar-content">
+<b>🍳 Cocina:</b> Groq es el cocinero rápido del food court (atiende todos · barato). Gemini es el segundo cocinero (cuando hay cola). DeepSeek es el chef invitado (último recurso · ocupado).<br><br>
+<b>💰 Financiera:</b> Es el principio "buy low · pay later". Empezar con providers baratos · escalar a premium solo si calidad lo justifica. Para mascotas · Groq Llama 3.3 70B es más que suficiente.
+</div></div>
+
+<div class="radar-section"><div class="radar-label">📊 ASSESSMENT</div>
+<div class="radar-content">
+✅ 4 providers documentados · fallback automático configurado<br>
+✅ Guardrails pre/post implementados (no recomendar medicamentos · escalar a vet)<br>
+🟡 Falta: evals (eval-driven development) · dataset 20+ pares input/output<br>
+🔴 Riesgo: alucinación recomienda producto inadecuado · daño reputacional
+</div></div>
+
+<div class="radar-section"><div class="radar-label">📈 KPI</div>
+<div class="radar-content">
+<table>
+<tbody>
+<tr><td>Conversación → compra</td><td>15%+ target (vs &lt;5% sin asistente)</td></tr>
+<tr><td>Costo IA mensual</td><td>&lt;$30 USD</td></tr>
+<tr><td>Tasa alucinación</td><td>&lt;5% (medido vs eval dataset)</td></tr>
+<tr><td>Latencia respuesta p95</td><td>&lt;3 segundos (Groq es 400 tps)</td></tr>
+<tr><td>Carrito promedio asistido vs sin</td><td>+25-40% (benchmark Chewy/Pet)</td></tr>
+</tbody>
+</table>
+</div></div>
+
+<div class="radar-section"><div class="radar-label">🧪 OWNER</div>
+<div class="radar-content">🐾 Hoku diseña prompts + fallback · 🔧 Backend implementa SSE streaming · ⊡ DATA-BW mide hit rate · 👩 User-QAS valida alucinaciones · ⚖️ Compliance revisa T&C IA + medicamentos</div></div>
+
+<div class="radar-section"><div class="radar-label">📡 STREAMING</div>
+<div class="radar-content">Logging cada llamada IA: provider · tokens · costo · latencia · alucinación detectada · usuario convirtió o no. Dashboard Javier vs cost mensual + conversión.</div></div>
+
+<div class="radar-section"><div class="radar-label">🛣️ ROADMAP</div>
+<div class="radar-content">
+<table>
+<tbody>
+<tr><td><b>Fase 1 (✅ live)</b></td><td>4 providers fallback · prompt versionado v1</td></tr>
+<tr><td><b>Fase 2</b></td><td>Eval dataset 20+ pares · medir hit rate</td></tr>
+<tr><td><b>Fase 3</b></td><td>Multimodal: usuario sube foto mascota · IA identifica raza · recomendación</td></tr>
+<tr><td><b>Fase 4</b></td><td>Integración historia clínica veterinaria del cliente</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+
+<div class="fuentes">
+<b>📚 Fuentes DATA-BW</b>
+<ul>
+<li><b>groq.com pricing 2024:</b> Llama 3.3 70B $0.10/$0.40 per 1M tokens</li>
+<li><b>ai.google.dev:</b> Gemini Flash 2.0 free tier hasta cuota</li>
+<li><b>deepseek.com:</b> V3 input $0.14/1M</li>
+<li><b>anthropic.com:</b> Sonnet 4.6 $3/$15 · 30x más caro</li>
+<li><b>Chewy investor day:</b> chatbot reduce 40% tickets soporte</li>
+<li><b>HelpScout AI study 2024:</b> chatbot conversación → compra 15-25%</li>
+</ul>
+</div>
+
+<footer>📚 InfoPet · Tabla #2 · Tsukai IA · 2026-05-11 · banco SMC</footer>
+</div></body></html>

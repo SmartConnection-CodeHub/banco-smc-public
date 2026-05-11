@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>VOY · Tabla #2 · Stack barato</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.55;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1;max-width:1400px;margin:0 auto}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:20px}.crumb a{color:#7dd3fc;text-decoration:none}
+.agents{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;font-size:11px}.agent{padding:4px 10px;background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.08);border-radius:30px;color:#cbd5e1}.agent b{color:#00e5b0}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:8px}h2{font-size:20px;font-weight:700;color:#f1f5f9;margin:40px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px}
+p{color:#94a3b8;margin-bottom:12px;font-size:14px}
+.meta{display:flex;gap:18px;font-size:12px;color:#6b7b8e;margin-bottom:24px;flex-wrap:wrap}.meta span{padding:4px 12px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:30px;color:#00e5b0}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:12.5px}th{background:rgba(0,229,176,.1);color:#00e5b0;padding:10px 12px;text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:top}
+.flow{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:20px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;margin:14px 0}.flow-node{display:inline-block;padding:8px 14px;margin:4px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.3);border-radius:6px;color:#00e5b0;font-weight:700}.flow-arrow{color:#7dd3fc;font-size:14px;margin:0 6px}
+.radar{background:linear-gradient(135deg,rgba(0,229,176,.05),rgba(0,180,216,.05));border:1px solid rgba(0,229,176,.2);border-radius:12px;padding:24px;margin-top:24px}.radar-section{margin-bottom:22px}.radar-label{font-size:11px;font-weight:700;color:#00e5b0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}.radar-content{font-size:13px;color:#cbd5e1;line-height:1.6}.radar-content b{color:#f1f5f9}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../index.html">← VOY</a> / Tablas / #2 · Stack barato</div>
+<div class="agents"><span class="agent">🧠 <b>CEREBRO</b> · orquesta</span><span class="agent">⊡ <b>DATA-BW</b> · costo comparado</span><span class="agent">🔍 <b>ARCHITECT</b> · stack decision</span></div>
+<h1>🛠️ VOY · Tabla #2 · Stack barato · $0/mes recurrente</h1>
+<p>Decisión Architect · stack más barato posible · Airtable + Vanilla JS + jsPDF + Vercel free = $0/mes infra</p>
+<div class="meta"><span>v1 · 2026-05-11</span><span>$0 recurrente</span><span>stack mínimo viable</span></div>
+
+<h2>🔄 Flow técnico</h2>
+<div class="flow">
+<span class="flow-node">Cliente + datos</span><span class="flow-arrow">→</span><span class="flow-node">Vanilla JS UI</span><span class="flow-arrow">→</span><span class="flow-node">Airtable API</span><span class="flow-arrow">→</span><span class="flow-node">jsPDF generación</span><span class="flow-arrow">→</span><span class="flow-node">mailto: cliente</span><br>
+<span style="color:#6b7b8e;font-size:10px">selección productos · pricing live · PDF client-side · envío directo</span>
+</div>
+
+<h2>💰 Componentes stack · costo cada uno</h2>
+<table>
+<thead><tr><th>Componente</th><th>Plan</th><th>Costo USD/mes</th><th>Función</th><th>Límite plan</th></tr></thead>
+<tbody>
+<tr><td>Vercel</td><td>Hobby (free)</td><td>$0</td><td>Hosting estático · CI/CD push GitHub</td><td>100GB bandwidth · 100 deploys/día</td></tr>
+<tr><td>Airtable</td><td>Free</td><td>$0</td><td>DB productos · clientes · cotizaciones</td><td>1.200 records/base · 5 bases</td></tr>
+<tr><td>jsPDF</td><td>Open source</td><td>$0</td><td>Generación PDF client-side</td><td>Ninguno (lib JS)</td></tr>
+<tr><td>Vanilla JS</td><td>—</td><td>$0</td><td>Frontend sin framework</td><td>Sin build step · sin npm</td></tr>
+<tr><td>GitHub</td><td>Free</td><td>$0</td><td>Repo + Actions deploy</td><td>2000 min Actions/mes</td></tr>
+<tr><td>Mailto: nativo</td><td>—</td><td>$0</td><td>Email cliente con PDF adjunto</td><td>Limita por cliente email</td></tr>
+<tr><td colspan="2"><b>TOTAL</b></td><td><b>$0/mes</b></td><td>Cubre operación VOY actual</td><td>Upgrade Airtable Plus $20/mes si supera 1.200 cotizaciones</td></tr>
+</tbody>
+</table>
+
+<h2>🔀 Decisión Architect · por qué Airtable y NO Supabase</h2>
+<table>
+<thead><tr><th>Criterio</th><th>Airtable</th><th>Supabase</th><th>Ganador VOY</th></tr></thead>
+<tbody>
+<tr><td>Free tier</td><td>1.200 records/base</td><td>500MB DB</td><td>Empate</td></tr>
+<tr><td>Curva aprendizaje operario</td><td>UI tipo Excel · familiar</td><td>SQL/Postgres · requiere admin tech</td><td>Airtable</td></tr>
+<tr><td>Cliente admin sin SMC</td><td>Edita directo en Airtable web</td><td>Requiere admin panel custom</td><td>Airtable</td></tr>
+<tr><td>Velocidad iteración</td><td>Cambiar columna en UI</td><td>Migration SQL</td><td>Airtable</td></tr>
+<tr><td>Realtime sync</td><td>Sí (paid)</td><td>Sí (free)</td><td>Supabase si necesita</td></tr>
+<tr><td>VOY no necesita Realtime</td><td>—</td><td>—</td><td>Airtable gana por simplicidad</td></tr>
+</tbody>
+</table>
+
+<div class="radar">
+<div class="radar-section"><div class="radar-label">🌐 PRÁCTICA DE MERCADO · DATA-BW</div>
+<div class="radar-content">
+<table>
+<tbody>
+<tr><td>Stack típico empresa pequeña Chile</td><td>Excel + email manual · $0 recurrente · 0 escalable</td></tr>
+<tr><td>Stack medio Chile</td><td>Defontana/Bsale CRM mini · $200K-500K CLP/mes</td></tr>
+<tr><td>Stack enterprise</td><td>Salesforce CPQ · $75-150 USD/user/mes</td></tr>
+<tr><td><b>Stack VOY (SMC)</b></td><td>Vanilla + Airtable + Vercel · $0 USD/mes · escalable hasta $20 mes 12</td></tr>
+</tbody>
+</table>
+<div class="src">⊡ DATA-BW: stack VOY es viable para empresas que cotizan &lt;1.200 veces/mes. Cubre 95% PYMEs chilenas.</div>
+</div></div>
+
+<div class="radar-section"><div class="radar-label">🎯 ANALOGÍA</div>
+<div class="radar-content">
+<b>🍳 Cocina:</b> Vanilla + Airtable + jsPDF es cocinar con horno · sartén · cuchillo · NADA MÁS. Cero gadgets. Solo lo que necesitás. Resulta · sale rápido · barato.<br><br>
+<b>💰 Financiera:</b> Es el principio "minimum viable infrastructure". Empezar con costo cero · escalar cuando duela. Cero capital lockup.
+</div></div>
+
+<div class="radar-section"><div class="radar-label">📊 ASSESSMENT · stack ideal para PYME</div>
+<div class="radar-content">
+✅ $0 recurrente sostenible · cliente no paga mensualidad SMC<br>
+✅ Cliente puede editar Airtable solo · independencia SMC<br>
+✅ Sin vendor lock-in · si Airtable falla · migra a Sheets o Notion<br>
+🟡 Limitación 1.200 records/base · upgrade $20/mes si supera<br>
+🔴 API key Airtable expuesta en cliente · escalar a backend si datos sensibles
+</div></div>
+
+<div class="radar-section"><div class="radar-label">📈 KPI</div>
+<div class="radar-content">
+<table>
+<tbody>
+<tr><td>Costo infra anual cliente</td><td>$0 USD</td></tr>
+<tr><td>Tiempo deploy nuevo</td><td>&lt;5 segundos (Vercel)</td></tr>
+<tr><td>Maintenance SMC mensual</td><td>~1 hora</td></tr>
+<tr><td>Bandwidth usado</td><td>&lt;1GB/mes</td></tr>
+</tbody>
+</table>
+</div></div>
+
+<div class="radar-section"><div class="radar-label">🧪 OWNER</div>
+<div class="radar-content">🔍 Architect aprobó stack · 🎨 Frontend mantiene Vanilla JS · 🛠️ Pipeline ejecuta deploys Vercel · cliente edita Airtable directo (sin SMC)</div></div>
+
+<div class="radar-section"><div class="radar-label">📡 STREAMING</div>
+<div class="radar-content">Cada deploy Vercel notifica via webhook · operario VOY ve cambio en &lt;5s post-push</div></div>
+
+<div class="radar-section"><div class="radar-label">🛣️ ROADMAP escalabilidad</div>
+<div class="radar-content">
+<table>
+<tbody>
+<tr><td><b>Estado actual</b></td><td>$0/mes · &lt;200 cotizaciones/mes</td></tr>
+<tr><td><b>Si cotizaciones &gt;1.000/mes</b></td><td>Upgrade Airtable Plus $20/mes</td></tr>
+<tr><td><b>Si datos sensibles</b></td><td>Migrar Airtable → Supabase RLS · ~40h dev SMC</td></tr>
+<tr><td><b>Si multi-empresa</b></td><td>SaaS-ify · multi-tenant · $50/cliente/mes</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+
+<footer>📚 VOY · Tabla #2 · stack $0 · 2026-05-11 · banco SMC</footer>
+</div></body></html>
