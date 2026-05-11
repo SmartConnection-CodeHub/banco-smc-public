@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Connection — Organigrama del Equipo IA</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: rgba(255,255,255,0.04);
+    --card-hover: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.08);
+    --border-active: rgba(255,255,255,0.2);
+    --text: #e8e8ed;
+    --text-dim: #8888a0;
+    --accent-blue: #4a9eff;
+    --accent-purple: #a855f7;
+    --accent-green: #22c55e;
+    --accent-orange: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-pink: #ec4899;
+    --accent-cyan: #06b6d4;
+    --accent-lime: #84cc16;
+    --glass: rgba(255,255,255,0.03);
+    --glow-blue: rgba(74,158,255,0.15);
+    --glow-purple: rgba(168,85,247,0.15);
+    --glow-green: rgba(34,197,94,0.15);
+    --glow-orange: rgba(245,158,11,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(74,158,255,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(168,85,247,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(34,197,94,0.02) 0%, transparent 50%);
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 1rem;
+    margin-bottom: 48px;
+  }
+
+  /* ============ ORGANIGRAMA ============ */
+  .org-section {
+    margin-bottom: 64px;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  /* Capas */
+  .layer {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .layer-label {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  /* Cards */
+  .agent-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    min-width: 160px;
+    max-width: 200px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: default;
+    position: relative;
+    backdrop-filter: blur(10px);
+  }
+
+  .agent-card:hover {
+    background: var(--card-hover);
+    border-color: var(--border-active);
+    transform: translateY(-4px);
+  }
+
+  .agent-card .emoji {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .agent-card .name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .agent-card .role {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  .agent-card .methods {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .agent-card:hover .methods {
+    opacity: 1;
+  }
+
+  /* Colores por capa */
+  .card-gestion { border-color: rgba(245,158,11,0.3); box-shadow: 0 4px 20px var(--glow-orange); }
+  .card-gestion .name { color: var(--accent-orange); }
+
+  .card-negocio { border-color: rgba(236,72,153,0.3); box-shadow: 0 4px 20px rgba(236,72,153,0.1); }
+  .card-negocio .name { color: var(--accent-pink); }
+
+  .card-producto { border-color: rgba(6,182,212,0.3); box-shadow: 0 4px 20px rgba(6,182,212,0.1); }
+  .card-producto .name { color: var(--accent-cyan); }
+
+  .card-tecnica { border-color: rgba(74,158,255,0.3); box-shadow: 0 4px 20px var(--glow-blue); }
+  .card-tecnica .name { color: var(--accent-blue); }
+
+  .card-calidad { border-color: rgba(34,197,94,0.3); box-shadow: 0 4px 20px var(--glow-green); }
+  .card-calidad .name { color: var(--accent-green); }
+
+  .card-innovacion { border-color: rgba(168,85,247,0.3); box-shadow: 0 4px 20px var(--glow-purple); }
+  .card-innovacion .name { color: var(--accent-purple); }
+
+  .card-cliente { border-color: rgba(132,204,22,0.3); box-shadow: 0 4px 20px rgba(132,204,22,0.1); }
+  .card-cliente .name { color: var(--accent-lime); }
+
+  /* Connector arrows */
+  .connector {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    opacity: 0.4;
+  }
+
+  .connector-wide {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    padding: 8px 0;
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    opacity: 0.4;
+  }
+
+  /* ============ FLUJO VISUAL ============ */
+  .flow-section {
+    margin-bottom: 64px;
+  }
+
+  .flow-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    backdrop-filter: blur(10px);
+  }
+
+  .flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .flow-node {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    text-align: center;
+    font-size: 0.85rem;
+    min-width: 130px;
+    transition: all 0.3s;
+  }
+
+  .flow-node:hover {
+    border-color: var(--border-active);
+    background: var(--card-hover);
+  }
+
+  .flow-node .flow-emoji { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+  .flow-node .flow-name { font-weight: 600; font-size: 0.8rem; }
+  .flow-node .flow-action { font-size: 0.7rem; color: var(--text-dim); }
+
+  .flow-arrow {
+    color: var(--text-dim);
+    font-size: 1.4rem;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .flow-arrow-down {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 1.4rem;
+    opacity: 0.5;
+    margin: 8px 0;
+  }
+
+  .flow-bracket {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ============ MATRIZ DE RELACIONES ============ */
+  .matrix-section {
+    margin-bottom: 64px;
+  }
+
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.7rem;
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .matrix-table th {
+    background: rgba(255,255,255,0.05);
+    padding: 10px 6px;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.65rem;
+  }
+
+  .matrix-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    border-right: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .matrix-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .rel-define { background: rgba(74,158,255,0.15); border-radius: 4px; padding: 2px 4px; color: var(--accent-blue); }
+  .rel-implement { background: rgba(34,197,94,0.15); border-radius: 4px; padding: 2px 4px; color: var(--accent-green); }
+  .rel-verify { background: rgba(245,158,11,0.15); border-radius: 4px; padding: 2px 4px; color: var(--accent-orange); }
+  .rel-feed { background: rgba(168,85,247,0.15); border-radius: 4px; padding: 2px 4px; color: var(--accent-purple); }
+  .rel-self { background: rgba(255,255,255,0.05); border-radius: 4px; padding: 2px 4px; color: var(--text-dim); }
+
+  /* ============ METODOLOGÍAS ============ */
+  .methods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .method-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: all 0.3s;
+  }
+
+  .method-card:hover {
+    border-color: var(--border-active);
+    background: var(--card-hover);
+  }
+
+  .method-card .agent-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .method-card .agent-header .emoji { font-size: 1.4rem; }
+  .method-card .agent-header .name { font-weight: 700; font-size: 0.9rem; }
+
+  .method-list {
+    list-style: none;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  .method-list li::before {
+    content: "→ ";
+    color: var(--accent-blue);
+  }
+
+  /* ============ STATS ============ */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ============ LEGEND ============ */
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+    font-size: 0.75rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    h1 { font-size: 1.6rem; }
+    .agent-card { min-width: 140px; padding: 14px 16px; }
+    .flow-container { padding: 20px; }
+    .matrix-table { font-size: 0.6rem; }
+    .matrix-table th, .matrix-table td { padding: 6px 3px; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="container">
+
+  <h1>Smart Connection — Equipo IA</h1>
+  <p class="subtitle">Organigrama SaaS Factory — 12 agentes</p>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-number">12</div>
+      <div class="stat-label">Agentes Core</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">6</div>
+      <div class="stat-label">Capas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">50+</div>
+      <div class="stat-label">Metodologías</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Proyectos</div>
+    </div>
+  </div>
+
+  <!-- ============ ORGANIGRAMA ============ -->
+  <div class="org-section">
+    <div class="section-title">Organigrama por Capas</div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-orange)"></div> Gestión</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-pink)"></div> Negocio</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan)"></div> Producto</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue)"></div> Técnica</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green)"></div> Calidad</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple)"></div> Innovación</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-lime)"></div> Cliente</div>
+    </div>
+
+    <!-- Capa 1: Gestión -->
+    <div class="layer">
+      <div class="agent-card card-gestion">
+        <span class="emoji">👔</span>
+        <div class="name">PM</div>
+        <div class="role">Project Manager & Growth</div>
+        <div class="methods">RICE · AARRR · Sprint Mgmt</div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <!-- Capa 2: Negocio + Producto -->
+    <div class="layer">
+      <div class="agent-card card-negocio">
+        <span class="emoji">💼</span>
+        <div class="name">Comercial</div>
+        <div class="role">Ventas, Pricing, Pipeline</div>
+        <div class="methods">Challenger · SPIN · MEDDIC · Sandler · Land&Expand</div>
+      </div>
+      <div class="agent-card card-producto">
+        <span class="emoji">🐕</span>
+        <div class="name">Panchita</div>
+        <div class="role">Funcional + UX + Procesos</div>
+        <div class="methods">Design Thinking · JTBD · Wardley · BPMN</div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <!-- Capa 3: Arquitectura Cross -->
+    <div class="layer">
+      <div class="agent-card card-tecnica" style="min-width:280px; max-width:320px;">
+        <span class="emoji">🔍</span>
+        <div class="name">Arielito</div>
+        <div class="role">Arquitecto Cross · Tech Lead · Estándares · API Contracts</div>
+        <div class="methods">Kaizen · OODA · Gemba · Andon · Conway's Law</div>
+      </div>
+    </div>
+
+    <div class="connector-wide">
+      <span>↙</span>
+      <span>↓</span>
+      <span>↓</span>
+      <span>↘</span>
+    </div>
+
+    <!-- Capa 4: Implementación -->
+    <div class="layer">
+      <div class="agent-card card-tecnica">
+        <span class="emoji">🐾</span>
+        <div class="name">Hoku</div>
+        <div class="role">AI Developer & Skills</div>
+        <div class="methods">EDD · Prompt Versioning · HITL · Guardrails · LLMOps</div>
+      </div>
+      <div class="agent-card card-tecnica">
+        <span class="emoji">🔧</span>
+        <div class="name">ABAP</div>
+        <div class="role">Backend Engineer</div>
+        <div class="methods">Poka-Yoke · Jidoka · Contract-First</div>
+      </div>
+      <div class="agent-card card-tecnica">
+        <span class="emoji">🎨</span>
+        <div class="name">Fiori</div>
+        <div class="role">Frontend Engineer</div>
+        <div class="methods">Poka-Yoke · Mobile-First · Pixel-Perfect</div>
+      </div>
+      <div class="agent-card card-tecnica">
+        <span class="emoji">🔌</span>
+        <div class="name">Integrador</div>
+        <div class="role">APIs + IA Governance</div>
+        <div class="methods">EIP · API-First · Contract Testing</div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <!-- Capa 5: Deploy -->
+    <div class="layer">
+      <div class="agent-card card-tecnica">
+        <span class="emoji">🛠️</span>
+        <div class="name">Pipeline</div>
+        <div class="role">DevOps · CI/CD · Infra</div>
+        <div class="methods">GitOps · SRE · IaC · Chaos Eng</div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <!-- Capa 6: Verificación -->
+    <div class="layer">
+      <div class="agent-card card-calidad">
+        <span class="emoji">👩</span>
+        <div class="name">Camilita</div>
+        <div class="role">QA Policía</div>
+        <div class="methods">Shift Left · Chaos Eng · Exploratory Testing</div>
+      </div>
+      <div class="agent-card card-innovacion">
+        <span class="emoji">⚡</span>
+        <div class="name">Sergito</div>
+        <div class="role">Pensador Divergente</div>
+        <div class="methods">TRIZ · SCAMPER · First Principles · Blue Ocean</div>
+      </div>
+      <div class="agent-card card-cliente">
+        <span class="emoji">🎧</span>
+        <div class="name">ClienteX</div>
+        <div class="role">Customer Success</div>
+        <div class="methods">Onboarding · NPS · Churn Detection</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FLUJO DE TRABAJO ============ -->
+  <div class="flow-section">
+    <div class="section-title">Flujo de Trabajo — Feature Completa</div>
+
+    <div class="flow-container">
+      <!-- Paso 1 -->
+      <div class="flow-row">
+        <div class="flow-node" style="border-color:rgba(245,158,11,0.3)">
+          <span class="flow-emoji">👔</span>
+          <div class="flow-name">PM</div>
+          <div class="flow-action">Prioriza con RICE + métricas</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node" style="border-color:rgba(236,72,153,0.3)">
+          <span class="flow-emoji">💼</span>
+          <div class="flow-name">Comercial</div>
+          <div class="flow-action">Valida demanda de mercado</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow-down">↓</div>
+
+      <!-- Paso 2 -->
+      <div class="flow-row">
+        <div class="flow-node" style="border-color:rgba(6,182,212,0.3)">
+          <span class="flow-emoji">🐕</span>
+          <div class="flow-name">Panchita</div>
+          <div class="flow-action">Benchmark → BPMN → Maqueta → Specs</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow-down">↓</div>
+
+      <!-- Paso 3 -->
+      <div class="flow-row">
+        <div class="flow-node" style="border-color:rgba(74,158,255,0.3)">
+          <span class="flow-emoji">🔍</span>
+          <div class="flow-name">Arielito</div>
+          <div class="flow-action">Arquitectura → API Contracts → Distribución</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow-down">↓ distribuye</div>
+
+      <!-- Paso 4: Paralelo -->
+      <div class="flow-bracket">
+        <div class="flow-node" style="border-color:rgba(74,158,255,0.3)">
+          <span class="flow-emoji">🐾</span>
+          <div class="flow-name">Hoku</div>
+          <div class="flow-action">Implementa IA</div>
+        </div>
+        <div class="flow-node" style="border-color:rgba(74,158,255,0.3)">
+          <span class="flow-emoji">🔧</span>
+          <div class="flow-name">ABAP</div>
+          <div class="flow-action">Implementa Backend</div>
+        </div>
+        <div class="flow-node" style="border-color:rgba(74,158,255,0.3)">
+          <span class="flow-emoji">🎨</span>
+          <div class="flow-name">Fiori</div>
+          <div class="flow-action">Implementa Frontend</div>
+        </div>
+        <div class="flow-node" style="border-color:rgba(74,158,255,0.3)">
+          <span class="flow-emoji">🔌</span>
+          <div class="flow-name">Integrador</div>
+          <div class="flow-action">Provee Conectores</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow-down">↓ merge</div>
+
+      <!-- Paso 5 -->
+      <div class="flow-row">
+        <div class="flow-node" style="border-color:rgba(74,158,255,0.3)">
+          <span class="flow-emoji">🛠️</span>
+          <div class="flow-name">Pipeline</div>
+          <div class="flow-action">CI/CD → Deploy → Smoke Test</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow-down">↓ en producción</div>
+
+      <!-- Paso 6: Paralelo -->
+      <div class="flow-bracket">
+        <div class="flow-node" style="border-color:rgba(34,197,94,0.3)">
+          <span class="flow-emoji">👩</span>
+          <div class="flow-name">Camilita</div>
+          <div class="flow-action">Testea como usuario</div>
+        </div>
+        <div class="flow-node" style="border-color:rgba(74,158,255,0.3)">
+          <span class="flow-emoji">🔍</span>
+          <div class="flow-name">Arielito</div>
+          <div class="flow-action">Verifica cumplimiento</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow-down">↓ feedback</div>
+
+      <!-- Paso 7 -->
+      <div class="flow-bracket">
+        <div class="flow-node" style="border-color:rgba(132,204,22,0.3)">
+          <span class="flow-emoji">🎧</span>
+          <div class="flow-name">ClienteX</div>
+          <div class="flow-action">Onboarding + Soporte</div>
+        </div>
+        <div class="flow-node" style="border-color:rgba(168,85,247,0.3)">
+          <span class="flow-emoji">⚡</span>
+          <div class="flow-name">Sergito</div>
+          <div class="flow-action">Ideas para iterar</div>
+        </div>
+        <div class="flow-node" style="border-color:rgba(236,72,153,0.3)">
+          <span class="flow-emoji">💼</span>
+          <div class="flow-name">Comercial</div>
+          <div class="flow-action">Vende el resultado</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MATRIZ DE RELACIONES ============ -->
+  <div class="matrix-section">
+    <div class="section-title">Matriz de Relaciones — Quién habla con quién</div>
+
+    <div class="legend" style="margin-bottom:16px">
+      <div class="legend-item"><span class="rel-define">Define</span> le da instrucciones</div>
+      <div class="legend-item"><span class="rel-implement">Implementa</span> ejecuta</div>
+      <div class="legend-item"><span class="rel-verify">Verifica</span> revisa/testea</div>
+      <div class="legend-item"><span class="rel-feed">Feedback</span> retroalimenta</div>
+    </div>
+
+    <table class="matrix-table">
+      <tr>
+        <th></th>
+        <th>👔 PM</th>
+        <th>💼 Comerc.</th>
+        <th>🐕 Panch.</th>
+        <th>🔍 Ariel.</th>
+        <th>🐾 Hoku</th>
+        <th>🔧 ABAP</th>
+        <th>🎨 Fiori</th>
+        <th>🔌 Integ.</th>
+        <th>🛠️ Pipe</th>
+        <th>👩 Cami.</th>
+        <th>⚡ Serg.</th>
+        <th>🎧 ClientX</th>
+      </tr>
+      <tr>
+        <th>👔 PM</th>
+        <td><span class="rel-self">—</span></td>
+        <td><span class="rel-define">prioriza</span></td>
+        <td><span class="rel-define">prioriza</span></td>
+        <td><span class="rel-define">asigna</span></td>
+        <td><span class="rel-define">asigna</span></td>
+        <td><span class="rel-define">asigna</span></td>
+        <td><span class="rel-define">asigna</span></td>
+        <td><span class="rel-define">asigna</span></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>💼 Comerc.</th>
+        <td><span class="rel-feed">demanda</span></td>
+        <td><span class="rel-self">—</span></td>
+        <td><span class="rel-feed">bench.</span></td>
+        <td><span class="rel-feed">reqs</span></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-feed">valida</span></td>
+        <td><span class="rel-define">cierra→</span></td>
+      </tr>
+      <tr>
+        <th>🐕 Panch.</th>
+        <td><span class="rel-feed">specs</span></td>
+        <td><span class="rel-feed">valor</span></td>
+        <td><span class="rel-self">—</span></td>
+        <td><span class="rel-define">handoff</span></td>
+        <td><span class="rel-define">handoff</span></td>
+        <td><span class="rel-define">handoff</span></td>
+        <td><span class="rel-define">handoff</span></td>
+        <td><span class="rel-define">flujos</span></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-feed">evalúa</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>🔍 Ariel.</th>
+        <td><span class="rel-feed">deuda</span></td>
+        <td></td>
+        <td><span class="rel-feed">gaps</span></td>
+        <td><span class="rel-self">—</span></td>
+        <td><span class="rel-define">arq IA</span></td>
+        <td><span class="rel-define">arq back</span></td>
+        <td><span class="rel-define">arq front</span></td>
+        <td><span class="rel-define">arq integ</span></td>
+        <td><span class="rel-define">infra</span></td>
+        <td></td>
+        <td><span class="rel-feed">estanc.</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>🐾 Hoku</th>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-verify">review</span></td>
+        <td><span class="rel-self">—</span></td>
+        <td><span class="rel-implement">SSE→</span></td>
+        <td><span class="rel-implement">stream→</span></td>
+        <td><span class="rel-implement">usa SDK</span></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-implement">POC</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>🔧 ABAP</th>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-verify">review</span></td>
+        <td><span class="rel-implement">DB share</span></td>
+        <td><span class="rel-self">—</span></td>
+        <td><span class="rel-implement">API→</span></td>
+        <td><span class="rel-implement">usa conec</span></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>🎨 Fiori</th>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-verify">review</span></td>
+        <td><span class="rel-implement">←stream</span></td>
+        <td><span class="rel-implement">←API</span></td>
+        <td><span class="rel-self">—</span></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>🔌 Integ.</th>
+        <td></td>
+        <td></td>
+        <td><span class="rel-feed">mapping</span></td>
+        <td><span class="rel-feed">health</span></td>
+        <td><span class="rel-define">provid.</span></td>
+        <td><span class="rel-define">conect.</span></td>
+        <td></td>
+        <td><span class="rel-self">—</span></td>
+        <td><span class="rel-feed">env</span></td>
+        <td></td>
+        <td><span class="rel-feed">evalúa</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>🛠️ Pipe</th>
+        <td><span class="rel-feed">costos</span></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-feed">infra</span></td>
+        <td></td>
+        <td><span class="rel-implement">deploy</span></td>
+        <td><span class="rel-implement">deploy</span></td>
+        <td><span class="rel-implement">config</span></td>
+        <td><span class="rel-self">—</span></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>👩 Cami.</th>
+        <td></td>
+        <td></td>
+        <td><span class="rel-feed">UX bugs</span></td>
+        <td><span class="rel-feed">sec bugs</span></td>
+        <td><span class="rel-verify">test IA</span></td>
+        <td><span class="rel-verify">test API</span></td>
+        <td><span class="rel-verify">test UI</span></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-self">—</span></td>
+        <td></td>
+        <td><span class="rel-feed">patterns</span></td>
+      </tr>
+      <tr>
+        <th>⚡ Serg.</th>
+        <td><span class="rel-feed">ideas</span></td>
+        <td><span class="rel-feed">ideas</span></td>
+        <td><span class="rel-feed">ideas</span></td>
+        <td><span class="rel-feed">ideas</span></td>
+        <td><span class="rel-feed">ideas</span></td>
+        <td><span class="rel-feed">ideas</span></td>
+        <td><span class="rel-feed">ideas</span></td>
+        <td><span class="rel-feed">ideas</span></td>
+        <td></td>
+        <td><span class="rel-define">scenar.</span></td>
+        <td><span class="rel-self">—</span></td>
+        <td><span class="rel-feed">reframe</span></td>
+      </tr>
+      <tr>
+        <th>🎧 ClientX</th>
+        <td><span class="rel-feed">churn</span></td>
+        <td><span class="rel-feed">upsell</span></td>
+        <td><span class="rel-feed">confus.</span></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-feed">bugs</span></td>
+        <td><span class="rel-feed">bugs</span></td>
+        <td></td>
+        <td></td>
+        <td><span class="rel-feed">bugs</span></td>
+        <td><span class="rel-feed">quejas</span></td>
+        <td><span class="rel-self">—</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ============ METODOLOGÍAS POR AGENTE ============ -->
+  <div class="flow-section">
+    <div class="section-title">Metodologías por Agente</div>
+
+    <div class="methods-grid">
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">👔</span><span class="name" style="color:var(--accent-orange)">PM</span></div>
+        <ul class="method-list">
+          <li>RICE Scoring</li>
+          <li>Pirate Metrics (AARRR)</li>
+          <li>Sprint Management</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">💼</span><span class="name" style="color:var(--accent-pink)">Comercial</span></div>
+        <ul class="method-list">
+          <li>Challenger Sale</li>
+          <li>Solution Selling</li>
+          <li>SPIN Selling</li>
+          <li>Sandler Selling</li>
+          <li>Value-Based Pricing</li>
+          <li>BANT / MEDDIC</li>
+          <li>Land & Expand</li>
+          <li>Pipeline Weighted Forecast</li>
+          <li>NEGO (BATNA/ZOPA)</li>
+          <li>Inbound-Outbound Alignment</li>
+          <li>Customer Economics</li>
+          <li>Win/Loss Analysis</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">🐕</span><span class="name" style="color:var(--accent-cyan)">Panchita</span></div>
+        <ul class="method-list">
+          <li>Design Thinking</li>
+          <li>Jobs to Be Done</li>
+          <li>Wardley Mapping</li>
+          <li>BPMN 2.0</li>
+          <li>Event Storming</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">🔍</span><span class="name" style="color:var(--accent-blue)">Arielito</span></div>
+        <ul class="method-list">
+          <li>Kaizen (mejora continua)</li>
+          <li>OODA Loop</li>
+          <li>Gemba (ir al lugar real)</li>
+          <li>Andon (señal visual)</li>
+          <li>Conway's Law</li>
+          <li>ADRs</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">🐾</span><span class="name" style="color:var(--accent-blue)">Hoku</span></div>
+        <ul class="method-list">
+          <li>Eval-Driven Development</li>
+          <li>Prompt Versioning</li>
+          <li>Human-in-the-Loop</li>
+          <li>Guardrails Pattern</li>
+          <li>LLMOps</li>
+          <li>Retrieval Engineering</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">🔧</span><span class="name" style="color:var(--accent-blue)">ABAP</span></div>
+        <ul class="method-list">
+          <li>Poka-Yoke</li>
+          <li>Jidoka</li>
+          <li>Contract-First</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">🎨</span><span class="name" style="color:var(--accent-blue)">Fiori</span></div>
+        <ul class="method-list">
+          <li>Poka-Yoke</li>
+          <li>Mobile-First</li>
+          <li>Pixel-Perfect</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">🔌</span><span class="name" style="color:var(--accent-blue)">Integrador</span></div>
+        <ul class="method-list">
+          <li>Enterprise Integration Patterns</li>
+          <li>API-First Design</li>
+          <li>Contract Testing</li>
+          <li>Circuit Breaker</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">🛠️</span><span class="name" style="color:var(--accent-blue)">Pipeline</span></div>
+        <ul class="method-list">
+          <li>GitOps</li>
+          <li>SRE (SLOs, Error Budgets)</li>
+          <li>Infrastructure as Code</li>
+          <li>Chaos Engineering</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">👩</span><span class="name" style="color:var(--accent-green)">Camilita</span></div>
+        <ul class="method-list">
+          <li>Shift Left Testing</li>
+          <li>Chaos Engineering</li>
+          <li>Exploratory Testing</li>
+          <li>Personas de Testing (6)</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">⚡</span><span class="name" style="color:var(--accent-purple)">Sergito</span></div>
+        <ul class="method-list">
+          <li>TRIZ (40 principios)</li>
+          <li>SCAMPER</li>
+          <li>First Principles</li>
+          <li>Blue Ocean Strategy</li>
+          <li>Pensamiento Lateral</li>
+          <li>Analogías Cross-Domain</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <div class="agent-header"><span class="emoji">🎧</span><span class="name" style="color:var(--accent-lime)">ClienteX</span></div>
+        <ul class="method-list">
+          <li>Onboarding Framework</li>
+          <li>NPS Surveys</li>
+          <li>Churn Detection</li>
+          <li>SLA Management</li>
+          <li>Feedback Loop</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center; color:var(--text-dim); font-size:0.75rem; margin-top:40px; padding-top:20px; border-top:1px solid var(--border);">
+    Smart Connection — SaaS Factory Team · 12 Agentes · Marzo 2026
+  </div>
+
+</div>
+</body>
+</html>

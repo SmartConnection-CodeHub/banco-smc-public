@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PoC — Discovery Missions v2 · Panchita 🐕</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#06080f;--s1:#0d1117;--s2:#161b28;--s3:#1e2536;--teal:#00e5b0;--blue:#4f8ef7;--green:#1fd975;--amber:#f5a623;--red:#f04747;--violet:#b794ff;--text:#dce4f0;--muted:#6b8099;--dim:#2a3d58;--r:12px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+.wrap{max-width:1300px;margin:0 auto;padding:32px}
+h1{font-size:28px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
+h2{font-size:20px;font-weight:800;margin:24px 0 12px}
+.sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:4px}
+.t-ok{background:rgba(31,217,117,.1);color:var(--green)}.t-warn{background:rgba(245,166,35,.1);color:var(--amber)}.t-err{background:rgba(240,71,71,.1);color:var(--red)}.t-teal{background:rgba(0,229,176,.1);color:var(--teal)}.t-info{background:rgba(79,142,247,.1);color:var(--blue)}.t-violet{background:rgba(183,148,255,.1);color:var(--violet)}.t-free{background:rgba(31,217,117,.08);color:var(--green);border:1px solid rgba(31,217,117,.15)}
+.divider{border:none;border-top:1px solid rgba(255,255,255,.06);margin:32px 0}
+.card{background:var(--s1);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);transition:all .2s}
+.card:hover{border-color:rgba(0,229,176,.15);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:8px 12px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid rgba(255,255,255,.06);font-weight:700}
+td{padding:8px 12px;font-size:12px;border-bottom:1px solid rgba(255,255,255,.03)}
+
+/* Frame */
+.frame{border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;background:var(--s1);margin-top:16px}
+.frame-bar{height:40px;background:var(--s2);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;padding:0 14px;gap:8px}
+.dots{display:flex;gap:4px}.dot{width:8px;height:8px;border-radius:50%}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.06);background:var(--s2)}
+.tab{padding:10px 20px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab:hover{color:var(--text)}
+.tab.on{color:var(--teal);border-bottom-color:var(--teal);background:rgba(0,229,176,.03)}
+
+/* ═══ CATÁLOGO ═══ */
+.cat-header{padding:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cat-search{flex:1;min-width:250px;background:var(--s2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;color:var(--text);font-size:13px;outline:none}
+.cat-filters{display:flex;gap:6px;padding:0 24px 16px;flex-wrap:wrap}
+.cat-filter{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.03);color:var(--muted);border:1px solid rgba(255,255,255,.04);transition:all .15s}
+.cat-filter:hover,.cat-filter.on{background:rgba(0,229,176,.08);color:var(--teal);border-color:rgba(0,229,176,.15)}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;padding:0 24px 24px}
+
+/* Mission card */
+.m-card{padding:18px;cursor:pointer;position:relative;overflow:hidden}
+.m-card .m-badges{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.m-card .m-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3}
+.m-card .m-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.m-card .m-meta{display:flex;gap:12px;font-size:10px;color:var(--dim)}
+.m-card .m-meta span{display:flex;align-items:center;gap:3px}
+.m-accent{position:absolute;bottom:0;left:0;right:0;height:3px}
+
+/* ═══ MISSION DETAIL ═══ */
+.detail{display:none;min-height:500px}
+.detail.show{display:flex;flex-direction:column}
+.detail-header{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:12px}
+.detail-back{background:none;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 12px;color:var(--muted);font-size:12px;cursor:pointer}
+.detail-back:hover{border-color:var(--teal);color:var(--teal)}
+.detail-title{font-size:18px;font-weight:800;flex:1}
+.detail-start{padding:8px 20px;border-radius:8px;background:var(--teal);color:#000;font-size:12px;font-weight:700;border:none;cursor:pointer}
+
+.detail-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06)}
+.detail-tab{padding:10px 20px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.detail-tab.on{color:var(--teal);border-bottom-color:var(--teal)}
+
+.detail-body{flex:1;overflow-y:auto}
+
+/* Overview */
+.overview{padding:24px;display:grid;grid-template-columns:1fr 280px;gap:20px}
+.ov-main h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.ov-main p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.ov-diagram{background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:20px;margin:16px 0}
+.ov-sidebar{display:flex;flex-direction:column;gap:12px}
+.ov-info{background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:16px}
+.ov-info-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.ov-info-row{display:flex;justify-content:space-between;padding:4px 0;font-size:11px}
+.ov-info-row .k{color:var(--muted)}.ov-info-row .v{color:var(--text);font-weight:600}
+
+/* Project Board */
+.board{padding:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.board-col{background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);overflow:hidden}
+.board-col-head{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:6px}
+.board-col-title{font-size:12px;font-weight:700}
+.board-col-count{font-size:10px;color:var(--dim);background:rgba(255,255,255,.04);padding:1px 6px;border-radius:10px}
+.board-card{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.02);cursor:pointer;transition:background .15s}
+.board-card:hover{background:rgba(0,229,176,.02)}
+.board-card-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.board-card-meta{font-size:10px;color:var(--dim);display:flex;gap:8px}
+
+/* Tutorial Step */
+.tutorial{display:flex;min-height:450px}
+.tut-sidebar{width:260px;border-right:1px solid rgba(255,255,255,.06);overflow-y:auto;flex-shrink:0}
+.tut-step{padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.02);display:flex;gap:10px;align-items:flex-start;transition:all .15s;border-left:3px solid transparent}
+.tut-step:hover{background:rgba(0,229,176,.02)}
+.tut-step.on{background:rgba(0,229,176,.04);border-left-color:var(--teal)}
+.tut-step.done{opacity:.6}
+.tut-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.tut-num.pending{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid rgba(255,255,255,.08)}
+.tut-num.active{background:rgba(0,229,176,.12);color:var(--teal);border:1px solid rgba(0,229,176,.25)}
+.tut-num.complete{background:rgba(31,217,117,.12);color:var(--green);border:1px solid rgba(31,217,117,.25)}
+.tut-step-title{font-size:11px;font-weight:600;color:var(--text);line-height:1.4}
+.tut-step-meta{font-size:9px;color:var(--dim);margin-top:2px}
+
+.tut-content{flex:1;overflow-y:auto;padding:24px 32px;max-width:700px}
+.tut-content h2{font-size:20px;font-weight:800;margin-bottom:8px}
+.tut-content .badge-row{display:flex;gap:6px;margin-bottom:16px}
+.tut-content p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:14px}
+.tut-content h4{font-size:15px;font-weight:700;color:var(--teal);margin:20px 0 8px}
+.tut-content pre{background:#060a13;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#a8d8ea;overflow-x:auto;margin:10px 0 14px}
+.tut-content .tip{background:rgba(0,229,176,.04);border:1px solid rgba(0,229,176,.12);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:12px;color:var(--teal);line-height:1.6}
+.tut-content .exercise{background:rgba(139,92,246,.04);border:1px solid rgba(139,92,246,.12);border-radius:10px;padding:14px 16px;margin:14px 0;font-size:12px;color:var(--violet);line-height:1.6}
+.tut-content .diagram{background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:16px;margin:12px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tut-content .d-box{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap}
+.tut-content .d-arrow{color:var(--dim);font-size:14px}
+
+.tut-nav{display:flex;gap:8px;margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.04)}
+.tut-nav button{padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none}
+.tut-nav .prev{background:rgba(255,255,255,.04);color:var(--muted)}
+.tut-nav .next{background:rgba(0,229,176,.1);color:var(--teal);border:1px solid rgba(0,229,176,.15)}
+.tut-nav .complete{background:var(--green);color:#000}
+.tut-mark{margin-left:auto;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(31,217,117,.2);background:rgba(31,217,117,.08);color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- REPORTE -->
+<span class="tag t-teal">🐕 PANCHITA</span>
+<span class="tag t-info">PoC</span>
+<span class="tag t-ok">24-03-2026</span>
+
+<h1>Discovery Missions v2</h1>
+<p class="sub">Rediseño inspirado en SAP Discovery Center + Codecademy. Catálogo con filtros, overview con diagrama, project board, y tutoriales paso a paso interactivos.</p>
+
+<!-- Benchmark -->
+<h2>Benchmark Competitivo</h2>
+<table>
+  <thead><tr><th>Plataforma</th><th>Catálogo</th><th>Mission Detail</th><th>Tutorial Steps</th><th>Progreso</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SAP Discovery</strong></td><td>Filtros: herramienta, tipo, costo</td><td>Overview + Project Board + Related</td><td>Sidebar pasos + Marcar completado</td><td>Por misión</td></tr>
+    <tr><td><strong>Codecademy</strong></td><td>Grid cards + Free/Pro badge</td><td>Syllabus + Progress bar</td><td>Editor inline + tests</td><td>Barra global</td></tr>
+    <tr><td><strong>FreeCodeCamp</strong></td><td>Certificaciones lineales</td><td>Steps secuenciales</td><td>Código + tests inline</td><td>Checkmarks</td></tr>
+    <tr><td><strong>Nuestra v1</strong></td><td>Lista simple sin filtros</td><td>Solo pasos con texto</td><td>Texto + código + tip</td><td>No hay</td></tr>
+    <tr><td style="color:var(--teal)"><strong>Propuesta v2</strong></td><td style="color:var(--teal)">Grid + filtros + badges</td><td style="color:var(--teal)">Overview + Board + Tutorial</td><td style="color:var(--teal)">Sidebar pasos + Mark done</td><td style="color:var(--teal)">Persistido en Supabase</td></tr>
+  </tbody>
+</table>
+
+<hr class="divider">
+
+<!-- DEMO -->
+<h2>🖥️ Demo — 3 Vistas</h2>
+
+<div class="frame">
+  <div class="frame-bar">
+    <div class="dots"><div class="dot" style="background:var(--red)"></div><div class="dot" style="background:var(--amber)"></div><div class="dot" style="background:var(--green)"></div></div>
+    <span style="font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace">intranet.smconnection.cl/dashboard/learn → Misiones</span>
+  </div>
+
+  <!-- VISTA 1: CATÁLOGO -->
+  <div id="v-catalog">
+    <div class="cat-header">
+      <h2 style="margin:0;font-size:18px">🎓 Misiones</h2>
+      <input class="cat-search" placeholder="Buscar misión, tecnología, herramienta...">
+    </div>
+    <div class="cat-filters">
+      <div class="cat-filter on">Todas</div>
+      <div class="cat-filter">⭐ Recomendadas</div>
+      <div class="cat-filter">🔥 Populares</div>
+      <div class="cat-filter">🆓 Gratis</div>
+      <div class="cat-filter">🆕 Nuevas</div>
+      <div class="cat-filter">IA</div>
+      <div class="cat-filter">Cloud</div>
+      <div class="cat-filter">Frontend</div>
+      <div class="cat-filter">SAP</div>
+      <div class="cat-filter">DevOps</div>
+    </div>
+    <div class="cat-grid">
+      <!-- Card 1 -->
+      <div class="card m-card" onclick="showDetail()">
+        <div class="m-badges">
+          <span class="tag t-ok">Beginner</span>
+          <span class="tag t-free">🆓 Gratis</span>
+          <span class="tag t-teal">⭐ Recomendada</span>
+        </div>
+        <div class="m-title">Master Prompting con Claude & Groq</div>
+        <div class="m-desc">Aprende a escribir prompts efectivos. Compara modelos. Chain-of-thought para debugging.</div>
+        <div class="m-meta">
+          <span>⏱ 45 min</span>
+          <span>📚 4 tutoriales</span>
+          <span>🔧 Claude, Groq</span>
+        </div>
+        <div class="m-accent" style="background:linear-gradient(90deg,var(--teal),var(--green))"></div>
+      </div>
+      <!-- Card 2 -->
+      <div class="card m-card">
+        <div class="m-badges">
+          <span class="tag t-ok">Beginner</span>
+          <span class="tag t-free">🆓 Gratis</span>
+        </div>
+        <div class="m-title">Primera app Next.js con IA</div>
+        <div class="m-desc">Crea un proyecto Next.js 16, conecta Groq API con streaming, deploya en Vercel.</div>
+        <div class="m-meta">
+          <span>⏱ 60 min</span>
+          <span>📚 3 tutoriales</span>
+          <span>🔧 Next.js, Groq, Vercel</span>
+        </div>
+        <div class="m-accent" style="background:linear-gradient(90deg,var(--blue),var(--teal))"></div>
+      </div>
+      <!-- Card 3 -->
+      <div class="card m-card">
+        <div class="m-badges">
+          <span class="tag t-warn">Intermediate</span>
+          <span class="tag t-free">🆓 Gratis</span>
+          <span class="tag t-info">🔥 Popular</span>
+        </div>
+        <div class="m-title">Supabase + pgvector para RAG</div>
+        <div class="m-desc">Configura pgvector, genera embeddings con OpenAI, implementa búsqueda semántica.</div>
+        <div class="m-meta">
+          <span>⏱ 90 min</span>
+          <span>📚 4 tutoriales</span>
+          <span>🔧 Supabase, OpenAI</span>
+        </div>
+        <div class="m-accent" style="background:linear-gradient(90deg,var(--amber),var(--blue))"></div>
+      </div>
+      <!-- Card 4 -->
+      <div class="card m-card">
+        <div class="m-badges">
+          <span class="tag t-warn">Intermediate</span>
+          <span class="tag t-teal">🆕 Nueva</span>
+        </div>
+        <div class="m-title">Tool Use — Claude llama APIs</div>
+        <div class="m-desc">Conecta Claude con Supabase, Bsale, APIs externas usando function calling.</div>
+        <div class="m-meta">
+          <span>⏱ 75 min</span>
+          <span>📚 3 tutoriales</span>
+          <span>🔧 Claude, Supabase</span>
+        </div>
+        <div class="m-accent" style="background:linear-gradient(90deg,var(--violet),var(--blue))"></div>
+      </div>
+      <!-- Card 5 -->
+      <div class="card m-card">
+        <div class="m-badges">
+          <span class="tag t-violet">Advanced</span>
+        </div>
+        <div class="m-title">Crear MCP Server</div>
+        <div class="m-desc">Protocol completo: TypeScript server, tool definitions, conectar con Claude Code.</div>
+        <div class="m-meta">
+          <span>⏱ 120 min</span>
+          <span>📚 4 tutoriales</span>
+          <span>🔧 MCP, TypeScript</span>
+        </div>
+        <div class="m-accent" style="background:linear-gradient(90deg,var(--red),var(--violet))"></div>
+      </div>
+      <!-- Card 6 -->
+      <div class="card m-card">
+        <div class="m-badges">
+          <span class="tag t-violet">Advanced</span>
+          <span class="tag t-info">🔥 Popular</span>
+        </div>
+        <div class="m-title">InfoPet — RAG Veterinario</div>
+        <div class="m-desc">Sistema completo: schema, pipeline RAG, integración Bsale/Jumpseller.</div>
+        <div class="m-meta">
+          <span>⏱ 150 min</span>
+          <span>📚 4 tutoriales</span>
+          <span>🔧 Claude, Supabase, Bsale</span>
+        </div>
+        <div class="m-accent" style="background:linear-gradient(90deg,var(--amber),var(--red))"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA 2: MISSION DETAIL -->
+  <div class="detail" id="v-detail">
+    <div class="detail-header">
+      <button class="detail-back" onclick="showCatalog()">← Catálogo</button>
+      <span class="detail-title">Master Prompting con Claude & Groq</span>
+      <button class="detail-start" onclick="showTutorial()">Iniciar misión</button>
+    </div>
+    <div class="detail-tabs">
+      <div class="detail-tab on" onclick="showDetailTab('overview')">Overview</div>
+      <div class="detail-tab" onclick="showDetailTab('board')">Project Board</div>
+      <div class="detail-tab" onclick="showDetailTab('related')">Related Missions</div>
+    </div>
+    <div class="detail-body">
+      <!-- Overview tab -->
+      <div class="overview" id="dt-overview">
+        <div class="ov-main">
+          <h3>Caso de Uso</h3>
+          <p>Quieres usar IA para desarrollo pero tus prompts generan respuestas genéricas. Esta misión te enseña a escribir prompts que producen código funcional, propuestas SAP, y análisis UX de alta calidad.</p>
+          <h3 style="margin-top:20px">El Desafío</h3>
+          <p>Los prompts vagos producen resultados vagos. "Hazme un login" vs un prompt estructurado con contexto, formato y restricciones produce resultados radicalmente diferentes.</p>
+          <h3>La Solución</h3>
+          <p>Dominar las 4 partes de un prompt efectivo y aprender técnicas avanzadas como Chain-of-thought y system prompts para diferentes modos.</p>
+          <!-- Diagrama -->
+          <div class="ov-diagram">
+            <div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;font-weight:700">SOLUTION DIAGRAM</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="padding:8px 14px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(0,229,176,.1);color:var(--teal);border:1px solid rgba(0,229,176,.2)">Prompt estructurado</span>
+              <span style="color:var(--dim)">→</span>
+              <span style="padding:8px 14px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(79,142,247,.1);color:var(--blue);border:1px solid rgba(79,142,247,.2)">Hoku 9in1</span>
+              <span style="color:var(--dim)">→</span>
+              <span style="padding:8px 14px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.2)">9 Agentes en paralelo</span>
+              <span style="color:var(--dim)">→</span>
+              <span style="padding:8px 14px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(31,217,117,.1);color:var(--green);border:1px solid rgba(31,217,117,.2)">Respuesta sintetizada</span>
+            </div>
+          </div>
+        </div>
+        <div class="ov-sidebar">
+          <div class="ov-info">
+            <div class="ov-info-title">Acerca de esta misión</div>
+            <div class="ov-info-row"><span class="k">Duración</span><span class="v">45 min</span></div>
+            <div class="ov-info-row"><span class="k">Nivel</span><span class="v" style="color:var(--green)">Beginner</span></div>
+            <div class="ov-info-row"><span class="k">Tutoriales</span><span class="v">4</span></div>
+            <div class="ov-info-row"><span class="k">Herramientas</span><span class="v">Claude, Groq</span></div>
+            <div class="ov-info-row"><span class="k">Costo</span><span class="v" style="color:var(--green)">Gratis</span></div>
+            <div class="ov-info-row"><span class="k">Prerequisitos</span><span class="v">Ninguno</span></div>
+          </div>
+          <div class="ov-info">
+            <div class="ov-info-title">Lo que aprenderás</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.8">
+              ✓ Anatomía de un prompt efectivo<br>
+              ✓ Chain-of-thought debugging<br>
+              ✓ System prompts y modos<br>
+              ✓ Cuándo usar Hoku vs Panchita
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Board tab -->
+      <div class="board" id="dt-board" style="display:none">
+        <div class="board-col">
+          <div class="board-col-head"><span style="font-size:14px">📚</span><span class="board-col-title">Aprender</span><span class="board-col-count">2</span></div>
+          <div class="board-card"><div class="board-card-title">Anatomía de un prompt</div><div class="board-card-meta"><span class="tag t-ok" style="font-size:9px">Tutorial</span><span>10 min</span></div></div>
+          <div class="board-card"><div class="board-card-title">Chain-of-thought</div><div class="board-card-meta"><span class="tag t-ok" style="font-size:9px">Tutorial</span><span>15 min</span></div></div>
+        </div>
+        <div class="board-col">
+          <div class="board-col-head"><span style="font-size:14px">🔬</span><span class="board-col-title">Experiencia</span><span class="board-col-count">1</span></div>
+          <div class="board-card"><div class="board-card-title">System prompts y modos</div><div class="board-card-meta"><span class="tag t-info" style="font-size:9px">Práctica</span><span>10 min</span></div></div>
+        </div>
+        <div class="board-col">
+          <div class="board-col-head"><span style="font-size:14px">🚀</span><span class="board-col-title">Explorar</span><span class="board-col-count">1</span></div>
+          <div class="board-card"><div class="board-card-title">Hoku vs Panchita</div><div class="board-card-meta"><span class="tag t-violet" style="font-size:9px">Exploración</span><span>10 min</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA 3: TUTORIAL -->
+  <div class="detail" id="v-tutorial">
+    <div class="detail-header">
+      <button class="detail-back" onclick="showDetailFromTut()">← Misión</button>
+      <span class="detail-title" style="font-size:14px">Anatomía de un prompt efectivo</span>
+      <span class="tag t-ok">Tutorial</span>
+      <span class="tag t-ok">Beginner</span>
+      <button class="tut-mark">✓ Marcar como completado</button>
+    </div>
+    <div class="tutorial">
+      <div class="tut-sidebar">
+        <div class="tut-step on">
+          <div class="tut-num active">1</div>
+          <div><div class="tut-step-title">Las 4 partes de un prompt</div><div class="tut-step-meta">Tutorial · 5 min</div></div>
+        </div>
+        <div class="tut-step">
+          <div class="tut-num pending">2</div>
+          <div><div class="tut-step-title">Prompt malo vs bueno</div><div class="tut-step-meta">Práctica · 5 min</div></div>
+        </div>
+        <div class="tut-step">
+          <div class="tut-num pending">3</div>
+          <div><div class="tut-step-title">Comparar modelos</div><div class="tut-step-meta">Ejercicio · 5 min</div></div>
+        </div>
+        <div class="tut-step">
+          <div class="tut-num pending">4</div>
+          <div><div class="tut-step-title">Tips de Hoku</div><div class="tut-step-meta">Resumen · 3 min</div></div>
+        </div>
+      </div>
+      <div class="tut-content">
+        <div class="badge-row">
+          <span class="tag t-ok">Paso 1 de 4</span>
+          <span class="tag t-info">Tutorial</span>
+        </div>
+        <h2>Las 4 partes de un prompt</h2>
+        <p>Un prompt efectivo tiene 4 componentes. Sin ellos, el modelo adivina. Con ellos, el modelo ejecuta exactamente lo que necesitas.</p>
+
+        <div class="diagram">
+          <span class="d-box" style="background:rgba(0,229,176,.1);color:var(--teal);border:1px solid rgba(0,229,176,.2)">1. Contexto</span>
+          <span class="d-arrow">→</span>
+          <span class="d-box" style="background:rgba(79,142,247,.1);color:var(--blue);border:1px solid rgba(79,142,247,.2)">2. Tarea</span>
+          <span class="d-arrow">→</span>
+          <span class="d-box" style="background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.2)">3. Formato</span>
+          <span class="d-arrow">→</span>
+          <span class="d-box" style="background:rgba(183,148,255,.1);color:var(--violet);border:1px solid rgba(183,148,255,.2)">4. Restricciones</span>
+        </div>
+
+        <h4>1. Contexto</h4>
+        <p>Quién eres, qué proyecto es, qué stack usas. Sin contexto, Claude no sabe si eres junior o senior, si usas React o Vue.</p>
+
+        <h4>2. Tarea</h4>
+        <p>Qué necesitas exactamente. "Hazme un login" ≠ "Crea un LoginForm.tsx con Supabase Auth, validación zod, dark mode".</p>
+
+        <h4>3. Formato</h4>
+        <p>Cómo quieres la respuesta: código con filename, bullets, tabla comparativa, JSON, etc.</p>
+
+        <h4>4. Restricciones</h4>
+        <p>Qué NO hacer: "No uses server actions", "Solo client components", "TypeScript estricto".</p>
+
+        <div class="tip">💡 <strong>Tip:</strong> En la intranet, los modos (Chat/Code/SAP/Deploy) ya incluyen contexto automáticamente. Solo necesitas la tarea y restricciones.</div>
+
+        <div class="exercise">🎯 <strong>Ejercicio:</strong> Abre el chat de Hoku (🐾 abajo a la derecha). Escribe un prompt SIN contexto: "Hazme un componente". Luego uno CON las 4 partes. Compara.</div>
+
+        <div class="tut-nav">
+          <button class="prev" disabled>← Anterior</button>
+          <button class="next">Siguiente: Prompt malo vs bueno →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div style="margin-top:24px">
+  <h2>📋 Checklist de entrega</h2>
+  <table>
+    <thead><tr><th>Item</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td>Catálogo con grid + filtros + badges</td><td><span class="tag t-ok">✅</span></td></tr>
+      <tr><td>Filtros: Recomendadas, Populares, Gratis, Nuevas, por tech</td><td><span class="tag t-ok">✅</span></td></tr>
+      <tr><td>Mission Detail: Overview + Board + Related</td><td><span class="tag t-ok">✅</span></td></tr>
+      <tr><td>Overview: caso de uso + diagrama solución + sidebar info</td><td><span class="tag t-ok">✅</span></td></tr>
+      <tr><td>Project Board: Aprender / Experiencia / Explorar</td><td><span class="tag t-ok">✅</span></td></tr>
+      <tr><td>Tutorial: sidebar pasos + contenido + nav + mark complete</td><td><span class="tag t-ok">✅</span></td></tr>
+      <tr><td>Diagramas visuales CSS en overview y tutorial</td><td><span class="tag t-ok">✅</span></td></tr>
+      <tr><td>Progreso persistido</td><td><span class="tag t-warn">⚠️ Supabase (Hoku)</span></td></tr>
+      <tr><td>Responsive mobile</td><td><span class="tag t-warn">⚠️ v2</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top:32px;text-align:center;font-size:11px;color:var(--dim)">
+  🐕 Panchita → 🐾 Hoku — Handoff: Discovery Missions v2<br>
+  3 niveles de navegación: Catálogo → Mission Detail → Tutorial Step
+</div>
+
+</div>
+
+<script>
+function showDetail(){
+  document.getElementById('v-catalog').style.display='none';
+  document.getElementById('v-detail').style.display='flex';
+  document.getElementById('v-detail').classList.add('show');
+}
+function showCatalog(){
+  document.getElementById('v-catalog').style.display='block';
+  document.getElementById('v-detail').style.display='none';
+  document.getElementById('v-tutorial').style.display='none';
+}
+function showTutorial(){
+  document.getElementById('v-detail').style.display='none';
+  document.getElementById('v-tutorial').style.display='flex';
+  document.getElementById('v-tutorial').classList.add('show');
+}
+function showDetailFromTut(){
+  document.getElementById('v-tutorial').style.display='none';
+  document.getElementById('v-detail').style.display='flex';
+}
+function showDetailTab(tab){
+  document.querySelectorAll('.detail-tab').forEach(t=>t.classList.remove('on'));
+  event.target.classList.add('on');
+  document.getElementById('dt-overview').style.display=tab==='overview'?'grid':'none';
+  document.getElementById('dt-board').style.display=tab==='board'?'grid':'none';
+}
+</script>
+</body>
+</html>

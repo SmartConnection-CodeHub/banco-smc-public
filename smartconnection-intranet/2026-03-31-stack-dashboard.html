@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack Dashboard — Smart Connection</title>
+<style>
+  :root {
+    --bg-base: #060912;
+    --bg-surface: #0a0d14;
+    --bg-elevated: #0f1520;
+    --bg-glass: rgba(15,22,35,0.85);
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-mid: rgba(255,255,255,0.1);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #00e5b0;
+    --accent-dim: rgba(0,229,176,0.12);
+    --accent-glow: rgba(0,229,176,0.25);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.12);
+    --yellow: #f59e0b;
+    --yellow-dim: rgba(245,158,11,0.12);
+    --green: #10b981;
+    --green-dim: rgba(16,185,129,0.12);
+    --blue: #3b82f6;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* LAYOUT */
+  .app { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border-subtle);
+    padding: 20px 0;
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 0 16px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 8px;
+  }
+
+  .sidebar-logo .brand {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-logo .sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: all 0.15s;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
+  .nav-item.active {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-right: 2px solid var(--accent);
+  }
+
+  .nav-icon { width: 16px; opacity: 0.7; }
+
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    padding: 24px;
+    max-width: 1400px;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .header-left h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .header-left p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .last-updated {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { background: #00cfa0; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-mid);
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+
+  /* SCORE GLOBAL */
+  .global-score {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .score-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .score-card:hover { border-color: var(--border-mid); }
+
+  .score-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .score-card.ok::before { background: var(--green); }
+  .score-card.warn::before { background: var(--yellow); }
+  .score-card.error::before { background: var(--red); }
+
+  .score-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .score-value {
+    font-size: 28px;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    letter-spacing: -1px;
+  }
+
+  .score-value.ok { color: var(--green); }
+  .score-value.warn { color: var(--yellow); }
+  .score-value.error { color: var(--red); }
+
+  .score-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* GRID PRINCIPAL */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .grid-full {
+    margin-bottom: 16px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-action {
+    font-size: 11px;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,229,176,0.2);
+    transition: all 0.15s;
+  }
+  .card-action:hover { background: var(--accent-dim); }
+
+  .card-body { padding: 12px 16px; }
+
+  /* ITEMS DE PROYECTO */
+  .project-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .project-row:last-child { border-bottom: none; }
+
+  .project-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .dot.yellow { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+  .dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); animation: pulse-red 2s infinite; }
+
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .project-name {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .project-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .badge.major { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+  .badge.minor { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+  .badge.ok { background: var(--green-dim); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+  .badge.missing { background: rgba(239,68,68,0.08); color: var(--red); border: 1px solid rgba(239,68,68,0.15); }
+
+  /* DEPS TABLE */
+  .deps-list { display: flex; flex-direction: column; gap: 0; }
+
+  .dep-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    gap: 12px;
+  }
+  .dep-item:last-child { border-bottom: none; }
+
+  .dep-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+
+  .dep-versions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .ver-current {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .ver-arrow { color: var(--text-muted); font-size: 10px; }
+
+  .ver-latest {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .ver-latest.major { color: var(--red); }
+  .ver-latest.minor { color: var(--yellow); }
+
+  /* TOOLS */
+  .tool-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .tool-item:last-child { border-bottom: none; }
+
+  .tool-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tool-name { font-size: 13px; font-weight: 500; }
+  .tool-version { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+
+  /* SYNC STATUS */
+  .sync-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .sync-item:last-child { border-bottom: none; }
+
+  .sync-label { font-size: 13px; font-weight: 500; }
+  .sync-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .sync-right { display: flex; align-items: center; gap: 10px; }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-fill.green { background: var(--green); }
+  .progress-fill.yellow { background: var(--yellow); }
+  .progress-fill.red { background: var(--red); }
+  .progress-fill.accent { background: var(--accent); }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* CRÉDITOS IA */
+  .credit-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .credit-item:last-child { border-bottom: none; }
+
+  .credit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .credit-name { font-size: 13px; font-weight: 500; }
+  .credit-pct { font-family: var(--font-mono); font-size: 12px; font-weight: 700; }
+  .credit-pct.warn { color: var(--yellow); }
+  .credit-pct.ok { color: var(--green); }
+  .credit-pct.good { color: var(--accent); }
+
+  /* DEPLOYS */
+  .deploy-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .deploy-item:last-child { border-bottom: none; }
+
+  .deploy-info { display: flex; align-items: center; gap: 10px; }
+  .deploy-name { font-size: 13px; font-weight: 500; }
+  .deploy-meta { font-size: 11px; color: var(--text-muted); }
+  .deploy-time { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+  .tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* OSS ROADMAP */
+  .phase-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .phase-item:last-child { border-bottom: none; }
+
+  .phase-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .phase-num.pending {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    border: 1px solid var(--border-mid);
+  }
+
+  .phase-num.done {
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid rgba(16,185,129,0.3);
+  }
+
+  .phase-content { flex: 1; }
+  .phase-name { font-size: 13px; font-weight: 500; }
+  .phase-tools { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .phase-status {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 100px;
+  }
+
+  .phase-status.done { background: var(--green-dim); color: var(--green); }
+  .phase-status.pending { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+  .phase-status.critical { background: var(--red-dim); color: var(--red); }
+
+  /* OLLAMA MODELS */
+  .model-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .model-item:last-child { border-bottom: none; }
+  .model-name { font-family: var(--font-mono); font-size: 12px; }
+  .model-size { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+  /* ALERT BANNER */
+  .alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-bottom: 16px;
+    border: 1px solid;
+  }
+
+  .alert.error {
+    background: var(--red-dim);
+    border-color: rgba(239,68,68,0.2);
+    color: #fca5a5;
+  }
+
+  .alert.warn {
+    background: var(--yellow-dim);
+    border-color: rgba(245,158,11,0.2);
+    color: #fcd34d;
+  }
+
+  .alert-icon { font-size: 14px; flex-shrink: 0; }
+  .alert-close { margin-left: auto; cursor: pointer; opacity: 0.5; font-size: 16px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .global-score { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 16px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .global-score { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* GLASSMORPHISM */
+  .glass {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: var(--bg-glass);
+  }
+
+  /* SCROLL */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 12px;
+    margin-top: 4px;
+  }
+
+  /* CHIP */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 11px;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">Smart Connection</div>
+      <div class="sub">intranet.smconnection.cl</div>
+    </div>
+
+    <a class="nav-item" href="#">
+      <span class="nav-icon">⊞</span> Dashboard
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">⚡</span> Governance
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">🧪</span> Labs
+    </a>
+    <a class="nav-item active" href="#">
+      <span class="nav-icon">🛠</span> Stack
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">📊</span> Analytics
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">🤖</span> Agentes
+    </a>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <h1>Stack Dashboard</h1>
+        <p>Versiones, sync de agentes, créditos IA y estado de deploys</p>
+      </div>
+      <div class="header-right">
+        <span class="last-updated" id="lastUpdated">Actualizado hace 2 min</span>
+        <button class="btn btn-outline" onclick="simulateRefresh()">↺ Actualizar</button>
+        <button class="btn btn-primary" onclick="syncNow()">⬆ Sync Ahora</button>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="alert error">
+      <span class="alert-icon">🔴</span>
+      <strong>infopet-next:</strong>&nbsp;Deploy fallido hace 30 min. Next.js 15→16 MAJOR pendiente — posible causa.
+      <span class="alert-close" onclick="this.parentElement.remove()">×</span>
+    </div>
+
+    <div class="alert warn">
+      <span class="alert-icon">⚠️</span>
+      <strong>claude-config desincronizado:</strong>&nbsp;7 agentes no están en el repositorio (ABAP, FIORI, PM, INTEGRADOR, PIPELINE, CLIENTEX, COMERCIAL).
+      <span class="alert-close" onclick="this.parentElement.remove()">×</span>
+    </div>
+
+    <!-- SCORES GLOBALES -->
+    <div class="global-score">
+      <div class="score-card warn">
+        <div class="score-label">Proyectos</div>
+        <div class="score-value warn">4/5</div>
+        <div class="score-sub">1 con deploy fallido</div>
+      </div>
+      <div class="score-card error">
+        <div class="score-label">Agentes sync</div>
+        <div class="score-value error">5/12</div>
+        <div class="score-sub">7 fuera de claude-config</div>
+      </div>
+      <div class="score-card warn">
+        <div class="score-label">OSS Stack</div>
+        <div class="score-value warn">0/8</div>
+        <div class="score-sub">fases pendientes</div>
+      </div>
+      <div class="score-card warn">
+        <div class="score-label">Claude tokens</div>
+        <div class="score-value warn">78%</div>
+        <div class="score-sub">usado esta sesión</div>
+      </div>
+      <div class="score-card warn">
+        <div class="score-label">MAJOR updates</div>
+        <div class="score-value warn">5</div>
+        <div class="score-sub">pendientes de revisión</div>
+      </div>
+    </div>
+
+    <!-- FILA 1: Proyectos + Herramientas -->
+    <div class="grid-2">
+
+      <!-- PROYECTOS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🗂 Proyectos Activos</div>
+          <a class="card-action" href="#">Ver todos</a>
+        </div>
+        <div class="card-body">
+          <div class="project-row">
+            <div class="project-info">
+              <div class="dot yellow"></div>
+              <div>
+                <div class="project-name">smartconnection-intranet</div>
+                <div class="project-meta">Next.js 16 · Tailwind v4 · Supabase</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <span class="badge minor">4 updates</span>
+              <span class="badge major">1 MAJOR</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-info">
+              <div class="dot yellow"></div>
+              <div>
+                <div class="project-name">smartconnection (marketing)</div>
+                <div class="project-meta">Astro 6 · Tailwind · S3+CloudFront</div>
+              </div>
+            </div>
+            <span class="badge minor">2 updates</span>
+          </div>
+
+          <div class="project-row">
+            <div class="project-info">
+              <div class="dot yellow"></div>
+              <div>
+                <div class="project-name">smartconnection-marketplace</div>
+                <div class="project-meta">Next.js 16 · MeLi API · Helium 10</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <span class="badge minor">3 updates</span>
+              <span class="badge major">2 MAJOR</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-info">
+              <div class="dot green"></div>
+              <div>
+                <div class="project-name">voy-app</div>
+                <div class="project-meta">Vanilla JS · Airtable · Vercel</div>
+              </div>
+            </div>
+            <span class="badge ok">Al día</span>
+          </div>
+
+          <div class="project-row">
+            <div class="project-info">
+              <div class="dot red"></div>
+              <div>
+                <div class="project-name">infopet-next</div>
+                <div class="project-meta">Next.js 15 · Bsale · Jumpseller · Groq</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <span class="badge major">3 MAJOR</span>
+              <span class="badge missing">Deploy ❌</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERRAMIENTAS DEV -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔧 Herramientas Dev</div>
+          <a class="card-action" href="#">brew update</a>
+        </div>
+        <div class="card-body">
+
+          <div class="section-title">Instaladas</div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <div class="dot green"></div>
+              <div>
+                <div class="tool-name">Claude Code</div>
+                <div class="tool-version">v2.1.87</div>
+              </div>
+            </div>
+            <span class="badge ok">OK</span>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <div class="dot green"></div>
+              <div>
+                <div class="tool-name">Ollama</div>
+                <div class="tool-version">v0.19.0 · 3 modelos</div>
+              </div>
+            </div>
+            <span class="badge ok">OK</span>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <div class="dot yellow"></div>
+              <div>
+                <div class="tool-name">Python</div>
+                <div class="tool-version">3.9.6 → 3.13 disponible</div>
+              </div>
+            </div>
+            <span class="badge minor">Actualizar</span>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <div class="dot yellow"></div>
+              <div>
+                <div class="tool-name">gh CLI</div>
+                <div class="tool-version">2.88.1 · update disponible</div>
+              </div>
+            </div>
+            <span class="badge minor">Actualizar</span>
+          </div>
+
+          <div class="section-title" style="margin-top:12px">Pendientes de instalar</div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <div class="dot red"></div>
+              <div>
+                <div class="tool-name">Aider</div>
+                <div class="tool-version">pip install aider-chat</div>
+              </div>
+            </div>
+            <span class="badge missing">NO INSTALADO</span>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <div class="dot red"></div>
+              <div>
+                <div class="tool-name">LiteLLM Proxy</div>
+                <div class="tool-version">pip install litellm[proxy]</div>
+              </div>
+            </div>
+            <span class="badge missing">NO INSTALADO</span>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <div class="dot red"></div>
+              <div>
+                <div class="tool-name">Engram MCP</div>
+                <div class="tool-version">npm install -g @ayvazyan10/engram</div>
+              </div>
+            </div>
+            <span class="badge missing">NO INSTALADO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 2: Deps intranet + Deps infopet -->
+    <div class="grid-2">
+
+      <!-- DEPS INTRANET -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📦 smartconnection-intranet</div>
+          <a class="card-action" href="#">npm update</a>
+        </div>
+        <div class="card-body">
+          <div class="deps-list">
+            <div class="dep-item">
+              <div class="dep-name">@aws-sdk/*</div>
+              <div class="dep-versions">
+                <span class="ver-current">3.1014.0</span>
+                <span class="ver-arrow">→</span>
+                <span class="ver-latest minor">3.1021.0</span>
+                <span class="badge minor">patch</span>
+              </div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-name">@sentry/nextjs</div>
+              <div class="dep-versions">
+                <span class="ver-current">10.46.0</span>
+                <span class="ver-arrow">→</span>
+                <span class="ver-latest minor">10.47.0</span>
+                <span class="badge minor">patch</span>
+              </div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-name">@types/node</div>
+              <div class="dep-versions">
+                <span class="ver-current">v20</span>
+                <span class="ver-arrow">→</span>
+                <span class="ver-latest major">v25</span>
+                <span class="badge major">MAJOR</span>
+              </div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-name">axios</div>
+              <div class="dep-versions">
+                <span class="ver-current">1.13.6</span>
+                <span class="ver-arrow">→</span>
+                <span class="ver-latest minor">1.14.0</span>
+                <span class="badge minor">patch</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPS INFOPET (CRÍTICO) -->
+      <div class="card" style="border-color: rgba(239,68,68,0.2);">
+        <div class="card-header" style="border-color: rgba(239,68,68,0.15);">
+          <div class="card-title">🚨 infopet-next — CRÍTICO</div>
+          <a class="card-action" style="border-color:rgba(239,68,68,0.3);color:var(--red)" href="#">Revisar</a>
+        </div>
+        <div class="card-body">
+          <div class="deps-list">
+            <div class="dep-item">
+              <div class="dep-name">next</div>
+              <div class="dep-versions">
+                <span class="ver-current">15.5.13</span>
+                <span class="ver-arrow">→</span>
+                <span class="ver-latest major">16.2.2</span>
+                <span class="badge major">MAJOR ⚠️</span>
+              </div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-name">typescript</div>
+              <div class="dep-versions">
+                <span class="ver-current">5.9.3</span>
+                <span class="ver-arrow">→</span>
+                <span class="ver-latest major">6.0.2</span>
+                <span class="badge major">MAJOR</span>
+              </div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-name">eslint</div>
+              <div class="dep-versions">
+                <span class="ver-current">9.39.4</span>
+                <span class="ver-arrow">→</span>
+                <span class="ver-latest major">10.1.0</span>
+                <span class="badge major">MAJOR</span>
+              </div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-name">@supabase/supabase-js</div>
+              <div class="dep-versions">
+                <span class="ver-current">2.99.3</span>
+                <span class="ver-arrow">→</span>
+                <span class="ver-latest minor">2.101.1</span>
+                <span class="badge minor">minor</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 3: Sync Status + Créditos IA + Ollama -->
+    <div class="grid-3">
+
+      <!-- SYNC STATUS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔄 claude-config Sync</div>
+          <a class="card-action" href="#" onclick="syncNow();return false;">Sync</a>
+        </div>
+        <div class="card-body">
+          <div class="sync-item">
+            <div>
+              <div class="sync-label">Agentes</div>
+              <div class="sync-sub">ABAP, FIORI, PM, INTEGRADOR... faltan</div>
+            </div>
+            <div class="sync-right">
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--red);font-weight:700">5/12</span>
+              <div class="dot red"></div>
+            </div>
+          </div>
+
+          <div class="sync-item">
+            <div>
+              <div class="sync-label">Memorias</div>
+              <div class="sync-sub">8 recientes no sincronizadas</div>
+            </div>
+            <div class="sync-right">
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--yellow);font-weight:700">23/31</span>
+              <div class="dot yellow"></div>
+            </div>
+          </div>
+
+          <div class="sync-item">
+            <div>
+              <div class="sync-label">CLAUDE.md</div>
+              <div class="sync-sub">~/CLAUDE.md sincronizado</div>
+            </div>
+            <div class="sync-right">
+              <span style="font-size:11px;color:var(--green)">En sync</span>
+              <div class="dot green"></div>
+            </div>
+          </div>
+
+          <div class="sync-item">
+            <div>
+              <div class="sync-label">Último push</div>
+              <div class="sync-sub">github.com/guillermogonzalezleon-lgtm</div>
+            </div>
+            <div class="sync-right">
+              <span style="font-size:11px;color:var(--yellow);font-family:var(--font-mono)">hace 2d</span>
+              <div class="dot yellow"></div>
+            </div>
+          </div>
+
+          <div class="sync-item">
+            <div>
+              <div class="sync-label">fswatch</div>
+              <div class="sync-sub">Auto-sync de memory/</div>
+            </div>
+            <div class="sync-right">
+              <span class="badge missing">NO ACTIVO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRÉDITOS IA -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚡ Créditos IA</div>
+          <span class="chip">18 keys Amplify</span>
+        </div>
+        <div class="card-body">
+
+          <div class="credit-item">
+            <div class="credit-header">
+              <span class="credit-name">Claude Code (sesión)</span>
+              <span class="credit-pct warn">78% usado</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill yellow" style="width:78%"></div>
+            </div>
+            <div class="progress-label">
+              <span>22% restante</span>
+              <span>reset en ~2h</span>
+            </div>
+          </div>
+
+          <div class="credit-item">
+            <div class="credit-header">
+              <span class="credit-name">OpenRouter</span>
+              <span class="credit-pct good">Disponible</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill accent" style="width:90%"></div>
+            </div>
+            <div class="progress-label">
+              <span>Key en Amplify</span>
+              <span>300+ modelos</span>
+            </div>
+          </div>
+
+          <div class="credit-item">
+            <div class="credit-header">
+              <span class="credit-name">Groq</span>
+              <span class="credit-pct ok">Rate limit OK</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill green" style="width:95%"></div>
+            </div>
+            <div class="progress-label">
+              <span>Key en Amplify</span>
+              <span>Llama 4 Scout</span>
+            </div>
+          </div>
+
+          <div class="credit-item">
+            <div class="credit-header">
+              <span class="credit-name">Gemini</span>
+              <span class="credit-pct ok">Disponible</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill green" style="width:100%"></div>
+            </div>
+            <div class="progress-label">
+              <span>Key en Amplify</span>
+              <span>2.0 Flash gratis</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- OLLAMA MODELOS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🦙 Ollama Local</div>
+          <span class="chip">v0.19.0 · M1 Pro</span>
+        </div>
+        <div class="card-body">
+
+          <div class="section-title">Modelos instalados</div>
+
+          <div class="model-item">
+            <div>
+              <div class="model-name">llama3.2:latest</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Chat rápido · general</div>
+            </div>
+            <div style="text-align:right">
+              <div class="model-size">2.0 GB</div>
+              <div class="dot green" style="margin-left:auto;margin-top:4px"></div>
+            </div>
+          </div>
+
+          <div class="model-item">
+            <div>
+              <div class="model-name">qwen2.5-coder:7b</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Código TS/Next.js</div>
+            </div>
+            <div style="text-align:right">
+              <div class="model-size">4.7 GB</div>
+              <div class="dot green" style="margin-left:auto;margin-top:4px"></div>
+            </div>
+          </div>
+
+          <div class="model-item">
+            <div>
+              <div class="model-name">mistral:7b</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Texto · análisis</div>
+            </div>
+            <div style="text-align:right">
+              <div class="model-size">4.4 GB</div>
+              <div class="dot green" style="margin-left:auto;margin-top:4px"></div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;padding:10px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border-subtle)">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">RAM disponible</div>
+            <div class="progress-bar" style="height:6px">
+              <div class="progress-fill accent" style="width:69%"></div>
+            </div>
+            <div class="progress-label">
+              <span>11.1 GB usados</span>
+              <span>16 GB total</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 4: Deploys + OSS Roadmap -->
+    <div class="grid-2">
+
+      <!-- ÚLTIMOS DEPLOYS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🚀 Últimos Deploys</div>
+          <a class="card-action" href="#">Ver logs</a>
+        </div>
+        <div class="card-body">
+
+          <div class="deploy-item">
+            <div class="deploy-info">
+              <div class="dot green"></div>
+              <div>
+                <div class="deploy-name">smartconnection-intranet</div>
+                <div class="deploy-meta">Amplify · main · commit a3f2c1d</div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div class="deploy-time">hace 1h</div>
+              <span class="badge ok">OK</span>
+            </div>
+          </div>
+
+          <div class="deploy-item">
+            <div class="deploy-info">
+              <div class="dot green"></div>
+              <div>
+                <div class="deploy-name">smartconnection (marketing)</div>
+                <div class="deploy-meta">Amplify · main · commit b7e9a2f</div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div class="deploy-time">hace 3h</div>
+              <span class="badge ok">OK</span>
+            </div>
+          </div>
+
+          <div class="deploy-item">
+            <div class="deploy-info">
+              <div class="dot yellow"></div>
+              <div>
+                <div class="deploy-name">smartconnection-marketplace</div>
+                <div class="deploy-meta">Amplify · main · commit c2d4e5f</div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div class="deploy-time">hace 2d</div>
+              <span class="badge minor">Antiguo</span>
+            </div>
+          </div>
+
+          <div class="deploy-item">
+            <div class="deploy-info">
+              <div class="dot green"></div>
+              <div>
+                <div class="deploy-name">voy-app</div>
+                <div class="deploy-meta">Vercel · main · voy-app-3.vercel.app</div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div class="deploy-time">hace 6h</div>
+              <span class="badge ok">OK</span>
+            </div>
+          </div>
+
+          <div class="deploy-item" style="background:rgba(239,68,68,0.04);margin:0 -16px;padding:10px 16px;border-radius:0 0 12px 12px;">
+            <div class="deploy-info">
+              <div class="dot red"></div>
+              <div>
+                <div class="deploy-name">infopet-next</div>
+                <div class="deploy-meta">Amplify · Build failed · Error TS</div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div class="deploy-time" style="color:var(--red)">hace 30min</div>
+              <span class="badge major">FALLÓ</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- OSS ROADMAP -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📐 Stack Open Source — Roadmap</div>
+          <span class="chip">0/8 completadas</span>
+        </div>
+        <div class="card-body">
+
+          <div class="phase-item">
+            <div class="phase-num done">✓</div>
+            <div class="phase-content">
+              <div class="phase-name">Ollama instalado</div>
+              <div class="phase-tools">llama3.2 · qwen2.5-coder · mistral:7b</div>
+            </div>
+            <span class="phase-status done">Listo</span>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-num pending">1</div>
+            <div class="phase-content">
+              <div class="phase-name">Aider CLI</div>
+              <div class="phase-tools">pip install aider-chat · aliases por agente</div>
+            </div>
+            <span class="phase-status critical">P1 HOY</span>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-num pending">2</div>
+            <div class="phase-content">
+              <div class="phase-name">Sync Automático</div>
+              <div class="phase-tools">sync.sh extendido · Stop hook · fswatch</div>
+            </div>
+            <span class="phase-status critical">P1 HOY</span>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-num pending">3</div>
+            <div class="phase-content">
+              <div class="phase-name">Configuración proyectos</div>
+              <div class="phase-tools">.aider.conf.yml × 5 proyectos · direnv</div>
+            </div>
+            <span class="phase-status pending">P2</span>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-num pending">4</div>
+            <div class="phase-content">
+              <div class="phase-name">LiteLLM Model Router</div>
+              <div class="phase-tools">Ollama → Groq → Gemini → Claude</div>
+            </div>
+            <span class="phase-status pending">P2</span>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-num pending">5</div>
+            <div class="phase-content">
+              <div class="phase-name">Engram MCP</div>
+              <div class="phase-tools">Brain compartida Claude Code ↔ Aider</div>
+            </div>
+            <span class="phase-status pending">P2</span>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-num pending">6</div>
+            <div class="phase-content">
+              <div class="phase-name">Langfuse Observabilidad</div>
+              <div class="phase-tools">Costos · tokens · latencia por proyecto</div>
+            </div>
+            <span class="phase-status pending">P3</span>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-num pending">7</div>
+            <div class="phase-content">
+              <div class="phase-name">Dashboard /stack</div>
+              <div class="phase-tools">Esta página · ABAP + FIORI · cron job</div>
+            </div>
+            <span class="phase-status pending">P3</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Simular actualización de tiempo
+  function updateTime() {
+    const el = document.getElementById('lastUpdated');
+    const mins = Math.floor(Math.random() * 3) + 1;
+    el.textContent = `Actualizado hace ${mins} min`;
+  }
+
+  function simulateRefresh() {
+    const btn = event.target;
+    btn.textContent = '↺ Actualizando...';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = '↺ Actualizar';
+      btn.disabled = false;
+      document.getElementById('lastUpdated').textContent = 'Actualizado ahora';
+    }, 1500);
+  }
+
+  function syncNow() {
+    const btn = document.querySelector('.btn-primary');
+    const original = btn.textContent;
+    btn.textContent = '⬆ Sincronizando...';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = '✓ Sincronizado';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.disabled = false;
+        document.getElementById('lastUpdated').textContent = 'Sync completado ahora';
+      }, 2000);
+    }, 2000);
+  }
+
+  // Animar barras de progreso al cargar
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelectorAll('.progress-fill').forEach(el => {
+        const w = el.style.width;
+        el.style.width = '0%';
+        setTimeout(() => { el.style.width = w; }, 100);
+      });
+    }, 200);
+  });
+
+  setInterval(updateTime, 60000);
+</script>
+
+</body>
+</html>

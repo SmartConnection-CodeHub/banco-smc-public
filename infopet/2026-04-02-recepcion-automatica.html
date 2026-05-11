@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoPet — Recepción Automática de Facturas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─── TOKENS ─── */
+  :root {
+    --bg:        #060912;
+    --surface:   #0a0d14;
+    --elevated:  #0f1520;
+    --glass:     rgba(15,22,35,0.85);
+    --border:    rgba(255,255,255,0.06);
+    --border-md: rgba(255,255,255,0.10);
+    --text:      #f1f5f9;
+    --muted:     #94a3b8;
+    --faint:     #475569;
+    --accent:    #00e5b0;
+    --accent-dim:rgba(0,229,176,0.12);
+    --accent-glow:rgba(0,229,176,0.25);
+    --warn:      #f97316;
+    --warn-dim:  rgba(249,115,22,0.12);
+    --error:     #ef4444;
+    --error-dim: rgba(239,68,68,0.12);
+    --success:   #22c55e;
+    --success-dim:rgba(34,197,94,0.12);
+    --info:      #3b82f6;
+    --info-dim:  rgba(59,130,246,0.12);
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 16px;
+  }
+
+  /* ─── RESET ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 2px; }
+
+  /* ─── LAYOUT ─── */
+  .app {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #00b4d8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .logo-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .topbar-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .badge-pending {
+    background: var(--warn-dim);
+    color: var(--warn);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ─── MAIN ─── */
+  .main {
+    padding: 20px 16px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ─── BPMN FLOW ─── */
+  .bpmn-section {
+    margin-bottom: 24px;
+  }
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 3px;
+    height: 10px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .bpmn-flow {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 12px;
+    overflow-x: auto;
+  }
+  .bpmn-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-width: 600px;
+  }
+  .bpmn-actor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .bpmn-node {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background: var(--elevated);
+    border: 1px solid var(--border-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 18px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .bpmn-node.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    box-shadow: 0 0 16px var(--accent-glow);
+  }
+  .bpmn-node.done {
+    background: var(--success-dim);
+    border-color: rgba(34,197,94,0.4);
+  }
+  .bpmn-node-label {
+    font-size: 9px;
+    color: var(--muted);
+    text-align: center;
+    max-width: 64px;
+    line-height: 1.3;
+  }
+  .bpmn-node .step-num {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #000;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bpmn-node.done .step-num {
+    background: var(--success);
+  }
+  .bpmn-arrow {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 32px;
+  }
+  .bpmn-line {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, var(--border-md), var(--accent), var(--border-md));
+    position: relative;
+  }
+  .bpmn-line::after {
+    content: '▶';
+    position: absolute;
+    right: -4px;
+    top: -7px;
+    font-size: 8px;
+    color: var(--accent);
+  }
+  .bpmn-line-label {
+    font-size: 8px;
+    color: var(--faint);
+    text-align: center;
+    white-space: nowrap;
+    max-width: 60px;
+  }
+  .bpmn-system-label {
+    font-size: 8px;
+    color: var(--accent);
+    font-family: var(--mono);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  /* ─── STEP INDICATOR ─── */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 6px 8px;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .step-item:hover { background: var(--elevated); }
+  .step-item.active {
+    background: var(--accent-dim);
+    border: 1px solid rgba(0,229,176,0.3);
+  }
+  .step-item.done { opacity: 0.7; }
+  .step-num-pill {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--elevated);
+    border: 1px solid var(--border-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .step-item.active .step-num-pill {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+  .step-item.done .step-num-pill {
+    background: var(--success);
+    border-color: var(--success);
+    color: #000;
+    font-size: 11px;
+  }
+  .step-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .step-item.active .step-text { color: var(--accent); }
+  .step-sep {
+    color: var(--faint);
+    font-size: 10px;
+    padding: 0 2px;
+    flex-shrink: 0;
+  }
+
+  /* ─── PANELS ─── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: none;
+  }
+  .panel.active { display: block; }
+  .panel-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .panel-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(0,229,176,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .panel-title { font-size: 16px; font-weight: 700; color: var(--text); }
+  .panel-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .panel-body { padding: 20px; }
+
+  /* ─── TIP BOX ─── */
+  .tip {
+    background: var(--info-dim);
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #93c5fd;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .tip-icon { flex-shrink: 0; font-size: 13px; }
+
+  /* ─── SOURCE CARDS ─── */
+  .source-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .source-card {
+    background: var(--elevated);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .source-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(0,229,176,0.03));
+    pointer-events: none;
+  }
+  .source-card:hover {
+    border-color: rgba(0,229,176,0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .source-card.selected {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  .source-icon { font-size: 28px; }
+  .source-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .source-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,176,0.2);
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+  .source-check {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--accent);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .source-card.selected .source-check { display: flex; }
+
+  /* ─── UPLOAD ZONE ─── */
+  .upload-zone {
+    border: 2px dashed var(--border-md);
+    border-radius: var(--radius);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--elevated);
+    margin-bottom: 16px;
+  }
+  .upload-zone:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .upload-zone-icon { font-size: 32px; margin-bottom: 8px; }
+  .upload-zone-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .upload-zone-sub { font-size: 12px; color: var(--muted); }
+  .upload-zone-sub span { color: var(--accent); font-weight: 500; cursor: pointer; }
+
+  /* ─── DIGITAL SEARCH ─── */
+  .dte-search {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .input-field {
+    flex: 1;
+    background: var(--elevated);
+    border: 1px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-field::placeholder { color: var(--faint); }
+  .input-field:focus { border-color: var(--accent); }
+  .select-field {
+    background: var(--elevated);
+    border: 1px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+  .select-field:focus { border-color: var(--accent); }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover {
+    background: #00ccaa;
+    box-shadow: 0 0 16px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-md);
+  }
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+  }
+  .btn-ghost:hover { color: var(--text); background: var(--elevated); }
+  .btn-icon { padding: 10px; }
+  .btn-lg {
+    padding: 14px 28px;
+    font-size: 15px;
+    border-radius: var(--radius);
+  }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* ─── DTE LIST ─── */
+  .dte-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .dte-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .dte-item:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .dte-item.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .dte-item-icon { font-size: 16px; flex-shrink: 0; }
+  .dte-item-info { flex: 1; }
+  .dte-item-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .dte-item-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .dte-item-amount { font-size: 12px; font-weight: 600; color: var(--accent); font-family: var(--mono); white-space: nowrap; }
+
+  /* ─── PRODUCT TABLE ─── */
+  .table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 560px;
+  }
+  thead tr {
+    background: var(--elevated);
+    border-bottom: 1px solid var(--border-md);
+  }
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--elevated); }
+  tbody td {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .td-mono { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+  .td-muted { color: var(--muted); }
+  .td-right { text-align: right; }
+  .td-center { text-align: center; }
+
+  /* ─── STATUS BADGES ─── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-success { background: var(--success-dim); color: var(--success); border: 1px solid rgba(34,197,94,0.25); }
+  .badge-warn    { background: var(--warn-dim);    color: var(--warn);    border: 1px solid rgba(249,115,22,0.25); }
+  .badge-error   { background: var(--error-dim);   color: var(--error);   border: 1px solid rgba(239,68,68,0.25); }
+  .badge-accent  { background: var(--accent-dim);  color: var(--accent);  border: 1px solid rgba(0,229,176,0.25); }
+  .badge-muted   { background: var(--elevated);    color: var(--muted);   border: 1px solid var(--border-md); }
+
+  /* ─── INLINE INPUT ─── */
+  .cell-input {
+    background: var(--bg);
+    border: 1px solid var(--border-md);
+    border-radius: 6px;
+    padding: 5px 8px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    width: 80px;
+    outline: none;
+  }
+  .cell-input:focus { border-color: var(--accent); }
+
+  /* ─── MAPPING ROW ─── */
+  .map-row-ok    { background: rgba(34,197,94,0.03) !important; }
+  .map-row-warn  { background: rgba(249,115,22,0.04) !important; }
+  .map-row-error { background: rgba(239,68,68,0.04) !important; }
+  .map-select {
+    background: var(--bg);
+    border: 1px solid var(--border-md);
+    border-radius: 6px;
+    padding: 5px 28px 5px 8px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+    min-width: 180px;
+    max-width: 220px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+  }
+  .map-select:focus { border-color: var(--warn); }
+  .map-select.ok { border-color: rgba(34,197,94,0.4); }
+
+  /* ─── SUMMARY CARDS ─── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .summary-card {
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .summary-card-label { font-size: 10px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+  .summary-card-value { font-size: 22px; font-weight: 700; color: var(--text); font-family: var(--mono); }
+  .summary-card-sub { font-size: 11px; color: var(--faint); }
+  .summary-card.green .summary-card-value { color: var(--success); }
+  .summary-card.orange .summary-card-value { color: var(--warn); }
+  .summary-card.red .summary-card-value { color: var(--error); }
+
+  /* ─── EXPORT PANEL ─── */
+  .export-hero {
+    background: linear-gradient(135deg, rgba(0,229,176,0.08), rgba(0,180,216,0.05));
+    border: 1px solid rgba(0,229,176,0.2);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .export-hero-icon { font-size: 48px; margin-bottom: 12px; }
+  .export-hero-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+  .export-hero-sub { font-size: 13px; color: var(--muted); max-width: 420px; margin: 0 auto 20px; }
+
+  .export-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  .export-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .export-step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #000;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .export-step-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .export-step-desc { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+  .export-step-path {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  .preview-xls {
+    background: #1a1f2e;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #94a3b8;
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+  .preview-xls .xml-tag { color: #60a5fa; }
+  .preview-xls .xml-attr { color: #a78bfa; }
+  .preview-xls .xml-val { color: var(--accent); }
+  .preview-xls .xml-comment { color: #475569; }
+
+  /* ─── LOADING STATE ─── */
+  .loading-overlay {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    gap: 16px;
+    text-align: center;
+  }
+  .loading-overlay.active { display: flex; }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-md);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .loading-sub { font-size: 12px; color: var(--muted); }
+  .loading-steps { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .loading-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--faint);
+    transition: color 0.3s;
+  }
+  .loading-step.done { color: var(--success); }
+  .loading-step.active { color: var(--accent); }
+  .loading-step-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--faint);
+    flex-shrink: 0;
+  }
+  .loading-step.done .loading-step-dot { background: var(--success); }
+  .loading-step.active .loading-step-dot { background: var(--accent); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity: 0.4; } }
+
+  /* ─── ACTION BAR ─── */
+  .action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .action-bar-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .action-bar-right { display: flex; align-items: center; gap: 8px; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  /* ─── STAT ROW ─── */
+  .stat-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .stat strong { color: var(--text); font-weight: 600; }
+  .stat-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ─── TOASTS / ALERTS ─── */
+  .alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+  .alert-warn { background: var(--warn-dim); border: 1px solid rgba(249,115,22,0.25); color: #fdba74; }
+  .alert-success { background: var(--success-dim); border: 1px solid rgba(34,197,94,0.25); color: #86efac; }
+  .alert-error { background: var(--error-dim); border: 1px solid rgba(239,68,68,0.25); color: #fca5a5; }
+  .alert-icon { font-size: 14px; flex-shrink: 0; }
+
+  /* ─── DESKTOP ADJUSTMENTS ─── */
+  @media (min-width: 640px) {
+    .main { padding: 28px 24px 60px; }
+    .topbar { padding: 0 24px; }
+  }
+  @media (min-width: 768px) {
+    .main { padding: 32px 32px 60px; }
+    .bpmn-inner { min-width: unset; }
+    .summary-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 639px) {
+    .source-grid { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .summary-card-value { font-size: 18px; }
+    .action-bar { flex-direction: column; align-items: stretch; }
+    .action-bar-right { width: 100%; }
+    .btn-lg { width: 100%; }
+    .topbar-title { display: none; }
+  }
+
+  /* ─── ANIMATION ─── */
+  .panel { animation: fadeUp 0.25s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 12px 0 0;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--accent), #00b4d8);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* ─── TOOLTIP ─── */
+  [data-tip] { position: relative; cursor: help; }
+  [data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: var(--text);
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    border: 1px solid var(--border-md);
+    transition: opacity 0.15s;
+    z-index: 50;
+  }
+  [data-tip]:hover::after { opacity: 1; }
+
+  /* ─── SKELETON LOADER ─── */
+  .skeleton {
+    background: linear-gradient(90deg, var(--elevated) 0%, rgba(255,255,255,0.04) 50%, var(--elevated) 100%);
+    background-size: 400% 100%;
+    animation: shimmer 1.5s ease infinite;
+    border-radius: 4px;
+  }
+  @keyframes shimmer {
+    from { background-position: 100% 0; }
+    to   { background-position: -100% 0; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══════════════ TOPBAR ═══════════════ -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="logo-icon">🐾</div>
+      <div class="logo-text">
+        <span class="logo-name">InfoPet Reñaca</span>
+        <span class="logo-sub">Panel de Gestión</span>
+      </div>
+    </div>
+
+    <div class="topbar-title">
+      📥 Recepción Automática de Facturas
+    </div>
+
+    <div class="topbar-actions">
+      <span class="badge-pending">⚠️ 98 DTEs pendientes</span>
+    </div>
+  </header>
+
+  <!-- ═══════════════ MAIN ═══════════════ -->
+  <main class="main">
+
+    <!-- ── BPMN PROCESS FLOW ── -->
+    <div class="bpmn-section">
+      <div class="section-label">Proceso BPMN — Recepción de Stock Automatizada</div>
+      <div class="bpmn-flow">
+        <div class="bpmn-inner">
+
+          <!-- START -->
+          <div class="bpmn-actor">
+            <div class="bpmn-node done" style="background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.4);">
+              <span>🧾</span>
+              <span style="font-size:8px;color:var(--muted)">DTE</span>
+            </div>
+            <span class="bpmn-node-label">Factura llega de proveedor</span>
+          </div>
+
+          <div class="bpmn-arrow">
+            <div class="bpmn-line"></div>
+            <span class="bpmn-line-label">DTE Bsale o foto</span>
+          </div>
+
+          <!-- PASO 1: CAPTURA -->
+          <div class="bpmn-actor">
+            <div class="bpmn-node active" id="bpmn-1">
+              <span>📷</span>
+              <span class="step-num">1</span>
+            </div>
+            <span class="bpmn-node-label">Capturar factura</span>
+            <span class="bpmn-system-label">/api/ocr</span>
+          </div>
+
+          <div class="bpmn-arrow">
+            <div class="bpmn-line"></div>
+            <span class="bpmn-line-label">JSON productos</span>
+          </div>
+
+          <!-- PASO 2: ITEMS -->
+          <div class="bpmn-actor">
+            <div class="bpmn-node" id="bpmn-2">
+              <span>🔍</span>
+              <span class="step-num" style="background:var(--faint);color:#000">2</span>
+            </div>
+            <span class="bpmn-node-label">Extraer ítems</span>
+            <span class="bpmn-system-label">Groq Llama 4</span>
+          </div>
+
+          <div class="bpmn-arrow">
+            <div class="bpmn-line"></div>
+            <span class="bpmn-line-label">SKU match</span>
+          </div>
+
+          <!-- PASO 3: MAPEO -->
+          <div class="bpmn-actor">
+            <div class="bpmn-node" id="bpmn-3">
+              <span>🗺️</span>
+              <span class="step-num" style="background:var(--faint);color:#000">3</span>
+            </div>
+            <span class="bpmn-node-label">Mapear a Bsale</span>
+            <span class="bpmn-system-label">/api/bsale</span>
+          </div>
+
+          <div class="bpmn-arrow">
+            <div class="bpmn-line"></div>
+            <span class="bpmn-line-label">archivo .xls</span>
+          </div>
+
+          <!-- PASO 4: EXPORT -->
+          <div class="bpmn-actor">
+            <div class="bpmn-node" id="bpmn-4">
+              <span>📦</span>
+              <span class="step-num" style="background:var(--faint);color:#000">4</span>
+            </div>
+            <span class="bpmn-node-label">Exportar & subir</span>
+            <span class="bpmn-system-label">Bsale Import</span>
+          </div>
+
+          <div class="bpmn-arrow">
+            <div class="bpmn-line"></div>
+            <span class="bpmn-line-label">stock actualizado</span>
+          </div>
+
+          <!-- END -->
+          <div class="bpmn-actor">
+            <div class="bpmn-node" style="background:rgba(0,229,176,0.06);border-color:rgba(0,229,176,0.15);">
+              <span>✅</span>
+            </div>
+            <span class="bpmn-node-label">Stock en Bsale actualizado</span>
+          </div>
+
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar" style="width:25%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP INDICATOR ── -->
+    <div class="step-indicator" id="stepIndicator">
+      <div class="step-item active" onclick="goToStep(1)" data-step="1">
+        <div class="step-num-pill">1</div>
+        <span class="step-text">Origen</span>
+      </div>
+      <span class="step-sep">›</span>
+      <div class="step-item" onclick="goToStep(2)" data-step="2">
+        <div class="step-num-pill">2</div>
+        <span class="step-text">Ítems extraídos</span>
+      </div>
+      <span class="step-sep">›</span>
+      <div class="step-item" onclick="goToStep(3)" data-step="3">
+        <div class="step-num-pill">3</div>
+        <span class="step-text">Mapeo Bsale</span>
+      </div>
+      <span class="step-sep">›</span>
+      <div class="step-item" onclick="goToStep(4)" data-step="4">
+        <div class="step-num-pill">4</div>
+        <span class="step-text">Exportar .xls</span>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         PASO 1 — SELECCIÓN DE ORIGEN
+    ════════════════════════════════════ -->
+    <div class="panel active" id="panel-1">
+      <div class="panel-header">
+        <div class="panel-icon">📥</div>
+        <div>
+          <div class="panel-title">¿Cómo llega la factura?</div>
+          <div class="panel-desc">Selecciona el origen. El sistema extrae los ítems automáticamente.</div>
+        </div>
+      </div>
+      <div class="panel-body">
+
+        <div class="tip">
+          <span class="tip-icon">💡</span>
+          <span>Tienes <strong>98 DTEs pendientes</strong> en Bsale que aún no se han convertido en recepción de stock. Esta herramienta automatiza ese proceso: en menos de 2 minutos tienes el .xls listo para subir.</span>
+        </div>
+
+        <div class="source-grid">
+          <!-- DIGITAL -->
+          <div class="source-card selected" id="src-digital" onclick="selectSource('digital')">
+            <div class="source-check">✓</div>
+            <div class="source-icon">🖥️</div>
+            <div class="source-title">Digital — DTE Bsale</div>
+            <div class="source-desc">La factura ya está en Bsale como documento. Se busca por proveedor, número o rut y se extrae directamente sin OCR.</div>
+            <div class="source-tag">⚡ Recomendado — más preciso</div>
+          </div>
+          <!-- FÍSICA -->
+          <div class="source-card" id="src-fisica" onclick="selectSource('fisica')">
+            <div class="source-check">✓</div>
+            <div class="source-icon">📷</div>
+            <div class="source-title">Física — Foto o PDF</div>
+            <div class="source-desc">Factura en papel o PDF por email. Se fotografía o adjunta y el OCR con Groq Llama 4 extrae los ítems automáticamente.</div>
+            <div class="source-tag">🤖 OCR con IA</div>
+          </div>
+        </div>
+
+        <!-- ── DIGITAL FORM ── -->
+        <div id="form-digital">
+          <div class="section-label" style="margin-bottom:8px">Buscar DTE en Bsale</div>
+          <div class="dte-search">
+            <input class="input-field" type="text" placeholder="Proveedor, N° documento o RUT..." id="dteSearch" value="Royal Canin">
+            <select class="select-field">
+              <option value="">Tipo: Todos</option>
+              <option value="33">Factura (33)</option>
+              <option value="61">NC (61)</option>
+            </select>
+            <button class="btn btn-primary" onclick="searchDTE()">🔍 Buscar</button>
+          </div>
+
+          <div class="dte-list" id="dte-results">
+            <!-- Resultados simulados -->
+            <div class="dte-item selected" onclick="selectDTE(this)">
+              <span class="dte-item-icon">🧾</span>
+              <div class="dte-item-info">
+                <div class="dte-item-name">Royal Canin Chile S.A.</div>
+                <div class="dte-item-meta">Factura #82314 · 18/03/2026 · RUT 76.123.456-7</div>
+              </div>
+              <span class="dte-item-amount">$2.847.500</span>
+            </div>
+            <div class="dte-item" onclick="selectDTE(this)">
+              <span class="dte-item-icon">🧾</span>
+              <div class="dte-item-info">
+                <div class="dte-item-name">Royal Canin Chile S.A.</div>
+                <div class="dte-item-meta">Factura #81990 · 04/03/2026 · RUT 76.123.456-7</div>
+              </div>
+              <span class="dte-item-amount">$1.256.000</span>
+            </div>
+            <div class="dte-item" onclick="selectDTE(this)">
+              <span class="dte-item-icon">🧾</span>
+              <div class="dte-item-info">
+                <div class="dte-item-name">Royal Canin Chile S.A.</div>
+                <div class="dte-item-meta">Factura #81445 · 19/02/2026 · RUT 76.123.456-7</div>
+              </div>
+              <span class="dte-item-amount">$3.102.000</span>
+            </div>
+            <div class="dte-item" onclick="selectDTE(this)">
+              <span class="dte-item-icon">🧾</span>
+              <div class="dte-item-info">
+                <div class="dte-item-name">Purina Pro Plan Chile S.A.</div>
+                <div class="dte-item-meta">Factura #44231 · 15/03/2026 · RUT 77.890.123-4</div>
+              </div>
+              <span class="dte-item-amount">$4.560.000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── FISICA FORM ── -->
+        <div id="form-fisica" style="display:none">
+          <div class="upload-zone" onclick="triggerUpload()">
+            <div class="upload-zone-icon">📄</div>
+            <div class="upload-zone-title">Arrastra la foto o PDF aquí</div>
+            <div class="upload-zone-sub">o <span>selecciona un archivo</span> · JPG, PNG, PDF hasta 10MB</div>
+          </div>
+          <div class="tip" style="margin-bottom:0">
+            <span class="tip-icon">📸</span>
+            <span>Consejos para mejor OCR: foto nítida con buena luz, factura extendida plana, incluir toda la tabla de productos. El modelo Groq Llama 4 Vision extrae SKU, descripción, cantidad y precio unitario.</span>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <span style="font-size:12px;color:var(--muted)">Factura #82314 seleccionada — 8 ítems</span>
+          </div>
+          <div class="action-bar-right">
+            <button class="btn btn-primary btn-lg" onclick="goToStep(2); simulateOCR()">
+              Extraer ítems →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         PASO 2 — ÍTEMS EXTRAÍDOS
+    ════════════════════════════════════ -->
+    <div class="panel" id="panel-2">
+      <div class="panel-header">
+        <div class="panel-icon">🔍</div>
+        <div>
+          <div class="panel-title">Ítems extraídos de la factura</div>
+          <div class="panel-desc">Verifica y edita las cantidades y costos antes de continuar. Fuente: Factura #82314 — Royal Canin Chile S.A.</div>
+        </div>
+      </div>
+      <div class="panel-body">
+
+        <!-- LOADING STATE -->
+        <div class="loading-overlay active" id="loading-2">
+          <div class="spinner"></div>
+          <div class="loading-title">Extrayendo ítems de la factura...</div>
+          <div class="loading-sub">Groq Llama 4 procesando DTE desde Bsale</div>
+          <div class="loading-steps">
+            <div class="loading-step done" id="ls-1">
+              <div class="loading-step-dot"></div>
+              Autenticando con Bsale API
+            </div>
+            <div class="loading-step done" id="ls-2">
+              <div class="loading-step-dot"></div>
+              Descargando DTE #82314
+            </div>
+            <div class="loading-step active" id="ls-3">
+              <div class="loading-step-dot"></div>
+              Parseando líneas de producto...
+            </div>
+            <div class="loading-step" id="ls-4">
+              <div class="loading-step-dot"></div>
+              Normalizando SKUs y precios
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTENT (hidden while loading) -->
+        <div id="content-2" style="display:none">
+
+          <div class="alert alert-success" style="margin-bottom:14px">
+            <span class="alert-icon">✅</span>
+            <span>8 ítems extraídos correctamente del DTE #82314. Revisa cantidades y costos antes de continuar — puedes editarlos directamente en la tabla.</span>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Descripción (de factura)</th>
+                  <th>SKU factura</th>
+                  <th class="td-center">Cantidad</th>
+                  <th class="td-right">Costo neto unit.</th>
+                  <th class="td-right">Total neto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="td-muted">1</td>
+                  <td>Royal Canin Mini Adult 3kg</td>
+                  <td class="td-mono">RC-MA-3K</td>
+                  <td class="td-center"><input class="cell-input" type="number" value="24" min="1"></td>
+                  <td class="td-right td-mono">$6.700</td>
+                  <td class="td-right td-mono">$160.800</td>
+                </tr>
+                <tr>
+                  <td class="td-muted">2</td>
+                  <td>Royal Canin Medium Adult 15kg</td>
+                  <td class="td-mono">RC-MED-15K</td>
+                  <td class="td-center"><input class="cell-input" type="number" value="12" min="1"></td>
+                  <td class="td-right td-mono">$28.500</td>
+                  <td class="td-right td-mono">$342.000</td>
+                </tr>
+                <tr>
+                  <td class="td-muted">3</td>
+                  <td>Royal Canin Maxi Adult 15kg</td>
+                  <td class="td-mono">RC-MAX-15K</td>
+                  <td class="td-center"><input class="cell-input" type="number" value="6" min="1"></td>
+                  <td class="td-right td-mono">$32.100</td>
+                  <td class="td-right td-mono">$192.600</td>
+                </tr>
+                <tr>
+                  <td class="td-muted">4</td>
+                  <td>Royal Canin Puppy Small 2kg</td>
+                  <td class="td-mono">RC-PUP-S-2K</td>
+                  <td class="td-center"><input class="cell-input" type="number" value="18" min="1"></td>
+                  <td class="td-right td-mono">$8.200</td>
+                  <td class="td-right td-mono">$147.600</td>
+                </tr>
+                <tr>
+                  <td class="td-muted">5</td>
+                  <td>Royal Canin Persian Adult 400g</td>
+                  <td class="td-mono">RC-PER-400G</td>
+                  <td class="td-center"><input class="cell-input" type="number" value="30" min="1"></td>
+                  <td class="td-right td-mono">$4.100</td>
+                  <td class="td-right td-mono">$123.000</td>
+                </tr>
+                <tr>
+                  <td class="td-muted">6</td>
+                  <td>Royal Canin Sterilised 3.5kg gato</td>
+                  <td class="td-mono">RC-STER-35K</td>
+                  <td class="td-center"><input class="cell-input" type="number" value="15" min="1"></td>
+                  <td class="td-right td-mono">$18.700</td>
+                  <td class="td-right td-mono">$280.500</td>
+                </tr>
+                <tr>
+                  <td class="td-muted">7</td>
+                  <td>Royal Canin Renal Special 2kg</td>
+                  <td class="td-mono">RC-REN-2K</td>
+                  <td class="td-center"><input class="cell-input" type="number" value="8" min="1"></td>
+                  <td class="td-right td-mono">$24.300</td>
+                  <td class="td-right td-mono">$194.400</td>
+                </tr>
+                <tr>
+                  <td class="td-muted">8</td>
+                  <td>Royal Canin Gastrointestinal 2kg</td>
+                  <td class="td-mono">RC-GI-2K</td>
+                  <td class="td-center"><input class="cell-input" type="number" value="10" min="1"></td>
+                  <td class="td-right td-mono">$21.600</td>
+                  <td class="td-right td-mono">$216.000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="stat-row">
+            <div class="stat"><span class="stat-dot" style="background:var(--accent)"></span><strong>8</strong> productos</div>
+            <div class="stat"><span class="stat-dot" style="background:var(--accent)"></span><strong>123</strong> unidades totales</div>
+            <div class="stat"><span class="stat-dot" style="background:var(--accent)"></span>Total neto: <strong>$1.656.900</strong></div>
+            <div class="stat"><span class="stat-dot" style="background:var(--muted)"></span>IVA: <strong>$314.811</strong></div>
+            <div class="stat"><span class="stat-dot" style="background:var(--success)"></span>Total bruto: <strong>$1.971.711</strong></div>
+          </div>
+
+          <div class="action-bar">
+            <div class="action-bar-left">
+              <button class="btn btn-ghost" onclick="goToStep(1)">← Volver</button>
+              <button class="btn btn-outline">📋 Agregar ítem manual</button>
+            </div>
+            <div class="action-bar-right">
+              <button class="btn btn-primary btn-lg" onclick="goToStep(3)">
+                Mapear a Bsale →
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         PASO 3 — MAPEO A BSALE
+    ════════════════════════════════════ -->
+    <div class="panel" id="panel-3">
+      <div class="panel-header">
+        <div class="panel-icon">🗺️</div>
+        <div>
+          <div class="panel-title">Mapeo a variantes Bsale</div>
+          <div class="panel-desc">El sistema busca cada ítem en tu catálogo Bsale por SKU y nombre. Los que no matchean requieren selección manual.</div>
+        </div>
+      </div>
+      <div class="panel-body">
+
+        <div class="summary-grid">
+          <div class="summary-card green">
+            <div class="summary-card-label">Mapeados ✅</div>
+            <div class="summary-card-value">5</div>
+            <div class="summary-card-sub">match automático por SKU</div>
+          </div>
+          <div class="summary-card orange">
+            <div class="summary-card-label">Manual ⚠️</div>
+            <div class="summary-card-value">2</div>
+            <div class="summary-card-sub">SKU no encontrado, sugerencia disponible</div>
+          </div>
+          <div class="summary-card red">
+            <div class="summary-card-label">Sin match ❌</div>
+            <div class="summary-card-value">1</div>
+            <div class="summary-card-sub">producto no existe en Bsale</div>
+          </div>
+        </div>
+
+        <div class="tip">
+          <span class="tip-icon">💡</span>
+          <span><strong>Verde:</strong> match automático — listo para exportar. <strong>Naranja:</strong> el SKU de factura difiere del SKU Bsale, selecciona la variante correcta. <strong>Rojo:</strong> el producto no existe en Bsale — debes crearlo antes de la recepción.</span>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Ítem factura</th>
+                <th>SKU factura</th>
+                <th>Variante Bsale</th>
+                <th>SKU Bsale</th>
+                <th class="td-center">Estado</th>
+                <th class="td-center">Cant.</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- MATCH OK -->
+              <tr class="map-row-ok">
+                <td>Royal Canin Mini Adult 3kg</td>
+                <td class="td-mono">RC-MA-3K</td>
+                <td>RC Mini Adult 3kg — Perro</td>
+                <td class="td-mono">32311</td>
+                <td class="td-center"><span class="badge badge-success">✓ Match SKU</span></td>
+                <td class="td-center td-mono">24</td>
+              </tr>
+
+              <tr class="map-row-ok">
+                <td>Royal Canin Medium Adult 15kg</td>
+                <td class="td-mono">RC-MED-15K</td>
+                <td>RC Medium Adult 15kg — Perro</td>
+                <td class="td-mono">32415</td>
+                <td class="td-center"><span class="badge badge-success">✓ Match SKU</span></td>
+                <td class="td-center td-mono">12</td>
+              </tr>
+
+              <tr class="map-row-ok">
+                <td>Royal Canin Puppy Small 2kg</td>
+                <td class="td-mono">RC-PUP-S-2K</td>
+                <td>RC Puppy Small 2kg — Cachorro</td>
+                <td class="td-mono">31897</td>
+                <td class="td-center"><span class="badge badge-success">✓ Match SKU</span></td>
+                <td class="td-center td-mono">18</td>
+              </tr>
+
+              <tr class="map-row-ok">
+                <td>Royal Canin Persian Adult 400g</td>
+                <td class="td-mono">RC-PER-400G</td>
+                <td>RC Persian Cat 400g — Gato</td>
+                <td class="td-mono">33104</td>
+                <td class="td-center"><span class="badge badge-success">✓ Match SKU</span></td>
+                <td class="td-center td-mono">30</td>
+              </tr>
+
+              <tr class="map-row-ok">
+                <td>Royal Canin Sterilised 3.5kg</td>
+                <td class="td-mono">RC-STER-35K</td>
+                <td>RC Sterilised 3.5kg — Gato</td>
+                <td class="td-mono">33290</td>
+                <td class="td-center"><span class="badge badge-success">✓ Match SKU</span></td>
+                <td class="td-center td-mono">15</td>
+              </tr>
+
+              <!-- MATCH MANUAL (SKU difiere) -->
+              <tr class="map-row-warn">
+                <td>Royal Canin Maxi Adult 15kg</td>
+                <td class="td-mono">RC-MAX-15K</td>
+                <td>
+                  <select class="map-select" onchange="markMapped(this)">
+                    <option value="">— Seleccionar variante —</option>
+                    <option value="32588" selected>RC Maxi Adult 15kg · SKU 32588</option>
+                    <option value="32589">RC Maxi Adult + Joint 15kg · SKU 32589</option>
+                    <option value="32590">RC Maxi Ageing 15kg · SKU 32590</option>
+                  </select>
+                </td>
+                <td class="td-mono" id="sku-warn-1">32588</td>
+                <td class="td-center"><span class="badge badge-warn">⚠️ SKU difiere</span></td>
+                <td class="td-center td-mono">6</td>
+              </tr>
+
+              <tr class="map-row-warn">
+                <td>Royal Canin Renal Special 2kg</td>
+                <td class="td-mono">RC-REN-2K</td>
+                <td>
+                  <select class="map-select" onchange="markMapped(this)">
+                    <option value="">— Seleccionar variante —</option>
+                    <option value="33501">RC Renal Special 2kg (gato) · SKU 33501</option>
+                    <option value="33502">RC Renal Special 4kg (gato) · SKU 33502</option>
+                    <option value="33503">RC Renal Liquid 200ml · SKU 33503</option>
+                  </select>
+                </td>
+                <td class="td-mono" id="sku-warn-2">—</td>
+                <td class="td-center"><span class="badge badge-warn">⚠️ Pendiente</span></td>
+                <td class="td-center td-mono">8</td>
+              </tr>
+
+              <!-- SIN MATCH -->
+              <tr class="map-row-error">
+                <td>Royal Canin Gastrointestinal 2kg</td>
+                <td class="td-mono">RC-GI-2K</td>
+                <td>
+                  <span style="font-size:11px;color:var(--error)">Producto no encontrado en Bsale</span>
+                </td>
+                <td class="td-mono" style="color:var(--error)">N/A</td>
+                <td class="td-center"><span class="badge badge-error">❌ No existe</span></td>
+                <td class="td-center td-mono">10</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <div class="alert alert-warn">
+          <span class="alert-icon">⚠️</span>
+          <span><strong>1 producto sin match:</strong> RC Gastrointestinal 2kg no existe en tu catálogo Bsale. Puedes crearlo ahora en Bsale → Catálogo → Nuevo producto, luego volver aquí a mapearlo, o exportar sin este ítem (se marcará como omitido).</span>
+        </div>
+
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <button class="btn btn-ghost" onclick="goToStep(2)">← Volver</button>
+            <button class="btn btn-outline">🔄 Re-buscar en Bsale</button>
+          </div>
+          <div class="action-bar-right">
+            <span style="font-size:12px;color:var(--muted)">7 de 8 listos para exportar</span>
+            <button class="btn btn-primary btn-lg" onclick="goToStep(4)">
+              Generar .xls →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         PASO 4 — EXPORTAR .XLS
+    ════════════════════════════════════ -->
+    <div class="panel" id="panel-4">
+      <div class="panel-header">
+        <div class="panel-icon">📦</div>
+        <div>
+          <div class="panel-title">Exportar e importar en Bsale</div>
+          <div class="panel-desc">Tu archivo está listo. Descárgalo y súbelo en Bsale para completar la recepción.</div>
+        </div>
+      </div>
+      <div class="panel-body">
+
+        <div class="export-hero">
+          <div class="export-hero-icon">🎉</div>
+          <div class="export-hero-title">¡Archivo .xls generado!</div>
+          <div class="export-hero-sub">7 productos mapeados · 107 unidades · 1 producto omitido (sin match). El archivo usa el formato exacto que requiere Bsale para importar recepciones.</div>
+          <button class="btn btn-primary btn-lg" onclick="downloadXLS()" style="margin: 0 auto; display:inline-flex; gap:8px">
+            <span>⬇️</span>
+            Descargar recepcion-82314.xls
+          </button>
+        </div>
+
+        <div class="section-label" style="margin-bottom:12px">Cómo subir en Bsale (3 pasos)</div>
+        <div class="export-steps">
+          <div class="export-step">
+            <div class="export-step-num">1</div>
+            <div>
+              <div class="export-step-title">Ir a Nueva Recepción en Bsale</div>
+              <div class="export-step-desc">En el menú principal, entra a <strong>Inventario → Recepciones → Nueva recepción</strong>. Selecciona el proveedor <strong>Royal Canin Chile S.A.</strong> y tu bodega destino.</div>
+              <div class="export-step-path">Bsale → Inventario → Recepciones → + Nueva</div>
+            </div>
+          </div>
+          <div class="export-step">
+            <div class="export-step-num">2</div>
+            <div>
+              <div class="export-step-title">Importar el archivo descargado</div>
+              <div class="export-step-desc">En la pantalla de nueva recepción, busca el botón <strong>"Importar"</strong> (parte superior derecha). Sube el archivo <code style="font-family:var(--mono);font-size:11px;background:var(--elevated);padding:1px 5px;border-radius:4px">recepcion-82314.xls</code> que descargaste.</div>
+              <div class="export-step-path">Pantalla recepción → Importar → Subir archivo</div>
+            </div>
+          </div>
+          <div class="export-step">
+            <div class="export-step-num">3</div>
+            <div>
+              <div class="export-step-title">Verificar y confirmar</div>
+              <div class="export-step-desc">Bsale te mostrará un preview de los ítems. Revisa que las cantidades y costos sean correctos, luego <strong>Confirmar recepción</strong>. El stock se actualiza inmediatamente.</div>
+              <div class="export-step-path">Preview → Verificar → Confirmar recepción</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin-bottom:10px">Preview del archivo generado</div>
+        <div class="preview-xls">
+<span class="xml-comment">&lt;!-- recepcion-82314.xls — Royal Canin Chile S.A. — Factura #82314 --&gt;</span>
+<span class="xml-tag">&lt;table&gt;</span>
+  <span class="xml-tag">&lt;thead&gt;&lt;tr&gt;</span>
+    <span class="xml-tag">&lt;td&gt;</span><span class="xml-val">SKU</span><span class="xml-tag">&lt;/td&gt;</span>
+    <span class="xml-tag">&lt;td&gt;</span><span class="xml-val">Stock</span><span class="xml-tag">&lt;/td&gt;</span>
+    <span class="xml-tag">&lt;td&gt;</span><span class="xml-val">Costo Neto</span><span class="xml-tag">&lt;/td&gt;</span>
+    <span class="xml-tag">&lt;td&gt;</span><span class="xml-val">Serie</span><span class="xml-tag">&lt;/td&gt;</span>
+    <span class="xml-tag">&lt;td&gt;</span><span class="xml-val">Moneda</span><span class="xml-tag">&lt;/td&gt;</span>
+    <span class="xml-tag">&lt;td&gt;</span><span class="xml-val">Tipo de Cambio</span><span class="xml-tag">&lt;/td&gt;</span>
+  <span class="xml-tag">&lt;/tr&gt;&lt;/thead&gt;</span>
+  <span class="xml-tag">&lt;tbody&gt;</span>
+    <span class="xml-tag">&lt;tr&gt;&lt;td&gt;</span><span class="xml-val">32311</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">24</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">6700</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">PESO</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">1</span><span class="xml-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="xml-tag">&lt;tr&gt;&lt;td&gt;</span><span class="xml-val">32415</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">12</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">28500</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">PESO</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">1</span><span class="xml-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="xml-tag">&lt;tr&gt;&lt;td&gt;</span><span class="xml-val">32588</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">6</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">32100</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">PESO</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">1</span><span class="xml-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="xml-tag">&lt;tr&gt;&lt;td&gt;</span><span class="xml-val">31897</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">18</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">8200</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">PESO</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">1</span><span class="xml-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="xml-tag">&lt;tr&gt;&lt;td&gt;</span><span class="xml-val">33104</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">30</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">4100</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">PESO</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">1</span><span class="xml-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="xml-tag">&lt;tr&gt;&lt;td&gt;</span><span class="xml-val">33290</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">15</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">18700</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">PESO</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">1</span><span class="xml-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="xml-tag">&lt;tr&gt;&lt;td&gt;</span><span class="xml-val">33501</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">8</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">24300</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">PESO</span><span class="xml-tag">&lt;/td&gt;&lt;td&gt;</span><span class="xml-val">1</span><span class="xml-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="xml-comment">    &lt;!-- RC-GI-2K omitido: producto no existe en Bsale --&gt;</span>
+  <span class="xml-tag">&lt;/tbody&gt;</span>
+<span class="xml-tag">&lt;/table&gt;</span>
+        </div>
+
+        <div class="alert alert-warn">
+          <span class="alert-icon">⚠️</span>
+          <span><strong>RC Gastrointestinal 2kg omitido.</strong> Este producto no existe en tu catálogo Bsale y fue excluido del archivo. Para incluirlo en futuras recepciones, créalo en Bsale → Catálogo → Nuevo producto con SKU <code style="font-family:var(--mono)">RC-GI-2K</code>.</span>
+        </div>
+
+        <div class="action-bar" style="padding-top:16px">
+          <div class="action-bar-left">
+            <button class="btn btn-ghost" onclick="goToStep(3)">← Volver al mapeo</button>
+          </div>
+          <div class="action-bar-right">
+            <button class="btn btn-outline" onclick="startNew()">
+              ➕ Procesar otra factura
+            </button>
+            <button class="btn btn-primary btn-lg" onclick="markDone()">
+              ✅ Marcar como completada
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+  let currentStep = 1;
+  let selectedSource = 'digital';
+
+  const STEPS = 4;
+  const PROGRESS_MAP = { 1: 25, 2: 50, 3: 75, 4: 100 };
+
+  /* ── Navegación de pasos ── */
+  function goToStep(n) {
+    if (n < 1 || n > STEPS) return;
+
+    // Ocultar panel actual
+    document.getElementById('panel-' + currentStep).classList.remove('active');
+
+    // Actualizar step indicator
+    document.querySelectorAll('.step-item').forEach(el => {
+      const s = parseInt(el.dataset.step);
+      el.classList.remove('active', 'done');
+      if (s === n) el.classList.add('active');
+      else if (s < n) {
+        el.classList.add('done');
+        el.querySelector('.step-num-pill').textContent = '✓';
+      } else {
+        el.querySelector('.step-num-pill').textContent = s;
+      }
+    });
+
+    // Actualizar BPMN
+    for (let i = 1; i <= 4; i++) {
+      const node = document.getElementById('bpmn-' + i);
+      if (!node) continue;
+      node.classList.remove('active', 'done');
+      if (i === n) node.classList.add('active');
+      else if (i < n) node.classList.add('done');
+    }
+
+    // Progress bar
+    document.getElementById('progressBar').style.width = PROGRESS_MAP[n] + '%';
+
+    currentStep = n;
+    document.getElementById('panel-' + n).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Selección de fuente ── */
+  function selectSource(src) {
+    selectedSource = src;
+    document.getElementById('src-digital').classList.toggle('selected', src === 'digital');
+    document.getElementById('src-fisica').classList.toggle('selected', src === 'fisica');
+    document.getElementById('form-digital').style.display = src === 'digital' ? 'block' : 'none';
+    document.getElementById('form-fisica').style.display = src === 'fisica' ? 'block' : 'none';
+  }
+
+  /* ── Selección de DTE ── */
+  function selectDTE(el) {
+    document.querySelectorAll('.dte-item').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  /* ── Búsqueda DTE (simulada) ── */
+  function searchDTE() {
+    const q = document.getElementById('dteSearch').value;
+    const list = document.getElementById('dte-results');
+    list.style.opacity = '0.5';
+    setTimeout(() => { list.style.opacity = '1'; }, 600);
+  }
+
+  /* ── OCR Loading simulation ── */
+  function simulateOCR() {
+    const overlay = document.getElementById('loading-2');
+    const content = document.getElementById('content-2');
+
+    overlay.classList.add('active');
+    content.style.display = 'none';
+
+    const steps = ['ls-1','ls-2','ls-3','ls-4'];
+    let idx = 0;
+
+    // Mark first two as done, third as active
+    document.getElementById('ls-1').className = 'loading-step done';
+    document.getElementById('ls-2').className = 'loading-step done';
+    document.getElementById('ls-3').className = 'loading-step active';
+    document.getElementById('ls-4').className = 'loading-step';
+
+    setTimeout(() => {
+      document.getElementById('ls-3').className = 'loading-step done';
+      document.getElementById('ls-4').className = 'loading-step active';
+    }, 800);
+
+    setTimeout(() => {
+      document.getElementById('ls-4').className = 'loading-step done';
+    }, 1600);
+
+    setTimeout(() => {
+      overlay.classList.remove('active');
+      overlay.style.display = 'none';
+      content.style.display = 'block';
+    }, 2000);
+  }
+
+  /* ── Mapeo manual ── */
+  function markMapped(sel) {
+    const row = sel.closest('tr');
+    const skuCell = row.querySelector('td:nth-child(4)');
+    const badgeCell = row.querySelector('.badge');
+
+    if (sel.value) {
+      // Extract SKU from option text
+      const match = sel.options[sel.selectedIndex].text.match(/SKU (\d+)/);
+      if (match && skuCell) {
+        skuCell.textContent = match[1];
+        skuCell.className = 'td-mono';
+      }
+      if (badgeCell) {
+        badgeCell.className = 'badge badge-success';
+        badgeCell.textContent = '✓ Mapeado';
+      }
+      row.className = 'map-row-ok';
+      sel.className = 'map-select ok';
+    }
+  }
+
+  /* ── Trigger upload ── */
+  function triggerUpload() {
+    // Simulate file selection feedback
+    const zone = document.querySelector('.upload-zone');
+    zone.innerHTML = `
+      <div class="upload-zone-icon">✅</div>
+      <div class="upload-zone-title">factura_royal_canin_marzo.jpg</div>
+      <div class="upload-zone-sub">1.2 MB · Imagen seleccionada · <span onclick="clearUpload()">Cambiar</span></div>
+    `;
+    zone.style.borderColor = 'var(--accent)';
+    zone.style.background = 'var(--accent-dim)';
+  }
+
+  function clearUpload() {
+    const zone = document.querySelector('.upload-zone');
+    zone.style.borderColor = '';
+    zone.style.background = '';
+    zone.innerHTML = `
+      <div class="upload-zone-icon">📄</div>
+      <div class="upload-zone-title">Arrastra la foto o PDF aquí</div>
+      <div class="upload-zone-sub">o <span>selecciona un archivo</span> · JPG, PNG, PDF hasta 10MB</div>
+    `;
+  }
+
+  /* ── Download XLS (genera tabla HTML real) ── */
+  function downloadXLS() {
+    const rows = [
+      ['32311', 24, 6700, '', 'PESO', 1],
+      ['32415', 12, 28500, '', 'PESO', 1],
+      ['32588', 6, 32100, '', 'PESO', 1],
+      ['31897', 18, 8200, '', 'PESO', 1],
+      ['33104', 30, 4100, '', 'PESO', 1],
+      ['33290', 15, 18700, '', 'PESO', 1],
+      ['33501', 8, 24300, '', 'PESO', 1],
+    ];
+
+    let html = '<table>';
+    html += '<thead><tr><td>SKU</td><td>Stock</td><td>Costo Neto</td><td>Serie</td><td>Moneda</td><td>Tipo de Cambio</td></tr></thead>';
+    html += '<tbody>';
+    rows.forEach(r => {
+      html += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`;
+    });
+    html += '</tbody></table>';
+
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'recepcion-82314.xls';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    // Show success toast
+    showToast('✅ Archivo recepcion-82314.xls descargado. Sube en Bsale → Inventario → Recepciones.', 'success');
+  }
+
+  /* ── Mark done ── */
+  function markDone() {
+    showToast('✅ Factura #82314 marcada como procesada. Stock actualizado en Bsale.', 'success');
+    setTimeout(() => { startNew(); }, 1500);
+  }
+
+  /* ── Start new ── */
+  function startNew() {
+    goToStep(1);
+    // Reset loading state
+    const overlay = document.getElementById('loading-2');
+    const content = document.getElementById('content-2');
+    overlay.style.display = '';
+    overlay.classList.remove('active');
+    content.style.display = 'none';
+    // Reset loading steps
+    document.getElementById('ls-1').className = 'loading-step done';
+    document.getElementById('ls-2').className = 'loading-step done';
+    document.getElementById('ls-3').className = 'loading-step active';
+    document.getElementById('ls-4').className = 'loading-step';
+  }
+
+  /* ── Toast ── */
+  function showToast(msg, type) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed; bottom: 24px; right: 24px; left: 24px;
+      max-width: 420px; margin: 0 auto;
+      background: ${type === 'success' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)'};
+      border: 1px solid ${type === 'success' ? 'rgba(34,197,94,0.4)' : 'rgba(239,68,68,0.4)'};
+      color: ${type === 'success' ? '#86efac' : '#fca5a5'};
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      z-index: 9999;
+      backdrop-filter: blur(20px);
+      animation: fadeUp 0.3s ease;
+      line-height: 1.4;
+    `;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.3s';
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  /* ── Init ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    // Simulate OCR loading on step 2 visit
+    // Already handled in goToStep → simulateOCR()
+  });
+</script>
+</body>
+</html>

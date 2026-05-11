@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discovery — Smart Connection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8fafb;
+  --surface: #ffffff;
+  --elevated: #ffffff;
+  --glass: rgba(255,255,255,0.85);
+  --border: rgba(0,0,0,0.07);
+  --border-hover: rgba(0,0,0,0.15);
+  --text: #0f1117;
+  --text2: #4b5563;
+  --muted: #9ca3af;
+  --accent: #0891b2;
+  --accent-light: #06b6d4;
+  --accent-glow: rgba(8,145,178,0.12);
+  --accent-bg: rgba(8,145,178,0.06);
+  --font: 'Inter', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: hidden; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── SVG BACKGROUND (soft waves like Micelia) ─── */
+.bg-waves {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+.bg-waves svg { width: 100%; height: 100%; }
+
+/* Cursor glow — subtle for light mode */
+#cursor-glow {
+  position: fixed; left: -250px; top: -250px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(8,145,178,0.04) 0%, transparent 70%);
+  pointer-events: none; will-change: transform; z-index: 0;
+}
+
+/* ─── SPLASH (1.5s max) ─── */
+.splash {
+  position: fixed; inset: 0; z-index: 300;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--bg);
+  transition: opacity 0.5s ease-out;
+}
+.splash.gone { opacity: 0; pointer-events: none; }
+
+.splash-logo {
+  display: flex; align-items: center; gap: 14px;
+}
+.splash-mark {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), #0e7490);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 800; color: #fff;
+  opacity: 0; transform: scale(0.4);
+  animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.15s forwards;
+}
+@keyframes popIn { to { opacity:1; transform:scale(1); } }
+
+.splash-word {
+  font-size: 40px; font-weight: 200; letter-spacing: -0.04em; color: var(--text);
+  overflow: hidden;
+}
+.splash-word span {
+  display: inline-block; opacity: 0; transform: translateY(16px);
+}
+.splash-sub {
+  margin-top: 12px;
+  font-size: 12px; color: var(--muted); font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  opacity: 0; animation: fadeIn 0.4s ease 1s forwards;
+}
+@keyframes fadeIn { to { opacity:1; } }
+@keyframes letterIn { to { opacity:1; transform:translateY(0); } }
+
+/* ─── APP ─── */
+.app {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.app.on { opacity: 1; }
+
+/* Nav */
+.app-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  background: rgba(248,250,251,0.85);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px; height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  opacity: 0; transform: translateY(-8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.app-nav.show { opacity: 1; transform: none; }
+.nav-left { display: flex; align-items: center; gap: 10px; }
+.nav-mark {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: linear-gradient(135deg, var(--accent), #0e7490);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 800; color: #fff;
+}
+.nav-name { font-size: 13px; font-weight: 500; color: var(--text2); }
+.nav-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 9999px;
+  font-size: 10px; font-weight: 600;
+  border: 1px solid rgba(8,145,178,0.2); color: var(--accent);
+  background: var(--accent-bg);
+}
+.nav-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.6)} }
+
+/* ─── QUESTION FLOW (Typeform style) ─── */
+.flow {
+  flex: 1; width: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 80px 24px 120px;
+  position: relative;
+}
+
+/* Progress — top bar segmented */
+.progress {
+  position: fixed; top: 52px; left: 0; right: 0; z-index: 90;
+  display: flex; gap: 3px; padding: 0;
+  height: 3px; background: var(--bg);
+}
+.prog-seg {
+  flex: 1; background: rgba(0,0,0,0.04);
+  position: relative; overflow: hidden;
+}
+.prog-seg .fill {
+  position: absolute; inset: 0; width: 0;
+  background: var(--accent);
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.prog-seg.done .fill { width: 100%; }
+.prog-seg.active .fill { width: 60%; }
+
+/* Question card */
+.q-card {
+  max-width: 520px; width: 100%;
+  text-align: center;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.q-card.visible { opacity: 1; transform: none; }
+.q-card.exit-up { opacity: 0; transform: translateY(-30px); }
+
+.q-number {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+}
+.q-number::before {
+  content: ''; display: block; width: 20px; height: 1.5px;
+  background: var(--accent); border-radius: 1px;
+}
+
+.q-text {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  color: var(--text);
+  margin-bottom: 36px;
+}
+.q-text .accent {
+  color: var(--accent); font-weight: 400;
+}
+
+/* Chips as main options */
+.q-chips {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+  margin-bottom: 28px;
+}
+.q-chip {
+  padding: 10px 20px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text2);
+  font-size: 14px; font-weight: 400;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.q-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-bg);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(8,145,178,0.12);
+}
+
+/* Free input (below chips) */
+.q-or {
+  font-size: 12px; color: var(--muted); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.q-or::before, .q-or::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.q-input-wrap {
+  display: flex; align-items: center; gap: 8px;
+  max-width: 420px; width: 100%; margin: 0 auto;
+}
+
+.q-pill {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 10px 14px 10px 20px;
+  background: var(--surface);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.q-pill:focus-within {
+  border-color: rgba(8,145,178,0.4);
+  box-shadow: 0 0 0 3px rgba(8,145,178,0.1);
+}
+.q-pill input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-size: 14px; color: var(--text); font-family: var(--font);
+  font-weight: 300;
+}
+.q-pill input::placeholder { color: var(--muted); }
+
+.pill-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; border: none;
+  transition: all 0.2s;
+}
+.btn-attach {
+  background: rgba(0,0,0,0.03);
+  border: 1px solid var(--border) !important;
+}
+.btn-attach:hover { background: var(--accent-bg); border-color: rgba(8,145,178,0.3) !important; }
+.btn-attach svg { width: 15px; height: 15px; stroke: var(--text2); fill: none; }
+
+.btn-send { background: var(--accent); }
+.btn-send:hover { background: var(--accent-light); transform: scale(1.08); box-shadow: 0 4px 16px rgba(8,145,178,0.3); }
+.btn-send svg { width: 14px; height: 14px; fill: #fff; }
+
+/* Files bar */
+.files-bar {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+  max-width: 420px; width: 100%; margin: 10px auto 0;
+}
+.file-chip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 8px;
+  background: rgba(0,0,0,0.02);
+  border: 1px solid var(--border);
+  font-size: 11px; color: var(--text2);
+  animation: fadeIn 0.3s ease both;
+  transition: transform 0.2s;
+}
+.file-chip:hover { transform: translateY(-2px); }
+.file-rm {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: rgba(0,0,0,0.04);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 9px; color: var(--muted);
+}
+.file-rm:hover { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+/* ─── COMPLETION ─── */
+.completion {
+  text-align: center; max-width: 440px;
+  opacity: 0; transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.completion.show { opacity: 1; transform: none; }
+.completion-check {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #0e7490);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px; font-size: 28px; color: #fff;
+  box-shadow: 0 8px 32px rgba(8,145,178,0.25);
+}
+.completion h2 {
+  font-size: 24px; font-weight: 600; letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.completion p {
+  font-size: 15px; color: var(--text2); line-height: 1.65; font-weight: 300;
+  margin-bottom: 32px;
+}
+.btn-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 9999px;
+  background: var(--accent); color: #fff;
+  font-size: 15px; font-weight: 600;
+  border: none; cursor: pointer; text-decoration: none;
+  transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(8,145,178,0.3);
+}
+.btn-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(8,145,178,0.4);
+  background: var(--accent-light);
+}
+
+/* ─── FOOTER ─── */
+.app-footer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: rgba(248,250,251,0.9);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+}
+.app-footer span { font-size: 11px; color: var(--muted); }
+.app-footer a {
+  font-size: 11px; color: var(--accent); text-decoration: none; font-weight: 500;
+}
+.app-footer a:hover { color: var(--accent-light); }
+.trust-pills {
+  display: flex; gap: 12px; margin-left: 12px;
+}
+.trust-pill {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 10px; color: var(--muted);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 480px) {
+  .q-text { font-size: 1.4rem; margin-bottom: 28px; }
+  .q-chip { font-size: 13px; padding: 8px 16px; }
+  .splash-word { font-size: 32px; }
+  .splash-mark { width: 40px; height: 40px; font-size: 14px; }
+  .trust-pills { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+
+<!-- Background waves -->
+<div class="bg-waves">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none">
+    <path d="M0 250C240 200 480 300 720 250C960 200 1200 300 1440 250V900H0Z" fill="#ecfeff" opacity="0.5"/>
+    <path d="M0 350C200 300 400 400 600 330C800 260 1000 380 1200 320C1320 290 1380 310 1440 300V900H0Z" fill="#ecfeff" opacity="0.3"/>
+    <path d="M0 450C180 400 360 500 540 430C720 360 900 470 1080 410C1260 350 1380 430 1440 400V900H0Z" fill="#cffafe" opacity="0.12"/>
+    <path d="M0 550C300 510 600 590 900 530C1100 490 1300 570 1440 540V900H0Z" fill="#cffafe" opacity="0.08"/>
+    <path d="M0 650C240 620 480 680 720 640C960 600 1200 670 1440 630V900H0Z" fill="#ecfeff" opacity="0.2"/>
+  </svg>
+</div>
+
+<!-- ═══ SPLASH (1.5s) ═══ -->
+<div class="splash" id="splash">
+  <div class="splash-logo">
+    <div class="splash-mark">SC</div>
+    <div class="splash-word" id="splashWord">
+      <span>D</span><span>i</span><span>s</span><span>c</span><span>o</span><span>v</span><span>e</span><span>r</span><span>y</span>
+    </div>
+  </div>
+  <div class="splash-sub">Smart Connection</div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="app" id="app">
+
+  <nav class="app-nav" id="appNav">
+    <div class="nav-left">
+      <div class="nav-mark">SC</div>
+      <span class="nav-name">Discovery</span>
+    </div>
+    <div class="nav-badge"><span class="nav-dot"></span> Activo</div>
+  </nav>
+
+  <div class="progress" id="progress">
+    <div class="prog-seg active" id="seg0"><div class="fill"></div></div>
+    <div class="prog-seg" id="seg1"><div class="fill"></div></div>
+    <div class="prog-seg" id="seg2"><div class="fill"></div></div>
+    <div class="prog-seg" id="seg3"><div class="fill"></div></div>
+  </div>
+
+  <div class="flow" id="flow">
+    <!-- Questions render here dynamically -->
+  </div>
+
+  <div class="app-footer">
+    <span>Powered by</span>
+    <a href="https://smconnection.cl" target="_blank">Smart Connection</a>
+    <span>·</span>
+    <a href="https://smconnection.cl/#precios" target="_blank">Planes</a>
+    <div class="trust-pills">
+      <span class="trust-pill">🔒 Encriptado</span>
+      <span class="trust-pill">📎 Adjunta archivos</span>
+      <span class="trust-pill">🇨🇱 Chile</span>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.csv,.txt" style="display:none" onchange="handleFiles(this.files)">
+
+<script>
+// ═══ CURSOR GLOW ═══
+const glow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => {
+  glow.style.transform = `translate(${e.clientX-250}px,${e.clientY-250}px)`;
+});
+
+// ═══ SPLASH — 1.5s total ═══
+const letters = document.querySelectorAll('#splashWord span');
+letters.forEach((l, i) => {
+  l.style.animation = `letterIn 0.35s cubic-bezier(0.34,1.56,0.64,1) ${0.15 + i*0.04}s forwards`;
+});
+
+setTimeout(() => {
+  document.getElementById('splash').classList.add('gone');
+  document.getElementById('app').classList.add('on');
+  setTimeout(() => {
+    document.getElementById('appNav').classList.add('show');
+    document.getElementById('splash').style.display = 'none';
+    showQuestion(0);
+  }, 300);
+}, 1600);
+
+// ═══ QUESTION FLOW ═══
+const flowEl = document.getElementById('flow');
+let files = [];
+let currentQ = 0;
+const answers = [];
+
+const questions = [
+  {
+    num: 'Paso 1 de 4',
+    text: '¿Qué <span class="accent">problema</span> tiene tu negocio hoy?',
+    placeholder: 'Cuéntanos con tus palabras...',
+    chips: ['Procesos manuales que toman horas', 'Sistemas que no se conectan', 'No tengo visibilidad de mis datos', 'Quiero automatizar con IA'],
+    allowFiles: true
+  },
+  {
+    num: 'Paso 2 de 4',
+    text: '¿Cuántas personas se ven <span class="accent">afectadas</span> y hace cuánto lo tienen?',
+    placeholder: 'Ej: 5 personas, más de un año...',
+    chips: ['2-5 personas, más de 6 meses', 'Todo el equipo, hace años', 'Solo yo, pero consume horas', 'Es nuevo, quiero prevenirlo'],
+    allowFiles: false
+  },
+  {
+    num: 'Paso 3 de 4',
+    text: '¿Usan algún <span class="accent">sistema</span> hoy o es 100% manual?',
+    placeholder: 'Ej: Excel, un ERP viejo, nada...',
+    chips: ['Excel y planillas', 'Un sistema que no nos sirve', 'Todo manual', 'Varios sistemas desconectados'],
+    allowFiles: true
+  },
+  {
+    num: 'Paso 4 de 4',
+    text: '¿Tienes un <span class="accent">presupuesto</span> y plazo ideal?',
+    placeholder: 'Ej: 50 UF, lo antes posible...',
+    chips: ['15-40 UF, 2 semanas', '80-200 UF, 1-2 meses', 'No tengo claro aún', 'Necesito propuesta primero'],
+    allowFiles: false
+  }
+];
+
+function showQuestion(idx) {
+  currentQ = idx;
+  updateProgress(idx);
+
+  if (idx >= questions.length) {
+    showCompletion();
+    return;
+  }
+
+  const q = questions[idx];
+  const prev = flowEl.querySelector('.q-card');
+  if (prev) {
+    prev.classList.remove('visible');
+    prev.classList.add('exit-up');
+    setTimeout(() => prev.remove(), 400);
+  }
+
+  setTimeout(() => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.innerHTML = `
+      <div class="q-number">${q.num}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-chips">
+        ${q.chips.map(c => `<button class="q-chip" onclick="selectChip(this, '${c.replace(/'/g, "\\'")}')">${c}</button>`).join('')}
+      </div>
+      <div class="q-or">o escribe tu respuesta</div>
+      <div class="q-input-wrap">
+        <div class="q-pill">
+          <input type="text" id="qInput" placeholder="${q.placeholder}" autocomplete="off" onkeydown="if(event.key==='Enter')submitFree()">
+          ${q.allowFiles ? `<button class="pill-btn btn-attach" onclick="attachFile()" title="Adjuntar"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>` : ''}
+          <button class="pill-btn btn-send" onclick="submitFree()">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="files-bar" id="filesBar"></div>
+    `;
+    flowEl.appendChild(card);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => card.classList.add('visible'));
+    });
+    setTimeout(() => {
+      const input = document.getElementById('qInput');
+      if (input) input.focus();
+    }, 500);
+  }, prev ? 350 : 50);
+}
+
+function selectChip(el, text) {
+  el.style.borderColor = 'var(--accent)';
+  el.style.background = 'var(--accent-bg)';
+  el.style.color = 'var(--accent)';
+  answers.push({ q: currentQ, a: text, files: files.map(f=>f.name) });
+  files = [];
+  setTimeout(() => showQuestion(currentQ + 1), 400);
+}
+
+function submitFree() {
+  const input = document.getElementById('qInput');
+  if (!input || !input.value.trim()) return;
+  answers.push({ q: currentQ, a: input.value.trim(), files: files.map(f=>f.name) });
+  files = [];
+  showQuestion(currentQ + 1);
+}
+
+function updateProgress(step) {
+  for (let i = 0; i < 4; i++) {
+    const seg = document.getElementById(`seg${i}`);
+    if (i < step) seg.className = 'prog-seg done';
+    else if (i === step) seg.className = 'prog-seg active';
+    else seg.className = 'prog-seg';
+  }
+}
+
+function showCompletion() {
+  for (let i = 0; i < 4; i++) document.getElementById(`seg${i}`).className = 'prog-seg done';
+
+  const prev = flowEl.querySelector('.q-card');
+  if (prev) { prev.classList.remove('visible'); prev.classList.add('exit-up'); }
+
+  setTimeout(() => {
+    if (prev) prev.remove();
+    const comp = document.createElement('div');
+    comp.className = 'completion';
+    comp.innerHTML = `
+      <div class="completion-check">✓</div>
+      <h2>Tu diagnóstico está listo</h2>
+      <p>Analizamos tus respuestas${answers.some(a=>a.files.length) ? ' y archivos adjuntos' : ''} con SPIN + BANT.<br>Tu propuesta ejecutiva y diagnóstico te llegarán al email.</p>
+      <a href="#" class="btn-cta">Ver mi diagnóstico →</a>
+    `;
+    flowEl.appendChild(comp);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => comp.classList.add('show'));
+    });
+  }, 400);
+}
+
+// ═══ FILE ATTACH ═══
+function attachFile() { document.getElementById('fileInput').click(); }
+function handleFiles(fl) {
+  Array.from(fl).forEach(f => { if(files.length>=5) return; files.push(f); renderFiles(); });
+}
+function renderFiles() {
+  const bar = document.getElementById('filesBar');
+  if (!bar) return;
+  bar.innerHTML = '';
+  files.forEach((f,i) => {
+    const ext = f.name.split('.').pop().toUpperCase();
+    const icons = {PDF:'📄',DOC:'📝',DOCX:'📝',XLS:'📊',XLSX:'📊',PNG:'🖼️',JPG:'🖼️',CSV:'📊',TXT:'📄'};
+    const sz = f.size<1048576 ? `${(f.size/1024).toFixed(0)}KB` : `${(f.size/1048576).toFixed(1)}MB`;
+    const chip = document.createElement('div');
+    chip.className = 'file-chip';
+    chip.innerHTML = `<span>${icons[ext]||'📎'}</span><span>${f.name.length>20?f.name.slice(0,18)+'…':f.name}</span><span style="color:var(--muted)">${sz}</span><span class="file-rm" onclick="rmFile(${i})">✕</span>`;
+    bar.appendChild(chip);
+  });
+}
+function rmFile(i) { files.splice(i,1); renderFiles(); }
+</script>
+</body>
+</html>

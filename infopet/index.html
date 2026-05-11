@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🐕 InfoPet · banco completo</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;position:relative;overflow-x:hidden;min-height:100vh}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%),radial-gradient(ellipse 1000px 700px at 90% 100%,rgba(0,180,216,.05),transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px;letter-spacing:-.02em}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}.crumb a:hover{color:#00e5b0}
+.search{width:100%;max-width:500px;padding:10px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#f1f5f9;font-size:13px;margin-bottom:24px}.search:focus{outline:none;border-color:#00e5b0}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600;transition:all .15s}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.tab:hover{border-color:rgba(0,229,176,.2);color:#cbd5e1}
+.section{display:none}.section.active{display:block}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.section-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.section-count{font-size:11px;color:#475569;padding:3px 9px;background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.04);border-radius:30px;font-family:'JetBrains Mono',monospace}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;transition:all .15s}.info:hover{border-color:rgba(0,229,176,.25)}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-left:auto}
+.stage-live{background:rgba(0,229,176,.15);color:#00e5b0}.stage-qas{background:rgba(125,211,252,.12);color:#7dd3fc}.stage-dev{background:rgba(251,191,36,.12);color:#fbbf24}
+.info-url{font-size:12px;color:#00e5b0;text-decoration:none;display:block;word-break:break-all;margin-bottom:6px}.info-url:hover{text-decoration:underline}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc;display:inline-block;margin:2px 2px}.info-meta b{color:#f1f5f9}
+.minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.mini{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:0;text-decoration:none;color:#cbd5e1;transition:all .15s;display:flex;flex-direction:column;overflow:hidden}
+.mini:hover{border-color:rgba(0,229,176,.4);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,229,176,.12)}
+.thumb{position:relative;width:100%;height:165px;background:#0a0d14;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.05)}
+.thumb iframe{position:absolute;top:0;left:0;width:880px;height:660px;border:0;transform:scale(.25);transform-origin:0 0;pointer-events:none;background:#fff}
+.mini-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 12px 4px;font-size:10px;color:#6b7b8e}
+.mini-icon{font-size:14px}.mini-date{font-family:'JetBrains Mono',monospace}
+.mini-title{padding:0 12px 12px;color:#f1f5f9;font-weight:600;font-size:12px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / InfoPet</div>
+<h1>🐕 InfoPet · ecommerce mascotas + IA</h1>
+<p class="subtitle">Live · Amplify x2 · 22 maquetas · cliente Javier (futuro socio Marketplace SpA)</p>
+<div class="rfp"><b>📋 RFP:</b> Javier tenía tienda mascotas con stock Bsale + catálogo Jumpseller. Faltaba sync automático + asistente IA por raza/edad. <b>Resultado:</b> Next.js + Bsale ↔ Jumpseller ↔ Groq Llama 3.3 con fallback chain (NUNCA Claude como fallback en producto).</div>
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes (2)</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra (4)</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones (5)</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs (3)</div>
+<div class="tab" onclick="t('maq',this)">🎨 Maquetas (22)</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+<style>
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.flow{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2}
+.flow-node{display:inline-block;padding:8px 14px;margin:4px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.3);border-radius:6px;color:#00e5b0;font-weight:700}
+.flow-arrow{color:#7dd3fc;font-size:14px;margin:0 6px}
+.flow-mid{display:inline-block;padding:8px 14px;margin:4px;background:rgba(125,211,252,.08);border:1px solid rgba(125,211,252,.3);border-radius:6px;color:#7dd3fc;font-weight:700}
+.chain{display:flex;flex-direction:column;gap:6px;padding:14px;background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px}
+.chain-step{display:flex;gap:10px;align-items:center;padding:8px 12px;background:rgba(15,22,35,.6);border-radius:6px;font-size:12px}
+.chain-num{font-weight:800;color:#00e5b0;min-width:24px}
+.chain-name{color:#f1f5f9;font-weight:700;min-width:120px}
+.chain-info{color:#94a3b8;font-size:11px;flex:1}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.feat{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}
+.feat-icon{font-size:22px;margin-bottom:6px}
+.feat-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.feat-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+</style>
+<div class="section" id="tbl">
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">🔌 Stack de integración</span></div>
+<div class="tbl-desc">Cómo InfoPet conecta Bsale (stock) + Jumpseller (catálogo) + Groq (IA chat).</div>
+<div class="flow">
+<span class="flow-node">Bsale stock</span><span class="flow-arrow">↔</span><span class="flow-mid">InfoPet Next.js</span><span class="flow-arrow">↔</span><span class="flow-node">Jumpseller</span><br>
+<span class="flow-arrow">↓</span><br>
+<span class="flow-mid">Cliente final</span> <span class="flow-arrow">↔</span> <span class="flow-node">Tsukai (Groq IA)</span><br>
+<span style="color:#6b7b8e;font-size:10px">stock fuente verdad Bsale · catálogo público Jumpseller · chat IA por raza/edad</span>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">⚡ Fallback Chain IA · regla SMC</span></div>
+<div class="tbl-desc">4 providers en cascada · NUNCA Claude como fallback en producto (regla Hoku).</div>
+<div class="chain">
+<div class="chain-step"><span class="chain-num">1</span><span class="chain-name">Groq Llama 3.3 70B</span><span class="chain-info">Default · alta velocidad · $0.0001/1K · 12K TPM rate limit</span></div>
+<div class="chain-step"><span class="chain-num">2</span><span class="chain-name">Groq Llama 4 Scout</span><span class="chain-info">Fallback rate limit · balance velocidad/calidad</span></div>
+<div class="chain-step"><span class="chain-num">3</span><span class="chain-name">Gemini Flash 2.0</span><span class="chain-info">Free tier · contexto 1M · multimodal</span></div>
+<div class="chain-step"><span class="chain-num">4</span><span class="chain-name">DeepSeek V3</span><span class="chain-info">Último recurso · razonamiento + económico</span></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">🐕 Features producto · 4 pilares</span></div>
+<div class="tbl-desc">Lo que diferencia InfoPet de cualquier ecommerce mascotas genérico.</div>
+<div class="feat-grid">
+<div class="feat"><div class="feat-icon">🤖</div><div class="feat-name">Asistente IA Tsukai</div><div class="feat-desc">Recomienda producto por raza · edad · condición · alergia</div></div>
+<div class="feat"><div class="feat-icon">📦</div><div class="feat-name">Sync stock real-time</div><div class="feat-desc">Bsale → InfoPet → Jumpseller · stock=0 marca agotado live</div></div>
+<div class="feat"><div class="feat-icon">🏄</div><div class="feat-name">InfoPet Reñaca</div><div class="feat-desc">Wallpaper "Mis Olas" · panel local con ventas + ranking</div></div>
+<div class="feat"><div class="feat-icon">🧾</div><div class="feat-name">OCR Facturas Mobile</div><div class="feat-desc">Sube foto factura proveedor · OCR + carga automática Bsale</div></div>
+</div>
+</div>
+
+</div>
+
+<div class="section active" id="amb">
+<div class="section-head"><span class="section-title">🌐 Ambientes</span><span class="section-count">2</span></div>
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🚀</span><span class="info-name">PROD</span><span class="info-stage stage-live">Live</span></div><a href="https://infopet.smconnection.cl/" target="_blank" class="info-url">infopet.smconnection.cl</a><div class="info-meta"><b>Stack:</b> AWS Amplify · Next.js<br><b>App ID:</b> <code>d2aji0rjcmb4r4</code><br><b>Free tier:</b> expiró 03-2026</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🧪</span><span class="info-name">QAS</span><span class="info-stage stage-qas">Testing</span></div><a href="https://infopet-qas.smconnection.cl/" target="_blank" class="info-url">infopet-qas.smconnection.cl</a><div class="info-meta"><b>Stack:</b> AWS Amplify · Next.js<br><b>App ID:</b> <code>d2nku78amplf0m</code><br><b>Free tier:</b> hasta 05-2027</div></div>
+</div></div>
+
+<div class="section" id="inf">
+<div class="section-head"><span class="section-title">☁️ Infra</span><span class="section-count">4 recursos</span></div>
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">⚙️</span><span class="info-name">Amplify PROD</span></div><div class="info-meta"><b>App ID:</b> <code>d2aji0rjcmb4r4</code><br><b>Branch:</b> <code>main</code> auto-deploy<br><b>Region:</b> sa-east-1<br><b>Build:</b> Next.js compute</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">⚙️</span><span class="info-name">Amplify QAS</span></div><div class="info-meta"><b>App ID:</b> <code>d2nku78amplf0m</code><br><b>Branch:</b> <code>develop</code><br><b>Free tier:</b> hasta 2027-05-07<br><b>Smoke:</b> post-deploy automático</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🌐</span><span class="info-name">Route 53 DNS</span></div><div class="info-meta"><b>Hosted Zone:</b> smconnection.cl<br><b>Records:</b> <code>infopet.</code> A → Amplify · <code>infopet-qas.</code> CNAME</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🗄️</span><span class="info-name">Supabase</span></div><div class="info-meta"><b>Region:</b> sa-east-1<br><b>Tablas:</b> productos · pets · ordenes · chat_sessions<br><b>RLS:</b> activo</div></div>
+</div></div>
+
+<div class="section" id="cnx">
+<div class="section-head"><span class="section-title">🔌 Conexiones · APIs</span><span class="section-count">5</span></div>
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📦</span><span class="info-name">Bsale API</span><span class="info-stage stage-live">Live</span></div><div class="info-meta"><b>Uso:</b> stock fuente de verdad<br><b>Sync:</b> webhook + polling cada 15min<br><b>Endpoints:</b> products · stocks</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🛍️</span><span class="info-name">Jumpseller API</span><span class="info-stage stage-live">Live</span></div><div class="info-meta"><b>Uso:</b> catálogo público + checkout<br><b>Sync:</b> stock Bsale → Jumpseller<br><b>Bidireccional:</b> orden Jumpseller → InfoPet</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">⚡</span><span class="info-name">Groq Llama 3.3</span><span class="info-stage stage-live">Live</span></div><div class="info-meta"><b>Modelo:</b> llama-3.3-70b-versatile<br><b>Fallback:</b> Scout → Gemini → DeepSeek<br><b>NUNCA Claude</b> (regla SMC)</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🔐</span><span class="info-name">Supabase Auth</span><span class="info-stage stage-live">Live</span></div><div class="info-meta"><b>Tipo:</b> email + Google OAuth<br><b>Tablas:</b> auth.users + perfiles_mascotas</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📡</span><span class="info-name">Realtime stock</span><span class="info-stage stage-live">Live</span></div><div class="info-meta"><b>Canal:</b> products · stocks<br><b>Trigger:</b> stock=0 → marcar agotado en Jumpseller live</div></div>
+</div></div>
+
+<div class="section" id="doc">
+<div class="section-head"><span class="section-title">📄 Docs técnicas</span><span class="section-count">3</span></div>
+<div class="info-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-infopet.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">Propuesta económica</span></div><a href="infopet-propuesta-economica.html" class="info-url">Propuesta Económica · InfoPet SpA</a></div>
+<div class="info"><div class="info-head"><span class="info-icon">🗺️</span><span class="info-name">Roadmap 2026</span></div><a href="infopet-roadmap-2026-03-28.html" class="info-url">Roadmap InfoPet 2026</a></div>
+<div class="info"><div class="info-head"><span class="info-icon">📊</span><span class="info-name">Reporte gerencial Javier</span></div><a href="2026-04-07-reporte-gerencial-javier.html" class="info-url">Reporte Avance · 07-abr-2026</a></div>
+</div></div>
+
+<div class="section" id="maq">
+<div class="section-head"><span class="section-title">🎨 Maquetas · preview iframe</span><span class="section-count">22 docs</span></div>
+<input type="text" class="search" placeholder="🔍 Filtrar..." oninput="fm(this.value)">
+<div class="minis" id="ml">
+<a class="mini" href="2026-04-15_164500-facturas-mobile.html" title="Facturas Mobile"><div class="thumb"><iframe src="2026-04-15_164500-facturas-mobile.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🧾</span><span class="mini-date">2026-04-15</span></div><div class="mini-title">Facturas Mobile</div></a>
+<a class="mini" href="2026-04-15_163000-facturas-desktop.html" title="Facturas Desktop"><div class="thumb"><iframe src="2026-04-15_163000-facturas-desktop.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🧾</span><span class="mini-date">2026-04-15</span></div><div class="mini-title">Facturas Desktop</div></a>
+<a class="mini" href="2026-04-08-tsukai-chat-widget.html" title="Tsukai chat"><div class="thumb"><iframe src="2026-04-08-tsukai-chat-widget.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">💬</span><span class="mini-date">2026-04-08</span></div><div class="mini-title">Tsukai Chat Widget</div></a>
+<a class="mini" href="2026-04-07-reporte-gerencial-javier.html" title="Reporte Javier"><div class="thumb"><iframe src="2026-04-07-reporte-gerencial-javier.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📊</span><span class="mini-date">2026-04-07</span></div><div class="mini-title">Reporte gerencial Javier</div></a>
+<a class="mini" href="2026-04-07-infopet-renaca-fusion.html" title="Reñaca Fusion"><div class="thumb"><iframe src="2026-04-07-infopet-renaca-fusion.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🏄</span><span class="mini-date">2026-04-07</span></div><div class="mini-title">InfoPet Reñaca · Panel Live</div></a>
+<a class="mini" href="2026-04-07-infopet-renaca-desktop.html" title="Reñaca Desktop"><div class="thumb"><iframe src="2026-04-07-infopet-renaca-desktop.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🖥️</span><span class="mini-date">2026-04-07</span></div><div class="mini-title">Reñaca · Panel Web</div></a>
+<a class="mini" href="2026-04-07-facturas-ocr-mobile.html" title="OCR Mobile"><div class="thumb"><iframe src="2026-04-07-facturas-ocr-mobile.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🧾</span><span class="mini-date">2026-04-07</span></div><div class="mini-title">Facturas OCR Mobile</div></a>
+<a class="mini" href="2026-04-07-mobile-dashboard.html" title="Mobile Dashboard"><div class="thumb"><iframe src="2026-04-07-mobile-dashboard.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📱</span><span class="mini-date">2026-04-07</span></div><div class="mini-title">Panel Mobile</div></a>
+<a class="mini" href="2026-04-07-renaca-wallpaper.html" title="Reñaca Wallpaper"><div class="thumb"><iframe src="2026-04-07-renaca-wallpaper.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🌊</span><span class="mini-date">2026-04-07</span></div><div class="mini-title">Reñaca Live · Mis Olas</div></a>
+<a class="mini" href="2026-04-07-renaca-wallpaper-mobile.html" title="Reñaca Mobile"><div class="thumb"><iframe src="2026-04-07-renaca-wallpaper-mobile.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📱</span><span class="mini-date">2026-04-07</span></div><div class="mini-title">Reñaca Wallpaper Mobile</div></a>
+<a class="mini" href="2026-04-07-display-logic.html" title="Display Logic"><div class="thumb"><iframe src="2026-04-07-display-logic.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🎨</span><span class="mini-date">2026-04-07</span></div><div class="mini-title">Display Logic Review</div></a>
+<a class="mini" href="2026-04-02-recepcion-automatica.html" title="Recepción"><div class="thumb"><iframe src="2026-04-02-recepcion-automatica.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📥</span><span class="mini-date">2026-04-02</span></div><div class="mini-title">Recepción Automática Facturas</div></a>
+<a class="mini" href="2026-03-24-infopet-contraste-fix-v2.html" title="Contraste v2"><div class="thumb"><iframe src="2026-03-24-infopet-contraste-fix-v2.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🎨</span><span class="mini-date">2026-03-24</span></div><div class="mini-title">Contraste Fix v2</div></a>
+<a class="mini" href="2026-03-23-infopet-contraste-fix.html" title="Contraste"><div class="thumb"><iframe src="2026-03-23-infopet-contraste-fix.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🎨</span><span class="mini-date">2026-03-23</span></div><div class="mini-title">Contraste Fix</div></a>
+<a class="mini" href="infopet-gerente.html" title="Gerente"><div class="thumb"><iframe src="infopet-gerente.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">💼</span><span class="mini-date">—</span></div><div class="mini-title">Propuesta para el Gerente</div></a>
+<a class="mini" href="infopet-presentacion-comercial.html" title="Comercial"><div class="thumb"><iframe src="infopet-presentacion-comercial.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">💼</span><span class="mini-date">—</span></div><div class="mini-title">Propuesta Comercial 2026</div></a>
+<a class="mini" href="infopet-presentacion-comercial_1.html" title="Comercial v2"><div class="thumb"><iframe src="infopet-presentacion-comercial_1.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">💼</span><span class="mini-date">—</span></div><div class="mini-title">Propuesta Comercial v2</div></a>
+<a class="mini" href="infopet-propuesta-economica.html" title="Económica"><div class="thumb"><iframe src="infopet-propuesta-economica.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">💰</span><span class="mini-date">—</span></div><div class="mini-title">Propuesta Económica · SpA</div></a>
+<a class="mini" href="infopet-propuesta.html" title="Propuesta"><div class="thumb"><iframe src="infopet-propuesta.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📋</span><span class="mini-date">—</span></div><div class="mini-title">Propuesta Transformación Digital</div></a>
+<a class="mini" href="infopet-propuesta_1.html" title="Propuesta v2"><div class="thumb"><iframe src="infopet-propuesta_1.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📋</span><span class="mini-date">—</span></div><div class="mini-title">Propuesta v2</div></a>
+<a class="mini" href="infopet-roadmap-2026-03-28.html" title="Roadmap"><div class="thumb"><iframe src="infopet-roadmap-2026-03-28.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🗺️</span><span class="mini-date">2026-03-28</span></div><div class="mini-title">Roadmap 2026</div></a>
+<a class="mini" href="infopet_dashboard.html" title="Dashboard"><div class="thumb"><iframe src="infopet_dashboard.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📊</span><span class="mini-date">—</span></div><div class="mini-title">InfoPet Panel</div></a>
+</div></div>
+
+<footer>📚 Banco SMC · InfoPet · 5 tabs · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← volver al maestro</a></footer>
+</div>
+<script>
+function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}
+function fm(q){q=q.toLowerCase().trim();document.querySelectorAll('#ml .mini').forEach(m=>{const t=(m.querySelector('.mini-title').textContent+' '+(m.title||'')).toLowerCase();m.style.display=!q||t.includes(q)?'':'none'})}
+</script>
+</body></html>

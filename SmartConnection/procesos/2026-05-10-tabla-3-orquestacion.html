@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>SMC · Tabla #3 · Orquestación</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.5;position:relative;overflow-x:hidden}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%),radial-gradient(ellipse 800px 600px at 90% 100%,rgba(0,180,216,.06),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1}
+.container{max-width:1600px;margin:0 auto}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px;letter-spacing:-.02em}
+h2{font-size:22px;font-weight:700;color:#f1f5f9;margin:40px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px}
+p{color:#94a3b8;margin-bottom:12px;font-size:14px}
+.meta{display:flex;gap:24px;font-size:12px;color:#6b7b8e;margin-bottom:32px}
+.meta span{padding:4px 12px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:30px;color:#00e5b0}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:13px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;font-weight:600;padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08);font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:top}
+.flow{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:24px;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:#cbd5e1;white-space:pre;overflow-x:auto;line-height:1.6}
+.radar{background:linear-gradient(135deg,rgba(0,229,176,.05),rgba(0,180,216,.05));border:1px solid rgba(0,229,176,.2);border-radius:12px;padding:24px;margin-top:24px}
+.radar-section{margin-bottom:20px}
+.radar-label{font-size:11px;font-weight:700;color:#00e5b0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.radar-content{font-size:13px;color:#cbd5e1}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+
+<h1>SMC · Tabla #3 · Orquestación entre agentes</h1>
+<p>Cómo se invocan los agentes entre sí · handoffs · paralelismo · anti-loop · Cerebro como árbitro silencioso</p>
+<div class="meta"><span>v1 · 2026-05-10</span><span>23 agentes · 78 handoffs posibles</span><span>5 reglas auto</span></div>
+
+<h2>🔄 5 capacidades automáticas de Cerebro</h2>
+<table>
+<thead><tr><th>#</th><th>Capacidad</th><th>Cuándo se activa</th><th>Qué hace Cerebro</th><th>Visible al usuario</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Handoff</td><td>Agente A detecta necesidad de B</td><td>Mueve conversación a B sin preguntar</td><td>"🐕 BA entra · valida flujo"</td></tr>
+<tr><td>2</td><td>Paralelismo</td><td>Tareas independientes</td><td>Activa Backend + Frontend a la vez</td><td>Stream bar con ambos avanzando</td></tr>
+<tr><td>3</td><td>Anti-loop</td><td>A→B→C→A detectado</td><td>Intercepta · resume · pide direccionar</td><td>"⚠️ Loop · pausamos · ¿siguiente?"</td></tr>
+<tr><td>4</td><td>Streaming vivo</td><td>Tareas en cola</td><td>Ejecuta mientras usuario piensa</td><td>Progreso real en próxima respuesta</td></tr>
+<tr><td>5</td><td>Selección agente</td><td>Usuario habla sin invocar</td><td>Elige el más adecuado al contexto</td><td>Agente entra sin preguntar</td></tr>
+</tbody></table>
+
+<h2>🔀 Patrones de handoff típicos (top 8)</h2>
+<table>
+<thead><tr><th>#</th><th>Patrón</th><th>De</th><th>A</th><th>Trigger</th><th>Frecuencia</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Diseño → técnica</td><td>🐕 Business-Analyst</td><td>🔍 Architect</td><td>Maqueta lista · diseñar arq</td><td>Diario</td></tr>
+<tr><td>2</td><td>Validación pre-bid</td><td>💼 Business-Dev</td><td>🧪 Innovation-Lab</td><td>Deal con duda técnica</td><td>Semanal</td></tr>
+<tr><td>3</td><td>Build paralelo</td><td>🔍 Architect</td><td>🔧 Backend + 🎨 Frontend + 🐾 Hoku</td><td>Specs listas</td><td>Diario</td></tr>
+<tr><td>4</td><td>Deploy chain</td><td>🛠️ Pipeline</td><td>🌐 Infra-Ops</td><td>Commit mergeado a main</td><td>Diario</td></tr>
+<tr><td>5</td><td>QA loop</td><td>👩 User-QA</td><td>🔧 Backend / 🎨 Frontend</td><td>Bug detectado</td><td>Diario</td></tr>
+<tr><td>6</td><td>Intel scan</td><td>📡 RADAR</td><td>🔬 AI/ML / 🐕 BA / 🐾 Hoku</td><td>Señal externa relevante</td><td>Semanal (lunes)</td></tr>
+<tr><td>7</td><td>Auditoría legal</td><td>⚖️ Compliance</td><td>todos</td><td>Contrato/feature/integration</td><td>On-demand</td></tr>
+<tr><td>8</td><td>Cierre proyecto</td><td>👔 PM</td><td>🎙️ Marketing + 🧮 Controller</td><td>Proyecto en GA</td><td>Quincenal</td></tr>
+</tbody></table>
+
+<h2>🚦 Reglas anti-loop</h2>
+<div class="flow">Max 3 handoffs sin OK del usuario
+  → Si A→B→C: continúa
+  → Si A→B→C→A: 🧠 Cerebro intercepta
+
+Detección de loop:
+  ✓ Mismo agente aparece 2 veces en cadena de handoffs
+  ✓ Tiempo entre handoffs &lt; 30 segundos (probable bucle)
+  ✓ Usuario no ha intervenido en 5 handoffs seguidos
+
+Acción de Cerebro al detectar loop:
+  1. PAUSAR cadena
+  2. RESUMIR estado: "Vinimos de A · B propuso X · C devolvió Y · A vuelve a Z"
+  3. PREGUNTAR: "¿Querés que sigamos · o cambiamos de approach?"</div>
+
+<h2>🌐 Flujo típico · proyecto SAP entrando</h2>
+<div class="flow">📡 RADAR detecta RFP cliente
+    ↓ handoff
+💼 BUSINESS-DEV califica BANT
+    ↓ handoff (necesita técnico)
+🐕 BUSINESS-ANALYST diseña BPMN
+    ↓ handoff (necesita arq)
+🔍 ARCHITECT diseña solución
+    ↓ handoff (validar)
+🧪 INNOVATION-LAB POC factibilidad
+    ↓ resultado: ✅ viable
+🧮 CONTROLLER pricing + 💼 BUSINESS-DEV cierre
+    ↓ deal cerrado
+👔 PM sprint planning
+    ↓ ejecución
+🔧 BACKEND + 🎨 FRONTEND + 🐾 HOKU (paralelo)
+    ↓ commits
+👩 USER-QA + ⛨ SECURITY (paralelo)
+    ↓ pass
+🛠️ PIPELINE deploy
+    ↓ live
+🌐 INFRA-OPS monitoreo 24/7
+    ↓ estable
+⊡ DATA-BW reporting
+
+🧠 CEREBRO observa toda la cadena · interviene solo si:
+  • Loop detectado
+  • Agente equivocado en algún paso
+  • Tiempo excesivo entre handoffs</div>
+
+<div class="radar">
+<div class="radar-section"><div class="radar-label">🌐 PRÁCTICA DE MERCADO</div>
+<div class="radar-content"><b>LangGraph (Harrison Chase):</b> supervisor agent + worker agents pattern. Estándar industria.<br><b>CrewAI (João Moura):</b> role-based crews con auto-handoff. Más cercano a SMC.<br><b>AutoGen (Microsoft):</b> agentes conversacionales · GroupChat manager como Cerebro.</div></div>
+<div class="radar-section"><div class="radar-label">🎯 ANALOGÍA</div>
+<div class="radar-content"><b>Rápida:</b> Como tráfico aéreo · cada avión (agente) tiene rumbo · torre (Cerebro) coordina.<br><b>Profunda:</b> Cerebro es el ARP de un proyecto Big-4 · no hace el trabajo · asegura que el flujo no se trabe. Si dos consultores se pisan o uno espera info que nunca llega, ARP interviene.</div></div>
+<div class="radar-section"><div class="radar-label">📊 ASSESSMENT</div>
+<div class="radar-content">✅ 5 reglas auto definidas · 8 patrones identificados · anti-loop con max 3 handoffs<br>🔴 Falta: métricas reales (# handoffs/sesión · tiempo entre) · dashboard visual de cadenas</div></div>
+<div class="radar-section"><div class="radar-label">📈 KPI</div>
+<div class="radar-content"><b>Outcome:</b> # handoffs exitosos / total handoffs >90%<br><b>Activity:</b> Promedio handoffs por proyecto: 5-8 · tiempo entre handoffs &lt;2min</div></div>
+<div class="radar-section"><div class="radar-label">🧪 OWNER AUTOMÁTICO</div>
+<div class="radar-content">Cerebro orquestra · detecta loops · resume · sugiere agente correcto · activa paralelismo seguro</div></div>
+<div class="radar-section"><div class="radar-label">📡 STREAMING</div>
+<div class="radar-content">Cada handoff visible al usuario: "🐕 BA entra · valida flujo BPMN" en próxima respuesta</div></div>
+<div class="radar-section"><div class="radar-label">🛣️ ROADMAP</div>
+<div class="radar-content"><b>Hoy:</b> 5 reglas + 8 patrones documentados<br><b>Próxima:</b> Dashboard visual de cadenas de handoff<br><b>Mes:</b> Métricas reales · # invocaciones por par de agentes<br><b>Trimestre:</b> Sugerencias automáticas de nuevos handoffs basadas en patrones</div></div>
+</div>
+
+<footer>SMC OS · Tabla #3 · 2026-05-10 · generado por Cerebro modo sentinela</footer>
+</div></body></html>

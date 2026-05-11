@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOY v2 — Maqueta Panchita 🐕</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06060a;--card:rgba(255,255,255,0.03);--card-border:rgba(255,255,255,0.07);
+  --glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.1);
+  --text:#e4e4e7;--muted:#71717a;--accent:#a855f7;--accent2:#f97316;
+  --green:#22c55e;--yellow:#eab308;--red:#ef4444;--blue:#3b82f6;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+
+/* ── Header ── */
+.hero{text-align:center;padding:60px 20px 30px;background:radial-gradient(ellipse at 50% 0%,rgba(168,85,247,0.15),transparent 70%)}
+.hero h1{font-size:2.2rem;font-weight:900}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{color:var(--muted);font-size:.9rem;margin-top:4px}
+.hero .meta{color:#3f3f46;font-size:.7rem;margin-top:8px}
+
+/* ── Tabs ── */
+.tabs{display:flex;justify-content:center;gap:6px;padding:20px 16px;flex-wrap:wrap;position:sticky;top:0;z-index:100;background:rgba(6,6,10,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border)}
+.tab{padding:7px 14px;border-radius:99px;font-size:.7rem;font-weight:600;cursor:pointer;border:1px solid var(--card-border);color:var(--muted);background:transparent;transition:all .2s;letter-spacing:.3px}
+.tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 4px 20px rgba(168,85,247,0.3)}
+.tab:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── Sections ── */
+.sec{display:none;padding:20px 16px;max-width:1200px;margin:0 auto}
+.sec.active{display:block}
+.sec-title{font-size:1.1rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.sec-desc{color:var(--muted);font-size:.8rem;margin-bottom:20px}
+
+/* ── Phone Mockups ── */
+.phones{display:flex;gap:20px;overflow-x:auto;padding:8px 0 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.phones::-webkit-scrollbar{height:4px}
+.phones::-webkit-scrollbar-track{background:transparent}
+.phones::-webkit-scrollbar-thumb{background:var(--card-border);border-radius:99px}
+.phone-wrap{scroll-snap-align:start;flex-shrink:0}
+.phone{width:340px;border-radius:40px;overflow:hidden;border:3px solid rgba(255,255,255,0.08);box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(168,85,247,0.05);background:#fff;position:relative}
+.phone.is-new{border-color:rgba(34,197,94,0.4);box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 30px rgba(34,197,94,0.08)}
+.phone-tag{text-align:center;font-size:.65rem;font-weight:700;margin-top:8px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
+.phone.is-new+.phone-tag{color:var(--green)}
+.phone.is-new+.phone-tag::after{content:' ✨ NUEVO'}
+
+/* Notch */
+.notch{width:120px;height:28px;background:#000;border-radius:0 0 18px 18px;margin:0 auto;position:relative;z-index:2}
+
+/* Phone internals */
+.p-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#fff;border-bottom:1px solid #e2e8f0}
+.p-logo{font-size:18px;font-weight:900;color:#0f172a}
+.p-user{display:flex;align-items:center;gap:6px;font-size:11px;color:#64748b}
+.p-bell{width:20px;height:20px;background:#f1f5f9;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px}
+.p-content{padding:14px;background:#f8fafc;min-height:560px}
+.p-nav{display:flex;background:#fff;border-top:1px solid #e2e8f0;padding:8px 0 24px}
+.p-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:9px;color:#94a3b8}
+.p-nav-item.on{color:#2563eb}
+.p-nav-icon{font-size:16px}
+
+/* Phone UI components */
+.p-title{font-size:16px;font-weight:700;color:#0f172a;margin-bottom:12px}
+.p-card{background:#fff;border-radius:14px;padding:14px;border:1px solid #e2e8f0;margin-bottom:10px}
+.p-card-green{background:#059669;color:#fff;border:none}
+.p-card-blue{background:#2563eb;color:#fff;border:none}
+.p-card-dark{background:#0f172a;color:#fff;border:none}
+.p-badge{font-size:8px;font-weight:600;padding:2px 7px;border-radius:99px;display:inline-block}
+.p-badge-green{background:#dcfce7;color:#15803d}
+.p-badge-blue{background:#dbeafe;color:#1d4ed8}
+.p-badge-red{background:#fee2e2;color:#dc2626}
+.p-badge-amber{background:#fef3c7;color:#b45309}
+.p-btn{display:flex;align-items:center;justify-content:center;padding:10px;border-radius:10px;font-weight:600;font-size:12px;width:100%;border:none;cursor:pointer;gap:4px}
+.p-btn-blue{background:#2563eb;color:#fff}
+.p-btn-green{background:#059669;color:#fff}
+.p-btn-red{background:#dc2626;color:#fff}
+.p-btn-outline{background:#fff;color:#0f172a;border:1px solid #e2e8f0}
+.p-input{width:100%;padding:9px 11px;border:1px solid #e2e8f0;border-radius:9px;font-size:12px;background:#fff}
+.p-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:500}
+.p-chip-on{background:#2563eb;color:#fff}
+.p-chip-off{background:#fff;border:1px solid #e2e8f0;color:#64748b}
+.p-sep{height:1px;background:#f1f5f9;margin:10px 0}
+.p-avatar{width:36px;height:36px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#64748b;flex-shrink:0}
+.p-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.p-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.p-grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.p-xs{font-size:10px}.p-sm{font-size:12px}.p-sl{color:#64748b}.p-dk{color:#0f172a}.p-fb{font-weight:700}.p-fm{font-weight:500}
+.p-flex{display:flex}.p-ac{align-items:center}.p-g2{gap:8px}.p-g3{gap:12px}.p-f1{flex:1}
+.p-label{font-size:9px;opacity:.7}
+.p-stat{font-size:20px;font-weight:700}
+.p-upload{border:2px dashed #e2e8f0;border-radius:10px;padding:16px;text-align:center;color:#94a3b8;font-size:11px}
+
+/* Chat */
+.p-bubble{max-width:70%;padding:9px 12px;border-radius:14px;font-size:12px;margin-bottom:5px}
+.p-bubble-me{background:#2563eb;color:#fff;border-bottom-right-radius:3px;margin-left:auto}
+.p-bubble-other{background:#fff;color:#0f172a;border:1px solid #e2e8f0;border-bottom-left-radius:3px}
+.p-bubble-time{font-size:8px;opacity:.5;margin-top:2px}
+
+/* Skeleton */
+.skel{background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Timeline */
+.p-timeline{display:flex;margin-bottom:10px}
+.p-tl-step{flex:1;text-align:center}
+.p-tl-dot{width:24px;height:24px;border-radius:50%;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:10px}
+.p-tl-done{background:#dcfce7;color:#15803d}
+.p-tl-active{background:#dbeafe;color:#2563eb}
+.p-tl-pending{background:#f1f5f9;color:#94a3b8}
+.p-tl-label{font-size:7px;color:#94a3b8}
+
+/* ── Glass Report Cards ── */
+.report{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:20px;margin-bottom:20px;backdrop-filter:blur(12px)}
+.report h3{font-size:.85rem;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.report table{width:100%;border-collapse:collapse;font-size:.75rem}
+.report th{text-align:left;padding:7px;color:var(--muted);border-bottom:1px solid var(--card-border);font-size:.6rem;text-transform:uppercase;letter-spacing:.8px}
+.report td{padding:7px;border-bottom:1px solid rgba(255,255,255,0.02)}
+.report tr:hover{background:rgba(255,255,255,0.02)}
+
+.tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:8px;font-weight:700;margin-left:4px}
+.tag-new{background:var(--green);color:#fff}
+.tag-exists{background:var(--blue);color:#fff}
+.tag-better{background:var(--yellow);color:#fff}
+
+/* ── Scores ── */
+.scores{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:24px 0}
+.score-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:18px 24px;text-align:center;min-width:100px;backdrop-filter:blur(10px)}
+.score-num{font-size:2rem;font-weight:900;line-height:1}
+.score-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+
+/* ── Scroll hint ── */
+.scroll-hint{text-align:center;color:#3f3f46;font-size:.7rem;margin-bottom:8px}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:40px 20px;border-top:1px solid var(--card-border);margin-top:40px;color:var(--muted);font-size:.7rem}
+
+/* ── Urgent pulse ── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  .hero h1{font-size:1.6rem}
+  .phone{width:310px}
+  .scores{gap:10px}
+  .score-card{min-width:80px;padding:12px 16px}
+  .score-num{font-size:1.6rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>🐕 Panchita presenta: <span>VOY v2</span></h1>
+  <div class="sub">Marketplace de servicios para el hogar — Quinta Región, Chile</div>
+  <div class="meta">Maqueta original: Celia 🔍 · Completada: Panchita 🐕 · 23 marzo 2026 · Para fusión voy-app-3</div>
+</div>
+
+<!-- SCORES -->
+<div class="scores">
+  <div class="score-card"><div class="score-num" style="color:var(--green)">23</div><div class="score-label">Pantallas</div></div>
+  <div class="score-card"><div class="score-num" style="color:var(--accent)">9</div><div class="score-label">Nuevas</div></div>
+  <div class="score-card"><div class="score-num" style="color:var(--accent2)">4</div><div class="score-label">Tablas DB</div></div>
+  <div class="score-card"><div class="score-num" style="color:var(--blue)">12</div><div class="score-label">User Stories</div></div>
+  <div class="score-card"><div class="score-num" style="color:var(--yellow)">4</div><div class="score-label">Fases</div></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="go('reporte',this)">📋 Reporte</button>
+  <button class="tab" onclick="go('registro',this)">📝 Registro</button>
+  <button class="tab" onclick="go('cliente',this)">👤 Cliente</button>
+  <button class="tab" onclick="go('worker',this)">🔧 Profesional</button>
+  <button class="tab" onclick="go('admin',this)">⚙️ Admin</button>
+  <button class="tab" onclick="go('estados',this)">🔄 Estados</button>
+  <button class="tab" onclick="go('datos',this)">🗃️ Datos</button>
+  <button class="tab" onclick="go('check',this)">✅ Checklist</button>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- REPORTE                                -->
+<!-- ═══════════════════════════════════════ -->
+<div class="sec active" id="s-reporte">
+<div class="sec-title">Reporte v1 vs v2</div>
+<div class="sec-desc">Comparación completa + decisiones técnicas clave</div>
+
+<div class="report">
+<h3>📊 Features: VOY v1 → VOY v2</h3>
+<table>
+<tr><th>Feature</th><th>v1 actual</th><th>v2 propuesto</th><th></th></tr>
+<tr><td>Stack</td><td>Vanilla JS + Airtable</td><td>Mantener (NO migrar)</td><td><span class="tag tag-exists">MANTENER</span></td></tr>
+<tr><td>Registro</td><td>Solo login</td><td>Login + Registro cliente + profesional</td><td><span class="tag tag-new">NUEVO</span></td></tr>
+<tr><td>Cotizaciones</td><td>Worker envía, client acepta + PDF</td><td>+ Comparador visual lado a lado</td><td><span class="tag tag-better">MEJORAR</span></td></tr>
+<tr><td>Booking</td><td>Card básica</td><td>+ Timeline 5 pasos visual</td><td><span class="tag tag-better">MEJORAR</span></td></tr>
+<tr><td>Chat</td><td>Texto con polling</td><td>+ Enviar fotos</td><td><span class="tag tag-better">MEJORAR</span></td></tr>
+<tr><td>Reclamos</td><td>No existe</td><td>Sistema completo con evidencia</td><td><span class="tag tag-new">NUEVO</span></td></tr>
+<tr><td>Urgentes</td><td>No existe</td><td>Toggle urgente + notif</td><td><span class="tag tag-new">NUEVO</span></td></tr>
+<tr><td>Ganancias/Niveles</td><td>Stats básicos</td><td>Bronce→Plata→Oro + rendimiento</td><td><span class="tag tag-new">NUEVO</span></td></tr>
+<tr><td>Materiales</td><td>Manual</td><td>Librería guardada reutilizable</td><td><span class="tag tag-new">NUEVO</span></td></tr>
+<tr><td>Agenda</td><td>Calendario básico</td><td>Agenda con timeline diaria</td><td><span class="tag tag-better">MEJORAR</span></td></tr>
+<tr><td>Disponibilidad</td><td>Toggle on/off</td><td>+ Horario semanal + radio + vacaciones</td><td><span class="tag tag-better">MEJORAR</span></td></tr>
+<tr><td>Admin reclamos</td><td>No existe</td><td>Gestión con reembolsos</td><td><span class="tag tag-new">NUEVO</span></td></tr>
+<tr><td>Notificaciones</td><td>Lista simple</td><td>Centro completo con filtros</td><td><span class="tag tag-new">NUEVO</span></td></tr>
+<tr><td>Perfil público</td><td>Modal detalle</td><td>Perfil con galería + reseñas</td><td><span class="tag tag-new">NUEVO</span></td></tr>
+<tr><td>Estados UI</td><td>Loading + Error</td><td>+ Skeleton + Vacío + Success</td><td><span class="tag tag-better">MEJORAR</span></td></tr>
+</table>
+</div>
+
+<div class="report">
+<h3>⚠️ Decisiones clave (correcciones a Celia)</h3>
+<table>
+<tr><th>Tema</th><th>Celia propuso</th><th>Decisión Panchita</th></tr>
+<tr><td>Stack</td><td>Next.js + Supabase</td><td><strong>Mantener Vanilla JS + Airtable</strong> — la fusión voy-app-3 depende del stack actual</td></tr>
+<tr><td>Comisión</td><td>12%</td><td><strong>15%</strong> como está en el código real</td></tr>
+<tr><td>Categorías</td><td>8 diferentes</td><td><strong>Las 8 originales</strong> de VOY v1 (gasfitería, electricidad, pintura, mecánica, belleza, clases, baile, limpieza)</td></tr>
+<tr><td>Escrow/Pagos</td><td>Implementar</td><td><strong>Futuro</strong> — primero consolidar features nuevas</td></tr>
+</table>
+</div>
+
+<div class="report">
+<h3>🎯 User Stories (Top 12)</h3>
+<table>
+<tr><th>#</th><th>Como...</th><th>Quiero...</th><th>Para...</th><th></th></tr>
+<tr><td>1</td><td>Visitante</td><td>Registrarme como cliente</td><td>Buscar profesionales</td><td><span class="p-badge p-badge-red">Alta</span></td></tr>
+<tr><td>2</td><td>Visitante</td><td>Registrarme como profesional</td><td>Ofrecer mis servicios</td><td><span class="p-badge p-badge-red">Alta</span></td></tr>
+<tr><td>3</td><td>Cliente</td><td>Crear solicitud urgente</td><td>Conseguir ayuda rápido</td><td><span class="p-badge p-badge-red">Alta</span></td></tr>
+<tr><td>4</td><td>Cliente</td><td>Comparar cotizaciones</td><td>Elegir al mejor profesional</td><td><span class="p-badge p-badge-red">Alta</span></td></tr>
+<tr><td>5</td><td>Cliente</td><td>Levantar reclamo</td><td>Resolver problemas</td><td><span class="p-badge p-badge-amber">Media</span></td></tr>
+<tr><td>6</td><td>Profesional</td><td>Guardar materiales frecuentes</td><td>Cotizar más rápido</td><td><span class="p-badge p-badge-amber">Media</span></td></tr>
+<tr><td>7</td><td>Profesional</td><td>Configurar horario semanal</td><td>Recibir solicitudes en horario</td><td><span class="p-badge p-badge-amber">Media</span></td></tr>
+<tr><td>8</td><td>Profesional</td><td>Ver nivel y ganancias</td><td>Motivarme y planificar</td><td><span class="p-badge p-badge-amber">Media</span></td></tr>
+<tr><td>9</td><td>Admin</td><td>Gestionar reclamos</td><td>Resolver disputas</td><td><span class="p-badge p-badge-red">Alta</span></td></tr>
+<tr><td>10</td><td>Admin</td><td>Suspender usuarios</td><td>Mantener calidad</td><td><span class="p-badge p-badge-amber">Media</span></td></tr>
+<tr><td>11</td><td>Cliente</td><td>Ver notificaciones</td><td>Saber cuándo responden</td><td><span class="p-badge p-badge-green">Baja</span></td></tr>
+<tr><td>12</td><td>Cliente</td><td>Enviar fotos por chat</td><td>Mostrar el problema</td><td><span class="p-badge p-badge-green">Baja</span></td></tr>
+</table>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- REGISTRO                               -->
+<!-- ═══════════════════════════════════════ -->
+<div class="sec" id="s-registro">
+<div class="sec-title">Registro & Onboarding</div>
+<div class="sec-desc">Flujos nuevos — NO existían en v1</div>
+<div class="scroll-hint">← Desliza para ver todas las pantallas →</div>
+<div class="phones">
+
+<!-- Login -->
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div>
+<div style="padding:40px 20px;background:linear-gradient(135deg,#0f172a,#1e293b);text-align:center;min-height:640px">
+  <div style="font-size:42px;font-weight:900;color:#fff;margin-bottom:20px">VOY</div>
+  <div class="p-card" style="text-align:left;max-width:300px;margin:0 auto">
+    <div class="p-title" style="text-align:center">Iniciar sesión</div>
+    <div class="p-xs p-sl" style="margin-bottom:3px">Correo electrónico</div>
+    <div class="p-input" style="margin-bottom:8px;color:#0f172a">sofia.mendoza@gmail.com</div>
+    <div class="p-xs p-sl" style="margin-bottom:3px">Contraseña</div>
+    <div class="p-input" style="margin-bottom:12px;color:#0f172a">••••••••</div>
+    <button class="p-btn p-btn-blue" style="margin-bottom:12px">Ingresar</button>
+    <div class="p-sep"></div>
+    <div style="text-align:center">
+      <div class="p-xs p-sl" style="margin-bottom:8px">¿No tienes cuenta?</div>
+      <button class="p-btn p-btn-outline" style="margin-bottom:6px;font-size:11px">👤 Registrarme como cliente</button>
+      <button class="p-btn p-btn-outline" style="font-size:11px;border-color:#059669;color:#059669">🔧 Registrarme como profesional</button>
+    </div>
+  </div>
+</div>
+</div><div class="phone-tag">Login Mejorado</div></div>
+
+<!-- Registro Cliente -->
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><span class="p-xs p-sl">Paso 1 de 2</span></div>
+<div class="p-content">
+  <div class="p-title">Crear cuenta de cliente</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Nombre completo</div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">Sofía Mendoza</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Correo electrónico</div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">sofia@gmail.com</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Teléfono</div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">+56 9 1234 5678</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Ciudad</div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">Viña del Mar</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Contraseña</div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">••••••••</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Confirmar contraseña</div>
+  <div class="p-input" style="margin-bottom:12px;color:#0f172a">••••••••</div>
+  <div class="p-flex p-ac p-g2" style="margin-bottom:14px">
+    <div style="width:16px;height:16px;border:2px solid #2563eb;border-radius:3px;background:#2563eb;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;flex-shrink:0">✓</div>
+    <span class="p-xs p-sl">Acepto los <span style="color:#2563eb">términos</span> y <span style="color:#2563eb">privacidad</span></span>
+  </div>
+  <button class="p-btn p-btn-blue">Crear mi cuenta</button>
+</div>
+</div><div class="phone-tag">Registro Cliente</div></div>
+
+<!-- Registro Pro 1/3 -->
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><span class="p-xs p-sl">Paso 1 de 3</span></div>
+<div class="p-content">
+  <div class="p-title">Registro profesional</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Nombre completo</div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">Carlos Muñoz</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Correo electrónico</div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">carlos@gmail.com</div>
+  <div class="p-xs p-sl" style="margin-bottom:3px">Teléfono</div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">+56 9 8765 4321</div>
+  <div class="p-xs p-sl" style="margin-bottom:10px">Categoría principal</div>
+  <div class="p-grid4">
+    <div style="text-align:center;padding:8px;background:#eff6ff;border:2px solid #3b82f6;border-radius:10px"><div style="font-size:18px">🔧</div><div style="font-size:7px;color:#2563eb;font-weight:600">Gasfitería</div></div>
+    <div style="text-align:center;padding:8px;background:#fff;border:1px solid #e2e8f0;border-radius:10px"><div style="font-size:18px">⚡</div><div style="font-size:7px;color:#64748b">Electricidad</div></div>
+    <div style="text-align:center;padding:8px;background:#fff;border:1px solid #e2e8f0;border-radius:10px"><div style="font-size:18px">🎨</div><div style="font-size:7px;color:#64748b">Pintura</div></div>
+    <div style="text-align:center;padding:8px;background:#fff;border:1px solid #e2e8f0;border-radius:10px"><div style="font-size:18px">🏠</div><div style="font-size:7px;color:#64748b">Limpieza</div></div>
+  </div>
+  <div class="p-xs p-sl" style="margin-bottom:3px;margin-top:10px">Bio</div>
+  <textarea class="p-input" style="min-height:50px;resize:none;color:#0f172a">Gasfíter con 10 años de experiencia...</textarea>
+  <button class="p-btn p-btn-blue" style="margin-top:14px">Siguiente →</button>
+</div>
+</div><div class="phone-tag">Registro Pro 1/3</div></div>
+
+<!-- Registro Pro 3/3 - Verificación -->
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><span class="p-xs p-sl">Paso 3 de 3</span></div>
+<div class="p-content">
+  <div class="p-title">Verificación</div>
+  <div class="p-xs p-sl" style="margin-bottom:12px">Sube tus documentos para verificar tu cuenta</div>
+  <div class="p-card" style="text-align:center"><div style="font-size:24px;margin-bottom:6px">📄</div><div class="p-sm p-fb p-dk">Cédula de identidad</div><div class="p-xs p-sl" style="margin-top:3px">Foto frontal de tu CI</div><div class="p-upload" style="margin-top:10px">📤 Seleccionar archivo</div></div>
+  <div class="p-card" style="text-align:center"><div style="font-size:24px;margin-bottom:6px">📸</div><div class="p-sm p-fb p-dk">Selfie con CI</div><div style="background:#f0fdf4;border-radius:8px;padding:6px;display:flex;align-items:center;gap:6px;margin-top:10px"><span style="font-size:11px;color:#059669">🖼️</span><span style="font-size:10px;color:#15803d;flex:1;text-align:left">selfie_ci.jpg</span><span style="color:#059669">✓</span></div></div>
+  <div class="p-card" style="text-align:center"><div style="font-size:24px;margin-bottom:6px">🎓</div><div class="p-sm p-fb p-dk">Certificado (opcional)</div><div class="p-upload" style="margin-top:10px">📤 Seleccionar archivo</div></div>
+  <div class="p-flex p-g2" style="margin-top:14px">
+    <button class="p-btn p-btn-outline" style="flex:1">← Anterior</button>
+    <button class="p-btn p-btn-green" style="flex:1">✓ Completar</button>
+  </div>
+</div>
+</div><div class="phone-tag">Verificación 3/3</div></div>
+
+<!-- Bienvenida -->
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div>
+<div style="padding:70px 20px;background:linear-gradient(135deg,#0f172a,#1e293b);text-align:center;min-height:640px">
+  <div style="width:70px;height:70px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px">✓</div>
+  <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:6px">¡Bienvenido a VOY!</div>
+  <div class="p-sm" style="color:#94a3b8;margin-bottom:28px">Tu cuenta ha sido creada exitosamente</div>
+  <div class="p-card" style="text-align:left;max-width:280px;margin:0 auto 12px"><div class="p-flex p-ac p-g2"><span style="font-size:16px">📧</span><div class="p-f1"><div class="p-sm p-fb p-dk">Revisa tu email</div><div class="p-xs p-sl">Te enviamos un correo de bienvenida</div></div></div></div>
+  <div class="p-card" style="text-align:left;max-width:280px;margin:0 auto 16px"><div class="p-flex p-ac p-g2"><span style="font-size:16px">📋</span><div class="p-f1"><div class="p-sm p-fb p-dk">Completa tu perfil</div><div class="p-xs p-sl">Agrega foto y más datos</div></div></div></div>
+  <button class="p-btn p-btn-blue" style="max-width:280px;margin:0 auto">Ir a mi dashboard →</button>
+</div>
+</div><div class="phone-tag">Bienvenida</div></div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- CLIENTE                                -->
+<!-- ═══════════════════════════════════════ -->
+<div class="sec" id="s-cliente">
+<div class="sec-title">App del Cliente</div>
+<div class="sec-desc">Dashboard, notificaciones, perfil público, comparador, booking, urgente, reclamo</div>
+<div class="scroll-hint">← Desliza para ver todas las pantallas →</div>
+<div class="phones">
+
+<!-- Dashboard -->
+<div class="phone-wrap"><div class="phone"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><span>Sergio G.</span><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-title">Hola, Sergio 👋</div>
+  <div style="margin-bottom:12px"><div class="p-input" style="color:#94a3b8">🔍 ¿Qué servicio necesitas?</div></div>
+  <div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:14px"><div class="p-chip p-chip-on">🔧 Gasfitería</div><div class="p-chip p-chip-off">⚡ Electricidad</div><div class="p-chip p-chip-off">🏠 Limpieza</div></div>
+  <div class="p-card" style="border-left:3px solid #2563eb"><div class="p-flex p-ac p-g2"><div class="p-avatar" style="background:#dbeafe;color:#2563eb;width:30px;height:30px;font-size:10px">JR</div><div class="p-f1"><div class="p-sm p-fb p-dk">Reparación llave cocina</div><div class="p-xs p-sl">Juan Rodríguez · En camino</div></div><span class="p-badge p-badge-blue">En curso</span></div></div>
+  <button class="p-btn p-btn-blue" style="margin-top:8px">➕ Nueva solicitud</button>
+  <div class="p-xs p-fb p-sl" style="text-transform:uppercase;letter-spacing:.5px;margin-top:16px;margin-bottom:8px">Solicitudes recientes</div>
+  <div class="p-card"><div class="p-flex p-ac p-g2"><span style="font-size:18px">⚡</span><div class="p-f1"><div class="p-sm p-fm p-dk">Instalación enchufe exterior</div><div class="p-xs p-sl">📍 Viña del Mar · 2 cotizaciones</div></div><span class="p-badge p-badge-green">Abierta</span></div></div>
+  <div class="p-card"><div class="p-flex p-ac p-g2"><span style="font-size:18px">🎨</span><div class="p-f1"><div class="p-sm p-fm p-dk">Pintar dormitorio</div><div class="p-xs p-sl">📍 Reñaca · Completada</div></div><span class="p-badge p-badge-green" style="background:#f0fdf4">✓ Lista</span></div></div>
+</div>
+<div class="p-nav"><div class="p-nav-item on"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Dashboard Cliente</div></div>
+
+<!-- Notificaciones -->
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-title">Notificaciones</div>
+  <div style="display:flex;gap:5px;margin-bottom:12px"><div class="p-chip p-chip-on">Todas</div><div class="p-chip p-chip-off">Sin leer</div><div class="p-chip p-chip-off">Cotizaciones</div></div>
+  <div class="p-card" style="border-left:3px solid #2563eb;background:#f8fafc"><div class="p-flex p-ac p-g2"><div style="width:7px;height:7px;background:#2563eb;border-radius:50%;flex-shrink:0"></div><div class="p-f1"><div class="p-sm p-fb p-dk">Nueva cotización recibida</div><div class="p-xs p-sl">María Vargas cotizó $25.000</div><div class="p-xs" style="color:#94a3b8;margin-top:3px">Hace 5 min</div></div></div></div>
+  <div class="p-card" style="border-left:3px solid #059669;background:#f8fafc"><div class="p-flex p-ac p-g2"><div style="width:7px;height:7px;background:#059669;border-radius:50%;flex-shrink:0"></div><div class="p-f1"><div class="p-sm p-fb p-dk">Profesional en camino</div><div class="p-xs p-sl">Pedro López · Llegada: 15 min</div><div class="p-xs" style="color:#94a3b8;margin-top:3px">Hace 20 min</div></div></div></div>
+  <div class="p-card"><div class="p-flex p-ac p-g2"><div style="width:7px;height:7px;background:#e2e8f0;border-radius:50%;flex-shrink:0"></div><div class="p-f1"><div class="p-sm p-fm p-dk">Trabajo completado</div><div class="p-xs p-sl">¡Califica al profesional!</div><div class="p-xs" style="color:#94a3b8;margin-top:3px">Ayer 18:30</div></div></div></div>
+  <div class="p-card"><div class="p-flex p-ac p-g2"><div style="width:7px;height:7px;background:#e2e8f0;border-radius:50%;flex-shrink:0"></div><div class="p-f1"><div class="p-sm p-fm p-dk">Reclamo resuelto</div><div class="p-xs p-sl">Reembolso total $35.000</div><div class="p-xs" style="color:#94a3b8;margin-top:3px">20 mar</div></div></div></div>
+</div>
+<div class="p-nav"><div class="p-nav-item"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item on"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Notificaciones</div></div>
+
+<!-- Perfil Público -->
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-flex p-ac p-g2" style="margin-bottom:12px"><span style="color:#94a3b8">←</span><span class="p-sm p-fb p-dk">Perfil profesional</span></div>
+  <div style="text-align:center;margin-bottom:14px">
+    <div class="p-avatar" style="width:56px;height:56px;font-size:20px;margin:0 auto 6px;background:#dbeafe;color:#2563eb">MV</div>
+    <div style="font-size:15px;font-weight:700;color:#0f172a">María Vargas</div>
+    <div class="p-flex p-ac p-g2" style="justify-content:center;margin-top:4px"><span class="p-badge p-badge-blue">✓ Verificada</span><span class="p-badge" style="background:#f1f5f9;color:#475569">🥈 Plata</span></div>
+    <div class="p-xs p-sl" style="margin-top:3px">⭐ 4.9 · 48 trabajos · 📍 Valparaíso</div>
+  </div>
+  <div class="p-card"><div class="p-sm p-fb p-dk" style="margin-bottom:6px">Sobre mí</div><div class="p-xs p-sl">Gasfíter con 10 años de experiencia. Especialista en reparaciones de cañerías y mantención preventiva.</div></div>
+  <div class="p-card"><div class="p-sm p-fb p-dk" style="margin-bottom:6px">Galería</div><div class="p-grid3"><div style="height:60px;background:linear-gradient(135deg,#e2e8f0,#f1f5f9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">📷</div><div style="height:60px;background:linear-gradient(135deg,#dbeafe,#e0f2fe);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">📷</div><div style="height:60px;background:linear-gradient(135deg,#dcfce7,#d1fae5);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">📷</div></div></div>
+  <div class="p-card"><div class="p-flex p-ac" style="justify-content:space-between;margin-bottom:6px"><div class="p-sm p-fb p-dk">Reseñas (24)</div><div class="p-xs" style="color:#f59e0b;font-weight:600">⭐ 4.9</div></div><div style="border-bottom:1px solid #f1f5f9;padding-bottom:6px;margin-bottom:6px"><div class="p-flex p-ac p-g2"><div class="p-avatar" style="width:24px;height:24px;font-size:9px">SG</div><span class="p-xs p-fb p-dk">Sergio G.</span><span class="p-xs p-sl">⭐⭐⭐⭐⭐</span></div><div class="p-xs p-sl" style="margin-top:2px">"Excelente, muy profesional."</div></div></div>
+  <div class="p-grid2"><button class="p-btn p-btn-blue" style="font-size:11px">📋 Solicitar</button><button class="p-btn p-btn-outline" style="font-size:11px">💬 Mensaje</button></div>
+</div>
+<div class="p-nav"><div class="p-nav-item"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item on"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Perfil Público Worker</div></div>
+
+<!-- Comparador -->
+<div class="phone-wrap"><div class="phone"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-flex p-ac p-g2" style="margin-bottom:10px"><span style="color:#94a3b8">←</span><div><div class="p-sm p-fb p-dk">Reparar llave cocina</div><span class="p-badge p-badge-amber">En cotización</span></div></div>
+  <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px;text-align:center;margin-bottom:10px"><span class="p-xs" style="color:#1d4ed8;font-weight:500">Comparando 3 cotizaciones</span></div>
+  <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:14px;padding:12px;margin-bottom:10px">
+    <div class="p-flex p-ac p-g2" style="margin-bottom:6px"><span style="font-size:11px;color:#059669">🏆</span><span style="font-size:10px;font-weight:700;color:#059669">Mejor precio</span></div>
+    <div class="p-flex p-ac p-g2"><div class="p-avatar" style="width:28px;height:28px;font-size:10px;background:#dcfce7;color:#15803d">MV</div><div class="p-f1"><div class="p-sm p-fb p-dk">María Vargas</div><div class="p-xs p-sl">⭐ 4.9 · ✓ Verificada</div></div><div style="font-size:16px;font-weight:800;color:#0f172a">$25.000</div></div>
+    <div class="p-sep"></div>
+    <div class="p-flex p-g3 p-xs p-sl"><span>💼 48 trabajos</span><span>⏱ 1h</span></div>
+    <button class="p-btn p-btn-green" style="margin-top:8px">Aceptar</button>
+  </div>
+  <div class="p-card"><div class="p-flex p-ac p-g2"><div class="p-avatar" style="width:28px;height:28px;font-size:10px">PL</div><div class="p-f1"><div class="p-sm p-fb p-dk">Pedro López</div><div class="p-xs p-sl">⭐ 4.7 · 32 trabajos</div></div><div style="font-size:16px;font-weight:800;color:#0f172a">$28.000</div></div><button class="p-btn p-btn-blue" style="margin-top:8px">Aceptar</button></div>
+  <div class="p-card"><div class="p-flex p-ac p-g2"><div class="p-avatar" style="width:28px;height:28px;font-size:10px">RG</div><div class="p-f1"><div class="p-sm p-fb p-dk">Roberto Gómez</div><div class="p-xs p-sl">⭐ 4.5 · 18 trabajos</div></div><div style="font-size:16px;font-weight:800;color:#0f172a">$35.000</div></div><button class="p-btn p-btn-blue" style="margin-top:8px">Aceptar</button></div>
+</div>
+<div class="p-nav"><div class="p-nav-item on"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Comparador Cotizaciones</div></div>
+
+<!-- Booking Timeline -->
+<div class="phone-wrap"><div class="phone"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-flex p-ac p-g2" style="margin-bottom:10px"><span style="color:#94a3b8">←</span><span class="p-sm p-fb p-dk">Detalle de reserva</span></div>
+  <div class="p-card">
+    <div class="p-timeline"><div class="p-tl-step"><div class="p-tl-dot p-tl-done">✓</div><div class="p-tl-label" style="color:#15803d;font-weight:600">Confirmada</div></div><div class="p-tl-step"><div class="p-tl-dot p-tl-done">✓</div><div class="p-tl-label" style="color:#15803d;font-weight:600">Pagada</div></div><div class="p-tl-step"><div class="p-tl-dot p-tl-done">✓</div><div class="p-tl-label" style="color:#15803d;font-weight:600">En camino</div></div><div class="p-tl-step"><div class="p-tl-dot p-tl-active">●</div><div class="p-tl-label" style="color:#2563eb;font-weight:600">En curso</div></div><div class="p-tl-step"><div class="p-tl-dot p-tl-pending">○</div><div class="p-tl-label">Completada</div></div></div>
+  </div>
+  <div class="p-card"><div class="p-xs p-sl">👤 María Vargas</div><div class="p-xs p-sl" style="margin-top:3px">📍 Av. Libertad 1234, Viña del Mar</div><div class="p-xs p-sl" style="margin-top:3px">📅 Lunes 24 de marzo</div></div>
+  <div class="p-card"><div class="p-flex p-ac" style="justify-content:space-between"><span class="p-xs p-sl">Total</span><span style="font-size:16px;font-weight:800;color:#0f172a">$25.000</span></div></div>
+  <button class="p-btn p-btn-outline" style="margin-bottom:6px">💬 Chat con María</button>
+  <button class="p-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca">⚠️ Reportar problema</button>
+  <div class="p-card" style="margin-top:10px"><div class="p-sm p-fb p-dk" style="margin-bottom:6px">Califica al profesional</div><div style="display:flex;gap:2px;font-size:14px;color:#f59e0b;margin-bottom:6px">★★★★★</div><textarea class="p-input" style="min-height:40px;resize:none" placeholder="Tu experiencia..."></textarea><button class="p-btn p-btn-blue" style="margin-top:8px">Enviar reseña</button></div>
+</div>
+<div class="p-nav"><div class="p-nav-item"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item on"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Booking + Timeline</div></div>
+
+<!-- Solicitud Urgente -->
+<div class="phone-wrap"><div class="phone"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-flex p-ac p-g2" style="margin-bottom:10px"><span style="color:#94a3b8">←</span><span class="p-sm p-fb p-dk">Nueva solicitud</span></div>
+  <div class="p-grid4" style="margin-bottom:14px">
+    <div style="text-align:center;padding:7px;background:#eff6ff;border:2px solid #3b82f6;border-radius:10px"><div style="font-size:18px">🔧</div><div style="font-size:7px;color:#2563eb;font-weight:600">Gasfitería</div></div>
+    <div style="text-align:center;padding:7px;background:#fff;border:1px solid #e2e8f0;border-radius:10px"><div style="font-size:18px">⚡</div><div style="font-size:7px;color:#64748b">Electricidad</div></div>
+    <div style="text-align:center;padding:7px;background:#fff;border:1px solid #e2e8f0;border-radius:10px"><div style="font-size:18px">🏠</div><div style="font-size:7px;color:#64748b">Limpieza</div></div>
+    <div style="text-align:center;padding:7px;background:#fff;border:1px solid #e2e8f0;border-radius:10px"><div style="font-size:18px">🎨</div><div style="font-size:7px;color:#64748b">Pintura</div></div>
+  </div>
+  <div class="p-input" style="margin-bottom:8px;color:#0f172a">Cañería rota en el baño</div>
+  <textarea class="p-input" style="min-height:45px;resize:none;margin-bottom:10px;color:#0f172a">Hay una cañería rota, necesito ayuda urgente</textarea>
+  <div class="p-input" style="margin-bottom:12px;color:#0f172a">📍 Av. San Martín 567, Viña del Mar</div>
+  <div style="border:2px solid #fca5a5;background:#fef2f2;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:14px">
+    <div style="width:36px;height:36px;border-radius:50%;background:#dc2626;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0">⚡</div>
+    <div class="p-f1"><div class="p-sm p-fb" style="color:#b91c1c">Solicitud urgente</div><div class="p-xs" style="color:#dc2626">Notificación inmediata a profesionales cercanos</div></div>
+  </div>
+  <button class="p-btn p-btn-red" style="height:44px;font-size:14px">⚡ Publicar urgente</button>
+</div>
+<div class="p-nav"><div class="p-nav-item on"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Solicitud Urgente</div></div>
+
+<!-- Reclamo -->
+<div class="phone-wrap"><div class="phone"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-flex p-ac p-g2" style="margin-bottom:10px"><span style="color:#94a3b8">←</span><span class="p-sm p-fb p-dk">Reportar problema</span></div>
+  <div class="p-sm p-fb p-dk" style="margin-bottom:8px">¿Cuál es el problema?</div>
+  <div style="border:2px solid #fca5a5;background:#fef2f2;border-radius:10px;padding:10px;margin-bottom:6px"><div class="p-sm p-fm" style="color:#b91c1c">Mala calidad</div><div class="p-xs p-sl">El trabajo no cumple lo acordado</div></div>
+  <div class="p-card" style="padding:10px"><div class="p-sm p-fm p-dk">No se presentó</div><div class="p-xs p-sl">El profesional no llegó</div></div>
+  <div class="p-card" style="padding:10px"><div class="p-sm p-fm p-dk">Trabajo incompleto</div><div class="p-xs p-sl">No se terminó lo pactado</div></div>
+  <div class="p-card" style="padding:10px"><div class="p-sm p-fm p-dk">Daños</div><div class="p-xs p-sl">Daños en la propiedad</div></div>
+  <div class="p-sm p-fb p-dk" style="margin-top:10px;margin-bottom:6px">Describe lo que pasó</div>
+  <textarea class="p-input" style="min-height:50px;resize:none" placeholder="Cuéntanos con detalle..."></textarea>
+  <div class="p-sm p-fb p-dk" style="margin-top:10px;margin-bottom:6px">Evidencia fotográfica</div>
+  <div class="p-upload">📷 Agregar fotos</div>
+  <button class="p-btn p-btn-red" style="margin-top:10px">⚠️ Enviar reclamo</button>
+  <div class="p-xs p-sl" style="text-align:center;margin-top:6px">Revisaremos en máximo 48 horas hábiles</div>
+</div>
+</div><div class="phone-tag">Reclamo / Disputa</div></div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PROFESIONAL                            -->
+<!-- ═══════════════════════════════════════ -->
+<div class="sec" id="s-worker">
+<div class="sec-title">App del Profesional</div>
+<div class="sec-desc">Dashboard, agenda, cotización, ganancias, disponibilidad</div>
+<div class="scroll-hint">← Desliza para ver todas las pantallas →</div>
+<div class="phones">
+
+<!-- Worker Dashboard -->
+<div class="phone-wrap"><div class="phone"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><span>María V.</span><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-title">Buenas tardes, María ☀️</div>
+  <div class="p-grid2">
+    <div class="p-card p-card-green"><div class="p-label">💰 Ganancia mes</div><div class="p-stat">$285.000</div></div>
+    <div class="p-card"><div class="p-xs p-sl">📋 Trabajos</div><div style="font-size:15px;font-weight:700;color:#0f172a">12</div></div>
+    <div class="p-card"><div class="p-xs p-sl">⭐ Rating</div><div style="font-size:15px;font-weight:700;color:#0f172a">4.9</div></div>
+    <div class="p-card" style="position:relative"><div class="p-xs p-sl">🔔 Solicitudes</div><div style="font-size:15px;font-weight:700;color:#0f172a">3</div><div style="position:absolute;top:8px;right:8px;width:7px;height:7px;background:#dc2626;border-radius:50%;animation:pulse 1.5s infinite"></div></div>
+  </div>
+  <div class="p-card"><div class="p-xs p-fb p-dk" style="margin-bottom:6px">Últimos 6 meses</div><div style="display:flex;align-items:flex-end;gap:5px;height:80px"><div style="flex:1;text-align:center"><div style="height:25%;background:#e2e8f0;border-radius:5px;min-height:3px"></div><div style="font-size:7px;color:#94a3b8;margin-top:3px">oct</div></div><div style="flex:1;text-align:center"><div style="height:45%;background:#e2e8f0;border-radius:5px"></div><div style="font-size:7px;color:#94a3b8;margin-top:3px">nov</div></div><div style="flex:1;text-align:center"><div style="height:60%;background:#e2e8f0;border-radius:5px"></div><div style="font-size:7px;color:#94a3b8;margin-top:3px">dic</div></div><div style="flex:1;text-align:center"><div style="height:40%;background:#e2e8f0;border-radius:5px"></div><div style="font-size:7px;color:#94a3b8;margin-top:3px">ene</div></div><div style="flex:1;text-align:center"><div style="height:70%;background:#e2e8f0;border-radius:5px"></div><div style="font-size:7px;color:#94a3b8;margin-top:3px">feb</div></div><div style="flex:1;text-align:center"><div style="height:85%;background:#059669;border-radius:5px"></div><div style="font-size:7px;color:#94a3b8;margin-top:3px">mar</div></div></div></div>
+  <div class="p-card p-card-blue"><div class="p-xs" style="opacity:.7">Trabajo activo</div><div class="p-sm p-fb">Reparar llave cocina</div><div class="p-xs" style="opacity:.7;margin-top:3px">📍 Av. Libertad 1234</div><div class="p-flex p-g2" style="margin-top:8px"><button class="p-btn p-btn-outline" style="flex:1;padding:7px;font-size:10px;color:#2563eb">💬 Chat</button><button class="p-btn" style="flex:1;padding:7px;font-size:10px;background:#fff;color:#059669">✓ Completar</button></div></div>
+</div>
+<div class="p-nav"><div class="p-nav-item on"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Solicitudes</div><div class="p-nav-item"><span class="p-nav-icon">📅</span>Agenda</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Dashboard Profesional</div></div>
+
+<!-- Agenda -->
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><span>María V.</span><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-title">Agenda</div>
+  <div class="p-card">
+    <div class="p-flex p-ac" style="justify-content:space-between;margin-bottom:10px"><span style="color:#94a3b8">←</span><span class="p-sm p-fb p-dk">Marzo 2026</span><span style="color:#94a3b8">→</span></div>
+    <div class="p-grid4" style="gap:3px;text-align:center;font-size:9px;color:#94a3b8;margin-bottom:3px"><div>L</div><div>M</div><div>M</div><div>J</div></div>
+    <div class="p-grid4" style="gap:3px;text-align:center;font-size:10px">
+      <div style="padding:5px;border-radius:7px;color:#94a3b8">17</div><div style="padding:5px;border-radius:7px;color:#94a3b8">18</div><div style="padding:5px;border-radius:7px;color:#94a3b8">19</div><div style="padding:5px;border-radius:7px;color:#94a3b8">20</div>
+    </div>
+    <div class="p-grid4" style="gap:3px;text-align:center;font-size:10px">
+      <div style="padding:5px;border-radius:7px;color:#0f172a;font-weight:600">21</div><div style="padding:5px;border-radius:7px;color:#0f172a">22</div><div style="padding:5px;border-radius:7px;background:#2563eb;color:#fff;font-weight:700">23</div><div style="padding:5px;border-radius:7px;background:#dcfce7;color:#15803d;font-weight:600">24</div>
+    </div>
+  </div>
+  <div class="p-xs p-fb p-dk" style="text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Hoy — Lunes 23 marzo</div>
+  <div class="p-card" style="border-left:3px solid #2563eb"><div class="p-flex p-ac p-g2"><div style="text-align:center"><div class="p-xs p-fb" style="color:#2563eb">10:00</div><div style="font-size:8px;color:#94a3b8">12:00</div></div><div class="p-f1"><div class="p-sm p-fb p-dk">Reparar llave cocina</div><div class="p-xs p-sl">📍 Av. Libertad · Sergio G.</div></div><span class="p-badge p-badge-blue">En curso</span></div></div>
+  <div class="p-card" style="border-left:3px solid #f59e0b"><div class="p-flex p-ac p-g2"><div style="text-align:center"><div class="p-xs p-fb" style="color:#f59e0b">15:00</div><div style="font-size:8px;color:#94a3b8">17:00</div></div><div class="p-f1"><div class="p-sm p-fb p-dk">Revisión calefón</div><div class="p-xs p-sl">📍 Calle Condell · Ana M.</div></div><span class="p-badge p-badge-amber">Pendiente</span></div></div>
+  <div class="p-xs p-fb p-dk" style="text-transform:uppercase;letter-spacing:.5px;margin-top:10px;margin-bottom:8px">Mañana — Martes 24</div>
+  <div class="p-card" style="border-left:3px solid #059669"><div class="p-flex p-ac p-g2"><div style="text-align:center"><div class="p-xs p-fb" style="color:#059669">09:00</div><div style="font-size:8px;color:#94a3b8">11:00</div></div><div class="p-f1"><div class="p-sm p-fb p-dk">Instalación enchufe</div><div class="p-xs p-sl">📍 Reñaca · Pedro S.</div></div><span class="p-badge p-badge-green">Confirmada</span></div></div>
+</div>
+<div class="p-nav"><div class="p-nav-item"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Solicitudes</div><div class="p-nav-item on"><span class="p-nav-icon">📅</span>Agenda</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Agenda / Calendario</div></div>
+
+<!-- Cotización -->
+<div class="phone-wrap"><div class="phone"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-flex p-ac p-g2" style="margin-bottom:10px"><span style="color:#94a3b8">←</span><div><div class="p-sm p-fb p-dk">Enviar cotización</div><div class="p-xs p-sl">Cañería rota en el baño</div></div></div>
+  <div class="p-card"><div class="p-sm p-fb p-dk" style="margin-bottom:6px">Mano de obra</div><div class="p-grid2"><div><div style="font-size:8px;color:#94a3b8">Tarifa</div><div class="p-input" style="margin-top:3px">15.000</div></div><div><div style="font-size:8px;color:#94a3b8">Horas</div><div class="p-input" style="margin-top:3px">2</div></div></div></div>
+  <div class="p-card"><div class="p-flex p-ac" style="justify-content:space-between;margin-bottom:6px"><div class="p-sm p-fb p-dk">Materiales</div><span style="font-size:10px;color:#d97706;font-weight:600">📦 Mis materiales</span></div>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:6px;margin-bottom:8px"><div style="font-size:8px;color:#b45309;font-weight:600;margin-bottom:3px">Selecciona:</div><div class="p-flex" style="justify-content:space-between;padding:4px 6px"><span style="font-size:10px;color:#0f172a">Cañería PVC 1/2</span><span style="font-size:10px;color:#64748b">$2.500</span></div><div class="p-flex" style="justify-content:space-between;padding:4px 6px"><span style="font-size:10px;color:#0f172a">Llave de paso</span><span style="font-size:10px;color:#64748b">$4.500</span></div></div>
+  </div>
+  <div class="p-card p-card-dark"><div class="p-sm p-fb" style="margin-bottom:6px">Resumen</div><div class="p-flex" style="justify-content:space-between;margin-bottom:3px"><span class="p-xs" style="color:#94a3b8">Mano de obra</span><span class="p-xs">$30.000</span></div><div class="p-flex" style="justify-content:space-between;margin-bottom:6px"><span class="p-xs" style="color:#94a3b8">Materiales</span><span class="p-xs">$5.000</span></div><div class="p-sep" style="background:#334155"></div><div class="p-flex" style="justify-content:space-between;margin-bottom:3px"><span class="p-xs" style="color:#cbd5e1">Total cliente</span><span style="font-size:16px;font-weight:800">$35.000</span></div><div class="p-flex" style="justify-content:space-between;margin-bottom:3px"><span class="p-xs" style="color:#94a3b8">Comisión 15%</span><span class="p-xs" style="color:#f87171">-$5.250</span></div><div class="p-sep" style="background:#334155"></div><div class="p-flex" style="justify-content:space-between"><span class="p-sm p-fb" style="color:#34d399">Tú recibes</span><span class="p-sm p-fb" style="color:#34d399">$29.750</span></div></div>
+  <button class="p-btn p-btn-blue" style="margin-top:10px;height:42px">Enviar cotización — $35.000</button>
+</div>
+</div><div class="phone-tag">Cotización + Materiales</div></div>
+
+<!-- Ganancias -->
+<div class="phone-wrap"><div class="phone"><div class="notch"></div>
+<div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div>
+<div class="p-content">
+  <div class="p-title">Ganancias</div>
+  <div class="p-card"><div class="p-flex p-ac p-g3"><span style="font-size:24px">🥈</span><div class="p-f1"><span class="p-badge" style="background:#f1f5f9;color:#475569;font-weight:700">Plata</span><div class="p-xs p-sl" style="margin-top:3px">48 trabajos completados</div><div style="margin-top:5px"><div class="p-flex p-ac" style="justify-content:space-between"><span style="font-size:8px;color:#94a3b8">Siguiente: 🥇 Oro</span><span style="font-size:8px;color:#94a3b8">50 trabajos</span></div><div style="height:5px;background:#e2e8f0;border-radius:99px;margin-top:3px;overflow:hidden"><div style="height:100%;background:#2563eb;border-radius:99px;width:96%"></div></div></div></div></div></div>
+  <div class="p-grid2"><div class="p-card p-card-green"><div class="p-label">💰 Total recibido</div><div class="p-stat">$1.2M</div></div><div class="p-card"><div class="p-xs p-sl">⏳ Pendiente</div><div style="font-size:15px;font-weight:700;color:#0f172a">$85.000</div></div></div>
+  <div class="p-card"><div class="p-sm p-fb p-dk" style="margin-bottom:8px">Rendimiento</div><div class="p-grid2"><div class="p-flex p-ac p-g2"><span>🎯</span><div><div class="p-fb p-dk">92%</div><div style="font-size:8px;color:#94a3b8">Tasa aceptación</div></div></div><div class="p-flex p-ac p-g2"><span>📊</span><div><div class="p-fb p-dk">$25.000</div><div style="font-size:8px;color:#94a3b8">Precio promedio</div></div></div><div class="p-flex p-ac p-g2"><span>📅</span><div><div class="p-fb p-dk">Viernes</div><div style="font-size:8px;color:#94a3b8">Mejor día</div></div></div><div class="p-flex p-ac p-g2"><span>⚡</span><div><div class="p-fb p-dk">8</div><div style="font-size:8px;color:#94a3b8">Racha actual</div></div></div></div></div>
+</div>
+<div class="p-nav"><div class="p-nav-item"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Solicitudes</div><div class="p-nav-item"><span class="p-nav-icon">📅</span>Agenda</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item on"><span class="p-nav-icon">👤</span>Perfil</div></div>
+</div><div class="phone-tag">Ganancias + Nivel</div></div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- ADMIN                                  -->
+<!-- ═══════════════════════════════════════ -->
+<div class="sec" id="s-admin">
+<div class="sec-title">Panel Admin</div>
+<div class="sec-desc">Dashboard y gestión de reclamos</div>
+<div class="scroll-hint">← Desliza →</div>
+<div class="phones">
+<div class="phone-wrap"><div class="phone"><div class="notch"></div><div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><span>Admin</span></div></div><div class="p-content"><div class="p-title">Panel Admin</div><div class="p-grid2"><div class="p-card p-card-blue"><div class="p-label">👥 Usuarios</div><div class="p-stat">1,247</div></div><div class="p-card p-card-green"><div class="p-label">💼 Workers</div><div class="p-stat">548</div></div><div class="p-card" style="background:#7c3aed;color:#fff;border:none"><div class="p-label">💰 Comisiones</div><div class="p-stat">$2.1M</div></div><div class="p-card p-card-green"><div class="p-label">✓ Completados</div><div class="p-stat">3,241</div></div></div><div class="p-card" style="display:flex;align-items:center;gap:10px"><div style="font-size:24px">🛡️</div><div class="p-f1"><div class="p-sm p-fb p-dk">Verificaciones</div><div class="p-xs p-sl">5 pendientes</div></div><span class="p-badge p-badge-amber">5</span></div><div class="p-card" style="display:flex;align-items:center;gap:10px"><div style="font-size:24px">⚠️</div><div class="p-f1"><div class="p-sm p-fb p-dk">Reclamos</div><div class="p-xs p-sl">3 abiertos</div></div><span class="p-badge p-badge-red">3</span></div></div></div><div class="phone-tag">Admin Dashboard</div></div>
+
+<div class="phone-wrap"><div class="phone"><div class="notch"></div><div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><span>Admin</span></div></div><div class="p-content"><div class="p-flex p-ac p-g2" style="margin-bottom:10px"><span style="color:#dc2626">⚠️</span><div class="p-title" style="margin:0">Reclamos</div><span class="p-badge p-badge-red" style="margin-left:auto">3</span></div><div class="p-grid3"><div style="background:#fef2f2;border-radius:10px;padding:8px;text-align:center;border:1px solid #fecaca"><div style="font-size:14px;font-weight:700;color:#dc2626">3</div><div style="font-size:8px;color:#ef4444">Abiertos</div></div><div style="background:#fffbeb;border-radius:10px;padding:8px;text-align:center;border:1px solid #fde68a"><div style="font-size:14px;font-weight:700;color:#d97706">1</div><div style="font-size:8px;color:#f59e0b">En revisión</div></div><div style="background:#f8fafc;border-radius:10px;padding:8px;text-align:center;border:1px solid #e2e8f0"><div style="font-size:14px;font-weight:700;color:#475569">8</div><div style="font-size:8px;color:#94a3b8">Total</div></div></div><div class="p-card" style="border-left:3px solid #dc2626"><div class="p-flex p-ac p-g2" style="margin-bottom:6px"><span class="p-sm p-fb p-dk">Ana Muñoz</span><span class="p-badge p-badge-red">Abierto</span></div><div class="p-xs p-sl">Mala calidad · $35.000</div><div class="p-sep"></div><textarea class="p-input" style="min-height:30px;resize:none;font-size:10px" placeholder="Nota admin..."></textarea><div class="p-grid3" style="margin-top:8px"><button class="p-btn p-btn-green" style="font-size:9px;padding:7px">Reembolso total</button><button class="p-btn p-btn-blue" style="font-size:9px;padding:7px">Parcial</button><button class="p-btn p-btn-outline" style="font-size:9px;padding:7px">Sin reembolso</button></div></div></div></div><div class="phone-tag">Admin Reclamos</div></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- ESTADOS UI                             -->
+<!-- ═══════════════════════════════════════ -->
+<div class="sec" id="s-estados">
+<div class="sec-title">Estados UI</div>
+<div class="sec-desc">Loading skeleton, error, vacío, success</div>
+<div class="scroll-hint">← Desliza →</div>
+<div class="phones">
+
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div><div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div><div class="p-content"><div class="skel" style="height:16px;width:55%;margin-bottom:14px"></div><div class="p-grid2"><div class="skel" style="height:70px"></div><div class="skel" style="height:70px"></div></div><div class="skel" style="height:100px;margin-bottom:14px"></div><div class="p-flex p-g2 p-ac" style="margin-bottom:14px"><div class="skel" style="width:36px;height:36px;border-radius:50%"></div><div style="flex:1"><div class="skel" style="height:10px;width:65%;margin-bottom:6px"></div><div class="skel" style="height:10px;width:45%"></div></div></div><div class="p-flex p-g2 p-ac" style="margin-bottom:14px"><div class="skel" style="width:36px;height:36px;border-radius:50%"></div><div style="flex:1"><div class="skel" style="height:10px;width:55%;margin-bottom:6px"></div><div class="skel" style="height:10px;width:35%"></div></div></div><div class="skel" style="height:50px"></div></div><div class="p-nav"><div class="p-nav-item on"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div></div><div class="phone-tag">Loading Skeleton</div></div>
+
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div><div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div><div class="p-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="width:56px;height:56px;background:#fef2f2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px">⚠️</div><div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:4px">Error de conexión</div><div class="p-xs p-sl" style="text-align:center;margin-bottom:14px">No se pudo conectar con la base de datos.</div><button class="p-btn p-btn-blue" style="max-width:180px">🔄 Reintentar</button></div><div class="p-nav"><div class="p-nav-item on"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div></div><div class="phone-tag">Estado Error</div></div>
+
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div><div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><span>Sergio G.</span><div class="p-bell">🔔</div></div></div><div class="p-content"><div class="p-title">Mis reservas</div><div style="text-align:center;padding:50px 16px"><div style="font-size:40px;margin-bottom:10px">📋</div><div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:4px">Sin reservas aún</div><div class="p-xs p-sl" style="margin-bottom:16px">Cuando contrates un profesional aparecerán aquí</div><button class="p-btn p-btn-blue" style="max-width:200px;margin:0 auto">🔍 Explorar profesionales</button></div></div><div class="p-nav"><div class="p-nav-item"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item on"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div></div><div class="phone-tag">Estado Vacío</div></div>
+
+<div class="phone-wrap"><div class="phone is-new"><div class="notch"></div><div class="p-header"><span class="p-logo">VOY</span><div class="p-user"><div class="p-bell">🔔</div></div></div><div class="p-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="width:70px;height:70px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:14px">✓</div><div style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:4px">¡Solicitud publicada!</div><div class="p-xs p-sl" style="text-align:center;margin-bottom:16px">Los profesionales cercanos están recibiendo tu solicitud.</div><button class="p-btn p-btn-blue" style="max-width:200px">Ver mis solicitudes</button><button class="p-btn p-btn-outline" style="max-width:200px;margin-top:6px">Volver al inicio</button></div><div class="p-nav"><div class="p-nav-item"><span class="p-nav-icon">🏠</span>Inicio</div><div class="p-nav-item"><span class="p-nav-icon">🔍</span>Explorar</div><div class="p-nav-item"><span class="p-nav-icon">📋</span>Reservas</div><div class="p-nav-item"><span class="p-nav-icon">💬</span>Chat</div><div class="p-nav-item"><span class="p-nav-icon">👤</span>Perfil</div></div></div><div class="phone-tag">Estado Success</div></div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODELO DATOS                           -->
+<!-- ═══════════════════════════════════════ -->
+<div class="sec" id="s-datos">
+<div class="sec-title">Modelo de Datos — Airtable</div>
+<div class="sec-desc">Tablas existentes + nuevas para v2</div>
+
+<div class="report"><h3>📊 Tablas existentes (mantener)</h3><table><tr><th>Tabla</th><th>Campos clave</th><th>Cambios v2</th></tr><tr><td><strong>Workers</strong></td><td>WorkerId, Name, Email, Category, Rating, Lat/Lng, Verified, Available, Bio, Skills, Gallery</td><td>+ Schedule, CoverageRadius, VacationMode, Level</td></tr><tr><td><strong>Clients</strong></td><td>ClientId, Name, Email, City, Phone, Lat/Lng</td><td>Sin cambios</td></tr><tr><td><strong>Bookings</strong></td><td>BookingId, ClientId, WorkerId, Service, Status, Date, Price, Commission</td><td>+ IsUrgent, TimelineStatus</td></tr><tr><td><strong>Requests</strong></td><td>ReqId, ClientName, Service, Status, Distance</td><td>+ IsUrgent, Photos</td></tr><tr><td><strong>Quotations</strong></td><td>QuoteId, LaborRate, LaborHours, Materials (JSON), Commission, GrandTotal</td><td>Sin cambios</td></tr><tr><td><strong>Messages</strong></td><td>ConversationId, From, Text, TimeStr</td><td>+ ImageUrl</td></tr><tr><td><strong>Verifications</strong></td><td>VerifId, WorkerName, Status, Documents</td><td>+ Step (1-4)</td></tr><tr><td><strong>Transactions</strong></td><td>TxId, Date, ClientName, WorkerName, Gross</td><td>Sin cambios</td></tr></table></div>
+
+<div class="report"><h3>🆕 Tablas nuevas</h3><table><tr><th>Tabla</th><th>Campos</th><th>Propósito</th></tr><tr><td><strong>Claims</strong></td><td>ClaimId, BookingRecordId, ClientRecordId, WorkerRecordId, Type, Description, Photos, Status, AdminNotes, RefundAmount, RefundType, CreatedAt</td><td>Reclamos y disputas</td></tr><tr><td><strong>Notifications</strong></td><td>NotifId, UserRecordId, UserType, Type, Title, Body, Read, RelatedRecordId, CreatedAt</td><td>Centro de notificaciones</td></tr><tr><td><strong>SavedMaterials</strong></td><td>MatId, WorkerRecordId, Name, UnitPrice, Unit, Category</td><td>Materiales guardados</td></tr><tr><td><strong>WorkerSchedule</strong></td><td>ScheduleId, WorkerRecordId, DayOfWeek, StartTime, EndTime, IsActive</td><td>Horario semanal</td></tr></table></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- CHECKLIST                              -->
+<!-- ═══════════════════════════════════════ -->
+<div class="sec" id="s-check">
+<div class="sec-title">Checklist de Entrega</div>
+<div class="sec-desc">Prioridades para Hoku</div>
+
+<div class="report"><h3>🎯 Fases de implementación</h3><table><tr><th>Fase</th><th>Features</th><th></th></tr><tr><td><strong>Fase 1</strong></td><td>Registro cliente + profesional, estados UI (skeleton/error/vacío/success), tabla Notifications</td><td><span class="p-badge p-badge-red">Alta</span></td></tr><tr><td><strong>Fase 2</strong></td><td>Reclamos (Claims + admin + cliente), comparador cotizaciones, timeline booking</td><td><span class="p-badge p-badge-red">Alta</span></td></tr><tr><td><strong>Fase 3</strong></td><td>Materiales guardados, ganancias/niveles, agenda/calendario, perfil público worker</td><td><span class="p-badge p-badge-amber">Media</span></td></tr><tr><td><strong>Fase 4</strong></td><td>Chat con fotos, horario semanal, radio cobertura, vacaciones, urgentes</td><td><span class="p-badge p-badge-green">Baja</span></td></tr></table></div>
+
+<div class="report"><h3>✅ Flujos maquetados</h3><table><tr><th>Flujo</th><th></th></tr><tr><td>Landing → Login</td><td style="color:#22c55e">✓</td></tr><tr><td>Registro cliente (2 pasos)</td><td style="color:#22c55e">✓ NUEVO</td></tr><tr><td>Registro profesional (3 pasos)</td><td style="color:#22c55e">✓ NUEVO</td></tr><tr><td>Bienvenida post-registro</td><td style="color:#22c55e">✓ NUEVO</td></tr><tr><td>Dashboard cliente + worker</td><td style="color:#22c55e">✓</td></tr><tr><td>Notificaciones centro</td><td style="color:#22c55e">✓ NUEVO</td></tr><tr><td>Perfil público profesional</td><td style="color:#22c55e">✓ NUEVO</td></tr><tr><td>Comparador cotizaciones</td><td style="color:#22c55e">✓</td></tr><tr><td>Booking + timeline 5 pasos</td><td style="color:#22c55e">✓</td></tr><tr><td>Solicitud urgente</td><td style="color:#22c55e">✓</td></tr><tr><td>Reclamo con evidencia</td><td style="color:#22c55e">✓</td></tr><tr><td>Agenda/calendario worker</td><td style="color:#22c55e">✓ NUEVO</td></tr><tr><td>Cotización + materiales</td><td style="color:#22c55e">✓</td></tr><tr><td>Ganancias + niveles</td><td style="color:#22c55e">✓</td></tr><tr><td>Admin dashboard + reclamos</td><td style="color:#22c55e">✓</td></tr><tr><td>Loading skeleton</td><td style="color:#22c55e">✓ NUEVO</td></tr><tr><td>Error / Vacío / Success</td><td style="color:#22c55e">✓ NUEVO</td></tr></table></div>
+
+<div class="report"><h3>📦 Dependencias</h3><table><tr><th>Recurso</th><th></th></tr><tr><td>Airtable API</td><td><span class="p-badge p-badge-green">Ya listo</span></td></tr><tr><td>jsPDF 2.5.1</td><td><span class="p-badge p-badge-green">Ya listo</span></td></tr><tr><td>Leaflet</td><td><span class="p-badge p-badge-green">Ya listo</span></td></tr><tr><td>Resend (emails)</td><td><span class="p-badge p-badge-green">Ya listo</span></td></tr><tr><td>Vercel</td><td><span class="p-badge p-badge-green">Ya listo</span></td></tr><tr><td>4 tablas nuevas en Airtable</td><td><span class="p-badge p-badge-amber">Crear</span></td></tr></table></div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:6px">VOY v2</div>
+  <p>Vanilla JS · Airtable · Leaflet · jsPDF 2.5.1 · Vercel</p>
+  <p style="margin-top:4px">Maqueta: Celia 🔍 · Estilo: Panchita 🐕 · Para: Hoku 🐾</p>
+  <p style="margin-top:4px">23 marzo 2026 · Smart Connection</p>
+</div>
+
+<script>
+function go(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:document.querySelector('.tabs').offsetTop+50,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

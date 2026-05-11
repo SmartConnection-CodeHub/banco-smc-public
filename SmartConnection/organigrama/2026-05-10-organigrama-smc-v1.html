@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMC OS · Organigrama · 23 agentes · 2026-05-10</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.5;position:relative;overflow-x:hidden}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%),radial-gradient(ellipse 800px 600px at 90% 100%,rgba(0,180,216,.06),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1}
+.container{max-width:1400px;margin:0 auto}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px;letter-spacing:-.02em}
+h2{font-size:22px;font-weight:700;color:#f1f5f9;margin:40px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px}
+h3{font-size:16px;font-weight:600;color:#94a3b8;margin:24px 0 12px}
+p{color:#94a3b8;margin-bottom:12px;font-size:14px}
+.meta{display:flex;gap:24px;font-size:12px;color:#6b7b8e;margin-bottom:32px}
+.meta span{padding:4px 12px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:30px;color:#00e5b0}
+
+/* TABLA DETALLADA */
+table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:13px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;font-weight:600;padding:12px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover{background:rgba(0,229,176,.04)}
+.health-green{color:#00e5b0;font-weight:600}
+.health-yellow{color:#f59e0b;font-weight:600}
+.health-red{color:#ef4444;font-weight:600}
+
+/* TARJETAS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px;margin:16px 0}
+.card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;transition:all .2s}
+.card:hover{border-color:rgba(0,229,176,.3);transform:translateY(-2px)}
+.card-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:12px}
+.card-title{font-size:15px;font-weight:700;color:#f1f5f9}
+.card-count{font-size:11px;color:#6b7b8e;background:rgba(255,255,255,.04);padding:3px 10px;border-radius:30px}
+.card-agents{font-size:12px;color:#94a3b8;margin-bottom:12px;line-height:1.6}
+.card-kpi{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:12px}
+.card-kpi dt{color:#6b7b8e;font-weight:500;text-transform:uppercase;letter-spacing:.04em;font-size:10px}
+.card-kpi dd{color:#cbd5e1}
+.card.wide{grid-column:1 / -1}
+
+/* CONSTELACIÓN */
+.constellation{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:24px;margin:16px 0;font-family:'JetBrains Mono','SF Mono',monospace;font-size:12px;color:#cbd5e1;white-space:pre;overflow-x:auto;line-height:1.6}
+
+/* RADAR */
+.radar{background:linear-gradient(135deg,rgba(0,229,176,.05),rgba(0,180,216,.05));border:1px solid rgba(0,229,176,.2);border-radius:12px;padding:24px;margin-top:24px}
+.radar-section{margin-bottom:20px}
+.radar-section:last-child{margin-bottom:0}
+.radar-label{font-size:11px;font-weight:700;color:#00e5b0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.radar-content{font-size:13px;color:#cbd5e1}
+
+/* STREAMING */
+.streaming{background:rgba(15,22,35,.8);border:1px solid rgba(0,229,176,.15);border-radius:12px;padding:20px;margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.streaming-title{color:#00e5b0;font-weight:600;margin-bottom:12px}
+.streaming-row{display:grid;grid-template-columns:30px 1fr 80px;gap:8px;padding:4px 0;color:#cbd5e1;font-size:11.5px}
+
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>SMC OS · Organigrama</h1>
+  <p>23 agentes operativos · 6 departamentos · 1 CEO + Cerebro orquestador</p>
+  <div class="meta">
+    <span>2026-05-10</span>
+    <span>v1 · contenido</span>
+    <span>diseño: pendiente Panchita</span>
+    <span>tabla #1 de la serie</span>
+  </div>
+
+  <h2>Prototipo A · Tabla detallada</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th><th>Departamento</th><th>Agentes</th><th>Líder</th><th>KPI principal</th><th>Output típico</th><th>Frecuencia</th><th>Health</th><th>Próxima acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>🧠 Top/Cross</td><td>CEREBRO</td><td>Auto</td><td>Insights/sesión</td><td>Mentor · diverge · observa · orquesta</td><td>Continuo</td><td class="health-green">🟢</td><td>Streaming bar activar</td></tr>
+      <tr><td>2</td><td>📡 Strategy</td><td>RADAR · COMPLIANCE · AI/ML</td><td>AI/ML</td><td>Señales relevantes/semana</td><td>Brief lunes · assessments · alertas</td><td>Semanal</td><td class="health-yellow">🟡</td><td>Brief próximo lunes</td></tr>
+      <tr><td>3</td><td>🏗️ Operations</td><td>13 agentes</td><td>Architect + Business-Analyst</td><td>% proyectos a tiempo · uptime</td><td>Código · arquitectura · POCs · deploys · 24/7</td><td>Diario</td><td class="health-green">🟢</td><td>Onboarding Sebas</td></tr>
+      <tr><td>4</td><td>💼 Sales</td><td>Bus-Dev · Procurement · Supply-Chain</td><td>Business-Development</td><td>Pipeline · win rate</td><td>Propuestas · deals · compras · logística</td><td>Diario</td><td class="health-yellow">🟡</td><td>Cerrar deal Cencosud</td></tr>
+      <tr><td>5</td><td>📢 Marketing</td><td>Portavoz · Video-Img</td><td>Portavoz</td><td>LinkedIn engagement</td><td>Posts · casos éxito · assets</td><td>Semanal</td><td class="health-red">🔴</td><td>Brief LinkedIn pendiente</td></tr>
+      <tr><td>6</td><td>💰 Finance + People</td><td>Controller · PM · HR</td><td>PM</td><td>Margen real · F22 al día</td><td>Reportes · F22/F29 · payroll · onboarding</td><td>Mensual</td><td class="health-green">🟢</td><td>F29 mayo · onboard Sebas</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Prototipo B · Tarjetas</h2>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-header"><span class="card-title">🧠 Top / Cross</span><span class="card-count">1 agente · 🟢</span></div>
+      <div class="card-agents">CEREBRO</div>
+      <dl class="card-kpi">
+        <dt>KPI</dt><dd>Insights útiles/sesión</dd>
+        <dt>Output</dt><dd>Mentor · diverge · observa · orquesta</dd>
+        <dt>Freq</dt><dd>Continuo</dd>
+        <dt>Next</dt><dd>Streaming bar activar</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">📡 Strategy</span><span class="card-count">3 agentes · 🟡</span></div>
+      <div class="card-agents">RADAR · COMPLIANCE · AI/ML</div>
+      <dl class="card-kpi">
+        <dt>KPI</dt><dd>Señales/semana</dd>
+        <dt>Output</dt><dd>Brief lunes · assessments · alertas</dd>
+        <dt>Freq</dt><dd>Semanal</dd>
+        <dt>Next</dt><dd>Brief próximo lunes</dd>
+      </dl>
+    </div>
+    <div class="card wide">
+      <div class="card-header"><span class="card-title">🏗️ Operations</span><span class="card-count">13 agentes · 🟢</span></div>
+      <div class="card-agents">
+        <strong>Líderes:</strong> 🔍 Architect · 🐕 Business-Analyst<br>
+        <strong>Build:</strong> 🔧 Backend · 🎨 Frontend · 🐾 Hoku · 🧪 Innovation-Lab<br>
+        <strong>Delivery:</strong> 🛠️ Pipeline · 🌐 Infra-Ops · 👩 User-QA<br>
+        <strong>Data + Sec:</strong> ⊡ Data-BW · ⛨ Security
+      </div>
+      <dl class="card-kpi">
+        <dt>KPI</dt><dd>% proyectos a tiempo · uptime 99.9%</dd>
+        <dt>Output</dt><dd>Código · arquitectura · POCs · deploys · operación 24/7</dd>
+        <dt>Freq</dt><dd>Diario (alto uso)</dd>
+        <dt>Next</dt><dd>Onboarding técnico Sebas</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">💼 Sales</span><span class="card-count">3 agentes · 🟡</span></div>
+      <div class="card-agents">💼 Business-Dev · 🛒 Procurement · 🚚 Supply-Chain</div>
+      <dl class="card-kpi">
+        <dt>KPI</dt><dd>Pipeline · win rate &gt;40%</dd>
+        <dt>Output</dt><dd>Propuestas · deals · compras · logística</dd>
+        <dt>Freq</dt><dd>Diario</dd>
+        <dt>Next</dt><dd>Deal Cencosud cierre</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">📢 Marketing</span><span class="card-count">2 agentes · 🔴</span></div>
+      <div class="card-agents">🎙️ Portavoz · 🎬 Video-Img</div>
+      <dl class="card-kpi">
+        <dt>KPI</dt><dd>LinkedIn engage · growth</dd>
+        <dt>Output</dt><dd>Posts · casos · assets</dd>
+        <dt>Freq</dt><dd>Semanal</dd>
+        <dt>Next</dt><dd>Brief pendiente activar</dd>
+      </dl>
+    </div>
+    <div class="card wide">
+      <div class="card-header"><span class="card-title">💰 Finance & People</span><span class="card-count">4 agentes · 🟢</span></div>
+      <div class="card-agents">🧮 Controller · 👔 PM · 👥 HR</div>
+      <dl class="card-kpi">
+        <dt>KPI</dt><dd>Margen &gt;30% · F22 al día · team NPS &gt;8 · pipeline a 3 meses</dd>
+        <dt>Output</dt><dd>Reportes · F22/F29 · payroll · onboarding · sprint plans</dd>
+        <dt>Freq</dt><dd>Mensual (cierre) · diario en onboarding</dd>
+        <dt>Next</dt><dd>F29 mayo · onboarding Sebas IG conectar</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h2>Prototipo C · Constelación / Red de procesos</h2>
+  <div class="constellation">                              👤 GUILLERMO
+                                  │
+                                  ▼
+                              🧠 CEREBRO ◄─── observa · orquesta TODO (cross)
+                              ╱ │ ╲
+                             ╱  │  ╲
+                       ┌─◄══╝   │   ╚══►─┐
+                       ▼        │        ▼
+                  📡 RADAR ═══► alimenta intel a TODO
+
+            ┌─────────────────┼─────────────────────┐
+            ▼                 ▼                     ▼
+       🔍 ARCHITECT ◄══════ 🐕 BUSINESS ──────────► 💼 BUSINESS
+            │                ANALYST                  DEVELOPMENT
+            │  ┌──────────────┘                          │
+            ▼  ▼                                          ▼
+        🔧 BACKEND ◄─► 🎨 FRONTEND ◄─► 🐾 HOKU       🛒 PROCUREMENT
+            │              │              │                │
+            └──────┬───────┴──────┬───────┘                ▼
+                   ▼               ▼                  🚚 SUPPLY-CHAIN
+              🧪 INNOVATION-LAB ◄─┘
+                   │
+                   ▼
+             👩 USER-QA ──► 🛠️ PIPELINE ──► 🌐 INFRA-OPS
+                                                  │
+                                                  ▼
+                                            ⊡ DATA-BW ──► ⛨ SECURITY
+                                                                ▲
+                                                                │
+                                                       ⚖️ COMPLIANCE (cross)
+
+         🧮 CONTROLLER · 👔 PM · 👥 HR · 🎙️ PORTAVOZ · 🎬 VIDEO · 🔬 AI/ML
+                            (orbitan cross-departamental)
+
+CENTRALIDAD            HEALTH   ÚLTIMA INVOC      USO ESTE MES
+🧠 Cerebro     ★★★★★   🟢      ahora             muy alto
+🔍 Architect   ★★★★    🟢      hoy               alto
+📡 RADAR       ★★★★    🟡      ayer              medio
+🐕 Bus-Anal.   ★★★     🟢      hoy               alto
+🛠️ Pipeline    ★★★     🟢      hoy               medio
+🧪 Innov-Lab   ★★      🟢      hoy               medio
+🎬 Video-Img   ★       🔴      hace 7 días       bajo (aislado)
+⚖️ Compliance   ★       🔴      hace 2 días       bajo (subutilizado)</div>
+
+  <h2>📡 RADAR · resumen compacto</h2>
+  <div class="radar">
+
+    <div class="radar-section">
+      <div class="radar-label">🌐 Práctica de mercado · top 3 creadores Instagram</div>
+      <div class="radar-content">
+        <table style="margin-top:8px;font-size:12px">
+          <thead><tr><th>#</th><th>Creador</th><th>Handle</th><th>Plataforma</th><th>Foco</th><th>Stack</th><th>Por qué SMC</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Cole Medin</td><td>@colemedin</td><td>YT 220K · IG</td><td>Multi-agent crews · handoffs</td><td>n8n · Claude · Supabase</td><td>Patrón supervisor + workers = SMC</td></tr>
+            <tr><td>2</td><td>Riley Brown</td><td>@rileybrown.ai</td><td>IG 100K · X</td><td>Vibe coding · apps en horas</td><td>Claude Code · Cursor · Vercel</td><td>Valida vibe coding como modelo</td></tr>
+            <tr><td>3</td><td>Mckay Wrigley</td><td>@mckaywrigley</td><td>X 180K · YT</td><td>Builder serial · open source</td><td>Claude Code · Next.js · Supabase</td><td>Modelo OPUESTO (1 agente vs 23)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="radar-section">
+      <div class="radar-label">🎯 Analogía</div>
+      <div class="radar-content"><strong>Rápida:</strong> Equipo fútbol · 5 líneas + arquero (Cerebro).<br><strong>Profunda:</strong> Cada dpto es una línea del campo. Cerebro arbitra silencioso. Sin alguno → no se juega · sin coordinación → no se gana.</div>
+    </div>
+
+    <div class="radar-section">
+      <div class="radar-label">📊 Assessment</div>
+      <div class="radar-content">
+        ✅ Tengo: 23 agentes · 6 dpts · upstream/downstream · loops claros<br>
+        🔴 Falta: handoff automatizado · observabilidad invocaciones · Customer-Success post-MRR · Product-Manager
+      </div>
+    </div>
+
+    <div class="radar-section">
+      <div class="radar-label">📈 KPI</div>
+      <div class="radar-content">
+        <strong>Outcome:</strong> % proyectos a tiempo &gt;85% · Uptime 99.9% · Margen real &gt;30%<br>
+        <strong>Activity:</strong> # invocaciones/agente/mes · Balance dpts (ninguno &gt;40%) · Health 🟢
+      </div>
+    </div>
+
+    <div class="radar-section">
+      <div class="radar-label">🧪 Owner automático (Cerebro)</div>
+      <div class="radar-content">
+        ✓ Detecta dpt sin uso 30 días → propone consolidar<br>
+        ✓ Detecta loop A→B→C→A → interviene con resumen<br>
+        ✓ Promueve handoff entre agentes según contexto<br>
+        ✗ Crear agente nuevo → pregunta (Nivel 2)<br>
+        ✗ Eliminar agente → pregunta (Nivel 3)
+      </div>
+    </div>
+
+    <div class="radar-section">
+      <div class="radar-label">📡 Streaming de acciones · regla 22</div>
+      <div class="radar-content">Siempre visible cuando hay acciones · Cerebro decide auto cuándo activar · ejecuta en background mientras usuario piensa entre turnos</div>
+    </div>
+
+    <div class="radar-section">
+      <div class="radar-label">🛣️ Roadmap</div>
+      <div class="radar-content">
+        <strong>Hoy:</strong> Tabla #1 cerrada · HTML generado · streaming activado<br>
+        <strong>Próxima:</strong> Tabla #2 (los 23 agentes en detalle)<br>
+        <strong>Mes:</strong> Aplicar formato a memorias existentes · backfill<br>
+        <strong>Trimestre:</strong> Streaming bar en interfaz web (sueño Jarvis)
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    SMC OS · v1 organigrama · 2026-05-10 · diseño pendiente Panchita
+  </footer>
+
+</div>
+</body>
+</html>

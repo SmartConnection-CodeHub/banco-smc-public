@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#060912">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Smart Connection | SAP + IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  --bg:      #060912;
+  --surface: #0a0d14;
+  --elevated:#0f1520;
+  --glass:   rgba(15,22,35,0.85);
+  --glass2:  rgba(15,22,35,0.6);
+  --border:  rgba(255,255,255,0.06);
+  --text:    #f1f5f9;
+  --text2:   #94a3b8;
+  --muted:   #475569;
+  --accent:  #00b4d8;
+  --accent2: #0096c7;
+  --gold:    #f97316;
+  --gold2:   #fb923c;
+  --blue:    #4a9eff;
+  --font:    'Inter', system-ui, sans-serif;
+  --snap-h:  100dvh;
+  --nav-h:   56px;
+  --bnav-h:  68px;
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:15px; -webkit-text-size-adjust:100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+/* film grain overlay */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:9000; pointer-events:none;
+  opacity:0.022;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+
+/* ============================================================
+   SCROLL SNAP CONTAINER
+   ============================================================ */
+#snap-root {
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+.snap-section {
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+#topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 3000;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(6,9,18,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.logo {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  text-decoration: none;
+  user-select: none;
+}
+.logo .conn {
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.lang-toggle {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s;
+}
+.lang-toggle:active { transform: scale(0.93); background: rgba(0,180,216,0.1); color: var(--accent); }
+
+/* ============================================================
+   BOTTOM NAV
+   ============================================================ */
+#bnav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 3000;
+  height: var(--bnav-h);
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  background: rgba(10,13,20,0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  padding-top: 10px;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#bnav.hidden { transform: translateY(80px); }
+.bn-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--text2);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s;
+  min-width: 52px;
+}
+.bn-item i { font-size: 20px; transition: transform 0.2s; }
+.bn-item.active { color: var(--accent); }
+.bn-item.active i { transform: translateY(-2px); }
+.bn-dot {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.bn-item.active .bn-dot { opacity: 1; }
+.bn-item:active { transform: scale(0.88); }
+
+/* ============================================================
+   FAB — Calendario
+   ============================================================ */
+#fab {
+  position: fixed;
+  bottom: calc(var(--bnav-h) + 16px);
+  right: 20px;
+  z-index: 2500;
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: var(--accent);
+  box-shadow: 0 4px 24px rgba(0,180,216,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  color: #060912;
+  font-size: 22px;
+}
+#fab:active { transform: scale(0.9); }
+
+/* ============================================================
+   CONTACT SHEET
+   ============================================================ */
+#sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  background: rgba(0,0,0,0);
+  pointer-events: none;
+  transition: background 0.35s;
+}
+#sheet-overlay.open {
+  background: rgba(0,0,0,0.6);
+  pointer-events: all;
+}
+#contact-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 4001;
+  background: var(--elevated);
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  border-top: 1px solid rgba(0,180,216,0.15);
+  padding: 0 24px 40px;
+  padding-bottom: max(40px, env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-height: 88dvh;
+  overflow-y: auto;
+}
+#contact-sheet.open {
+  transform: translateY(0);
+}
+.sheet-handle {
+  width: 40px; height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.15);
+  margin: 14px auto 24px;
+}
+.sheet-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.5px; }
+.sheet-sub { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
+.sheet-field {
+  margin-bottom: 14px;
+}
+.sheet-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.sheet-field input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 13px 15px;
+  color: var(--text);
+  font-size: 15px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.25s;
+}
+.sheet-field input:focus { border-color: var(--accent); }
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.chip {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s;
+}
+.chip.selected {
+  background: rgba(0,180,216,0.12);
+  border-color: rgba(0,180,216,0.4);
+  color: var(--accent);
+}
+.chip:active { transform: scale(0.93); }
+.sheet-send {
+  width: 100%;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 16px;
+  padding: 17px;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s;
+}
+.sheet-send:active { transform: scale(0.97); background: var(--accent2); }
+
+/* ============================================================
+   SECTION INNER (padding para top/bottom bars)
+   ============================================================ */
+.snap-inner {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--nav-h) + 16px) 24px calc(var(--bnav-h) + 16px);
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+@keyframes spin   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes spinR  { from{transform:rotate(360deg)} to{transform:rotate(0deg)} }
+@keyframes gradMove {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes floatY {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+@keyframes countUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* ============================================================
+   SECTION 1 — INICIO / HERO
+   ============================================================ */
+#s-inicio {
+  background: var(--bg);
+}
+.hero-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 500px 400px at 50% 25%, rgba(0,180,216,0.09), transparent),
+    radial-gradient(ellipse 400px 350px at 85% 70%, rgba(74,158,255,0.06), transparent),
+    radial-gradient(ellipse 300px 250px at 10% 80%, rgba(249,115,22,0.04), transparent);
+  pointer-events: none;
+}
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  opacity: 0.5;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,180,216,0.1);
+  border: 1px solid rgba(0,180,216,0.25);
+  border-radius: 100px;
+  padding: 7px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 22px;
+  letter-spacing: 0.3px;
+}
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+.hero-title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.hl {
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hl-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 320px;
+  margin-bottom: 28px;
+}
+.hero-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 24px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s;
+  width: 100%;
+}
+.btn:active { transform: scale(0.95); }
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 4px 20px rgba(0,180,216,0.3);
+}
+.btn-outline {
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+/* ============================================================
+   SECTION 2 — FACTORY (SaaS Factory)
+   ============================================================ */
+#s-factory { background: var(--surface); }
+.sec-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  display: block;
+}
+.sec-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+.sec-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+/* horizontal swipe deck */
+.hdeck-wrap {
+  position: relative;
+}
+.hdeck {
+  display: flex;
+  gap: 12px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+  /* peek: 20px of next card shows */
+  padding-right: 48px;
+}
+.hdeck::-webkit-scrollbar { display: none; }
+.hcard {
+  flex: 0 0 270px;
+  scroll-snap-align: start;
+  background: var(--glass2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,180,216,0.08);
+  border-radius: 20px;
+  padding: 22px 20px;
+  transition: transform 0.15s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+.hcard:active { transform: scale(0.97); }
+.hcard-icon {
+  width: 44px; height: 44px;
+  border-radius: 13px;
+  background: rgba(0,180,216,0.1);
+  color: var(--accent);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.hcard-icon.gold { background: rgba(249,115,22,0.1); color: var(--gold); }
+.hcard-icon.blue { background: rgba(74,158,255,0.1); color: var(--blue); }
+.hcard h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.hcard p  { font-size: 12px; color: var(--text2); line-height: 1.55; }
+/* dots indicator */
+.deck-dots {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.deck-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.deck-dot.active {
+  width: 16px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+/* ============================================================
+   SECTION 3 — SAP
+   ============================================================ */
+#s-sap { background: var(--bg); }
+.sap-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid;
+  margin-top: 8px;
+}
+.badge-blue  { background: rgba(74,158,255,0.08);  color: var(--blue);   border-color: rgba(74,158,255,0.25); }
+.badge-cyan  { background: rgba(0,180,216,0.08);   color: var(--accent); border-color: rgba(0,180,216,0.25); }
+.badge-purp  { background: rgba(168,85,247,0.1);   color: #a855f7;       border-color: rgba(168,85,247,0.25); }
+
+/* ============================================================
+   SECTION 4 — STATS
+   ============================================================ */
+#s-stats {
+  background: var(--surface);
+}
+.stats-header { text-align: center; margin-bottom: 24px; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.stat-card {
+  background: var(--glass2);
+  border: 1px solid rgba(0,180,216,0.07);
+  border-radius: 20px;
+  padding: 24px 12px;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+.stat-card:active { transform: scale(0.97); }
+.stat-num {
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-lbl {
+  font-size: 11px;
+  color: var(--text2);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   SECTION 5 — EQUIPO
+   ============================================================ */
+#s-equipo { background: var(--bg); }
+.team-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  flex: 1;
+}
+.team-cards::-webkit-scrollbar { display: none; }
+.team-card {
+  background: var(--glass2);
+  border: 1px solid rgba(0,180,216,0.07);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+.team-card:active { transform: scale(0.97); }
+.team-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+.team-avatar svg {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+}
+.team-init {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: var(--elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 14px;
+}
+.team-info h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.team-role { font-size: 11px; color: var(--accent); font-weight: 600; margin-bottom: 4px; display: block; }
+.team-info p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* ============================================================
+   SECTION 6 — CONTACTO CTA
+   ============================================================ */
+#s-contacto {
+  background: var(--bg);
+  overflow: hidden;
+}
+.cta-glow {
+  position: absolute;
+  top: -30%;
+  left: -20%;
+  width: 140%;
+  height: 160%;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,180,216,0.06), transparent);
+  pointer-events: none;
+}
+.cta-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cta-title {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.cta-sub {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 300px;
+  margin-bottom: 28px;
+}
+.cta-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+.btn-wa {
+  background: rgba(37,211,102,0.1);
+  color: #25d366;
+  border: 1px solid rgba(37,211,102,0.25);
+}
+.contact-info {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+}
+.ci-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+.ci-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(0,180,216,0.1);
+  color: var(--accent);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ci-text { font-size: 12px; }
+.ci-text strong { display: block; font-weight: 600; font-size: 11px; color: var(--text); margin-bottom: 2px; }
+.ci-text a, .ci-text span { color: var(--text2); text-decoration: none; }
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.tap-feedback {
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+  cursor: pointer;
+}
+.tap-feedback:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     TOP BAR
+     ============================================================ -->
+<header id="topbar">
+  <a class="logo" href="#"><span class="conn">Smart</span> Connection</a>
+  <button class="lang-toggle" id="lang-btn">ES | EN</button>
+</header>
+
+<!-- ============================================================
+     BOTTOM NAV
+     ============================================================ -->
+<nav id="bnav">
+  <div class="bn-item active" data-target="s-inicio">
+    <i class="bi bi-house-fill"></i>
+    <span>Inicio</span>
+    <div class="bn-dot"></div>
+  </div>
+  <div class="bn-item" data-target="s-factory">
+    <i class="bi bi-cpu"></i>
+    <span>Factory</span>
+    <div class="bn-dot"></div>
+  </div>
+  <div class="bn-item" data-target="s-sap">
+    <i class="bi bi-building-gear"></i>
+    <span>SAP</span>
+    <div class="bn-dot"></div>
+  </div>
+  <div class="bn-item" data-target="s-equipo">
+    <i class="bi bi-people-fill"></i>
+    <span>Equipo</span>
+    <div class="bn-dot"></div>
+  </div>
+  <div class="bn-item" data-target="s-contacto">
+    <i class="bi bi-chat-dots-fill"></i>
+    <span>Contacto</span>
+    <div class="bn-dot"></div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     FAB — Agendar
+     ============================================================ -->
+<button id="fab" aria-label="Agendar reunión">
+  <i class="bi bi-calendar-plus-fill"></i>
+</button>
+
+<!-- ============================================================
+     CONTACT SHEET
+     ============================================================ -->
+<div id="sheet-overlay"></div>
+<div id="contact-sheet" role="dialog" aria-modal="true" aria-label="Agendar reunión">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Agendar reunión</div>
+  <div class="sheet-sub">30 min · sin compromiso · te respondemos en &lt;24h</div>
+  <div class="sheet-field">
+    <label>Nombre</label>
+    <input type="text" placeholder="Tu nombre" autocomplete="name">
+  </div>
+  <div class="sheet-field">
+    <label>Email</label>
+    <input type="email" placeholder="correo@empresa.cl" autocomplete="email">
+  </div>
+  <div class="sheet-field">
+    <label>Teléfono</label>
+    <input type="tel" placeholder="+56 9 XXXX XXXX" autocomplete="tel">
+  </div>
+  <label style="font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.5px;text-transform:uppercase;display:block;margin-bottom:10px">Tema de interés</label>
+  <div class="chips-row">
+    <div class="chip" data-val="sap">SAP</div>
+    <div class="chip" data-val="ia">Apps IA</div>
+    <div class="chip" data-val="marketing">Marketing</div>
+    <div class="chip" data-val="otro">Otro</div>
+  </div>
+  <button class="sheet-send">
+    <i class="bi bi-send-fill"></i> Enviar solicitud
+  </button>
+</div>
+
+<!-- ============================================================
+     SNAP CONTAINER
+     ============================================================ -->
+<div id="snap-root">
+
+  <!-- ── SECCIÓN 1: INICIO ────────────────────────────────── -->
+  <section class="snap-section" id="s-inicio">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-mesh"></div>
+    <div class="snap-inner">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span id="hero-typewriter">SAP + IA en producción</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="hl">SAP</span> + <span class="hl-gold">IA</span> =<br>El futuro de<br>tu empresa
+        </h1>
+        <p class="hero-desc">
+          Consultoría SAP certificada y desarrollo de apps inteligentes con IA. Transformación digital para corporativos, empresas medianas y PYMES.
+        </p>
+        <div class="hero-btns">
+          <button class="btn btn-primary" onclick="scrollToSection('s-sap')">
+            <i class="bi bi-building-gear"></i> Ver servicios SAP
+          </button>
+          <button class="btn btn-outline" onclick="scrollToSection('s-factory')">
+            <i class="bi bi-cpu"></i> Apps con IA
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECCIÓN 2: FACTORY ───────────────────────────────── -->
+  <section class="snap-section" id="s-factory">
+    <div class="snap-inner" style="justify-content:flex-start; padding-top: calc(var(--nav-h) + 24px);">
+      <span class="sec-label">SaaS Factory</span>
+      <h2 class="sec-title">Una <span class="hl">fábrica de software</span> con IA</h2>
+      <p class="sec-desc">No construimos software de la manera tradicional. Cada especialidad tiene un responsable dedicado, potenciado por IA.</p>
+      <div class="hdeck-wrap">
+        <div class="hdeck" id="factory-deck">
+          <div class="hcard">
+            <div class="hcard-icon"><i class="bi bi-lightning-charge"></i></div>
+            <h3>Velocidad × Paralelismo</h3>
+            <p>Backend, frontend e IA se desarrollan simultáneamente contra contratos de API. Lo que otros hacen en 3 meses, lo entregamos en semanas.</p>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon"><i class="bi bi-cpu"></i></div>
+            <h3>IA en cada capa</h3>
+            <p>Usamos IA para diseñar, desarrollar, testear, optimizar prompts y monitorear en producción. No solo construimos CON IA.</p>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon"><i class="bi bi-layers"></i></div>
+            <h3>Arquitectura Cross</h3>
+            <p>Un arquitecto define estándares, contratos y decisiones técnicas que todos siguen. Nada se improvisa: cada pieza encaja por diseño.</p>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon"><i class="bi bi-plug"></i></div>
+            <h3>MCP: IA que actúa</h3>
+            <p>Model Context Protocol conecta nuestra IA con calendarios, analytics, Asana y más. No es un chatbot — es IA que opera sobre tus sistemas.</p>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon"><i class="bi bi-graph-up-arrow"></i></div>
+            <h3>Decisiones con datos</h3>
+            <p>Priorizamos con métricas reales (RICE scoring, AARRR). No construimos lo que "suena bien" — construimos lo que mueve tu negocio.</p>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon gold"><i class="bi bi-megaphone"></i></div>
+            <h3>IA + Marketing Digital</h3>
+            <p>SEO técnico, Google Ads, Meta Pixel, PostHog analytics y contenido generado con IA. Tu marca visible donde importa.</p>
+          </div>
+        </div>
+        <div class="deck-dots" id="factory-dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECCIÓN 3: SAP ───────────────────────────────────── -->
+  <section class="snap-section" id="s-sap">
+    <div class="snap-inner" style="justify-content:flex-start; padding-top: calc(var(--nav-h) + 24px);">
+      <span class="sec-label">Servicios SAP</span>
+      <h2 class="sec-title">Consultoría y<br><span class="hl">servicios SAP</span></h2>
+      <p class="sec-desc">Consultores certificados que comprenden tus necesidades y entregan soluciones a la medida.</p>
+      <div class="hdeck-wrap">
+        <div class="hdeck" id="sap-deck">
+          <div class="hcard">
+            <div class="hcard-icon blue"><i class="bi bi-cloud-arrow-up"></i></div>
+            <h3>SAP BTP &amp; Cloud</h3>
+            <p>Business Technology Platform: extensiones, integraciones y desarrollo en la nube.</p>
+            <span class="sap-badge badge-blue">Cloud</span>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon blue"><i class="bi bi-arrow-repeat"></i></div>
+            <h3>Implementación S/4HANA</h3>
+            <p>Implementación y soporte S/4HANA Cloud y On-Premise con metodología SAP Activate.</p>
+            <span class="sap-badge badge-blue">S/4HANA</span>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon blue"><i class="bi bi-code-slash"></i></div>
+            <h3>ABAP &amp; FIORI</h3>
+            <p>Desarrollo ABAP en ECC y S/4HANA. Aplicaciones FIORI con experiencia de usuario moderna.</p>
+            <span class="sap-badge badge-blue">Development</span>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon blue"><i class="bi bi-diagram-3"></i></div>
+            <h3>Migración PI/PO → BTP IS</h3>
+            <p>Migración de interfaces PI/PO a SAP Integration Suite. Modernización de integraciones.</p>
+            <span class="sap-badge badge-blue">Migration</span>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon" style="background:rgba(168,85,247,0.1);color:#a855f7"><i class="bi bi-bar-chart-line"></i></div>
+            <h3>SAP CAP &amp; RAP</h3>
+            <p>Extensiones cloud-native con Cloud Application Programming y RESTful ABAP Programming.</p>
+            <span class="sap-badge badge-purp">Development</span>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon"><i class="bi bi-phone"></i></div>
+            <h3>Movilidad &amp; IoT</h3>
+            <p>SAP Mobile Services, mantenimiento móvil e Internet de las Cosas.</p>
+            <span class="sap-badge badge-cyan">Mobile</span>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon blue"><i class="bi bi-building-gear"></i></div>
+            <h3>Portal &amp; Workflow</h3>
+            <p>SAP Portal corporativo. Automatización con Workflow y formularios electrónicos.</p>
+            <span class="sap-badge badge-blue">Enterprise</span>
+          </div>
+          <div class="hcard">
+            <div class="hcard-icon"><i class="bi bi-headset"></i></div>
+            <h3>AMS &amp; Soporte</h3>
+            <p>Application Management Services y mesa de ayuda SAP con SLA garantizados.</p>
+            <span class="sap-badge badge-cyan">Soporte 24/7</span>
+          </div>
+        </div>
+        <div class="deck-dots" id="sap-dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECCIÓN 4: STATS ─────────────────────────────────── -->
+  <section class="snap-section" id="s-stats">
+    <div class="snap-inner">
+      <div class="stats-header">
+        <span class="sec-label" style="display:block;text-align:center">Resultados</span>
+        <h2 class="sec-title" style="font-size:1.8rem;text-align:center">Números reales</h2>
+        <p style="font-size:13px;color:var(--text2);text-align:center;max-width:280px;margin:8px auto 0">Resultados que respaldan nuestra trayectoria en SAP e IA.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num hl" data-count="7" data-suffix="+">0</div>
+          <div class="stat-lbl">Años experiencia SAP</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num hl" data-count="50" data-suffix="+">0</div>
+          <div class="stat-lbl">Proyectos completados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num hl" data-count="30" data-suffix="+">0</div>
+          <div class="stat-lbl">Clientes satisfechos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num hl" data-count="99" data-suffix="%">0</div>
+          <div class="stat-lbl">Uptime garantizado</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECCIÓN 5: EQUIPO ─────────────────────────────────── -->
+  <section class="snap-section" id="s-equipo">
+    <div class="snap-inner" style="justify-content:flex-start; padding-top: calc(var(--nav-h) + 24px);">
+      <span class="sec-label">Nuestro Equipo</span>
+      <h2 class="sec-title" style="margin-bottom:4px">Las personas detrás de<br><span class="hl">Smart Connection</span></h2>
+      <p class="sec-desc">Consultores certificados SAP y especialistas en IA con experiencia real.</p>
+      <div class="team-cards">
+        <!-- Card 1 -->
+        <div class="team-card tap-feedback">
+          <div class="team-avatar">
+            <svg viewBox="0 0 64 64" style="animation: spin 8s linear infinite">
+              <defs>
+                <linearGradient id="ringGG" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00b4d8"/>
+                  <stop offset="50%" stop-color="#0096c7"/>
+                  <stop offset="100%" stop-color="#4a9eff"/>
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="28" fill="none" stroke="url(#ringGG)" stroke-width="3" stroke-linecap="round" stroke-dasharray="66 110" opacity="0.9"/>
+            </svg>
+            <div class="team-init" style="color:var(--accent);font-size:13px">GG</div>
+          </div>
+          <div class="team-info" style="flex:1">
+            <h3>Guillermo González León</h3>
+            <span class="team-role">Fundador &amp; Director</span>
+            <p>Consultor SAP certificado con +14 años de experiencia en SAP BTP, S/4HANA y desarrollo con IA.</p>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="team-card tap-feedback">
+          <div class="team-avatar">
+            <svg viewBox="0 0 64 64" style="animation: spinR 10s linear infinite">
+              <defs>
+                <linearGradient id="ringSAP" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#4a9eff"/>
+                  <stop offset="100%" stop-color="#a855f7"/>
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="28" fill="none" stroke="url(#ringSAP)" stroke-width="3" stroke-linecap="round" stroke-dasharray="66 110" opacity="0.9"/>
+            </svg>
+            <div class="team-init" style="color:var(--blue);font-size:11px">SAP</div>
+          </div>
+          <div class="team-info" style="flex:1">
+            <h3>Equipo SAP</h3>
+            <span class="team-role">Consultores Certificados</span>
+            <p>Especialistas SAP BTP (CPI, CAP, RAP, IA) PI/PO · S/4HANA con experiencia en proyectos globales.</p>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="team-card tap-feedback">
+          <div class="team-avatar">
+            <svg viewBox="0 0 64 64" style="animation: spin 9s linear infinite">
+              <defs>
+                <linearGradient id="ringIA" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f97316"/>
+                  <stop offset="50%" stop-color="#fb923c"/>
+                  <stop offset="100%" stop-color="#f59e0b"/>
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="28" fill="none" stroke="url(#ringIA)" stroke-width="3" stroke-linecap="round" stroke-dasharray="66 110" opacity="0.9"/>
+            </svg>
+            <div class="team-init" style="color:var(--gold);font-size:12px">IA</div>
+          </div>
+          <div class="team-info" style="flex:1">
+            <h3>Equipo Apps + IA</h3>
+            <span class="team-role">Desarrolladores Full-Stack</span>
+            <p>MCP, Prompt Engineering, RAG, Agentes IA, LLMOps. Claude, Groq, Gemini, AWS Bedrock.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECCIÓN 6: CONTACTO ───────────────────────────────── -->
+  <section class="snap-section" id="s-contacto">
+    <div class="cta-glow"></div>
+    <div class="snap-inner">
+      <div class="cta-content">
+        <span class="sec-label" style="text-align:center">¿Listo para empezar?</span>
+        <h2 class="cta-title">Tu proyecto merece un <span class="hl">equipo completo</span></h2>
+        <p class="cta-sub">30 minutos. Sin compromiso. Diagnosticamos tu desafío y te decimos honestamente si podemos ayudarte.</p>
+        <div class="cta-btns">
+          <button class="btn btn-primary" id="cta-fab-btn">
+            <i class="bi bi-calendar-plus"></i> Agendar reunión gratuita
+          </button>
+          <a class="btn btn-wa" href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Smart%20Connection" target="_blank">
+            <i class="bi bi-whatsapp"></i> WhatsApp directo
+          </a>
+        </div>
+        <div class="contact-info">
+          <div class="ci-row">
+            <div class="ci-icon"><i class="bi bi-geo-alt-fill"></i></div>
+            <div class="ci-text">
+              <strong>Oficina Principal</strong>
+              <span>Barros Borgoño 71, Providencia, Santiago</span>
+            </div>
+          </div>
+          <div class="ci-row">
+            <div class="ci-icon"><i class="bi bi-telephone-fill"></i></div>
+            <div class="ci-text">
+              <strong>Teléfono</strong>
+              <a href="tel:+56955361419">+56 9 5536 1419</a>
+            </div>
+          </div>
+          <div class="ci-row">
+            <div class="ci-icon"><i class="bi bi-envelope-fill"></i></div>
+            <div class="ci-text">
+              <strong>Email</strong>
+              <a href="mailto:contacto@smconnection.cl">contacto@smconnection.cl</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /#snap-root -->
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/* ── helpers ────────────────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+const qs = (s, el=document) => el.querySelector(s);
+const qsa = (s, el=document) => [...el.querySelectorAll(s)];
+
+function scrollToSection(id) {
+  const el = $(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ── HERO PARTICLES CANVAS ──────────────────────────────────── */
+(function() {
+  const canvas = $('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x: -999, y: -999 };
+  const COLORS = ['rgba(0,180,216,', 'rgba(74,158,255,', 'rgba(249,115,22,'];
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function initParticles() {
+    particles = [];
+    const n = Math.floor((W * H) / 8000);
+    for (let i = 0; i < n; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.8 + 0.4,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        a: Math.random() * 0.5 + 0.15,
+        col: COLORS[Math.floor(Math.random() * COLORS.length)]
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      // subtle mouse repulsion
+      const dx = p.x - mouse.x, dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 80) {
+        p.vx += dx / dist * 0.06;
+        p.vy += dy / dist * 0.06;
+      }
+      p.vx *= 0.98; p.vy *= 0.98;
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.col + p.a + ')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+  canvas.parentElement.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = t.clientX - rect.left;
+    mouse.y = t.clientY - rect.top;
+  }, { passive: true });
+
+  resize(); initParticles(); draw();
+})();
+
+/* ── TYPEWRITER ──────────────────────────────────────────────── */
+(function() {
+  const texts = ['SAP + IA en producción', 'Transformación digital real', 'Consultoría SAP certificada', 'Apps inteligentes con IA'];
+  let ti = 0, ci = 0, deleting = false;
+  const el = $('hero-typewriter');
+  if (!el) return;
+
+  function type() {
+    const full = texts[ti];
+    if (!deleting) {
+      el.textContent = full.slice(0, ++ci);
+      if (ci === full.length) { deleting = true; setTimeout(type, 2200); return; }
+    } else {
+      el.textContent = full.slice(0, --ci);
+      if (ci === 0) { deleting = false; ti = (ti + 1) % texts.length; }
+    }
+    setTimeout(type, deleting ? 40 : 65);
+  }
+  setTimeout(type, 800);
+})();
+
+/* ── BOTTOM NAV — hide/show on scroll ──────────────────────── */
+(function() {
+  const root   = $('snap-root');
+  const bnav   = $('bnav');
+  const items  = qsa('.bn-item');
+  const sects  = ['s-inicio','s-factory','s-sap','s-stats','s-equipo','s-contacto'];
+  let lastY = 0, ticking = false;
+
+  // Stats and SAP not in nav but we still track for active state
+  const navMap = {
+    's-inicio':   0,
+    's-factory':  1,
+    's-sap':      2,
+    's-stats':    2, // maps to SAP item
+    's-equipo':   3,
+    's-contacto': 4
+  };
+
+  function setActive(idx) {
+    items.forEach((it, i) => it.classList.toggle('active', i === idx));
+  }
+
+  function onScroll() {
+    const y = root.scrollTop;
+    const going_down = y > lastY;
+    lastY = y;
+
+    if (going_down && y > 80) bnav.classList.add('hidden');
+    else bnav.classList.remove('hidden');
+
+    // detect which section is most visible
+    const rootH = root.clientHeight;
+    let best = 0, bestRatio = 0;
+    sects.forEach((id, i) => {
+      const el = $(id);
+      if (!el) return;
+      const top = el.offsetTop - y;
+      const vis = Math.min(el.offsetHeight, rootH - Math.max(0, top)) - Math.max(0, -top);
+      const ratio = vis / el.offsetHeight;
+      if (ratio > bestRatio) { bestRatio = ratio; best = i; }
+    });
+    setActive(navMap[sects[best]] ?? 0);
+
+    // counter trigger for stats section
+    const statsEl = $('s-stats');
+    if (statsEl) {
+      const t = statsEl.offsetTop - y;
+      if (t < rootH * 0.8 && t > -statsEl.offsetHeight * 0.5) {
+        triggerCounters();
+      }
+    }
+
+    ticking = false;
+  }
+
+  root.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+  }, { passive: true });
+
+  // nav item clicks
+  items.forEach(it => {
+    it.addEventListener('click', () => {
+      const t = it.dataset.target;
+      if (t) scrollToSection(t);
+      bnav.classList.remove('hidden');
+    });
+  });
+})();
+
+/* ── HORIZONTAL DECKS + DOTS ─────────────────────────────────── */
+function initDeck(deckId, dotsId) {
+  const deck = $(deckId);
+  const dotsWrap = $(dotsId);
+  if (!deck || !dotsWrap) return;
+
+  const cards = qsa('.hcard', deck);
+  const n = cards.length;
+
+  // build dots
+  dotsWrap.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const d = document.createElement('div');
+    d.className = 'deck-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => {
+      cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    });
+    dotsWrap.appendChild(d);
+  }
+
+  const dots = qsa('.deck-dot', dotsWrap);
+
+  let ticking = false;
+  deck.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const cw = cards[0].offsetWidth + 12;
+      const idx = Math.round(deck.scrollLeft / cw);
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      ticking = false;
+    });
+  }, { passive: true });
+}
+
+initDeck('factory-deck', 'factory-dots');
+initDeck('sap-deck', 'sap-dots');
+
+/* ── COUNTER ANIMATION ───────────────────────────────────────── */
+let countersTriggered = false;
+function triggerCounters() {
+  if (countersTriggered) return;
+  countersTriggered = true;
+  qsa('[data-count]').forEach(el => {
+    const target = +el.dataset.count;
+    const suffix = el.dataset.suffix || '';
+    const dur = 1400;
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3); // cubic ease-out
+      el.textContent = Math.floor(ease * target) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* ── SHEET (FAB contact form) ────────────────────────────────── */
+(function() {
+  const fab     = $('fab');
+  const overlay = $('sheet-overlay');
+  const sheet   = $('contact-sheet');
+  const ctaBtn  = $('cta-fab-btn');
+
+  function open() {
+    overlay.classList.add('open');
+    sheet.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    overlay.classList.remove('open');
+    sheet.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  fab.addEventListener('click', open);
+  if (ctaBtn) ctaBtn.addEventListener('click', open);
+  overlay.addEventListener('click', close);
+
+  // chips
+  qsa('.chip').forEach(c => {
+    c.addEventListener('click', () => c.classList.toggle('selected'));
+  });
+
+  // send button
+  qs('.sheet-send').addEventListener('click', () => {
+    const inputs = qsa('input', sheet);
+    const valid = [...inputs].every(i => i.value.trim());
+    if (!valid) {
+      inputs.forEach(i => {
+        if (!i.value.trim()) i.style.borderColor = 'rgba(249,115,22,0.6)';
+      });
+      return;
+    }
+    qs('.sheet-send').innerHTML = '<i class="bi bi-check-circle-fill"></i> ¡Enviado!';
+    qs('.sheet-send').style.background = '#22c55e';
+    setTimeout(close, 1200);
+    setTimeout(() => {
+      qs('.sheet-send').innerHTML = '<i class="bi bi-send-fill"></i> Enviar solicitud';
+      qs('.sheet-send').style.background = '';
+      inputs.forEach(i => { i.value = ''; i.style.borderColor = ''; });
+      qsa('.chip').forEach(c => c.classList.remove('selected'));
+    }, 1600);
+  });
+
+  // clear red border on focus
+  qsa('input', sheet).forEach(i => {
+    i.addEventListener('focus', () => i.style.borderColor = '');
+  });
+})();
+
+/* ── LANG TOGGLE (visual only) ───────────────────────────────── */
+(function() {
+  const btn = $('lang-btn');
+  let lang = 'ES';
+  btn.addEventListener('click', () => {
+    lang = lang === 'ES' ? 'EN' : 'ES';
+    btn.textContent = lang + ' | ' + (lang === 'ES' ? 'EN' : 'ES');
+  });
+})();
+</script>
+</body>
+</html>

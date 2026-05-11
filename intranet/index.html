@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>💻 SMC Intranet · banco</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;min-height:100vh;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%);pointer-events:none;z-index:0}.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.section{display:none}.section.active{display:block}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;font-weight:600;margin-left:auto;background:rgba(0,229,176,.15);color:#00e5b0}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}.info-meta b{color:#f1f5f9}
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.feat{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}
+.feat-icon{font-size:22px;margin-bottom:6px}
+.feat-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.feat-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.stack{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center}
+.stack-icon{font-size:22px;margin-bottom:4px}
+.stack-name{font-size:12px;font-weight:700;color:#00e5b0;margin-bottom:3px}
+.stack-use{font-size:10.5px;color:#94a3b8}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.doc{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;text-decoration:none;color:#cbd5e1;display:block;transition:all .15s}
+.doc:hover{border-color:rgba(0,229,176,.3);transform:translateY(-2px)}
+.doc-icon{font-size:18px;margin-bottom:6px}
+.doc-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.doc-date{font-size:10px;color:#7dd3fc;font-family:'JetBrains Mono',monospace}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / SMC Intranet</div>
+<h1>💻 SMC Intranet</h1>
+<p class="subtitle">Live · Next.js 16 + Supabase · dashboard interno SMC + Sebas</p>
+<div class="rfp"><b>📋 RFP:</b> El equipo (Guillermo + Sebas + futuros) necesitaba un dashboard interno para ver agentes activos · proyectos · governance · MCPs. Puente al mundo Claude para humanos que no abren CLI. <b>Resultado:</b> Next.js 16 + Tailwind v4 + Supabase con 19 secciones modulares.</div>
+
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="amb">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🚀</span><span class="info-name">PROD</span><span class="info-stage">Live</span></div><div class="info-meta"><a href="https://intranet.smconnection.cl/" target="_blank" style="color:#00e5b0">intranet.smconnection.cl</a><br><b>Amplify:</b> <code>d2qam7xccab5t8</code><br>Auto-deploy push main</div></div>
+</div>
+</div>
+
+<div class="section" id="inf">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">⚙️</span><span class="info-name">AWS Amplify</span></div><div class="info-meta"><b>App ID:</b> <code>d2qam7xccab5t8</code><br><b>Region:</b> sa-east-1<br><b>Build:</b> Next.js WEB_COMPUTE</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🌐</span><span class="info-name">Route 53</span></div><div class="info-meta"><b>Zone:</b> smconnection.cl<br><b>Record:</b> <code>intranet.</code> A → Amplify</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🗄️</span><span class="info-name">Supabase</span></div><div class="info-meta"><b>Project:</b> <code>yjjtbwfgtoepsevvkzta</code><br><b>Region:</b> sa-east-1<br><b>RLS:</b> activo</div></div>
+</div>
+</div>
+
+<div class="section" id="cnx">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📚</span><span class="info-name">Context7 MCP</span><span class="info-stage">Live</span></div><div class="info-meta">Docs librerías actualizadas</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📊</span><span class="info-name">PostHog MCP</span><span class="info-stage">Live</span></div><div class="info-meta">Analytics producto · funnels</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🗂️</span><span class="info-name">Asana MCP</span><span class="info-stage">Live</span></div><div class="info-meta">Tareas cross-equipo</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📅</span><span class="info-name">Google Calendar</span><span class="info-stage">Live</span></div><div class="info-meta">Reuniones · disponibilidad</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🎨</span><span class="info-name">Canva MCP</span><span class="info-stage">Live</span></div><div class="info-meta">Brand kit · diseño assets</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🐙</span><span class="info-name">GitHub MCP</span><span class="info-stage">Live</span></div><div class="info-meta">Repos · PRs · issues</div></div>
+</div>
+</div>
+
+<div class="section" id="doc">
+<div class="doc-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-intranet.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<a class="doc" href="2026-05-09_131743-dashboard-live-agents.html"><div class="doc-icon">🤖</div><div class="doc-name">Dashboard Live Agents</div><div class="doc-date">2026-05-09 (última)</div></a>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">📊 19 secciones de la Intranet</span></div>
+<div class="tbl-desc">Lo que el equipo SMC puede hacer desde el dashboard sin abrir CLI.</div>
+<div class="feat-grid">
+<div class="feat"><div class="feat-icon">🤖</div><div class="feat-name">Live Agents</div><div class="feat-desc">23 agentes activos · loop · modelo · estado</div></div>
+<div class="feat"><div class="feat-icon">📊</div><div class="feat-name">Dashboards</div><div class="feat-desc">Métricas por proyecto · uptime · costos</div></div>
+<div class="feat"><div class="feat-icon">📚</div><div class="feat-name">Governance</div><div class="feat-desc">31 docs · templates · guidelines · standards</div></div>
+<div class="feat"><div class="feat-icon">🧪</div><div class="feat-name">Labs MCPs</div><div class="feat-desc">Catálogo MCPs disponibles + integraciones</div></div>
+<div class="feat"><div class="feat-icon">🎙️</div><div class="feat-name">Portavoz</div><div class="feat-desc">Contenido LinkedIn · calendario · brand voice</div></div>
+<div class="feat"><div class="feat-icon">📡</div><div class="feat-name">RADAR Brief</div><div class="feat-desc">Brief semanal · señales del mercado</div></div>
+<div class="feat"><div class="feat-icon">💰</div><div class="feat-name">Pipeline Ventas</div><div class="feat-desc">Deals · win/loss · forecast</div></div>
+<div class="feat"><div class="feat-icon">📋</div><div class="feat-name">Discovery Hub</div><div class="feat-desc">Transcripts → SPIN/BANT → propuesta</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">🛠️ Stack técnico · Next.js 16 + Supabase</span></div>
+<div class="tbl-desc">Cómo está construida la intranet · estándares SMC aplicados.</div>
+<div class="stack-grid">
+<div class="stack"><div class="stack-icon">⚡</div><div class="stack-name">Next.js 16</div><div class="stack-use">Server Components + PPR</div></div>
+<div class="stack"><div class="stack-icon">🎨</div><div class="stack-name">Tailwind v4</div><div class="stack-use">Mobile-first + tokens</div></div>
+<div class="stack"><div class="stack-icon">🟪</div><div class="stack-name">Radix UI</div><div class="stack-use">Primitivas accesibles</div></div>
+<div class="stack"><div class="stack-icon">📦</div><div class="stack-name">@smc/ui</div><div class="stack-use">Design System propio</div></div>
+<div class="stack"><div class="stack-icon">🗄️</div><div class="stack-name">Supabase</div><div class="stack-use">Auth + DB + Realtime</div></div>
+<div class="stack"><div class="stack-icon">📊</div><div class="stack-name">PostHog</div><div class="stack-use">Analytics + funnels</div></div>
+<div class="stack"><div class="stack-icon">🔵</div><div class="stack-name">TypeScript</div><div class="stack-use">Strict mode siempre</div></div>
+<div class="stack"><div class="stack-icon">⚙️</div><div class="stack-name">Amplify</div><div class="stack-use">CI/CD + hosting</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">🤝 Quién usa qué</span></div>
+<div class="tbl-desc">Roles esperados en la intranet · Guillermo · Sebas · futuros hires.</div>
+<div class="feat-grid">
+<div class="feat"><div class="feat-icon">👨‍💼</div><div class="feat-name">Guillermo</div><div class="feat-desc">Dashboard estratégico · RADAR · controller · cerebro insights</div></div>
+<div class="feat"><div class="feat-icon">👨‍💻</div><div class="feat-name">Sebas</div><div class="feat-desc">Live agents · governance docs · tareas asignadas (PM)</div></div>
+<div class="feat"><div class="feat-icon">🧮</div><div class="feat-name">Gladys (futuro)</div><div class="feat-desc">Controller · F29/F22 · conciliación</div></div>
+<div class="feat"><div class="feat-icon">💰</div><div class="feat-name">Cliente (futuro)</div><div class="feat-desc">Vista limitada · proyectos · sprint reports</div></div>
+</div>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · Intranet · 5 tabs · 3 tablas · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← maestro</a></footer>
+</div>
+<script>function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}</script>
+</body></html>

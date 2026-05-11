@@ -1,0 +1,93 @@
+Put your HTML text here<!DOCTYPE html>
+<html lang="es">
+<head
+    <meta charset="UTF-8">
+    <title>Gemini Presentation — IT Architecture 2026</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #050505;
+            --accent: #8b5cf6;
+            --text: #f8fafc;
+            --card: #111111;
+            --border: #222222;
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .container { max-width: 1100px; margin: auto; padding: 40px; }
+        .hero { text-align: center; padding: 60px 0; border-bottom: 1px solid var(--border); }
+        h1 { font-size: 3rem; margin: 0; color: var(--accent); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 40px; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 12px; }
+        .chart-box { height: 300px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .tag { background: #1e1e2e; color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>Architecture Stack 2026</h1>
+            <p>Estrategia de Implementación y Comparativa de Herramientas</p>
+        </header>
+
+        <section class="grid">
+            <div class="card">
+                <h3>Radar de Capacidades: Claude vs DeepSeek</h3>
+                <div class="chart-box"><canvas id="radarArchitect"></canvas></div>
+            </div>
+            <div class="card">
+                <h3>Decisión de Stack: Por qué y Cuándo</h3>
+                <table>
+                    <tr><th>Necesidad</th><th>Herramienta</th><th>Razón</th></tr>
+                    <tr><td>Razonamiento</td><td>Claude 3.5</td><td>200K Contexto</td></tr>
+                    <tr><td>Coding masivo</td><td>DeepSeek</td><td>Top HumanEval</td></tr>
+                    <tr><td>Baja Latencia</td><td>Groq</td><td>LPU Hardware</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="card">
+                <h3>Backend & Orquestación</h3>
+                <ul>
+                    <li><strong>Supabase:</strong> PostgreSQL + pgvector para RAG.</li>
+                    <li><strong>n8n:</strong> Orquestación técnica self-hosted.</li>
+                    <li><strong>Cursor:</strong> IDE con Repo-Awareness total.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Casos de Uso TI</h3>
+                <p><span class="tag">InfoPet</span> RAG con literatura veterinaria y Claude.</p>
+                <p><span class="tag">DevSecOps</span> Análisis de PRs automático con DeepSeek.</p>
+                <p><span class="tag">Enterprise</span> Asistente interno con Supabase y Resend.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('radarArchitect');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Lógica', 'Código', 'Seguridad', 'Velocidad', 'Costo'],
+                datasets: [{
+                    label: 'Claude',
+                    data: [5, 4, 5, 3, 2],
+                    borderColor: '#e8845a',
+                    backgroundColor: 'rgba(232, 132, 90, 0.2)'
+                }, {
+                    label: 'DeepSeek',
+                    data: [4, 5, 3, 4, 5],
+                    borderColor: '#5b8dee',
+                    backgroundColor: 'rgba(91, 141, 238, 0.2)'
+                }]
+            },
+            options: {
+                scales: { r: { grid: { color: '#333' }, angleLines: { color: '#333' }, ticks: { display: false } } },
+                plugins: { legend: { labels: { color: '#fff' } } }
+            }
+        });
+    </script>
+</body>
+</html>

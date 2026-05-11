@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROI Calculator — Smart Connection</title>
+<style>
+  :root {
+    --bg-base: #060912;
+    --bg-surface: #0a0d14;
+    --bg-elevated: #0f1520;
+    --bg-glass: rgba(15,22,35,0.85);
+    --border-subtle: rgba(255,255,255,0.06);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #00e5b0;
+    --accent-dim: rgba(0,229,176,0.12);
+    --gold: #f97316;
+    --red: #ef4444;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid rgba(0,229,176,0.2);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: clamp(24px, 5vw, 36px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  h1 span { color: var(--accent); }
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .field-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: -2px;
+  }
+  input[type="number"] {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,229,176,0.08);
+  }
+  .input-wrap {
+    position: relative;
+  }
+  .input-prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 13px;
+    pointer-events: none;
+  }
+  input.has-prefix { padding-left: 30px; }
+
+  /* Results section */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 520px) { .results-grid { grid-template-columns: 1fr; } }
+  .result-box {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .result-box.highlight {
+    background: var(--accent-dim);
+    border-color: rgba(0,229,176,0.25);
+  }
+  .result-box.danger {
+    background: rgba(239,68,68,0.08);
+    border-color: rgba(239,68,68,0.2);
+  }
+  .result-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .result-value {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .result-box.highlight .result-value { color: var(--accent); }
+  .result-box.danger .result-value { color: var(--red); }
+  .result-unit {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Projection table */
+  .proj-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: var(--font-mono);
+  }
+  .proj-table th {
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0 8px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .proj-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+  }
+  .proj-table tr.positive td { color: var(--accent); }
+  .proj-table tr.payback td { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+  .proj-table tr.payback td:first-child::after { content: " ← payback"; font-size: 10px; opacity: 0.7; }
+
+  /* Gauge */
+  .gauge-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+  }
+  .gauge {
+    width: 100%;
+    max-width: 360px;
+    height: 12px;
+    background: var(--bg-elevated);
+    border-radius: 100px;
+    overflow: hidden;
+    margin: 12px 0 8px;
+  }
+  .gauge-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #00b4d8);
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+  .gauge-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* CTA */
+  .cta-block {
+    text-align: center;
+    padding: 32px 28px;
+    border: 1px solid rgba(0,229,176,0.15);
+    border-radius: 16px;
+    background: rgba(0,229,176,0.04);
+  }
+  .cta-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .cta-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.1s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 20px 0;
+  }
+
+  /* SMC assumptions */
+  .assumption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .assumption:last-child { border-bottom: none; }
+  .assumption-label { font-size: 13px; color: var(--text-secondary); }
+  .assumption-val { font-family: var(--font-mono); font-size: 13px; color: var(--accent); }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  footer a { color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="badge">Smart Connection — ROI Calculator</div>
+    <h1>¿Cuánto te cuesta<br>no <span>automatizar</span>?</h1>
+    <p class="subtitle">Ingresa los datos de tu proceso manual. En segundos calculamos cuánto estás gastando y cuándo se paga la inversión.</p>
+  </header>
+
+  <!-- INPUT SECTION -->
+  <div class="card">
+    <div class="card-title">Tu proceso manual hoy</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="employees">Personas que hacen el proceso</label>
+        <span class="field-hint">Número de empleados involucrados</span>
+        <input type="number" id="employees" value="3" min="1" max="100">
+      </div>
+      <div class="field">
+        <label for="hours">Horas por semana (por persona)</label>
+        <span class="field-hint">Promedio de horas dedicadas al proceso</span>
+        <input type="number" id="hours" value="8" min="0.5" max="60" step="0.5">
+      </div>
+      <div class="field">
+        <label for="cost">Costo hora promedio (UF)</label>
+        <span class="field-hint">Incluye sueldo + cargas laborales</span>
+        <div class="input-wrap">
+          <span class="input-prefix">UF</span>
+          <input type="number" id="cost" class="has-prefix" value="0.08" min="0.01" max="2" step="0.01">
+        </div>
+      </div>
+      <div class="field">
+        <label for="errors">Errores por mes (costo en UF)</label>
+        <span class="field-hint">Costo mensual de errores manuales</span>
+        <div class="input-wrap">
+          <span class="input-prefix">UF</span>
+          <input type="number" id="errors" class="has-prefix" value="5" min="0" max="500">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMC ASSUMPTIONS -->
+  <div class="card">
+    <div class="card-title">Parámetros SMC (ajustables)</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="investment">Inversión proyecto SMC (UF)</label>
+        <span class="field-hint">Build Premium típico: 40–300 UF</span>
+        <div class="input-wrap">
+          <span class="input-prefix">UF</span>
+          <input type="number" id="investment" class="has-prefix" value="80" min="15" max="500">
+        </div>
+      </div>
+      <div class="field">
+        <label for="reduction">Reducción de tiempo esperada (%)</label>
+        <span class="field-hint">Basado en proyectos similares: 50–80%</span>
+        <div class="input-wrap">
+          <input type="number" id="reduction" value="65" min="10" max="95" step="5">
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px">%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="card" id="results-card">
+    <div class="card-title">Resultado del análisis</div>
+    <div class="results-grid">
+      <div class="result-box danger">
+        <div class="result-label">Costo mensual actual</div>
+        <div class="result-value" id="current-cost">—</div>
+        <div class="result-unit">UF / mes</div>
+      </div>
+      <div class="result-box highlight">
+        <div class="result-label">Ahorro mensual con SMC</div>
+        <div class="result-value" id="monthly-saving">—</div>
+        <div class="result-unit">UF / mes</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Payback del proyecto</div>
+        <div class="result-value" id="payback">—</div>
+        <div class="result-unit">meses</div>
+      </div>
+      <div class="result-box highlight">
+        <div class="result-label">ROI a 12 meses</div>
+        <div class="result-value" id="roi-12">—</div>
+        <div class="result-unit">% de retorno</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="gauge-wrap">
+      <div style="font-size:12px;color:var(--text-muted)">ROI score</div>
+      <div class="gauge"><div class="gauge-fill" id="gauge-fill"></div></div>
+      <div class="gauge-label" id="gauge-verdict">Ingresa tus datos para ver el análisis</div>
+    </div>
+  </div>
+
+  <!-- PROJECTION TABLE -->
+  <div class="card">
+    <div class="card-title">Proyección 12 meses</div>
+    <table class="proj-table">
+      <thead>
+        <tr>
+          <th>Mes</th>
+          <th>Costo acumulado SIN SMC</th>
+          <th>Costo con SMC</th>
+          <th>Diferencia</th>
+        </tr>
+      </thead>
+      <tbody id="proj-tbody">
+        <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px">Ingresa los datos para ver la proyección</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <div class="cta-title">¿Los números cuadran?</div>
+    <p class="cta-sub">Agenda 20 minutos — revisamos el cálculo con los datos reales de tu empresa.<br>Si no cuadra, te lo decimos nosotros primero.</p>
+    <a class="btn" href="https://smconnection.cl" target="_blank">Agenda tu demo gratis →</a>
+  </div>
+
+  <footer>
+    <p>Smart Connection · <a href="https://smconnection.cl">smconnection.cl</a></p>
+    <p style="margin-top:4px">Los cálculos son estimaciones basadas en proyectos reales. Los resultados pueden variar según el proceso y la empresa.</p>
+  </footer>
+
+</div>
+
+<script>
+  const inputs = ['employees','hours','cost','errors','investment','reduction'];
+  inputs.forEach(id => {
+    document.getElementById(id).addEventListener('input', calculate);
+  });
+
+  function uf(n) {
+    return n.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function calculate() {
+    const employees = parseFloat(document.getElementById('employees').value) || 0;
+    const hours = parseFloat(document.getElementById('hours').value) || 0;
+    const cost = parseFloat(document.getElementById('cost').value) || 0;
+    const errors = parseFloat(document.getElementById('errors').value) || 0;
+    const investment = parseFloat(document.getElementById('investment').value) || 0;
+    const reduction = parseFloat(document.getElementById('reduction').value) / 100 || 0;
+
+    // Monthly calc (4.33 weeks/month)
+    const weeklyHours = employees * hours;
+    const monthlyHours = weeklyHours * 4.33;
+    const laborCostMonthly = monthlyHours * cost;
+    const currentMonthly = laborCostMonthly + errors;
+
+    const savingMonthly = currentMonthly * reduction;
+    const remainingCost = currentMonthly - savingMonthly;
+
+    const payback = savingMonthly > 0 ? investment / savingMonthly : 999;
+    const roi12 = savingMonthly > 0
+      ? ((savingMonthly * 12 - investment) / investment * 100)
+      : 0;
+
+    // Update results
+    document.getElementById('current-cost').textContent = uf(currentMonthly);
+    document.getElementById('monthly-saving').textContent = uf(savingMonthly);
+    document.getElementById('payback').textContent = payback < 100 ? payback.toFixed(1) : '>36';
+    document.getElementById('roi-12').textContent = roi12 > 0 ? Math.round(roi12) + '%' : '—';
+
+    // Gauge
+    const gaugeScore = Math.min(roi12 / 5, 100); // 500% ROI = full bar
+    document.getElementById('gauge-fill').style.width = Math.max(0, gaugeScore) + '%';
+
+    let verdict = '';
+    if (roi12 >= 300) verdict = 'Excelente — payback en ' + payback.toFixed(1) + ' meses, ROI muy alto';
+    else if (roi12 >= 100) verdict = 'Muy bueno — el proyecto se paga solo en ' + payback.toFixed(1) + ' meses';
+    else if (roi12 >= 50) verdict = 'Positivo — ROI razonable, vale la pena analizar en detalle';
+    else if (roi12 > 0) verdict = 'Marginal — recomendamos Discovery Sprint primero (15–40 UF)';
+    else verdict = 'Ajusta los parámetros — el ahorro podría ser mayor con el alcance correcto';
+    document.getElementById('gauge-verdict').textContent = verdict;
+
+    // Projection table
+    const tbody = document.getElementById('proj-tbody');
+    let rows = '';
+    let paybackMonth = Math.ceil(payback);
+
+    for (let m = 1; m <= 12; m++) {
+      const withoutSMC = currentMonthly * m;
+      const withSMC = investment + (remainingCost * m);
+      const diff = withoutSMC - withSMC;
+      const isPayback = m === paybackMonth && payback <= 12;
+      const isPositive = diff > 0;
+      const cls = isPayback ? 'payback' : (isPositive ? 'positive' : '');
+      rows += `<tr class="${cls}">
+        <td>Mes ${m}</td>
+        <td>${uf(withoutSMC)} UF</td>
+        <td>${uf(withSMC)} UF</td>
+        <td>${diff >= 0 ? '+' : ''}${uf(diff)} UF</td>
+      </tr>`;
+    }
+    tbody.innerHTML = rows;
+  }
+
+  // Initial calculation
+  calculate();
+</script>
+</body>
+</html>

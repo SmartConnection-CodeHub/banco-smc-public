@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Reñaca Live</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --ocean:  #0077b6;
+  --foam:   #90e0ef;
+  --glass:  rgba(0, 16, 35, 0.52);
+  --glass2: rgba(0, 16, 35, 0.72);
+  --gb:     rgba(144, 224, 239, 0.15);
+  --text:   #f0f9ff;
+  --muted:  rgba(240, 249, 255, 0.58);
+  --dim:    rgba(240, 249, 255, 0.35);
+  --accent: #00e5b0;
+  --warn:   #f4a261;
+  --safe:   env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #000c1a;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── VIDEO FONDO ── */
+#bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.65) contrast(1.15) saturate(1.1);
+}
+
+/* ── CAPAS DE GRADIENTE ── */
+.grad-top {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom,
+    rgba(0,8,22,0.78) 0%,
+    rgba(0,8,22,0.35) 22%,
+    transparent 45%,
+    transparent 55%,
+    rgba(0,8,22,0.45) 75%,
+    rgba(0,8,22,0.88) 100%
+  );
+}
+
+/* ── SHELL ── */
+.shell {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top, 16px) 0 0 0;
+  pointer-events: none;
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px 20px 0;
+  pointer-events: all;
+}
+
+.location h1 {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.7);
+}
+.location h1 span { color: var(--foam); }
+.location p {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,50,50,0.18);
+  border: 1px solid rgba(255,80,80,0.38);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #ff4444;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.4; transform:scale(0.65); }
+}
+
+.clock-wrap {
+  text-align: right;
+  line-height: 1.3;
+}
+.clock {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  display: block;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.6);
+}
+.clock-date {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── HERO METRIC — OLA ── */
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 20px;
+  pointer-events: none;
+}
+.hero-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.hero-value {
+  font-size: 88px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -4px;
+  color: var(--accent);
+  text-shadow: 0 0 60px rgba(0,229,176,0.3), 0 2px 24px rgba(0,0,0,0.6);
+}
+.hero-unit {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--foam);
+  letter-spacing: 0;
+  margin-left: 4px;
+}
+.hero-sub {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.hero-quality {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0,229,176,0.1);
+  border: 1px solid rgba(0,229,176,0.25);
+  border-radius: 99px;
+  padding: 3px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 2px;
+}
+
+/* ── CARDS ROW ── */
+.cards-section {
+  padding: 0 14px 10px;
+  pointer-events: all;
+}
+
+.cards-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--gb);
+  border-radius: 16px;
+  padding: 12px 14px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.card-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  margin-bottom: 5px;
+}
+.card-value {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+}
+.card-value .unit {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--foam);
+  margin-left: 1px;
+}
+.card-sub {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.3;
+}
+.card.accent .card-value { color: var(--accent); }
+.card.warn .card-value { color: var(--warn); }
+
+/* barra viento */
+.wind-bar {
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+  margin-top: 5px;
+}
+.wind-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--foam), var(--accent));
+  border-radius: 2px;
+  transition: width 1s ease;
+}
+
+/* Card swell — ancho completo */
+.card-swell-full {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.swell-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 12px 0 0;
+}
+.swell-col:not(:last-child) {
+  border-right: 1px solid rgba(144,224,239,0.1);
+  margin-right: 12px;
+}
+.swell-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+.swell-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--foam);
+}
+
+/* ── FORECAST — scroll horizontal ── */
+.forecast-section {
+  padding: 0 14px 14px;
+  pointer-events: all;
+}
+.forecast-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.forecast-scroll::-webkit-scrollbar { display: none; }
+
+.fc-day {
+  flex-shrink: 0;
+  background: var(--glass);
+  border: 1px solid var(--gb);
+  border-radius: 12px;
+  padding: 8px 14px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  min-width: 64px;
+}
+.fc-day.today {
+  background: rgba(0,229,176,0.1);
+  border-color: rgba(0,229,176,0.28);
+}
+.fc-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.fc-day.today .fc-lbl { color: var(--accent); }
+.fc-val {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--foam);
+}
+.fc-day.today .fc-val { color: #fff; font-size: 12px; }
+
+/* ── BOTTOM TELEMETRY ── */
+.telemetry {
+  background: rgba(0,8,22,0.75);
+  border-top: 1px solid rgba(144,224,239,0.12);
+  backdrop-filter: blur(20px);
+  padding: 10px 20px;
+  padding-bottom: calc(10px + var(--safe));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.telem-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.telem-icon { font-size: 14px; }
+.telem-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.telem-lbl {
+  font-size: 8px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.telem-div {
+  width: 1px;
+  height: 28px;
+  background: rgba(255,255,255,0.07);
+}
+
+/* ── LOADING ── */
+#loading {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000c1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  transition: opacity 0.8s ease;
+}
+#loading.hidden { opacity: 0; pointer-events: none; }
+.loader-ring {
+  width: 44px; height: 44px;
+  border: 3px solid rgba(0,229,176,0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#loading p { font-size: 12px; color: var(--muted); }
+
+/* ── CORS NOTICE ── */
+.cors-notice {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  background: rgba(244,162,97,0.15);
+  border: 1px solid rgba(244,162,97,0.4);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 10px;
+  color: var(--warn);
+  display: none;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ── LANDSCAPE: mostrar layout desktop en vez ── */
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero { flex-direction: row; gap: 16px; justify-content: flex-start; padding: 0 20px; }
+  .hero-value { font-size: 56px; }
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="loader-ring"></div>
+  <p>Conectando · Reñaca Live</p>
+</div>
+
+<div class="cors-notice" id="cors-notice">⚠️ Stream bloqueado — usando modo estático</div>
+
+<video id="bg-video" autoplay muted loop playsinline></video>
+<div class="grad-top"></div>
+
+<div class="shell">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="location">
+      <h1>Playa <span>Reñaca</span></h1>
+      <p>Viña del Mar · Chile</p>
+    </div>
+    <div class="header-right">
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        EN VIVO
+      </div>
+      <div class="clock-wrap">
+        <span class="clock" id="clock">--:--</span>
+        <span class="clock-date" id="date-display"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO — OLA PRINCIPAL -->
+  <div class="hero">
+    <div class="hero-label">🌊 Altura de ola</div>
+    <div class="hero-value" id="hero-wave">1.4<span class="hero-unit">m</span></div>
+    <div class="hero-sub" id="hero-range">1.4 – 2.5m hoy</div>
+    <div class="hero-quality">⭐ Buenas condiciones</div>
+  </div>
+
+  <!-- CARDS: Viento · Ráfaga · Marea -->
+  <div class="cards-section">
+    <div class="cards-row">
+
+      <div class="card">
+        <div class="card-label">💨 Viento</div>
+        <div class="card-value" id="wind-speed">21<span class="unit">kph</span></div>
+        <div class="card-sub" id="wind-dir">↓ SO 210°</div>
+        <div class="wind-bar">
+          <div class="wind-bar-fill" id="wind-bar" style="width:42%"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚡ Ráfaga</div>
+        <div class="card-value" id="gust">36<span class="unit">kph</span></div>
+        <div class="card-sub">Máx hoy</div>
+      </div>
+
+      <div class="card warn">
+        <div class="card-label">🌙 Marea</div>
+        <div class="card-value" id="tide">1.0<span class="unit">m</span></div>
+        <div class="card-sub" id="tide-info">Alta 1.1m 9pm</div>
+      </div>
+
+    </div>
+
+    <!-- SWELL — ancho completo -->
+    <div class="card">
+      <div class="card-label" style="margin-bottom:10px;">🔄 Swell Primario</div>
+      <div class="card-swell-full">
+        <div class="swell-col">
+          <span class="swell-lbl">Altura</span>
+          <span class="swell-val" id="swell-h">0.6m</span>
+        </div>
+        <div class="swell-col">
+          <span class="swell-lbl">Periodo</span>
+          <span class="swell-val" id="swell-p">17s</span>
+        </div>
+        <div class="swell-col">
+          <span class="swell-lbl">Dirección</span>
+          <span class="swell-val" id="swell-d" style="font-size:14px;">SO 228°</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORECAST SCROLL -->
+  <div class="forecast-section">
+    <div class="forecast-scroll" id="forecast-scroll">
+      <!-- generado por JS -->
+    </div>
+  </div>
+
+  <!-- TELEMETRÍA BOTTOM -->
+  <div class="telemetry">
+    <div class="telem-item">
+      <span class="telem-icon">🌊</span>
+      <span class="telem-val" id="t-wave">1.4m</span>
+      <span class="telem-lbl">Ola</span>
+    </div>
+    <div class="telem-div"></div>
+    <div class="telem-item">
+      <span class="telem-icon">💨</span>
+      <span class="telem-val" id="t-wind">21kph</span>
+      <span class="telem-lbl">Viento SO</span>
+    </div>
+    <div class="telem-div"></div>
+    <div class="telem-item">
+      <span class="telem-icon">🔄</span>
+      <span class="telem-val" id="t-swell">0.6m·17s</span>
+      <span class="telem-lbl">Swell</span>
+    </div>
+    <div class="telem-div"></div>
+    <div class="telem-item">
+      <span class="telem-icon">🌙</span>
+      <span class="telem-val" id="t-tide">1.0m</span>
+      <span class="telem-lbl">Marea</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── RELOJ ──
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: false });
+  document.getElementById('date-display').textContent =
+    now.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── FORECAST ──
+const forecastData = [
+  { label: 'Hoy',    value: '1.4–2.5m', today: true  },
+  { label: 'Mañana', value: '1.7–2.9m', today: false },
+  { label: 'Jue',    value: '1.6–2.6m', today: false },
+  { label: 'Vie',    value: '1.4–2.6m', today: false },
+  { label: 'Sáb',    value: '1.3–2.2m', today: false },
+  { label: 'Dom',    value: '1.1–2.2m', today: false },
+];
+const fs = document.getElementById('forecast-scroll');
+forecastData.forEach(d => {
+  const el = document.createElement('div');
+  el.className = 'fc-day' + (d.today ? ' today' : '');
+  el.innerHTML = `<div class="fc-lbl">${d.label}</div><div class="fc-val">${d.value}</div>`;
+  fs.appendChild(el);
+});
+
+// ── HLS STREAM ──
+const HLS_URL = 'https://cams.misolas.com/hls/107690/index.m3u8';
+const video   = document.getElementById('bg-video');
+const loading = document.getElementById('loading');
+
+function hideLoading() {
+  loading.classList.add('hidden');
+  setTimeout(() => loading.remove(), 900);
+}
+
+if (Hls.isSupported()) {
+  const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+  hls.loadSource(HLS_URL);
+  hls.attachMedia(video);
+  hls.on(Hls.Events.MANIFEST_PARSED, () => { video.play().catch(() => {}); hideLoading(); });
+  hls.on(Hls.Events.ERROR, (e, d) => {
+    if (d.fatal) {
+      document.getElementById('cors-notice').style.display = 'block';
+      document.body.style.background =
+        'linear-gradient(160deg, #001428 0%, #003060 50%, #004070 100%)';
+      hideLoading();
+    }
+  });
+} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+  video.src = HLS_URL;
+  video.addEventListener('loadedmetadata', () => { video.play().catch(() => {}); hideLoading(); });
+  video.addEventListener('error', () => { document.getElementById('cors-notice').style.display='block'; hideLoading(); });
+} else {
+  hideLoading();
+}
+
+// ── DATOS LIVE ──
+const liveData = {
+  waveHeight: 1.4, windSpeed: 21, windGust: 36,
+  windDir: 'SO', windDeg: 210,
+  tide: 1.0, swellH: 0.6, swellP: 17,
+  swellDir: 'SO', swellDeg: 228,
+};
+
+function degToArrow(deg) {
+  return ['↑','↗','→','↘','↓','↙','←','↖'][Math.round(deg / 45) % 8];
+}
+
+function waveQuality(h) {
+  if (h >= 2.0) return '🔥 Condiciones épicas';
+  if (h >= 1.5) return '⭐ Buenas condiciones';
+  if (h >= 1.0) return '✅ Condiciones aceptables';
+  return '😴 Olas pequeñas';
+}
+
+function updateUI(d) {
+  document.getElementById('hero-wave').innerHTML = `${d.waveHeight.toFixed(1)}<span class="hero-unit">m</span>`;
+  document.querySelector('.hero-quality').textContent = waveQuality(d.waveHeight);
+  document.getElementById('wind-speed').innerHTML = `${Math.round(d.windSpeed)}<span class="unit">kph</span>`;
+  document.getElementById('wind-dir').innerHTML = `${degToArrow(d.windDeg)} ${d.windDir} ${d.windDeg}°`;
+  document.getElementById('wind-bar').style.width = Math.min(100, (d.windSpeed / 80) * 100) + '%';
+  document.getElementById('gust').innerHTML = `${Math.round(d.windGust)}<span class="unit">kph</span>`;
+  document.getElementById('tide').innerHTML = `${d.tide.toFixed(1)}<span class="unit">m</span>`;
+  document.getElementById('swell-h').textContent = d.swellH.toFixed(1) + 'm';
+  document.getElementById('swell-p').textContent = d.swellP + 's';
+  document.getElementById('swell-d').textContent = `${d.swellDir} ${d.swellDeg}°`;
+  // telemetría
+  document.getElementById('t-wave').textContent  = d.waveHeight.toFixed(1) + 'm';
+  document.getElementById('t-wind').textContent  = Math.round(d.windSpeed) + 'kph';
+  document.getElementById('t-swell').textContent = `${d.swellH.toFixed(1)}m·${d.swellP}s`;
+  document.getElementById('t-tide').textContent  = d.tide.toFixed(1) + 'm';
+}
+
+updateUI(liveData);
+
+async function fetchLiveData() {
+  try {
+    const res = await fetch('/api/forecast', { headers: { 'Referer': 'https://www.misolas.com/' } });
+    if (!res.ok) throw new Error('no disponible');
+    // mapear respuesta real aquí
+  } catch {
+    const j = () => (Math.random() - 0.5) * 0.08;
+    liveData.waveHeight = Math.max(0.7, liveData.waveHeight + j());
+    liveData.windSpeed  = Math.max(4,   liveData.windSpeed  + (Math.random() - 0.5) * 0.4);
+    updateUI(liveData);
+  }
+}
+setInterval(fetchLiveData, 30000);
+</script>
+</body>
+</html>

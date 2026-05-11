@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scan Tecnológico — Al Paso Dance Studio | Panchita 🐕</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #e4e4e7;
+    --text-muted: #71717a;
+    --accent: #a855f7;
+    --accent2: #f97316;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --blue: #3b82f6;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(249,115,22,0.1));
+    border-bottom: 1px solid var(--card-border);
+  }
+  .header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  .header h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header .subtitle { color: var(--text-muted); font-size: 0.95rem; }
+  .header .url { color: var(--accent); font-size: 0.85rem; margin-top: 8px; font-weight: 500; }
+  .header .date { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
+
+  /* Score */
+  .score-section {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 40px 0;
+  }
+  .score-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px 32px;
+    text-align: center;
+    min-width: 140px;
+    backdrop-filter: blur(10px);
+  }
+  .score-card .number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .score-card .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+  .score-green .number { color: var(--green); }
+  .score-yellow .number { color: var(--yellow); }
+  .score-red .number { color: var(--red); }
+  .score-blue .number { color: var(--blue); }
+  .score-purple .number { color: var(--accent); }
+
+  /* Sections */
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 48px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .icon { font-size: 1.1rem; }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: rgba(168,85,247,0.1);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 1px solid var(--card-border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--card-border);
+    font-size: 0.85rem;
+  }
+  tr:hover { background: rgba(255,255,255,0.02); }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .badge-purple { background: rgba(168,85,247,0.15); color: var(--accent); }
+  .badge-orange { background: rgba(249,115,22,0.15); color: var(--accent2); }
+
+  /* Cards grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+  }
+  .card h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--accent);
+  }
+  .card ul { list-style: none; padding: 0; }
+  .card li {
+    font-size: 0.82rem;
+    padding: 4px 0;
+    color: var(--text-muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .card li::before { content: '›'; color: var(--accent); font-weight: bold; flex-shrink: 0; }
+
+  /* Progress bar */
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 6px 0;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+
+  /* Recommendations */
+  .rec-item {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 10px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rec-priority {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .rec-priority.high { background: rgba(239,68,68,0.2); color: var(--red); }
+  .rec-priority.med { background: rgba(234,179,8,0.2); color: var(--yellow); }
+  .rec-priority.low { background: rgba(34,197,94,0.2); color: var(--green); }
+  .rec-content h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+  .rec-content p { font-size: 0.78rem; color: var(--text-muted); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; margin: 30px 0 0; border-bottom: 1px solid var(--card-border); }
+  .tab {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:hover { color: var(--text); }
+  .tab-content { display: none; padding: 20px 0; }
+  .tab-content.active { display: block; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 60px;
+    border-top: 1px solid var(--card-border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  /* KV pair */
+  .kv { display: flex; gap: 8px; padding: 6px 0; font-size: 0.82rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .kv-key { color: var(--text-muted); min-width: 160px; flex-shrink: 0; }
+  .kv-val { color: var(--text); word-break: break-all; }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .header h1 { font-size: 1.5rem; }
+    .score-card { min-width: 110px; padding: 16px 20px; }
+    .score-card .number { font-size: 2rem; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .kv { flex-direction: column; gap: 2px; }
+    .kv-key { min-width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>🔍 Scan Tecnológico: <span>Al Paso Dance Studio</span></h1>
+  <div class="subtitle">Análisis completo de stack, rendimiento, SEO e integraciones</div>
+  <div class="url">alpasodancestudio.cl</div>
+  <div class="date">23 marzo 2026 · Generado por Panchita 🐕</div>
+</div>
+
+<div class="container">
+
+<!-- SCORES -->
+<div class="score-section">
+  <div class="score-card score-green">
+    <div class="number">8.5</div>
+    <div class="label">Stack</div>
+  </div>
+  <div class="score-card score-green">
+    <div class="number">7.5</div>
+    <div class="label">Rendimiento</div>
+  </div>
+  <div class="score-card score-yellow">
+    <div class="number">6.0</div>
+    <div class="label">SEO</div>
+  </div>
+  <div class="score-card score-red">
+    <div class="number">3.0</div>
+    <div class="label">Analytics</div>
+  </div>
+  <div class="score-card score-yellow">
+    <div class="number">5.5</div>
+    <div class="label">Integraciones</div>
+  </div>
+  <div class="score-card score-blue">
+    <div class="number">6.5</div>
+    <div class="label">General</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PARTE 1: REPORTE TÉCNICO              -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2><span class="icon">🏗️</span> Stack Tecnológico</h2>
+
+<table>
+  <tr><th>Categoría</th><th>Tecnología</th><th>Versión</th><th>Estado</th></tr>
+  <tr><td>Framework</td><td><strong>Next.js</strong> (App Router + RSC)</td><td>14/15</td><td><span class="badge badge-green">Moderno</span></td></tr>
+  <tr><td>UI Library</td><td><strong>React</strong> (Server Components)</td><td>18/19</td><td><span class="badge badge-green">Moderno</span></td></tr>
+  <tr><td>CSS</td><td><strong>Tailwind CSS</strong></td><td>v3/v4</td><td><span class="badge badge-green">Moderno</span></td></tr>
+  <tr><td>Lenguaje</td><td><strong>TypeScript</strong> (inferido)</td><td>—</td><td><span class="badge badge-green">Moderno</span></td></tr>
+  <tr><td>Hosting</td><td><strong>Vercel</strong></td><td>—</td><td><span class="badge badge-green">Óptimo</span></td></tr>
+  <tr><td>CDN</td><td><strong>Vercel Edge Network</strong></td><td>—</td><td><span class="badge badge-green">Global</span></td></tr>
+  <tr><td>SSL</td><td><strong>HTTPS + HSTS</strong></td><td>max-age=63072000</td><td><span class="badge badge-green">Seguro</span></td></tr>
+  <tr><td>PWA</td><td><strong>manifest.json</strong> detectado</td><td>—</td><td><span class="badge badge-blue">Parcial</span></td></tr>
+</table>
+
+<h2><span class="icon">📡</span> Headers HTTP del Servidor</h2>
+<div class="card" style="margin: 16px 0;">
+  <div class="kv"><span class="kv-key">server</span><span class="kv-val">Vercel</span></div>
+  <div class="kv"><span class="kv-key">content-type</span><span class="kv-val">text/html; charset=utf-8</span></div>
+  <div class="kv"><span class="kv-key">cache-control</span><span class="kv-val">public, max-age=0, must-revalidate</span></div>
+  <div class="kv"><span class="kv-key">strict-transport-security</span><span class="kv-val">max-age=63072000 (HSTS ~2 años)</span></div>
+  <div class="kv"><span class="kv-key">x-vercel-cache</span><span class="kv-val">HIT (cacheado en edge)</span></div>
+  <div class="kv"><span class="kv-key">x-nextjs-prerender</span><span class="kv-val">1 (pre-renderizado estático)</span></div>
+  <div class="kv"><span class="kv-key">x-nextjs-stale-time</span><span class="kv-val">300 (ISR cada 5 min)</span></div>
+  <div class="kv"><span class="kv-key">vary</span><span class="kv-val">rsc, next-router-state-tree, next-router-prefetch</span></div>
+  <div class="kv"><span class="kv-key">x-vercel-id</span><span class="kv-val">gru1 (São Paulo region)</span></div>
+  <div class="kv"><span class="kv-key">content-length</span><span class="kv-val">79.6 KB (HTML)</span></div>
+</div>
+
+<h2><span class="icon">🔤</span> Tipografías</h2>
+<div class="cards-grid">
+  <div class="card">
+    <h3>Fonts Cargadas (Google Fonts vía Next.js)</h3>
+    <ul>
+      <li>Inter (múltiples pesos)</li>
+      <li>Montserrat</li>
+      <li>Poppins</li>
+      <li>DM Sans</li>
+    </ul>
+    <p style="margin-top:10px;font-size:0.78rem;color:var(--text-muted);">10 archivos WOFF2 con preload — bien optimizado</p>
+  </div>
+  <div class="card">
+    <h3>Observaciones</h3>
+    <ul>
+      <li>4 familias tipográficas es excesivo — 2 bastarían</li>
+      <li>10 archivos WOFF2 preloadeados en el head</li>
+      <li>WOFF2 es el formato más eficiente ✓</li>
+      <li>Preload asegura carga temprana ✓</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="icon">🔍</span> SEO y Meta Tags</h2>
+<table>
+  <tr><th>Meta Tag</th><th>Valor</th><th>Estado</th></tr>
+  <tr><td>title</td><td>Al Paso Dance Studio | Donde el ritmo comienza</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>description</td><td>Academia de baile en Costa de Montemar, Concón...</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>keywords</td><td>baile, danza, bachata, casino, mambo, Concón, academia</td><td><span class="badge badge-yellow">Básico</span></td></tr>
+  <tr><td>author</td><td>Al Paso Dance Studio</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>viewport</td><td>width=device-width, initial-scale=1, maximum-scale=1</td><td><span class="badge badge-yellow">Limita zoom</span></td></tr>
+  <tr><td>theme-color</td><td>#140A18</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>og:title</td><td>✓ Presente</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>og:description</td><td>✓ Presente</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>og:image</td><td>/img/og-image.svg</td><td><span class="badge badge-red">SVG!</span></td></tr>
+  <tr><td>og:locale</td><td>es_CL</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>twitter:card</td><td>✓ Presente</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>canonical</td><td>No detectado</td><td><span class="badge badge-red">Falta</span></td></tr>
+  <tr><td>robots</td><td>No detectado</td><td><span class="badge badge-yellow">Default</span></td></tr>
+  <tr><td>JSON-LD</td><td>No detectado</td><td><span class="badge badge-red">Falta</span></td></tr>
+  <tr><td>sitemap.xml</td><td>No verificado</td><td><span class="badge badge-yellow">Revisar</span></td></tr>
+  <tr><td>lang</td><td>es</td><td><span class="badge badge-green">OK</span></td></tr>
+</table>
+
+<h2><span class="icon">📊</span> Analytics y Tracking</h2>
+<div class="card" style="margin: 16px 0; border-left: 3px solid var(--red);">
+  <h3 style="color: var(--red);">⚠️ SIN ANALYTICS DETECTADO</h3>
+  <table>
+    <tr><th>Herramienta</th><th>Estado</th></tr>
+    <tr><td>Google Analytics / GA4</td><td><span class="badge badge-red">No detectado</span></td></tr>
+    <tr><td>Google Tag Manager</td><td><span class="badge badge-red">No detectado</span></td></tr>
+    <tr><td>Facebook Pixel</td><td><span class="badge badge-red">No detectado</span></td></tr>
+    <tr><td>Hotjar / Clarity</td><td><span class="badge badge-red">No detectado</span></td></tr>
+    <tr><td>Amplitude / Mixpanel</td><td><span class="badge badge-red">No detectado</span></td></tr>
+    <tr><td>Sentry (errores)</td><td><span class="badge badge-red">No detectado</span></td></tr>
+  </table>
+  <p style="margin-top:12px;font-size:0.8rem;color:var(--red);">
+    El sitio NO tiene ninguna herramienta de analytics. No hay forma de medir tráfico, conversiones ni comportamiento de usuarios.
+  </p>
+</div>
+
+<h2><span class="icon">🔗</span> Integraciones Externas</h2>
+<div class="cards-grid">
+  <div class="card">
+    <h3>WhatsApp Business</h3>
+    <ul>
+      <li>Número: +56 9 7332 7307</li>
+      <li>Mensajes pre-armados por plan</li>
+      <li>CTA en precios, cursos y contacto</li>
+      <li>Sin WhatsApp Business API formal</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Google Maps</h3>
+    <ul>
+      <li>Embed iframe del mapa</li>
+      <li>Costa de Montemar 264, Concón</li>
+      <li>Sin Google Maps API key</li>
+      <li>Embed básico (gratis)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Instagram</h3>
+    <ul>
+      <li>@alpasodancestudio</li>
+      <li>Link en footer/contacto</li>
+      <li>Sin feed embebido</li>
+      <li>Sin Instagram API</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Lo que NO tiene</h3>
+    <ul>
+      <li>Sin sistema de booking online</li>
+      <li>Sin pasarela de pago</li>
+      <li>Sin chat en vivo</li>
+      <li>Sin email marketing (Mailchimp, etc.)</li>
+      <li>Sin CRM</li>
+      <li>Sin cookie consent</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="icon">⚡</span> Rendimiento</h2>
+<table>
+  <tr><th>Aspecto</th><th>Detalle</th><th>Estado</th></tr>
+  <tr>
+    <td>Renderizado</td>
+    <td>RSC + ISR (pre-render + revalidación cada 5 min)</td>
+    <td><span class="badge badge-green">Excelente</span></td>
+  </tr>
+  <tr>
+    <td>Imágenes</td>
+    <td>Next.js Image con srcset responsive (640-3840px), quality=75</td>
+    <td><span class="badge badge-green">Optimizado</span></td>
+  </tr>
+  <tr>
+    <td>Formato imágenes</td>
+    <td>PNG/JPG originales, Next.js convierte on-the-fly</td>
+    <td><span class="badge badge-green">Auto-WebP</span></td>
+  </tr>
+  <tr>
+    <td>Lazy Loading</td>
+    <td>Implícito vía Next.js Image component</td>
+    <td><span class="badge badge-green">Sí</span></td>
+  </tr>
+  <tr>
+    <td>Font Preload</td>
+    <td>10 archivos WOFF2 con preload</td>
+    <td><span class="badge badge-yellow">Excesivo</span></td>
+  </tr>
+  <tr>
+    <td>Scripts</td>
+    <td>Chunks con async=true</td>
+    <td><span class="badge badge-green">Óptimo</span></td>
+  </tr>
+  <tr>
+    <td>Cache Edge</td>
+    <td>Vercel Edge (São Paulo / gru1)</td>
+    <td><span class="badge badge-green">Cercano</span></td>
+  </tr>
+  <tr>
+    <td>HTML Size</td>
+    <td>~80 KB</td>
+    <td><span class="badge badge-yellow">Alto</span></td>
+  </tr>
+  <tr>
+    <td>og:image</td>
+    <td>SVG (redes sociales no lo renderizan bien)</td>
+    <td><span class="badge badge-red">Cambiar a PNG/JPG</span></td>
+  </tr>
+</table>
+
+<h2><span class="icon">📱</span> Responsive y Accesibilidad</h2>
+<table>
+  <tr><th>Aspecto</th><th>Detalle</th><th>Estado</th></tr>
+  <tr><td>Viewport</td><td>width=device-width, maximum-scale=1</td><td><span class="badge badge-yellow">Limita zoom</span></td></tr>
+  <tr><td>viewport-fit</td><td>cover (soporte notch iPhone)</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>Breakpoints</td><td>Tailwind: md: (768px+)</td><td><span class="badge badge-green">Responsive</span></td></tr>
+  <tr><td>Fluid Typography</td><td>clamp() detectado</td><td><span class="badge badge-green">Moderno</span></td></tr>
+  <tr><td>Grid Layout</td><td>grid-cols-1 → md:grid-cols-3</td><td><span class="badge badge-green">OK</span></td></tr>
+  <tr><td>maximum-scale=1</td><td>Bloquea zoom del usuario</td><td><span class="badge badge-red">Accesibilidad</span></td></tr>
+</table>
+
+<h2><span class="icon">🏪</span> Contenido del Sitio</h2>
+<div class="cards-grid">
+  <div class="card">
+    <h3>Secciones Detectadas</h3>
+    <ul>
+      <li>Hero con imagen de fondo</li>
+      <li>Cursos: Bachata Básico/Intermedio, Casino Básico/Intermedio, Mambo Open</li>
+      <li>Pricing: 1/2/3 cursos mensuales (CLP)</li>
+      <li>Testimonios</li>
+      <li>Galería de imágenes</li>
+      <li>Formulario de contacto</li>
+      <li>Mapa de ubicación</li>
+      <li>Footer con redes sociales</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Formulario de Contacto</h3>
+    <ul>
+      <li>Nombre (text input)</li>
+      <li>Correo Electrónico (email input)</li>
+      <li>Curso de Interés (dropdown select)</li>
+      <li>Nota (textarea, opcional)</li>
+      <li>Botón: "Enviar Mensaje"</li>
+      <li>Procesamiento: Next.js Server Action (inferido)</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="icon">🛡️</span> Seguridad</h2>
+<table>
+  <tr><th>Aspecto</th><th>Estado</th></tr>
+  <tr><td>HTTPS</td><td><span class="badge badge-green">Activo</span></td></tr>
+  <tr><td>HSTS</td><td><span class="badge badge-green">max-age=63072000 (~2 años)</span></td></tr>
+  <tr><td>CORS</td><td><span class="badge badge-yellow">access-control-allow-origin: * (abierto)</span></td></tr>
+  <tr><td>Cookie Consent</td><td><span class="badge badge-red">No detectado</span></td></tr>
+  <tr><td>Privacy Policy</td><td><span class="badge badge-red">No detectada</span></td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PARTE 2: RECOMENDACIONES              -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2><span class="icon">🎯</span> Recomendaciones Priorizadas</h2>
+
+<div class="rec-item">
+  <div class="rec-priority high">1</div>
+  <div class="rec-content">
+    <h4>Instalar Google Analytics 4 + GTM</h4>
+    <p>Sin analytics no hay datos de tráfico, conversiones ni comportamiento. Es lo más urgente. También considerar Meta Pixel si hacen publicidad en Instagram.</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority high">2</div>
+  <div class="rec-content">
+    <h4>Agregar JSON-LD (Structured Data)</h4>
+    <p>Agregar schema LocalBusiness + DanceSchool + Course. Esto mejora resultados en Google con rich snippets (horarios, dirección, cursos, precios).</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority high">3</div>
+  <div class="rec-content">
+    <h4>Cambiar og:image de SVG a PNG/JPG</h4>
+    <p>Las redes sociales (WhatsApp, Instagram, Facebook) no renderizan SVG como preview. Cambiar a PNG de 1200x630px.</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority high">4</div>
+  <div class="rec-content">
+    <h4>Agregar canonical URL</h4>
+    <p>Sin canonical, Google puede indexar duplicados (con/sin www, con/sin trailing slash). Agregar &lt;link rel="canonical"&gt;.</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority med">5</div>
+  <div class="rec-content">
+    <h4>Reducir familias tipográficas</h4>
+    <p>4 familias (Inter, Montserrat, Poppins, DM Sans) con 10 archivos WOFF2 es excesivo. Reducir a 2 familias (1 display + 1 body) ahorraría ~200KB.</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority med">6</div>
+  <div class="rec-content">
+    <h4>Remover maximum-scale=1 del viewport</h4>
+    <p>Bloquear el zoom es un problema de accesibilidad (WCAG 1.4.4). Usuarios con baja visión necesitan hacer zoom.</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority med">7</div>
+  <div class="rec-content">
+    <h4>Implementar sistema de booking online</h4>
+    <p>Actualmente todo se canaliza por WhatsApp. Un booking (Calendly, Cal.com, o custom) reduciría fricción y capturaría datos automáticamente.</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority med">8</div>
+  <div class="rec-content">
+    <h4>Agregar cookie consent y política de privacidad</h4>
+    <p>Especialmente necesario si se agrega analytics. Cumplimiento básico de privacidad.</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority low">9</div>
+  <div class="rec-content">
+    <h4>Embeber feed de Instagram</h4>
+    <p>Mostrar últimos posts de @alpasodancestudio directamente en el sitio para generar confianza social y contenido dinámico.</p>
+  </div>
+</div>
+
+<div class="rec-item">
+  <div class="rec-priority low">10</div>
+  <div class="rec-content">
+    <h4>Restringir CORS header</h4>
+    <p>access-control-allow-origin: * es innecesariamente permisivo para un sitio que no expone API pública. Vercel lo pone por default pero se puede configurar.</p>
+  </div>
+</div>
+
+<!-- RESUMEN FINAL -->
+<h2><span class="icon">📋</span> Resumen Ejecutivo</h2>
+<div class="card" style="margin: 16px 0; border-left: 3px solid var(--accent);">
+  <table>
+    <tr><th style="width:35%">Aspecto</th><th>Veredicto</th></tr>
+    <tr><td><strong>Stack</strong></td><td>Excelente. Next.js + React + Tailwind + Vercel es un stack moderno y bien elegido.</td></tr>
+    <tr><td><strong>Rendimiento</strong></td><td>Bueno. RSC + ISR + Edge cache + Image optimization. Mejorable reduciendo fonts.</td></tr>
+    <tr><td><strong>SEO</strong></td><td>Básico. Tiene meta tags pero falta canonical, JSON-LD, y el og:image es SVG.</td></tr>
+    <tr><td><strong>Analytics</strong></td><td>Inexistente. Prioridad máxima agregar GA4 + GTM.</td></tr>
+    <tr><td><strong>Integraciones</strong></td><td>Mínimas. Solo WhatsApp + Google Maps embed. Sin booking, pagos, CRM ni email marketing.</td></tr>
+    <tr><td><strong>Seguridad</strong></td><td>Buena base (HTTPS + HSTS). Falta cookie consent y privacy policy.</td></tr>
+    <tr><td><strong>Diseño</strong></td><td>Dark mode premium, gradientes purple-orange, responsive con Tailwind.</td></tr>
+    <tr><td><strong>Oportunidad</strong></td><td>Sitio sólido técnicamente pero sub-utilizado comercialmente. Con analytics, booking y marketing automation podría convertir mucho más.</td></tr>
+  </table>
+</div>
+
+</div>
+
+<div class="footer">
+  🐕 Generado por Panchita · Scan Tecnológico · alpasodancestudio.cl · 23 marzo 2026
+</div>
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const group = tab.closest('.tabs').parentElement;
+    group.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    group.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    group.querySelector(`.tab-content[data-tab="${tab.dataset.tab}"]`)?.classList.add('active');
+  });
+});
+
+// Animate scores on load
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.score-card .number').forEach(el => {
+    const target = parseFloat(el.textContent);
+    el.textContent = '0';
+    let current = 0;
+    const step = target / 30;
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(interval); }
+      el.textContent = current.toFixed(1);
+    }, 30);
+  });
+});
+</script>
+</body>
+</html>

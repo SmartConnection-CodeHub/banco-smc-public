@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Roadmap InfoPet 2026</title>
+<style>
+  body { font-family: Inter, Arial, sans-serif; max-width: 720px; margin: 0 auto; color: #1a1a1a; line-height: 1.6; background: #fff; padding: 0; }
+  .header { background: #0C1210; padding: 30px 28px; border-radius: 12px 12px 0 0; }
+  .header h1 { color: #34C759; margin: 0; font-size: 22px; }
+  .header p { color: rgba(255,255,255,0.7); margin: 8px 0 0; font-size: 13px; }
+  .body { padding: 28px; background: #f9fafb; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px; }
+  h2 { color: #2D6A4F; font-size: 16px; border-bottom: 2px solid #2D6A4F; padding-bottom: 8px; margin-top: 28px; }
+  h3 { font-size: 14px; margin: 20px 0 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 20px; }
+  th { text-align: left; padding: 8px 12px; background: #2D6A4F; color: white; }
+  th:first-child { border-radius: 6px 0 0 0; }
+  th:last-child { border-radius: 0 6px 0 0; }
+  td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; }
+  .alt { background: #f3f4f6; }
+  .score { text-align: center; font-weight: 700; }
+  .score-good { color: #2D6A4F; }
+  .score-warn { color: #FF9500; }
+  .fase-table td { border: 1px solid #e5e7eb; }
+  .fase-table td:nth-child(2), .fase-table td:nth-child(3) { text-align: center; }
+  .f1 { background: #fef2f2; }
+  .f2 { background: #fffbeb; }
+  .f3 { background: #eff6ff; }
+  .f4 { background: #f0fdf4; }
+  .insight-box { background: #0C1210; color: white; padding: 16px 20px; border-radius: 8px; margin: 12px 0; font-size: 13px; }
+  .insight-box .label { margin: 0 0 8px; color: #FF9500; font-weight: 700; }
+  .insight-box p { margin: 0; color: rgba(255,255,255,0.85); }
+  ul { font-size: 13px; padding-left: 20px; }
+  .risk-critical { color: #FF3B30; }
+  .risk-warn { color: #FF9500; }
+  .risk-info { color: #5AC8FA; }
+  .footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 11px; color: #999; }
+  .sub { font-size: 12px; color: #666; margin: 0 0 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🐾 InfoPet — Roadmap 2026</h1>
+  <p>Plan de próximos pasos · Smart Connection · 28 marzo 2026</p>
+</div>
+
+<div class="body">
+
+  <!-- ESTADO ACTUAL -->
+  <h2>📊 Estado Actual del Proyecto</h2>
+  <p style="font-size:14px">Panel funcional con <strong>9 módulos</strong>: Dashboard KPIs, Stock con semáforo, Facturas (digital + OCR), Inteligencia IA (Groq), Reportes, Carga de productos, Movimientos, Sync Bsale→Supabase, y Panel de Agentes IA.</p>
+  <p style="font-size:13px;color:#666">Stack: Next.js 15 + TypeScript + Tailwind 4 + Supabase PostgreSQL · Deploy: AWS Amplify · IA: Groq Llama 3.3/4 Scout</p>
+
+  <table>
+    <thead>
+      <tr><th>Área</th><th style="text-align:center">Score</th><th>Observación</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Infraestructura</td>
+        <td class="score score-good">B</td>
+        <td>Amplify + Supabase sólido, falta health check</td>
+      </tr>
+      <tr class="alt">
+        <td>Seguridad</td>
+        <td class="score score-warn">C+</td>
+        <td>Auth PIN sin JWT/sesiones reales, sin middleware</td>
+      </tr>
+      <tr>
+        <td>Performance</td>
+        <td class="score score-good">B</td>
+        <td>Vista materializada OK, sin cache headers en APIs</td>
+      </tr>
+      <tr class="alt">
+        <td>DX (Developer Exp.)</td>
+        <td class="score score-warn">B-</td>
+        <td>0 tests automatizados, sin CI pipeline</td>
+      </tr>
+      <tr>
+        <td>Observabilidad</td>
+        <td class="score score-warn">C</td>
+        <td>Logs existen pero sin health endpoint ni alertas activas</td>
+      </tr>
+      <tr class="alt">
+        <td>UI/UX</td>
+        <td class="score score-good">B+</td>
+        <td>Dark glassmorphism coherente, responsive, WCAG mejorado</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ROADMAP -->
+  <h2>🗺️ Roadmap — 4 Fases</h2>
+
+  <!-- FASE 1 -->
+  <h3 style="color:#FF3B30">🔴 FASE 1 — Fundamentos (estabilizar)</h3>
+  <p class="sub">Prioridad: INMEDIATA · Elimina deuda técnica riesgosa</p>
+  <table class="fase-table">
+    <tr class="f1">
+      <td style="width:45%"><strong>1.1</strong> Auth real (JWT + middleware + roles)</td>
+      <td>🔴 Alto</td>
+      <td>~8 hrs</td>
+    </tr>
+    <tr>
+      <td><strong>1.2</strong> Health check endpoint /api/health</td>
+      <td>🟡 Med</td>
+      <td>~1 hr</td>
+    </tr>
+    <tr class="f1">
+      <td><strong>1.3</strong> CI: lint + typecheck en GitHub Actions</td>
+      <td>🟡 Med</td>
+      <td>~2 hrs</td>
+    </tr>
+    <tr>
+      <td><strong>1.4</strong> Cache headers en APIs (stale-while-revalidate)</td>
+      <td>🟡 Med</td>
+      <td>~2 hrs</td>
+    </tr>
+  </table>
+
+  <!-- FASE 2 -->
+  <h3 style="color:#FF9500">🟡 FASE 2 — Inteligencia Activa (el salto de valor)</h3>
+  <p class="sub">De panel pasivo → copiloto operativo que sugiere acciones</p>
+  <table class="fase-table">
+    <tr class="f2">
+      <td style="width:45%"><strong>2.1</strong> Alertas automáticas stock crítico (email + WhatsApp)</td>
+      <td>🔴 Alto</td>
+      <td>~5 hrs</td>
+    </tr>
+    <tr>
+      <td><strong>2.2</strong> Órdenes de compra sugeridas por IA (Groq analiza rotación)</td>
+      <td>🔴 Alto</td>
+      <td>~8 hrs</td>
+    </tr>
+    <tr class="f2">
+      <td><strong>2.3</strong> Sync bidireccional Supabase ↔ Bsale</td>
+      <td>🟡 Med</td>
+      <td>~10 hrs</td>
+    </tr>
+  </table>
+
+  <!-- FASE 3 -->
+  <h3 style="color:#5AC8FA">🔵 FASE 3 — Operaciones (eficiencia diaria)</h3>
+  <table class="fase-table">
+    <tr class="f3">
+      <td style="width:45%"><strong>3.1</strong> Inventario físico con escaneo código barras (cámara)</td>
+      <td>🟡 Med</td>
+      <td>~8 hrs</td>
+    </tr>
+    <tr>
+      <td><strong>3.2</strong> Dashboard de ventas (diarias, semanales, ticket promedio)</td>
+      <td>🔴 Alto</td>
+      <td>~5 hrs</td>
+    </tr>
+    <tr class="f3">
+      <td><strong>3.3</strong> Notificaciones push (PWA) para alertas en tiempo real</td>
+      <td>🟡 Med</td>
+      <td>~5 hrs</td>
+    </tr>
+  </table>
+
+  <!-- FASE 4 -->
+  <h3 style="color:#34C759">🟢 FASE 4 — Escala (crecimiento futuro)</h3>
+  <table class="fase-table">
+    <tr class="f4">
+      <td style="width:45%"><strong>4.1</strong> Multi-sucursal (si InfoPet crece)</td>
+      <td>🟢 Bajo</td>
+      <td>~15 hrs</td>
+    </tr>
+    <tr>
+      <td><strong>4.2</strong> Integración contable SII Chile (facturación electrónica)</td>
+      <td>🟡 Med</td>
+      <td>~10 hrs</td>
+    </tr>
+    <tr class="f4">
+      <td><strong>4.3</strong> App mobile nativa (PWA → Capacitor)</td>
+      <td>🟢 Bajo</td>
+      <td>~12 hrs</td>
+    </tr>
+  </table>
+
+  <!-- INSIGHT -->
+  <h2>💡 Visión Estratégica</h2>
+  <div class="insight-box">
+    <p class="label">⚡ Insight clave:</p>
+    <p>El panel actual es un <strong>monitor pasivo</strong> — InfoPet mira datos pero no actúa sobre ellos. El salto real de Fase 2 es pasar de <em>"ver que algo está en rojo"</em> a <em>"recibir la sugerencia de compra con cantidades y proveedor"</em>. Eso convierte el panel en un <strong>copiloto operativo</strong> que ahorra horas de trabajo manual cada semana.</p>
+  </div>
+
+  <!-- RIESGOS -->
+  <h2>⚠️ Riesgos Identificados</h2>
+  <ul>
+    <li><strong class="risk-critical">Auth sin sesiones reales</strong> — cualquiera con el PIN accede sin expiración ni roles diferenciados</li>
+    <li><strong class="risk-warn">0 tests automatizados</strong> — cambios pueden romper funcionalidad sin detectarse</li>
+    <li><strong class="risk-warn">Sin CI pipeline</strong> — se puede pushear código que no compila a producción</li>
+    <li><strong class="risk-info">Sync unidireccional</strong> — cambios en Supabase no se reflejan en Bsale (solo lectura)</li>
+    <li><strong class="risk-info">Gmail OAuth no configurado</strong> — canal de alertas por email no operativo aún</li>
+  </ul>
+
+  <!-- RECOMENDACIÓN -->
+  <h2>✅ Recomendación</h2>
+  <p style="font-size:14px"><strong>Empezar por Fase 1</strong> (~13 horas) para eliminar deuda técnica riesgosa. Luego atacar <strong>Fase 2</strong> (~23 horas) que es donde InfoPet sentirá el mayor impacto de negocio — alertas automáticas y órdenes de compra sugeridas por IA.</p>
+  <p style="font-size:13px;color:#666">Estimación total 4 fases: ~81 horas de desarrollo. Fases 1+2 cubren el 80% del valor con ~36 horas.</p>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p style="margin:0">Generado por Equipo Smart Connection</p>
+    <p style="margin:4px 0">Panchita 🐕 (arquitectura) · Hoku 🐾 (viabilidad) · Arielito 🔍 (auditoría) · Camilita 👩 (QA) · Sergito ⚡ (estrategia)</p>
+    <p style="margin:4px 0 0">28 de marzo 2026 · infopet.smconnection.cl</p>
+  </div>
+
+</div>
+</body>
+</html>

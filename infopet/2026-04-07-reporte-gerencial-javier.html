@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoPet — Reporte de Avance | 07 Abril 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0C1210;
+    --surface: rgba(255,255,255,0.04);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
+    --green: #34C759;
+    --green-dim: rgba(52,199,89,0.15);
+    --red: #FF3B30;
+    --red-dim: rgba(255,59,48,0.15);
+    --amber: #FF9500;
+    --amber-dim: rgba(255,149,0,0.15);
+    --blue: #5AC8FA;
+    --blue-dim: rgba(90,200,250,0.15);
+    --accent: #5EBD8A;
+    --accent-dark: #2D6A4F;
+    --text: #f0f4f0;
+    --text-secondary: #9BB09B;
+    --text-muted: #5A7A5C;
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: 16px;
+  }
+
+  .email-wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0D1F18 0%, #112A1F 50%, #0C1A13 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px 16px 0 0;
+    padding: 32px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(94,189,138,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .logo-text h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .logo-text span {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+
+  .badge-date {
+    background: rgba(94,189,138,0.15);
+    border: 1px solid rgba(94,189,138,0.3);
+    color: var(--accent);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+
+  .header-meta {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+  }
+
+  .meta-value {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* BODY */
+  .email-body {
+    background: #0E1812;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 0;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child {
+    border-bottom: none;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* RESUMEN EJECUTIVO */
+  .exec-summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* GLOBAL PROGRESS */
+  .global-progress {
+    background: linear-gradient(135deg, rgba(45,106,79,0.2), rgba(94,189,138,0.1));
+    border: 1px solid rgba(94,189,138,0.25);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .global-pct {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  .global-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .global-bar-track {
+    margin-top: 14px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    height: 10px;
+    overflow: hidden;
+  }
+
+  .global-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #2D6A4F, #5EBD8A);
+    width: 0;
+    animation: fillBar 1.2s ease-out 0.3s forwards;
+  }
+
+  @keyframes fillBar {
+    to { width: 72%; }
+  }
+
+  /* MODULE ROWS */
+  .module-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .module-row:last-child { border-bottom: none; }
+
+  .module-info {
+    min-width: 0;
+  }
+
+  .module-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+
+  .module-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .status-done { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,199,89,0.25); }
+  .status-wip { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(255,149,0,0.25); }
+  .status-pending { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(90,200,250,0.25); }
+
+  .module-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .module-pct-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .bar-track {
+    height: 5px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    width: 0;
+    animation: fill 1s ease-out forwards;
+  }
+
+  .bar-fill.pct-90 { animation-name: fill90; }
+  .bar-fill.pct-85 { animation-name: fill85; }
+  .bar-fill.pct-80 { animation-name: fill80; }
+  .bar-fill.pct-65 { animation-name: fill65; }
+  .bar-fill.pct-70 { animation-name: fill70; }
+  .bar-fill.pct-60 { animation-name: fill60; }
+  .bar-fill.pct-10 { animation-name: fill10; }
+  .bar-fill.pct-75 { animation-name: fill75; }
+
+  @keyframes fill90 { to { width: 90%; } }
+  @keyframes fill85 { to { width: 85%; } }
+  @keyframes fill80 { to { width: 80%; } }
+  @keyframes fill65 { to { width: 65%; } }
+  @keyframes fill70 { to { width: 70%; } }
+  @keyframes fill60 { to { width: 60%; } }
+  @keyframes fill10 { to { width: 10%; } }
+  @keyframes fill75 { to { width: 75%; } }
+
+  .bar-green { background: linear-gradient(90deg, #27A347, #34C759); }
+  .bar-amber { background: linear-gradient(90deg, #E08000, #FF9500); }
+  .bar-blue  { background: linear-gradient(90deg, #3D8FAF, #5AC8FA); }
+
+  /* DEUDA TÉCNICA */
+  .debt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .debt-grid { grid-template-columns: 1fr; }
+  }
+
+  .debt-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .debt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .debt-area {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .debt-score {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+  }
+
+  .score-f { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,59,48,0.25); }
+  .score-d { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(255,149,0,0.25); }
+  .score-c { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(90,200,250,0.25); }
+  .score-b { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,199,89,0.25); }
+
+  .debt-bar-track {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .debt-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    animation: debtFill 1.1s ease-out forwards;
+  }
+
+  .debt-bar-fill.d0 { animation-name: debtFill0; }
+  .debt-bar-fill.d35 { animation-name: debtFill35; }
+  .debt-bar-fill.d30 { animation-name: debtFill30; }
+  .debt-bar-fill.d10 { animation-name: debtFill10; }
+  .debt-bar-fill.d55 { animation-name: debtFill55; }
+  .debt-bar-fill.d60 { animation-name: debtFill60; }
+  .debt-bar-fill.d70 { animation-name: debtFill70; }
+
+  @keyframes debtFill0  { to { width: 0%; } }
+  @keyframes debtFill10 { to { width: 10%; } }
+  @keyframes debtFill30 { to { width: 30%; } }
+  @keyframes debtFill35 { to { width: 35%; } }
+  @keyframes debtFill55 { to { width: 55%; } }
+  @keyframes debtFill60 { to { width: 60%; } }
+  @keyframes debtFill70 { to { width: 70%; } }
+
+  .debt-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .debt-pct {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .debt-priority {
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .prio-critical { color: var(--red); }
+  .prio-high     { color: var(--amber); }
+  .prio-medium   { color: var(--blue); }
+  .prio-low      { color: var(--text-muted); }
+
+  .debt-global-note {
+    margin-top: 14px;
+    background: rgba(255,149,0,0.08);
+    border: 1px solid rgba(255,149,0,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--amber);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* APROBADO / PENDIENTE */
+  .status-block {
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+
+  .status-block:last-child { margin-bottom: 0; }
+
+  .status-block-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sb-done { background: rgba(52,199,89,0.06); border: 1px solid rgba(52,199,89,0.18); }
+  .sb-done .status-block-title { color: var(--green); }
+
+  .sb-wip { background: rgba(255,149,0,0.06); border: 1px solid rgba(255,149,0,0.18); }
+  .sb-wip .status-block-title { color: var(--amber); }
+
+  .sb-out { background: rgba(90,200,250,0.06); border: 1px solid rgba(90,200,250,0.18); }
+  .sb-out .status-block-title { color: var(--blue); }
+
+  .status-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .status-list li {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+
+  .status-list li::before {
+    content: '—';
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* PLAN TABLE */
+  .plan-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .plan-table th {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .plan-table td {
+    padding: 10px 12px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .plan-table tr:last-child td { border-bottom: none; }
+
+  .plan-table td:first-child {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 12px;
+    white-space: nowrap;
+    width: 90px;
+  }
+
+  /* KPIs */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .kpi-value .unit {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .kpi-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  .kpi-delta {
+    font-size: 11px;
+    color: var(--green);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  /* PRÓXIMOS PASOS */
+  .next-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .next-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-dark);
+    border: 1px solid rgba(94,189,138,0.4);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* FOOTER */
+  .email-footer {
+    background: #091009;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .footer-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .footer-site {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .footer-deploy {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: right;
+    line-height: 1.6;
+    max-width: 240px;
+  }
+
+  /* COPY BUTTON */
+  .copy-btn-container {
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+  }
+
+  .copy-btn {
+    background: rgba(94,189,138,0.1);
+    border: 1px solid rgba(94,189,138,0.3);
+    color: var(--accent);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .copy-btn:hover {
+    background: rgba(94,189,138,0.18);
+    border-color: rgba(94,189,138,0.5);
+  }
+
+  .copy-btn.copied {
+    background: var(--green-dim);
+    border-color: rgba(52,199,89,0.4);
+    color: var(--green);
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: white; color: #111; padding: 0; }
+    .email-wrapper { max-width: 100%; }
+    .header { background: #f4f4f4; border-radius: 0; }
+    .copy-btn-container { display: none; }
+    .bar-fill, .debt-bar-fill, .global-bar-fill {
+      animation: none !important;
+      width: var(--print-w, 50%) !important;
+    }
+  }
+
+  /* MOBILE */
+  @media (max-width: 480px) {
+    body { padding: 8px; }
+    .header { padding: 20px 16px 16px; }
+    .section { padding: 18px 16px; }
+    .copy-btn-container { padding: 12px 16px; }
+    .email-footer { padding: 16px; flex-direction: column; }
+    .footer-deploy { text-align: left; max-width: 100%; }
+    .global-pct { font-size: 40px; }
+    .kpi-value { font-size: 18px; }
+    .plan-table td:first-child { width: 70px; }
+  }
+
+  /* Animation delays stagger */
+  .bar-fill:nth-child(1) { animation-delay: 0.1s; }
+  .module-row:nth-child(1) .bar-fill { animation-delay: 0.1s; }
+  .module-row:nth-child(2) .bar-fill { animation-delay: 0.2s; }
+  .module-row:nth-child(3) .bar-fill { animation-delay: 0.3s; }
+  .module-row:nth-child(4) .bar-fill { animation-delay: 0.4s; }
+  .module-row:nth-child(5) .bar-fill { animation-delay: 0.5s; }
+  .module-row:nth-child(6) .bar-fill { animation-delay: 0.6s; }
+  .module-row:nth-child(7) .bar-fill { animation-delay: 0.7s; }
+  .module-row:nth-child(8) .bar-fill { animation-delay: 0.8s; }
+  .module-row:nth-child(9) .bar-fill { animation-delay: 0.9s; }
+</style>
+</head>
+<body>
+
+<div class="email-wrapper" id="reporte">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="logo-row">
+        <div class="logo-icon">🐾</div>
+        <div class="logo-text">
+          <h1>InfoPet Panel</h1>
+          <span>Reporte de Avance</span>
+        </div>
+      </div>
+      <div class="badge-date">07 ABR 2026</div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Dirigido a</span>
+        <span class="meta-value">Javier — Gerencia InfoPet</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Preparado por</span>
+        <span class="meta-value">Smart Connection</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Entrega objetivo</span>
+        <span class="meta-value">Viernes 11 de abril</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COPY BUTTON -->
+  <div class="copy-btn-container" style="background:#0E1812; border-left:1px solid var(--border); border-right:1px solid var(--border);">
+    <button class="copy-btn" onclick="copiarTexto()" id="copyBtn">
+      📋 Copiar como texto plano
+    </button>
+  </div>
+
+  <!-- BODY -->
+  <div class="email-body">
+
+    <!-- 1. RESUMEN EJECUTIVO -->
+    <div class="section">
+      <div class="section-title">1. Resumen Ejecutivo</div>
+      <div class="exec-summary">
+        Hoy trabajamos en dos frentes: <strong>mobile</strong> (navegación inferior + responsive) y la sección <strong>Facturas OCR</strong> (botones captura rediseñados, tabla editable, resultados legibles). El objetivo de esta semana es dejar la aplicación genérica y funcional antes del viernes. El avance global se mantiene sólido y los módulos principales están en condiciones de ser revisados por gerencia.
+      </div>
+    </div>
+
+    <!-- 2. MÓDULOS -->
+    <div class="section">
+      <div class="section-title">2. Módulos — Estado de avance</div>
+
+      <!-- Global progress -->
+      <div class="global-progress">
+        <div class="global-pct">72%</div>
+        <div class="global-label">Avance global del proyecto</div>
+        <div class="global-bar-track">
+          <div class="global-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Module rows -->
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">Dashboard / Inicio</span>
+            <span class="status-badge status-done">✅ Completado</span>
+          </div>
+          <div class="module-note">Métricas en tiempo real conectadas</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-green pct-90"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">90%</div>
+      </div>
+
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">Stock / Inventario</span>
+            <span class="status-badge status-done">✅ Completado</span>
+          </div>
+          <div class="module-note">Semáforo + movimientos funcionando</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-green pct-85"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">85%</div>
+      </div>
+
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">Facturas Digital (Bsale)</span>
+            <span class="status-badge status-done">✅ Completado</span>
+          </div>
+          <div class="module-note">Búsqueda por número/RUT operativa</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-green pct-80"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">80%</div>
+      </div>
+
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">Facturas OCR (física)</span>
+            <span class="status-badge status-wip">🔄 En progreso</span>
+          </div>
+          <div class="module-note">Captura + tabla listos, entrenamiento Zucay pendiente</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-amber pct-65"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">65%</div>
+      </div>
+
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">Mobile (responsive)</span>
+            <span class="status-badge status-done">✅ Completado hoy</span>
+          </div>
+          <div class="module-note">Nav inferior + breakpoints implementados</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-green pct-85"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">85%</div>
+      </div>
+
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">Agente Tsukai (IA)</span>
+            <span class="status-badge status-wip">🔄 En progreso</span>
+          </div>
+          <div class="module-note">Chat funcional, afinamiento en curso</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-amber pct-70"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">70%</div>
+      </div>
+
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">Reportes</span>
+            <span class="status-badge status-wip">🔄 En progreso</span>
+          </div>
+          <div class="module-note">Vista básica, pendiente gráficos avanzados</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-amber pct-60"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">60%</div>
+      </div>
+
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">APIs Genéricas</span>
+            <span class="status-badge status-pending">⏳ Pendiente</span>
+          </div>
+          <div class="module-note">Análisis listo, implementación pendiente</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-blue pct-10"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">10%</div>
+      </div>
+
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name-row">
+            <span class="module-name">Sincronización Bsale</span>
+            <span class="status-badge status-wip">🔄 En progreso</span>
+          </div>
+          <div class="module-note">Sync manual OK, cron estable</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-amber pct-75"></div>
+          </div>
+        </div>
+        <div class="module-pct-label">75%</div>
+      </div>
+    </div>
+
+    <!-- 3. DEUDA TÉCNICA -->
+    <div class="section">
+      <div class="section-title">3. Deuda Técnica por Área</div>
+      <div class="debt-grid">
+
+        <div class="debt-card">
+          <div class="debt-header">
+            <span class="debt-area">Tests automatizados</span>
+            <span class="debt-score score-f">F</span>
+          </div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill d0" style="width:0;background:var(--red);"></div>
+          </div>
+          <div class="debt-meta">
+            <span class="debt-pct">0% cubierto</span>
+            <span class="debt-priority prio-critical">🔴 Crítica</span>
+          </div>
+        </div>
+
+        <div class="debt-card">
+          <div class="debt-header">
+            <span class="debt-area">CI/CD GitHub Actions</span>
+            <span class="debt-score score-f">F</span>
+          </div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill d0" style="width:0;background:var(--red);"></div>
+          </div>
+          <div class="debt-meta">
+            <span class="debt-pct">0% implementado</span>
+            <span class="debt-priority prio-critical">🔴 Crítica</span>
+          </div>
+        </div>
+
+        <div class="debt-card">
+          <div class="debt-header">
+            <span class="debt-area">Entrenamiento OCR Zucay</span>
+            <span class="debt-score score-d">D+</span>
+          </div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill d35" style="background:var(--amber);"></div>
+          </div>
+          <div class="debt-meta">
+            <span class="debt-pct">35% avanzado</span>
+            <span class="debt-priority prio-high">🟡 Alta</span>
+          </div>
+        </div>
+
+        <div class="debt-card">
+          <div class="debt-header">
+            <span class="debt-area">Prompts versionados</span>
+            <span class="debt-score score-d">D+</span>
+          </div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill d30" style="background:var(--amber);"></div>
+          </div>
+          <div class="debt-meta">
+            <span class="debt-pct">30% avanzado</span>
+            <span class="debt-priority prio-high">🟡 Alta</span>
+          </div>
+        </div>
+
+        <div class="debt-card">
+          <div class="debt-header">
+            <span class="debt-area">APIs Genéricas</span>
+            <span class="debt-score score-d">D</span>
+          </div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill d10" style="background:var(--amber);"></div>
+          </div>
+          <div class="debt-meta">
+            <span class="debt-pct">10% avanzado</span>
+            <span class="debt-priority prio-high">🟡 Alta</span>
+          </div>
+        </div>
+
+        <div class="debt-card">
+          <div class="debt-header">
+            <span class="debt-area">@smc/ui package</span>
+            <span class="debt-score score-c">C+</span>
+          </div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill d55" style="background:var(--blue);"></div>
+          </div>
+          <div class="debt-meta">
+            <span class="debt-pct">55% avanzado</span>
+            <span class="debt-priority prio-medium">🔵 Media</span>
+          </div>
+        </div>
+
+        <div class="debt-card">
+          <div class="debt-header">
+            <span class="debt-area">Seguridad (headers)</span>
+            <span class="debt-score score-c">C</span>
+          </div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill d60" style="background:var(--blue);"></div>
+          </div>
+          <div class="debt-meta">
+            <span class="debt-pct">60% cubierto</span>
+            <span class="debt-priority prio-medium">🔵 Media</span>
+          </div>
+        </div>
+
+        <div class="debt-card">
+          <div class="debt-header">
+            <span class="debt-area">Documentación</span>
+            <span class="debt-score score-b">B-</span>
+          </div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill d70" style="background:var(--green);"></div>
+          </div>
+          <div class="debt-meta">
+            <span class="debt-pct">70% cubierto</span>
+            <span class="debt-priority prio-low">⚪ Baja</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="debt-global-note">
+        Deuda técnica global: <strong>Score B-</strong> &nbsp;→&nbsp; objetivo <strong>B+</strong> al viernes
+      </div>
+    </div>
+
+    <!-- 4. APROBADO vs PENDIENTE -->
+    <div class="section">
+      <div class="section-title">4. Aprobado vs Pendiente</div>
+
+      <div class="status-block sb-done">
+        <div class="status-block-title">✅ Aprobado y en producción</div>
+        <ul class="status-list">
+          <li>Mobile bottom nav (Inicio / Stock / Tsukai / Facturas / Más)</li>
+          <li>Navbar responsive desktop/mobile</li>
+          <li>Botones OCR rediseñados (cámara en tiempo real + galería)</li>
+          <li>Tabla editable con delete y recálculo automático</li>
+          <li>Detección de SKU duplicados</li>
+          <li>Sincronización Bsale → Supabase</li>
+        </ul>
+      </div>
+
+      <div class="status-block sb-wip" style="margin-top:10px;">
+        <div class="status-block-title">🔄 En revisión / pendiente aprobación</div>
+        <ul class="status-list">
+          <li>Entrenamiento Zucay con más facturas reales</li>
+          <li>Corrección de datos inconsistentes en producción</li>
+          <li>Timeline APIs genéricas</li>
+        </ul>
+      </div>
+
+      <div class="status-block sb-out" style="margin-top:10px;">
+        <div class="status-block-title">⏳ Fuera de scope esta semana</div>
+        <ul class="status-list">
+          <li>Multi-tenant (para cuando haya 2do cliente)</li>
+          <li>Tests automatizados (próximo sprint)</li>
+          <li>CI/CD pipeline</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 5. PLAN -->
+    <div class="section">
+      <div class="section-title">5. Plan Miércoles–Viernes</div>
+      <table class="plan-table">
+        <thead>
+          <tr>
+            <th>Día</th>
+            <th>Smart Connection</th>
+            <th>InfoPet</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Miércoles</td>
+            <td>Corrección datos inconsistentes en producción + revisión Tsukai</td>
+            <td>Proveer facturas para entrenamiento OCR</td>
+          </tr>
+          <tr>
+            <td>Jueves</td>
+            <td>Revisión conjunta del estado actual + ajustes priorizados</td>
+            <td>Validar flujos en producción, reportar bugs</td>
+          </tr>
+          <tr>
+            <td>Viernes</td>
+            <td>Cierre: build final + documentación + entrega</td>
+            <td>Aprobación final gerencia</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 6. KPIs -->
+    <div class="section">
+      <div class="section-title">6. KPIs de la Aplicación</div>
+      <div class="kpi-grid">
+
+        <div class="kpi-card">
+          <div class="kpi-value">910</div>
+          <div class="kpi-label">Productos activos</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-value"><span class="unit">$</span>211<span class="unit">M</span></div>
+          <div class="kpi-label">Ventas anuales CLP</div>
+          <div class="kpi-delta">+71% YoY</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-value">45<span class="unit">%</span></div>
+          <div class="kpi-label">Margen bruto</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-value">29</div>
+          <div class="kpi-label">Endpoints API</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-value" style="font-size:14px;letter-spacing:-0.3px;">AWS<br>Amplify</div>
+          <div class="kpi-label">Deploy automático</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 7. PRÓXIMOS PASOS -->
+    <div class="section">
+      <div class="section-title">7. Próximos pasos post-viernes</div>
+      <ul class="next-steps">
+        <li class="next-step-item">
+          <div class="step-num">1</div>
+          <div class="step-text">Iniciar <strong>Sprint 1</strong>: adapter layer para APIs genéricas — transformar integración Bsale en interfaz reutilizable para futuros clientes.</div>
+        </li>
+        <li class="next-step-item">
+          <div class="step-num">2</div>
+          <div class="step-text">Activar <strong>CI/CD básico</strong> (GitHub Actions): lint + type-check + build automático en cada push, reduciendo deuda técnica crítica.</div>
+        </li>
+        <li class="next-step-item">
+          <div class="step-num">3</div>
+          <div class="step-text">Incorporar <strong>segundo cliente piloto</strong> con la plataforma genérica, validando el modelo multi-cliente.</div>
+        </li>
+      </ul>
+    </div>
+
+  </div><!-- /email-body -->
+
+  <!-- FOOTER -->
+  <div class="email-footer">
+    <div class="footer-brand">
+      <span class="footer-name">Guillermo González León — Smart Connection</span>
+      <span class="footer-site">smconnection.cl</span>
+    </div>
+    <div class="footer-deploy">
+      Aplicación deployada en AWS Amplify<br>
+      <span style="color:var(--accent);">infopet.smconnection.cl</span>
+    </div>
+  </div>
+
+</div><!-- /email-wrapper -->
+
+<script>
+function copiarTexto() {
+  const btn = document.getElementById('copyBtn');
+
+  const texto = `INFOPET PANEL — REPORTE DE AVANCE
+07 de abril de 2026
+Preparado por: Smart Connection para Javier (Gerencia InfoPet)
+══════════════════════════════════════════════════════════
+
+1. RESUMEN EJECUTIVO
+Hoy trabajamos en dos frentes: mobile (navegación inferior + responsive) y la sección Facturas OCR (botones captura rediseñados, tabla editable, resultados legibles). El objetivo de esta semana es dejar la aplicación genérica y funcional antes del viernes.
+
+══════════════════════════════════════════════════════════
+2. MÓDULOS — ESTADO DE AVANCE
+
+Avance global estimado: 72%
+
+Módulo                     | %   | Estado              | Nota
+---------------------------|-----|---------------------|-----------------------------
+Dashboard / Inicio         | 90% | ✅ Completado       | Métricas en tiempo real
+Stock / Inventario         | 85% | ✅ Completado       | Semáforo + movimientos
+Facturas Digital (Bsale)   | 80% | ✅ Completado       | Búsqueda número/RUT
+Facturas OCR (física)      | 65% | 🔄 En progreso      | Captura lista, Zucay pendiente
+Mobile (responsive)        | 85% | ✅ Completado hoy   | Nav inferior + breakpoints
+Agente Tsukai (IA)         | 70% | 🔄 En progreso      | Chat funcional, afinando
+Reportes                   | 60% | 🔄 En progreso      | Vista básica, gráficos pendientes
+APIs Genéricas             | 10% | ⏳ Pendiente        | Análisis listo
+Sincronización Bsale       | 75% | 🔄 En progreso      | Sync manual OK, cron estable
+
+══════════════════════════════════════════════════════════
+3. DEUDA TÉCNICA
+
+Área                    | Score | Cobertura | Prioridad
+------------------------|-------|-----------|----------
+Tests automatizados     | F     | 0%        | 🔴 Crítica
+CI/CD GitHub Actions    | F     | 0%        | 🔴 Crítica
+Entrenamiento OCR Zucay | D+    | 35%       | 🟡 Alta
+Prompts versionados     | D+    | 30%       | 🟡 Alta
+APIs Genéricas          | D     | 10%       | 🟡 Alta
+@smc/ui package         | C+    | 55%       | 🔵 Media
+Seguridad (headers)     | C     | 60%       | 🔵 Media
+Documentación           | B-    | 70%       | ⚪ Baja
+
+Score global: B- → objetivo B+ al viernes
+
+══════════════════════════════════════════════════════════
+4. APROBADO vs PENDIENTE
+
+✅ EN PRODUCCIÓN:
+- Mobile bottom nav (Inicio/Stock/Tsukai/Facturas/Más)
+- Navbar responsive desktop/mobile
+- Botones OCR rediseñados (cámara + galería)
+- Tabla editable con delete y recálculo automático
+- Detección de SKU duplicados
+- Sincronización Bsale → Supabase
+
+🔄 EN REVISIÓN:
+- Entrenamiento Zucay con facturas reales
+- Corrección datos inconsistentes en producción
+- Timeline APIs genéricas
+
+⏳ FUERA DE SCOPE ESTA SEMANA:
+- Multi-tenant (2do cliente)
+- Tests automatizados (próximo sprint)
+- CI/CD pipeline
+
+══════════════════════════════════════════════════════════
+5. PLAN MIÉRCOLES–VIERNES
+
+Miércoles:
+  Smart Connection: Corrección datos producción + revisión Tsukai
+  InfoPet: Proveer facturas para entrenamiento OCR
+
+Jueves:
+  Smart Connection: Revisión conjunta + ajustes priorizados
+  InfoPet: Validar flujos en producción, reportar bugs
+
+Viernes:
+  Smart Connection: Build final + documentación + entrega
+  InfoPet: Aprobación final gerencia
+
+══════════════════════════════════════════════════════════
+6. KPIs DE LA APLICACIÓN
+
+- 910 productos activos en sistema
+- $211M CLP ventas anuales (+71% YoY)
+- 45% margen bruto
+- 29 endpoints API en producción
+- Deploy automático AWS Amplify desde GitHub
+
+══════════════════════════════════════════════════════════
+7. PRÓXIMOS PASOS POST-VIERNES
+
+1. Sprint 1: adapter layer para APIs genéricas (Bsale → interfaz reutilizable)
+2. Activar CI/CD básico (lint + build automático)
+3. Segundo cliente piloto con plataforma genérica
+
+══════════════════════════════════════════════════════════
+Smart Connection · smconnection.cl · Guillermo González León
+Aplicación deployada en AWS Amplify — infopet.smconnection.cl`;
+
+  navigator.clipboard.writeText(texto).then(() => {
+    btn.textContent = '✅ ¡Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copiar como texto plano';
+      btn.classList.remove('copied');
+    }, 2500);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = texto;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✅ ¡Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copiar como texto plano';
+      btn.classList.remove('copied');
+    }, 2500);
+  });
+}
+</script>
+
+</body>
+</html>

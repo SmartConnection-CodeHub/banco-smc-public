@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discovery — Smart Connection</title>
+<style>
+  /* ─── APPLE HIG LIGHT MODE TOKENS ─── */
+  :root {
+    --bg-base: #F5F5F7;
+    --bg-surface: rgba(255,255,255,0.80);
+    --bg-elevated: #FFFFFF;
+    --bg-glass: rgba(255,255,255,0.72);
+    --bg-hover: rgba(0,0,0,0.04);
+    --bg-active: rgba(0,200,150,0.09);
+    --border: rgba(0,0,0,0.08);
+    --border-accent: rgba(0,200,150,0.4);
+    --text-primary: #1D1D1F;
+    --text-secondary: #6E6E73;
+    --text-muted: #AEAEB2;
+    --accent: #00C896;
+    --accent-dark: #00A87E;
+    --accent-dim: rgba(0,200,150,0.10);
+    --blue: #007AFF;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.06);
+    --shadow-float: 0 8px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --font: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: 52px;
+    background: rgba(245,245,247,0.82);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.3px;
+  }
+
+  .nav-logo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,200,150,0.25);
+  }
+
+  .nav-badge {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 6px;
+    letter-spacing: 0.3px;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-link:hover { color: var(--text-primary); }
+
+  .btn-nav {
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--text-primary);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-nav:hover { opacity: 0.85; }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle radial gradient bg */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,200,150,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid var(--border-accent);
+    border-radius: 20px;
+    padding: 5px 12px;
+    margin-bottom: 28px;
+    letter-spacing: 0.1px;
+  }
+
+  .hero-eyebrow-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-heading {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    color: var(--text-primary);
+    max-width: 720px;
+    margin-bottom: 20px;
+  }
+
+  .hero-heading strong {
+    font-weight: 400;
+  }
+
+  .heading-accent {
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--text-secondary);
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 480px;
+    margin-bottom: 44px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─── PILL CHAT INPUT (Micelia-inspired) ─── */
+  .chat-widget {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pill-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 10px 10px 10px 20px;
+    box-shadow: var(--shadow-md);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .pill-input-wrap:focus-within {
+    border-color: var(--border-accent);
+    box-shadow: var(--shadow-md), 0 0 0 3px rgba(0,200,150,0.12);
+  }
+
+  .pill-input-wrap input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font);
+    font-size: 15px;
+    color: var(--text-primary);
+    min-width: 0;
+  }
+
+  .pill-input-wrap input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .pill-send {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.15s;
+    box-shadow: 0 2px 8px rgba(0,200,150,0.3);
+  }
+
+  .pill-send:hover {
+    background: var(--accent-dark);
+    transform: scale(1.05);
+  }
+
+  .pill-send svg {
+    width: 16px; height: 16px;
+    fill: white;
+  }
+
+  .hero-tags {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .tag:hover {
+    color: var(--accent);
+    border-color: var(--border-accent);
+    background: var(--accent-dim);
+  }
+
+  /* ─── DEMO CHAT PREVIEW ─── */
+  .chat-preview {
+    width: 100%;
+    max-width: 640px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-top: 48px;
+    box-shadow: var(--shadow-lg);
+    text-align: left;
+    position: relative;
+  }
+
+  .chat-preview-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .chat-msg {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.4s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .chat-msg:nth-child(2) { animation-delay: 0.3s; }
+  .chat-msg:nth-child(3) { animation-delay: 0.6s; }
+  .chat-msg:nth-child(4) { animation-delay: 0.9s; }
+
+  .chat-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .avatar-ai {
+    background: var(--accent);
+    color: white;
+  }
+
+  .avatar-user {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  .chat-bubble {
+    flex: 1;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+
+  .chat-msg.user .chat-bubble {
+    background: var(--accent);
+    border-color: transparent;
+    color: white;
+  }
+
+  .chat-msg.user {
+    flex-direction: row-reverse;
+  }
+
+  .typing-dots {
+    display: inline-flex;
+    gap: 4px;
+    padding: 2px 0;
+  }
+
+  .typing-dots span {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    animation: dot 1.4s ease-in-out infinite;
+  }
+
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dot {
+    0%, 100% { opacity: 0.3; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-3px); }
+  }
+
+  /* ─── SOCIAL PROOF BAR ─── */
+  .social-bar {
+    padding: 24px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated);
+    flex-wrap: wrap;
+  }
+
+  .social-stat {
+    text-align: center;
+  }
+
+  .social-stat-num {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+  }
+
+  .social-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .social-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+  }
+
+  /* ─── SECTIONS ─── */
+  section {
+    padding: 80px 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 520px;
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  @media (max-width: 768px) {
+    .steps { grid-template-columns: 1fr; }
+    .social-divider { display: none; }
+    nav { padding: 0 16px; }
+    .nav-link { display: none; }
+    .hero { padding: 80px 16px 48px; }
+    section { padding: 48px 16px; }
+  }
+
+  .step-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+  }
+
+  .step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-float);
+  }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .step-arrow {
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 18px;
+    display: none;
+  }
+
+  /* ─── FEATURES GRID ─── */
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  @media (max-width: 640px) {
+    .features { grid-template-columns: 1fr; }
+  }
+
+  .feature-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-float);
+  }
+
+  .feature-card.accent-card {
+    background: var(--accent);
+    border-color: transparent;
+  }
+
+  .feature-card.accent-card .feature-title,
+  .feature-card.accent-card .feature-desc {
+    color: white;
+  }
+
+  .feature-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .feature-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ─── DOCUMENTS OUTPUT ─── */
+  .docs-preview {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .doc-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .doc-badge:hover {
+    color: var(--text-primary);
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-float);
+  }
+
+  .doc-badge-icon {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  @media (max-width: 640px) {
+    .testimonials { grid-template-columns: 1fr; }
+  }
+
+  .testimonial {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .testimonial-quote {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .author-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .author-info-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .author-info-role {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ─── FOR COMPANIES SECTION ─── */
+  .for-companies {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 48px;
+    box-shadow: var(--shadow-md);
+    margin-top: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .for-companies::after {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,200,150,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    .for-companies { padding: 28px 20px; }
+  }
+
+  .for-companies-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+    margin-top: 32px;
+  }
+
+  @media (max-width: 768px) {
+    .for-companies-grid { grid-template-columns: 1fr; }
+  }
+
+  .company-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .company-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 1px solid var(--border-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .company-check svg {
+    width: 10px; height: 10px;
+    fill: var(--accent);
+  }
+
+  .company-item-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .company-item-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ─── CTA SECTION ─── */
+  .cta-section {
+    text-align: center;
+    padding: 80px 24px 120px;
+  }
+
+  .cta-card {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 48px 40px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-card::before {
+    content: '';
+    position: absolute;
+    bottom: -100px; right: -100px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,200,150,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-title {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  .cta-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 500;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 13px 28px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 12px rgba(0,200,150,0.3);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,200,150,0.4);
+  }
+
+  .btn-secondary {
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 500;
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 13px 28px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: rgba(0,0,0,0.15);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-link {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-link:hover { color: var(--text-secondary); }
+
+  /* ─── FAB ─── */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 50;
+    width: 52px;
+    height: 52px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+    box-shadow: 0 4px 16px rgba(0,200,150,0.4);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .fab:hover {
+    box-shadow: 0 8px 28px rgba(0,200,150,0.5);
+    transform: scale(1.08);
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    discovery
+    <span class="nav-badge">by Smart Connection</span>
+  </a>
+  <div class="nav-right">
+    <a href="#como-funciona" class="nav-link">Cómo funciona</a>
+    <a href="#documentos" class="nav-link">Documentos</a>
+    <button class="btn-nav" onclick="document.querySelector('.pill-input-wrap input').focus()">Empezar gratis</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="max-width:100%;padding-top:96px;">
+  <div class="hero-eyebrow">
+    <div class="hero-eyebrow-dot"></div>
+    discovery.smconnection.cl
+  </div>
+
+  <h1 class="hero-heading">
+    Tu próximo cliente,<br>
+    <span class="heading-accent">listo en minutos</span>
+  </h1>
+
+  <p class="hero-sub">
+    Cuéntanos en qué estás trabajando. Nuestro asistente IA
+    entiende tu negocio y genera la propuesta, el diagnóstico
+    y los documentos comerciales de forma automática.
+  </p>
+
+  <div class="chat-widget">
+    <div class="pill-input-wrap">
+      <input
+        type="text"
+        placeholder="Describe el problema que quieres resolver..."
+        autocomplete="off"
+        id="heroInput"
+        onkeydown="if(event.key==='Enter')startChat()"
+      />
+      <button class="pill-send" onclick="startChat()" aria-label="Enviar">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="hero-tags">
+      <span class="tag" onclick="setMsg('Necesito digitalizar mi proceso de cotizaciones')">💼 Cotizaciones lentas</span>
+      <span class="tag" onclick="setMsg('Quiero integrar mi tienda con mi sistema de inventario')">🔗 Integrar sistemas</span>
+      <span class="tag" onclick="setMsg('Necesito automatizar mi facturación SII')">🧾 Facturación SII</span>
+      <span class="tag" onclick="setMsg('Quiero un chatbot para mi e-commerce')">🤖 Chatbot IA</span>
+    </div>
+  </div>
+
+  <!-- Chat preview demo -->
+  <div class="chat-preview reveal">
+    <div class="chat-preview-label">Conversación de ejemplo</div>
+
+    <div class="chat-msg ai">
+      <div class="chat-avatar avatar-ai">D</div>
+      <div class="chat-bubble">
+        Hola 👋 Soy el asistente de Smart Connection. ¿En qué área está el mayor cuello de botella en tu empresa hoy?
+      </div>
+    </div>
+
+    <div class="chat-msg user">
+      <div class="chat-avatar avatar-user">G</div>
+      <div class="chat-bubble">
+        Mis vendedores demoran 2 horas armando cada propuesta y muchas se hacen mal.
+      </div>
+    </div>
+
+    <div class="chat-msg ai">
+      <div class="chat-avatar avatar-ai">D</div>
+      <div class="chat-bubble">
+        Entendido. ¿Cuántas propuestas hacen al mes y cuántos vendedores tiene el equipo?
+      </div>
+    </div>
+
+    <div class="chat-msg ai" style="animation-delay:1.2s">
+      <div class="chat-avatar avatar-ai">D</div>
+      <div class="chat-bubble">
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF BAR -->
+<div class="social-bar">
+  <div class="social-stat">
+    <div class="social-stat-num">+40</div>
+    <div class="social-stat-label">proyectos entregados</div>
+  </div>
+  <div class="social-divider"></div>
+  <div class="social-stat">
+    <div class="social-stat-num">&lt;10 min</div>
+    <div class="social-stat-label">de conversación a propuesta</div>
+  </div>
+  <div class="social-divider"></div>
+  <div class="social-stat">
+    <div class="social-stat-num">3x</div>
+    <div class="social-stat-label">más reuniones cerradas</div>
+  </div>
+  <div class="social-divider"></div>
+  <div class="social-stat">
+    <div class="social-stat-num">100%</div>
+    <div class="social-stat-label">construido en Chile</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="como-funciona">
+  <div class="reveal">
+    <div class="section-label">Cómo funciona</div>
+    <h2 class="section-title">Tres pasos.<br><span class="heading-accent">Propuesta lista.</span></h2>
+    <p class="section-sub">Sin formularios eternos, sin adjuntos, sin esperar días. Solo una conversación natural.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step-card reveal">
+      <div class="step-num">1</div>
+      <div class="step-title">Cuéntanos tu desafío</div>
+      <div class="step-desc">Habla con nuestro asistente IA como si fuera un consultor. Pregunta todo lo que necesitas, sin filtros.</div>
+    </div>
+    <div class="step-card reveal" style="transition-delay:0.1s">
+      <div class="step-num">2</div>
+      <div class="step-title">La IA entiende tu contexto</div>
+      <div class="step-desc">Analiza tu industria, cuantifica el problema y detecta el modelo comercial más adecuado para tu caso.</div>
+    </div>
+    <div class="step-card reveal" style="transition-delay:0.2s">
+      <div class="step-num">3</div>
+      <div class="step-title">Recibes tus documentos</div>
+      <div class="step-desc">Diagnóstico, propuesta con pricing y próximos pasos — listos para revisar con el equipo de Smart Connection.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENTS OUTPUT -->
+<section id="documentos">
+  <div class="reveal">
+    <div class="section-label">Documentos generados</div>
+    <h2 class="section-title">Todo lo que necesitas<br><span class="heading-accent">en un solo lugar</span></h2>
+    <p class="section-sub">Cada conversación genera automáticamente un pack completo de documentos comerciales.</p>
+  </div>
+
+  <div class="docs-preview">
+    <div class="doc-badge reveal">
+      <div class="doc-badge-icon" style="background:#E8F5F1">📋</div>
+      Diagnóstico ejecutivo
+    </div>
+    <div class="doc-badge reveal" style="transition-delay:0.05s">
+      <div class="doc-badge-icon" style="background:#E8EFF9">📊</div>
+      Infografía de pain points
+    </div>
+    <div class="doc-badge reveal" style="transition-delay:0.10s">
+      <div class="doc-badge-icon" style="background:#FFF3E8">💰</div>
+      Propuesta con pricing
+    </div>
+    <div class="doc-badge reveal" style="transition-delay:0.15s">
+      <div class="doc-badge-icon" style="background:#F5E8FF">⚡</div>
+      Plan de acción
+    </div>
+    <div class="doc-badge reveal" style="transition-delay:0.20s">
+      <div class="doc-badge-icon" style="background:#E8F5F1">🤝</div>
+      Resumen ejecutivo
+    </div>
+    <div class="doc-badge reveal" style="transition-delay:0.25s">
+      <div class="doc-badge-icon" style="background:#FFF0F0">🎯</div>
+      Scoring de oportunidad
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section>
+  <div class="reveal">
+    <div class="section-label">Por qué Discovery</div>
+    <h2 class="section-title">No es un formulario.<br><span class="heading-accent">Es una conversación.</span></h2>
+  </div>
+
+  <div class="features">
+    <div class="feature-card accent-card reveal">
+      <div class="feature-icon">💬</div>
+      <div class="feature-title">Conversación natural</div>
+      <div class="feature-desc">Sin PDFs que llenar. El asistente hace las preguntas correctas, tú solo respondes con naturalidad.</div>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.05s">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Análisis instantáneo</div>
+      <div class="feature-desc">SPIN + BANT detección automática. La IA identifica los pain points, el presupuesto estimado y el timeline sin que tengas que mencionarlos explícitamente.</div>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.10s">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">Privacidad garantizada</div>
+      <div class="feature-desc">Tu información nunca se comparte. Solo el equipo de Smart Connection tiene acceso al diagnóstico generado.</div>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.15s">
+      <div class="feature-icon">🇨🇱</div>
+      <div class="feature-title">Optimizado para Chile</div>
+      <div class="feature-desc">Propuestas en UF, cumplimiento SII, integración con Bsale y sistemas locales. Sin traducciones raras.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR COMPANIES -->
+<section>
+  <div class="reveal">
+    <div class="section-label">¿Tienes una empresa de consultoría?</div>
+    <h2 class="section-title">Construimos Discovery<br><span class="heading-accent">para tu empresa</span></h2>
+    <p class="section-sub">Smart Connection desarrolla herramientas como esta para equipos de ventas B2B, consultoras y firmas que quieren escalar sin contratar más vendedores.</p>
+  </div>
+
+  <div class="for-companies reveal">
+    <div class="for-companies-grid">
+      <div>
+        <div class="company-item">
+          <div class="company-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="company-item-text"><strong>Branded para tu empresa</strong> — tu logo, tus colores, tu subdominio</div>
+        </div>
+        <div class="company-item">
+          <div class="company-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="company-item-text"><strong>Integrado con tu CRM</strong> — HubSpot, Salesforce o base propia</div>
+        </div>
+        <div class="company-item">
+          <div class="company-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="company-item-text"><strong>Templates de propuesta</strong> — con tus precios, modelos y condiciones</div>
+        </div>
+        <div class="company-item">
+          <div class="company-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="company-item-text"><strong>Panel de administración</strong> — todos tus leads en un solo lugar</div>
+        </div>
+      </div>
+
+      <div style="text-align:center">
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Empieza con un</div>
+        <div style="font-size:36px;font-weight:700;color:var(--text-primary);letter-spacing:-0.04em;margin-bottom:4px;">Discovery Sprint</div>
+        <div style="font-size:15px;color:var(--accent);font-weight:500;margin-bottom:20px;">15–40 UF · 1–2 semanas</div>
+        <button class="btn-primary" style="width:100%;border-radius:12px;padding:14px;" onclick="document.querySelector('.pill-input-wrap input').focus();window.scrollTo({top:0,behavior:'smooth'})">
+          Cotizar para mi empresa
+        </button>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:10px;">Sin compromiso · Respuesta en 24h</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="section-label reveal">Lo que dicen los equipos</div>
+
+  <div class="testimonials">
+    <div class="testimonial reveal">
+      <div class="testimonial-quote">"Antes tardábamos 3 horas en armar una propuesta. Ahora el equipo tiene el diagnóstico listo antes de la siguiente reunión."</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">CR</div>
+        <div class="author-info">
+          <div class="author-info-name">Carlos R.</div>
+          <div class="author-info-role">Director Comercial · Empresa industrial</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial reveal" style="transition-delay:0.1s">
+      <div class="testimonial-quote">"El cliente llega a la reunión con el diagnóstico ya leído. La conversación empieza en otro nivel. Las tasas de cierre mejoraron."</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">MP</div>
+        <div class="author-info">
+          <div class="author-info-name">María P.</div>
+          <div class="author-info-role">Gerente de ventas · Consultora TI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-section">
+  <div class="cta-card reveal">
+    <h2 class="cta-title">Empieza ahora.<br><span class="heading-accent">Es gratis.</span></h2>
+    <p class="cta-sub">Una conversación de 10 minutos. Sin tarjeta de crédito, sin formularios. Solo cuéntanos tu desafío.</p>
+    <div class="cta-buttons">
+      <button class="btn-primary" onclick="document.querySelector('.pill-input-wrap input').focus();window.scrollTo({top:0,behavior:'smooth'})">
+        Iniciar conversación
+      </button>
+      <button class="btn-secondary" onclick="alert('Demo agendada — el equipo de Smart Connection te contactará en menos de 24 horas.')">
+        Agendar demo
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div style="width:6px;height:6px;border-radius:50%;background:var(--accent)"></div>
+    discovery.smconnection.cl
+  </div>
+  <div class="footer-links">
+    <a href="#" class="footer-link">Privacidad</a>
+    <a href="#" class="footer-link">Términos</a>
+    <a href="https://smconnection.cl" class="footer-link">Smart Connection →</a>
+  </div>
+</footer>
+
+<!-- FAB -->
+<button class="fab" onclick="document.querySelector('.pill-input-wrap input').focus();window.scrollTo({top:0,behavior:'smooth'})" title="Iniciar conversación">
+  💬
+</button>
+
+<script>
+  // ─── PILL CHAT INPUT ───
+  function setMsg(text) {
+    document.getElementById('heroInput').value = text;
+    document.getElementById('heroInput').focus();
+  }
+
+  function startChat() {
+    const input = document.getElementById('heroInput');
+    const val = input.value.trim();
+    if (!val) {
+      input.focus();
+      return;
+    }
+    // In production: open chat modal or redirect to full chat interface
+    alert('✅ Tu consulta fue recibida.\n\nEl equipo de Smart Connection analizará tu caso y te enviará un diagnóstico en menos de 24 horas.\n\n"' + val + '"');
+    input.value = '';
+  }
+
+  // ─── SCROLL REVEAL ───
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // ─── CHAT PREVIEW ANIMATION LOOP ───
+  const typingMsg = document.querySelector('.chat-msg:last-child .chat-bubble');
+  let responses = [
+    "Entendido. ¿Cuántos vendedores tiene el equipo y cuántas propuestas hacen al mes?",
+    "Perfecto. Basado en eso, el costo de este cuello de botella es aproximadamente 40 horas/mes. Déjame preparar tu diagnóstico...",
+    "✅ Diagnóstico listo. Te enviamos la propuesta de automatización con pricing en UF."
+  ];
+  let rIdx = 0;
+
+  setInterval(() => {
+    if (!typingMsg) return;
+    typingMsg.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    setTimeout(() => {
+      if (typingMsg) typingMsg.textContent = responses[rIdx % responses.length];
+      rIdx++;
+    }, 1800);
+  }, 5000);
+</script>
+
+</body>
+</html>

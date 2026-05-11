@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Connection | SAP + IA — Mobile Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<style>
+/* === TOKENS === */
+:root {
+  --bg: #060912;
+  --surface: #0a0d14;
+  --elevated: #0f1520;
+  --glass: rgba(15,22,35,0.85);
+  --glass-light: rgba(15,22,35,0.6);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.15);
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --muted: #475569;
+  --accent: #00e5b0;
+  --accent-dark: #00c49a;
+  --gold: #c9a84c;
+  --gold-light: #e0c060;
+  --blue: #4a9eff;
+  --purple: #a855f7;
+  --orange: #f59e0b;
+  --pink: #ec4899;
+  --cyan: #06b6d4;
+  --red: #ef4444;
+  --lime: #84cc16;
+  --font: 'Inter', system-ui, sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
+
+/* UTILS */
+.hl{background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hl-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.2}
+.aos{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.aos.visible{opacity:1;transform:translateY(0)}
+
+/* NAVBAR */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:14px 16px;transition:all 0.4s ease}
+.navbar.scrolled{background:rgba(6,9,18,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,229,176,0.1);padding:10px 16px}
+.nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:18px;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-0.5px}
+.logo span{background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:none}
+.nav-cta-desk{display:none}
+.mobile-toggle{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px}
+.mobile-toggle span{width:22px;height:2px;background:white;transition:all 0.3s;display:block;border-radius:2px}
+.mobile-toggle.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.mobile-toggle.open span:nth-child(2){opacity:0}
+.mobile-toggle.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* MOBILE MENU OVERLAY */
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(6,9,18,0.97);backdrop-filter:blur(20px);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:var(--text2);text-decoration:none;font-size:20px;font-weight:600;transition:color 0.3s}
+.mobile-menu a:hover{color:var(--accent)}
+.mobile-menu .m-cta{background:var(--accent);color:var(--bg)!important;padding:14px 36px;border-radius:14px;font-weight:700;font-size:17px}
+
+/* SECTIONS */
+section{padding:72px 16px;position:relative;overflow:hidden}
+.cx{max-width:1280px;margin:0 auto}
+.section-label{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;display:block}
+.section-label.gold{color:var(--gold)}
+.section-title{font-size:clamp(1.6rem,5vw,2.5rem);font-weight:800;color:var(--text);margin-bottom:14px;letter-spacing:-0.5px;line-height:1.15}
+.section-desc{color:var(--text2);font-size:15px;line-height:1.7;max-width:620px}
+.section-header{text-align:center;margin-bottom:44px}
+.section-header .section-desc{margin:0 auto}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;transition:all 0.3s;border:none;cursor:pointer;font-family:var(--font)}
+.btn-primary{background:var(--accent);color:var(--bg);box-shadow:0 4px 20px rgba(0,229,176,0.25)}
+.btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px)}
+.btn-gold{background:var(--gold);color:var(--bg)}
+.btn-gold:hover{filter:brightness(1.15);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border-hover)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.btn-full{width:100%;justify-content:center}
+
+/* GLASS CARD */
+.glass-card{background:var(--glass-light);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(0,229,176,0.08);border-radius:20px;position:relative;overflow:hidden;transition:all 0.3s}
+.glass-card:hover{border-color:rgba(0,229,176,0.2);box-shadow:0 16px 48px rgba(0,0,0,0.3);transform:translateY(-4px)}
+.glass-card.gold-border{border-color:rgba(201,168,76,0.12)}
+.glass-card.gold-border:hover{border-color:rgba(201,168,76,0.25)}
+.ci{padding:22px;position:relative;z-index:2}
+
+/* BADGE */
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:4px 12px;border-radius:100px;border:1px solid}
+.badge-blue{background:rgba(74,158,255,0.08);color:var(--blue);border-color:rgba(74,158,255,0.2)}
+.badge-green{background:rgba(0,229,176,0.08);color:var(--accent);border-color:rgba(0,229,176,0.2)}
+.badge-purple{background:rgba(168,85,247,0.08);color:var(--purple);border-color:rgba(168,85,247,0.2)}
+
+/* HERO */
+.hero{min-height:100svh;display:flex;align-items:center;padding-top:72px}
+.hero-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 600px 400px at 50% 30%,rgba(0,229,176,0.07),transparent),radial-gradient(ellipse 500px 400px at 80% 60%,rgba(74,158,255,0.05),transparent)}
+.hero-content{position:relative;z-index:2;width:100%;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,176,0.08);border:1px solid rgba(0,229,176,0.2);border-radius:100px;padding:7px 16px;font-size:11px;font-weight:600;color:var(--accent);margin-bottom:20px;backdrop-filter:blur(8px)}
+.pulse-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+.hero-title{font-size:clamp(2rem,7vw,3.4rem);font-weight:900;line-height:1.08;margin-bottom:18px;letter-spacing:-1px}
+.hero-desc{font-size:15px;color:var(--text2);line-height:1.7;margin:0 auto 28px;max-width:480px}
+.hero-buttons{display:flex;flex-direction:column;gap:12px;align-items:center}
+.hero-buttons .btn{width:min(300px,100%);justify-content:center}
+.hero-fade{position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(transparent,var(--bg));z-index:3;pointer-events:none}
+
+/* CONCEPT GRID: 1col mobile → 2col tablet → 3col desktop */
+.concept-section{background:var(--surface)}
+.concept-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.concept-icon{width:46px;height:46px;border-radius:13px;background:rgba(0,229,176,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:var(--accent);font-size:19px;transition:all 0.3s}
+.glass-card:hover .concept-icon{background:rgba(0,229,176,0.2)}
+.concept-card h3{font-size:15px;font-weight:700;margin-bottom:7px}
+.concept-card p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* SERVICES GRID: 1col → 2col → 4col */
+.services-section{background:var(--surface)}
+.services-grid{display:grid;grid-template-columns:1fr;gap:13px}
+.service-icon-wrap{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:13px;font-size:19px}
+.si-blue{background:rgba(74,158,255,0.12);color:var(--blue)}
+.si-green{background:rgba(0,229,176,0.12);color:var(--accent)}
+.si-purple{background:rgba(168,85,247,0.12);color:var(--purple)}
+.service-card h3{font-size:14px;font-weight:700;margin-bottom:6px}
+.service-card p{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+
+/* ============================================================
+   METODOLOGIAS
+   MOBILE/TABLET: cards accordion apiladas — SIN galaxia
+   DESKTOP (1024+): mind map de esferas
+   ============================================================ */
+.meth-section{background:var(--surface)}
+
+/* Cards accordion (mobile + tablet) */
+.meth-cards-mobile{display:grid;grid-template-columns:1fr;gap:10px}
+.meth-card-m{border-radius:16px;overflow:hidden;background:var(--glass-light);border:1px solid var(--border);transition:border-color 0.3s}
+.meth-card-m:hover{border-color:color-mix(in srgb,var(--mc) 30%,transparent)}
+.meth-card-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.meth-orb-sm{width:46px;height:46px;border-radius:50%;border:2px solid var(--mc);background:color-mix(in srgb,var(--mc) 10%,rgba(6,9,18,0.95));display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;gap:1px}
+.meth-orb-sm .on{font-size:14px;font-weight:900;color:var(--text);line-height:1}
+.meth-orb-sm .oc{font-size:8px;font-weight:700;color:var(--mc);line-height:1}
+.meth-card-title{flex:1;min-width:0}
+.meth-card-title h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meth-card-title p{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meth-chev{color:var(--text2);font-size:12px;transition:transform 0.3s;flex-shrink:0}
+.meth-card-m.open .meth-chev{transform:rotate(180deg);color:var(--mc)}
+.meth-card-body{max-height:0;overflow:hidden;transition:max-height 0.4s ease}
+.meth-card-m.open .meth-card-body{max-height:500px}
+.meth-items{padding:0 14px 14px;display:flex;flex-direction:column;gap:7px}
+.meth-row{padding:8px 12px;background:rgba(255,255,255,0.02);border-radius:9px;border-left:2.5px solid var(--mc)}
+.meth-row strong{font-size:12px;color:var(--text);display:block;margin-bottom:2px}
+.meth-row span{font-size:11px;color:var(--text2);line-height:1.4}
+
+/* Mind map desktop (hidden on mobile/tablet) */
+.mind-map-desktop{display:none;position:relative;min-height:600px;margin-top:48px}
+.mm-center-d{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,176,0.15),transparent 70%);border:2px solid rgba(0,229,176,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:mmGlow 3s ease-in-out infinite;backdrop-filter:blur(8px)}
+.mm-center-d .big{font-size:28px;font-weight:900;color:var(--accent)}
+.mm-center-d .small{font-size:11px;color:var(--text2);font-weight:600}
+.mm-node{position:absolute;left:50%;top:50%;z-index:5;cursor:pointer;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);transform:translate(-50%,-50%) translate(calc(cos(var(--a))*var(--d)),calc(sin(var(--a))*var(--d)))}
+.mm-orb{width:100px;height:100px;border-radius:50%;border:2px solid var(--nc);background:color-mix(in srgb,var(--nc) 8%,rgba(6,9,18,0.9));backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all 0.4s;box-shadow:0 0 20px color-mix(in srgb,var(--nc) 10%,transparent)}
+.mm-orb .name{font-size:12px;font-weight:700;color:var(--nc)}
+.mm-orb .cnt{font-size:22px;font-weight:900;color:var(--text)}
+.mm-detail{position:absolute;top:110px;left:50%;transform:translateX(-50%);width:260px;background:var(--glass);backdrop-filter:blur(24px);border:1px solid color-mix(in srgb,var(--nc) 30%,transparent);border-radius:16px;padding:0;max-height:0;overflow:hidden;opacity:0;transition:all 0.4s ease;z-index:20;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.mm-node.active .mm-detail{max-height:400px;padding:16px;opacity:1}
+.mm-node.active .mm-orb{transform:scale(1.2);box-shadow:0 0 50px color-mix(in srgb,var(--nc) 30%,transparent)}
+.mm-di{padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;color:var(--text2);line-height:1.5}
+.mm-di:last-child{border-bottom:none}
+
+/* ============================================================
+   STACK TECNOLOGICO
+   MOBILE/TABLET: pills por categoría — SIN sistema solar
+   DESKTOP (1024+): sistema solar SVG
+   ============================================================ */
+.stack-pills-wrap{display:flex;flex-direction:column;gap:14px}
+.stack-cat{background:var(--glass-light);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+.stack-cat-lbl{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.stack-cat-lbl::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.06)}
+.pills-row{display:flex;flex-wrap:wrap;gap:7px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);font-size:12px;font-weight:500;color:var(--text2);transition:all 0.2s;cursor:default}
+.pill:hover{background:rgba(255,255,255,0.08);border-color:var(--pc,rgba(0,229,176,0.3));color:var(--pc,var(--accent))}
+.pill-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* Solar system desktop (hidden on mobile/tablet) */
+.solar-desktop{display:none;max-width:800px;margin:0 auto}
+
+/* TEAM: mobile 1col, desktop 3col */
+.team-section{background:var(--surface)}
+.team-grid{display:grid;grid-template-columns:1fr;gap:18px}
+.team-card{padding:28px;text-align:center}
+.team-avatar{width:120px;height:120px;margin:0 auto 20px;position:relative;flex-shrink:0}
+.team-avatar svg{position:absolute;inset:0;width:100%;height:100%}
+.team-initials{position:absolute;inset:10px;border-radius:50%;background:var(--elevated);display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:-1px}
+.team-info h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.team-info .role{color:var(--accent);font-size:13px;font-weight:600;margin-bottom:8px;display:block}
+.team-info p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px}
+.social-links{display:flex;gap:8px;justify-content:center}
+.social-links a{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:var(--text2);text-decoration:none;transition:all 0.3s;font-size:14px}
+.social-links a:hover{color:var(--accent);background:rgba(0,229,176,0.1)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat-card .ci{text-align:center;padding:28px 12px}
+.stat-number{font-size:38px;font-weight:900;letter-spacing:-2px;margin-bottom:6px;line-height:1}
+.stat-label{font-size:12px;color:var(--text2);font-weight:500}
+
+/* PYMES */
+.pymes-grid{display:grid;grid-template-columns:1fr;gap:36px}
+.pymes-benefits{list-style:none;margin-bottom:24px}
+.pymes-benefits li{display:flex;align-items:center;gap:10px;color:var(--text2);padding:5px 0;font-size:14px}
+.pymes-benefits li .check{color:var(--accent);font-weight:700;font-size:16px}
+.pymes-examples{display:flex;flex-direction:column;gap:10px}
+.pyme-card{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:13px;background:var(--glass-light);border:1px solid rgba(201,168,76,0.12)}
+.pyme-icon{width:42px;height:42px;border-radius:11px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--gold);flex-shrink:0}
+.pyme-card h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.pyme-card p{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* HOW WE WORK */
+.how-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px}
+.how-card h3{font-size:13px;font-weight:700;margin-bottom:5px}
+.how-card p{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:7px}
+.how-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.hi-green{background:rgba(0,229,176,0.1);color:var(--accent)}
+.hi-gold{background:rgba(201,168,76,0.08);color:var(--gold)}
+.how-ref{color:rgba(0,229,176,0.4);font-size:10px;font-weight:500;display:flex;align-items:center;gap:5px;line-height:1.4}
+.how-ref.gold{color:rgba(201,168,76,0.4)}
+.sub-label{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:10px}
+.sub-label.green{color:var(--accent);background:rgba(0,229,176,0.06);border:1px solid rgba(0,229,176,0.12)}
+.sub-label.gold{color:var(--gold);background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12)}
+
+/* CTA */
+.cta-beam{position:absolute;top:-50%;left:-10%;width:120%;height:200%;background:linear-gradient(135deg,transparent 30%,rgba(0,229,176,0.03) 45%,rgba(0,229,176,0.06) 50%,rgba(0,229,176,0.03) 55%,transparent 70%);pointer-events:none;animation:beamShift 8s ease-in-out infinite alternate}
+.cta-content{text-align:center;max-width:700px;margin:0 auto;position:relative;z-index:2}
+.cta-title{font-size:clamp(1.8rem,5vw,3rem);font-weight:900;margin-bottom:16px;letter-spacing:-1px}
+.cta-buttons{display:flex;flex-direction:column;gap:12px;align-items:center}
+.cta-buttons .btn{width:min(300px,100%);justify-content:center;font-size:15px}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr;gap:36px}
+.contact-item{display:flex;gap:12px;margin-bottom:18px}
+.contact-icon{width:42px;height:42px;border-radius:12px;background:rgba(0,229,176,0.1);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--accent);flex-shrink:0}
+.contact-item h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.contact-item a,.contact-item p{font-size:13px;color:var(--text2);text-decoration:none;transition:color 0.3s;line-height:1.6;margin:0}
+.contact-item a:hover{color:var(--accent)}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:var(--text);font-size:14px;font-family:var(--font);transition:border-color 0.3s;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:88px}
+.form-group select{cursor:pointer}
+.form-submit{width:100%;background:var(--accent);color:var(--bg);border:none;padding:13px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.3s}
+.form-submit:hover{background:var(--accent-dark)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);background:var(--surface)}
+.footer-grid{display:grid;grid-template-columns:1fr;gap:28px;padding:44px 0 20px}
+.footer-brand p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.footer-social{display:flex;gap:10px}
+.footer-social a{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.05);display:inline-flex;align-items:center;justify-content:center;color:var(--text2);text-decoration:none;transition:all 0.3s}
+.footer-social a:hover{color:var(--accent);background:rgba(0,229,176,0.1)}
+.footer-col h4{font-size:13px;font-weight:700;margin-bottom:10px}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:7px}
+.footer-col a{color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.3s}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{display:flex;flex-direction:column;text-align:center;gap:6px;padding:18px 0;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:20px;right:16px;z-index:999;width:52px;height:52px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.4);text-decoration:none;color:white;font-size:24px;animation:waPulse 2s infinite;transition:transform 0.3s}
+.wa-float:hover{transform:scale(1.1)}
+
+/* KEYFRAMES */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes blink{50%{opacity:0}}
+@keyframes mmGlow{0%,100%{box-shadow:0 0 30px rgba(0,229,176,0.15)}50%{box-shadow:0 0 50px rgba(0,229,176,0.3)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.4)}50%{box-shadow:0 4px 30px rgba(37,211,102,0.6)}}
+@keyframes beamShift{0%{transform:translateX(-5%)}100%{transform:translateX(5%)}}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:2000;
+  background:rgba(10,13,20,0.96);
+  backdrop-filter:blur(24px);
+  border-top:1px solid rgba(255,255,255,0.08);
+  display:none;
+  align-items:center;
+  justify-content:space-around;
+  padding:8px 0 max(8px, env(safe-area-inset-bottom));
+  height:64px;
+}
+.bn-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--text2);text-decoration:none;font-size:10px;font-weight:600;
+  padding:6px 12px;border-radius:12px;
+  transition:all 0.2s ease;
+  -webkit-tap-highlight-color:transparent;
+  min-width:56px;
+}
+.bn-item i{font-size:20px;transition:all 0.2s}
+.bn-item.active{color:var(--accent)}
+.bn-item.active i{transform:translateY(-2px)}
+.bn-item:active{transform:scale(0.9)}
+
+/* ====== MOBILE CENTERING + COLORS (base: <768px) ====== */
+@media(max-width:767px){
+  /* APP STYLE — bottom nav, tap feedback, tipografía app */
+
+  /* Ocultar hamburger, mostrar bottom bar */
+  .mobile-toggle,.mobile-menu{display:none!important}
+  .navbar{padding:10px 16px;background:rgba(6,9,18,0.95)!important;backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+
+  /* Bottom navigation bar */
+  .bottom-nav{display:flex!important}
+
+  /* Padding inferior para no tapar contenido con bottom nav */
+  body{padding-bottom:72px}
+
+  /* Tipografía app: más grande, más bold */
+  .hero-title{font-size:clamp(2.2rem,9vw,3rem)!important;font-weight:900!important;line-height:1.1!important}
+  .section-title{font-size:1.6rem!important;font-weight:800!important}
+  .glass-card h3,.service-card h3,.how-card h3{font-size:1rem!important;font-weight:700!important}
+
+  /* Cards con tap feedback */
+  .glass-card,.service-card,.how-card,.meth-card,.team-card,.stat-card{
+    transition:transform 0.15s ease,box-shadow 0.15s ease!important;
+    -webkit-tap-highlight-color:transparent;
+    cursor:pointer;
+    border-radius:20px!important;
+  }
+  .glass-card:active,.service-card:active,.how-card:active,.meth-card:active,.team-card:active{
+    transform:scale(0.97)!important;
+    box-shadow:0 2px 12px rgba(0,0,0,0.3)!important;
+  }
+
+  /* Botones estilo app: más grandes, esquinas más redondeadas */
+  .btn{border-radius:16px!important;padding:16px 28px!important;font-size:15px!important;font-weight:700!important}
+  .hero-buttons .btn{width:100%!important;max-width:320px}
+
+  /* Secciones con más respiración */
+  section{padding:56px 20px!important}
+
+  /* Variables: verde→celeste, amarillo→naranja */
+  :root{
+    --accent:#00b4d8;
+    --accent-dark:#0096c7;
+    --accent-glow:rgba(0,180,216,0.12);
+    --gold:#f97316;
+    --gold-light:#fb923c;
+    --orange:#f97316;
+  }
+  /* Centrado */
+  .hero,.hero-content,.hero-title,.hero-desc,.hero-badge,.hero-buttons{text-align:center !important}
+  .hero-content{display:flex;flex-direction:column;align-items:center}
+  .section-desc,.hero-desc,.hero-badge,.hero-buttons{text-align:center}
+  .glass-card,.service-card,.how-card,.pyme-card,.team-card,.stat-card .ci{text-align:center}
+  .glass-card h3,.glass-card h4,.glass-card p,.glass-card .badge{text-align:center}
+  .service-card h3,.service-card p,.service-badge{text-align:center}
+  .how-card h3,.how-card p,.how-ref{text-align:center}
+  .pyme-card{flex-direction:column;align-items:center;text-align:center}
+  .pyme-card .pyme-icon{margin:0 auto 12px}
+  .meth-card-header,.meth-card-body{text-align:center}
+  .meth-card-items{text-align:left}
+  .footer-col{text-align:center}
+  .footer-col ul{padding-left:0;list-style:none}
+  .contact-info,.contact-info p,.contact-info a{text-align:center}
+  .contact-info .ci-item{justify-content:center}
+  .stack-group,.stack-group h4{text-align:center}
+  .stack-pills{justify-content:center}
+  /* Íconos centrados */
+  .concept-icon,.service-icon-wrap,.how-icon,.pyme-icon{margin-left:auto;margin-right:auto}
+  /* Colores explícitos (sobreescribir los que no heredan variables) */
+  .badge-green{background:rgba(0,180,216,0.08);color:#00b4d8;border-color:rgba(0,180,216,0.2)}
+  .si-green{background:rgba(0,180,216,0.12);color:#00b4d8}
+  .hi-green{background:rgba(0,180,216,0.1);color:#00b4d8}
+  .hi-gold{background:rgba(249,115,22,0.1);color:#f97316}
+  .how-ref.gold{color:rgba(249,115,22,0.6)}
+  .sub-label.green{color:#00b4d8;background:rgba(0,180,216,0.06);border-color:rgba(0,180,216,0.12)}
+  .sub-label.gold{color:#f97316;background:rgba(249,115,22,0.06);border-color:rgba(249,115,22,0.12)}
+  .pyme-icon{background:rgba(249,115,22,0.12);color:#f97316}
+  .pulse-dot{background:#00b4d8}
+  .hero-badge{background:rgba(0,180,216,0.1);border-color:rgba(0,180,216,0.25);color:#00b4d8}
+  .section-label{color:#00b4d8}
+  .section-label.gold{color:#f97316}
+  .btn-primary{background:#00b4d8;box-shadow:0 4px 20px rgba(0,180,216,0.3)}
+  .btn-primary:hover{background:#0096c7}
+  .glass-card.gold-border{border-color:rgba(249,115,22,0.15)}
+  .glass-card.gold-border:hover{border-color:rgba(249,115,22,0.3)}
+  .hl{background:linear-gradient(135deg,#00b4d8,#4a9eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hl-gold{background:linear-gradient(135deg,#f97316,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .logo{color:#f1f5f9 !important;font-size:18px;font-weight:800}
+  .logo span{background:linear-gradient(135deg,#00b4d8,#4a9eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+}
+
+/* ====== TABLET 768px ====== */
+@media(min-width:768px){
+  section{padding:88px 24px}
+  .navbar{padding:16px 24px}
+  .nav-cta-desk{display:flex;align-items:center;gap:6px;background:var(--accent);color:var(--bg);padding:10px 20px;border-radius:12px;font-weight:700;font-size:13px;text-decoration:none;transition:all 0.3s}
+  .nav-cta-desk:hover{background:var(--accent-dark)}
+  .mobile-toggle{display:none}
+  .mobile-menu{display:none!important}
+  .nav-links{display:flex;gap:20px;list-style:none;align-items:center}
+  .nav-links a{color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.3s}
+  .nav-links a:hover{color:var(--accent)}
+  .nav-links .nav-contact{background:rgba(0,229,176,0.1);color:var(--accent);padding:7px 14px;border-radius:100px;border:1px solid rgba(0,229,176,0.25)}
+  .hero-buttons{flex-direction:row;justify-content:center}
+  .hero-buttons .btn{width:auto}
+  .concept-grid{grid-template-columns:repeat(2,1fr);gap:18px}
+  .services-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+  .meth-cards-mobile{grid-template-columns:repeat(2,1fr)}
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+  .stat-number{font-size:44px}
+  .how-grid{grid-template-columns:repeat(2,1fr)}
+  .pymes-grid{grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .footer-grid{grid-template-columns:1.5fr 1fr 1fr 1fr;gap:28px}
+  .footer-bottom{flex-direction:row;justify-content:space-between}
+  .contact-grid{grid-template-columns:1fr 1fr;gap:48px}
+  .cta-buttons{flex-direction:row;justify-content:center}
+  .cta-buttons .btn{width:auto;padding:15px 30px}
+  .team-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ====== DESKTOP 1024px ====== */
+@media(min-width:1024px){
+  section{padding:100px 24px}
+  .concept-grid{grid-template-columns:repeat(3,1fr)}
+  .services-grid{grid-template-columns:repeat(4,1fr)}
+  .how-grid{grid-template-columns:repeat(4,1fr)}
+  /* SWAP metodologias: ocultar cards, mostrar mind map */
+  .meth-cards-mobile{display:none}
+  .mind-map-desktop{display:block}
+  /* SWAP stack: ocultar pills, mostrar solar */
+  .stack-pills-wrap{display:none}
+  .solar-desktop{display:block}
+  .stat-number{font-size:48px}
+  .stat-card .ci{padding:36px 20px}
+  .footer-grid{gap:40px;padding:56px 0 28px}
+}
+</style>
+</head>
+<body>
+
+<!-- WA FLOAT -->
+<a class="wa-float" href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Smart%20Connection" target="_blank" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#factory" onclick="closeMM()">SaaS Factory</a>
+  <a href="#servicios-sap" onclick="closeMM()">SAP</a>
+  <a href="#metodologias" onclick="closeMM()">Metodologías</a>
+  <a href="#equipo" onclick="closeMM()">Equipo</a>
+  <a href="#pymes" onclick="closeMM()">PYMES</a>
+  <a href="#contacto" class="m-cta" onclick="closeMM()"><i class="bi bi-calendar-check"></i> Agendar Reunión</a>
+</div>
+
+<!-- BOTTOM NAV (solo mobile) -->
+<nav class="bottom-nav" id="bottomNav" style="display:none">
+  <a href="#inicio" class="bn-item active" data-section="inicio">
+    <i class="bi bi-house-fill"></i><span>Inicio</span>
+  </a>
+  <a href="#servicios-sap" class="bn-item" data-section="servicios-sap">
+    <i class="bi bi-gear-wide-connected"></i><span>SAP</span>
+  </a>
+  <a href="#factory" class="bn-item" data-section="factory">
+    <i class="bi bi-robot"></i><span>Factory</span>
+  </a>
+  <a href="#metodologias" class="bn-item" data-section="metodologias">
+    <i class="bi bi-diagram-3"></i><span>Métodos</span>
+  </a>
+  <a href="#contacto" class="bn-item" data-section="contacto">
+    <i class="bi bi-calendar-check"></i><span>Contacto</span>
+  </a>
+</nav>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">Smart<span>Connection</span></a>
+    <ul class="nav-links">
+      <li><a href="#factory">SaaS Factory</a></li>
+      <li><a href="#servicios-sap">SAP</a></li>
+      <li><a href="#metodologias">Metodologías</a></li>
+      <li><a href="#equipo">Equipo</a></li>
+      <li><a href="#pymes">PYMES</a></li>
+      <li><a href="#contacto" class="nav-contact">Contacto</a></li>
+    </ul>
+    <a href="#contacto" class="nav-cta-desk"><i class="bi bi-calendar-check"></i> Agendar Reunión</a>
+    <button class="mobile-toggle" id="menuToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-mesh"></div>
+  <div class="hero-fade"></div>
+  <div class="hero-content cx">
+    <div class="hero-badge">
+      <span class="pulse-dot"></span>
+      <span id="typewriter"></span><span style="animation:blink 1s step-end infinite;color:var(--accent)">|</span>
+    </div>
+    <h1 class="hero-title"><span class="hl">SAP</span> + <span style="color:var(--gold)">IA</span> = El futuro de tu empresa</h1>
+    <p class="hero-desc">Consultoría SAP especializada y desarrollo de apps inteligentes con IA. Transformación digital para corporativos, empresas medianas y PYMES.</p>
+    <div class="hero-buttons">
+      <a href="#servicios-sap" class="btn btn-primary"><i class="bi bi-gear-wide-connected"></i> Servicios SAP</a>
+      <a href="#factory" class="btn btn-gold"><i class="bi bi-robot"></i> Apps con IA</a>
+      <a href="#contacto" class="btn btn-ghost"><i class="bi bi-calendar-check"></i> Agendar Reunión</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SAAS FACTORY -->
+<section class="concept-section" id="factory">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Nuestro diferenciador</span>
+      <h2 class="section-title">¿Qué es una <span class="hl">SaaS Factory con IA</span>?</h2>
+      <p class="section-desc">No construimos software de la manera tradicional. Operamos como una fábrica inteligente donde cada especialidad tiene un responsable dedicado, potenciado por IA.</p>
+    </div>
+    <div class="concept-grid">
+      <div class="glass-card concept-card aos"><div class="ci"><div class="concept-icon"><i class="bi bi-lightning-charge"></i></div><h3>Velocidad × Paralelismo</h3><p>Backend, frontend e IA se desarrollan simultáneamente contra contratos de API predefinidos. Lo que otros hacen en 3 meses, lo entregamos en semanas.</p></div></div>
+      <div class="glass-card concept-card aos"><div class="ci"><div class="concept-icon"><i class="bi bi-cpu"></i></div><h3>IA en cada capa</h3><p>No solo construimos CON IA. Usamos IA para diseñar, desarrollar, testear, optimizar prompts y monitorear en producción.</p></div></div>
+      <div class="glass-card concept-card aos"><div class="ci"><div class="concept-icon"><i class="bi bi-layers"></i></div><h3>Arquitectura Cross</h3><p>Un arquitecto define estándares, contratos y decisiones técnicas que todos siguen. Nada se improvisa: cada pieza encaja por diseño.</p></div></div>
+      <div class="glass-card concept-card aos"><div class="ci"><div class="concept-icon"><i class="bi bi-plug"></i></div><h3>MCP: IA que actúa</h3><p>Model Context Protocol conecta nuestra IA con calendarios, analytics, Asana y más. No es un chatbot — es IA que opera sobre tus sistemas reales.</p></div></div>
+      <div class="glass-card concept-card aos"><div class="ci"><div class="concept-icon"><i class="bi bi-graph-up-arrow"></i></div><h3>Decisiones con datos</h3><p>Priorizamos con métricas reales (RICE scoring, AARRR). No construimos lo que "suena bien" — construimos lo que mueve tu negocio.</p></div></div>
+      <div class="glass-card concept-card aos"><div class="ci"><div class="concept-icon"><i class="bi bi-megaphone"></i></div><h3>IA + Marketing Digital</h3><p>SEO técnico, Google Ads, Meta Pixel, PostHog analytics y contenido generado con IA. Tu marca visible donde importa.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SERVICIOS SAP -->
+<section class="services-section" id="servicios-sap">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Expertise SAP</span>
+      <h2 class="section-title">Consultoría y Servicios SAP</h2>
+      <p class="section-desc">Nuestros consultores certificados comprenden tus necesidades y entregan soluciones SAP a la medida.</p>
+    </div>
+    <div class="services-grid">
+      <div class="glass-card service-card aos"><div class="ci"><div class="service-icon-wrap si-blue"><i class="bi bi-cloud-arrow-up"></i></div><h3>SAP BTP & Cloud</h3><p>Business Technology Platform: extensiones, integraciones y desarrollo en la nube.</p><span class="badge badge-blue">Cloud</span></div></div>
+      <div class="glass-card service-card aos"><div class="ci"><div class="service-icon-wrap si-blue"><i class="bi bi-arrow-repeat"></i></div><h3>Implementación S/4HANA</h3><p>Implementación y soporte de S/4HANA Cloud y On-Premise con metodología SAP Activate.</p><span class="badge badge-blue">S/4HANA</span></div></div>
+      <div class="glass-card service-card aos"><div class="ci"><div class="service-icon-wrap si-blue"><i class="bi bi-code-slash"></i></div><h3>ABAP & FIORI</h3><p>Desarrollo ABAP en ECC y S/4HANA. Aplicaciones FIORI con experiencia de usuario moderna.</p><span class="badge badge-blue">Development</span></div></div>
+      <div class="glass-card service-card aos"><div class="ci"><div class="service-icon-wrap si-blue"><i class="bi bi-diagram-3"></i></div><h3>Migración PI/PO → BTP IS</h3><p>Migración de interfaces PI/PO a SAP Integration Suite. Modernización de integraciones.</p><span class="badge badge-blue">Migration</span></div></div>
+      <div class="glass-card service-card aos"><div class="ci"><div class="service-icon-wrap si-purple"><i class="bi bi-bar-chart-line"></i></div><h3>SAP CAP & RAP</h3><p>Extensiones cloud-native con Cloud Application Programming y RESTful ABAP Programming.</p><span class="badge badge-purple">Development</span></div></div>
+      <div class="glass-card service-card aos"><div class="ci"><div class="service-icon-wrap si-green"><i class="bi bi-phone"></i></div><h3>Movilidad & IoT</h3><p>SAP Mobile Services, mantenimiento móvil e Internet de las Cosas.</p><span class="badge badge-green">Mobile</span></div></div>
+      <div class="glass-card service-card aos"><div class="ci"><div class="service-icon-wrap si-blue"><i class="bi bi-building-gear"></i></div><h3>Portal & Workflow</h3><p>SAP Portal corporativo. Automatización con Workflow y formularios electrónicos.</p><span class="badge badge-blue">Enterprise</span></div></div>
+      <div class="glass-card service-card aos"><div class="ci"><div class="service-icon-wrap si-green"><i class="bi bi-headset"></i></div><h3>AMS & Soporte Continuo</h3><p>Application Management Services y mesa de ayuda SAP con SLA garantizados.</p><span class="badge badge-green">Soporte 24/7</span></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- METODOLOGIAS -->
+<section class="meth-section" id="metodologias">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">+50 metodologías activas</span>
+      <h2 class="section-title">Cómo pensamos y <span class="hl">entregamos valor</span></h2>
+      <p class="section-desc">Cada área opera con metodologías probadas. No improvisamos — ejecutamos con frameworks que garantizan resultados.</p>
+    </div>
+
+    <!-- MOBILE + TABLET: acordeón de cards -->
+    <div class="meth-cards-mobile">
+      <div class="meth-card-m" style="--mc:#f59e0b">
+        <div class="meth-card-head" onclick="toggleMC(this.parentElement)">
+          <div class="meth-orb-sm" style="border-color:#f59e0b;--mc:#f59e0b"><span class="on">2</span><span class="oc">Gestión</span></div>
+          <div class="meth-card-title"><h4>Gestión de Producto</h4><p>RICE, AARRR, Sprint</p></div>
+          <i class="bi bi-chevron-down meth-chev"></i>
+        </div>
+        <div class="meth-card-body"><div class="meth-items">
+          <div class="meth-row" style="--mc:#f59e0b"><strong>RICE Scoring</strong><span>Reach × Impact × Confidence / Effort — priorización sin opiniones</span></div>
+          <div class="meth-row" style="--mc:#f59e0b"><strong>Pirate Metrics (AARRR)</strong><span>Acquisition, Activation, Retention, Revenue, Referral — funnel completo</span></div>
+        </div></div>
+      </div>
+
+      <div class="meth-card-m" style="--mc:#ec4899">
+        <div class="meth-card-head" onclick="toggleMC(this.parentElement)">
+          <div class="meth-orb-sm" style="border-color:#ec4899;--mc:#ec4899"><span class="on">4</span><span class="oc">Comerc.</span></div>
+          <div class="meth-card-title"><h4>Ventas & Comercial</h4><p>Challenger Sale, SPIN, Value Pricing</p></div>
+          <i class="bi bi-chevron-down meth-chev"></i>
+        </div>
+        <div class="meth-card-body"><div class="meth-items">
+          <div class="meth-row" style="--mc:#ec4899"><strong>Challenger Sale</strong><span>Enseñar, no vender — traer insights que el cliente no conoce</span></div>
+          <div class="meth-row" style="--mc:#ec4899"><strong>SPIN Selling</strong><span>Situación, Problema, Implicación, Necesidad — diagnosticar antes de proponer</span></div>
+          <div class="meth-row" style="--mc:#ec4899"><strong>Value-Based Pricing</strong><span>No cobrar por hora — cobrar por valor entregado</span></div>
+          <div class="meth-row" style="--mc:#ec4899"><strong>Land & Expand</strong><span>Entrar con deal chico, crecer dentro del cliente</span></div>
+        </div></div>
+      </div>
+
+      <div class="meth-card-m" style="--mc:#06b6d4">
+        <div class="meth-card-head" onclick="toggleMC(this.parentElement)">
+          <div class="meth-orb-sm" style="border-color:#06b6d4;--mc:#06b6d4"><span class="on">4</span><span class="oc">Producto</span></div>
+          <div class="meth-card-title"><h4>Diseño de Producto</h4><p>Design Thinking, BPMN, Wardley</p></div>
+          <i class="bi bi-chevron-down meth-chev"></i>
+        </div>
+        <div class="meth-card-body"><div class="meth-items">
+          <div class="meth-row" style="--mc:#06b6d4"><strong>Design Thinking</strong><span>Usuario al centro — empatizar, definir, idear, prototipar, testear</span></div>
+          <div class="meth-row" style="--mc:#06b6d4"><strong>Jobs to Be Done</strong><span>Sin job definido, no se construye nada</span></div>
+          <div class="meth-row" style="--mc:#06b6d4"><strong>Wardley Mapping</strong><span>Build vs buy vs skip — no reinventar la rueda</span></div>
+          <div class="meth-row" style="--mc:#06b6d4"><strong>BPMN 2.0</strong><span>Procesos antes de código — mapeo end-to-end completo</span></div>
+        </div></div>
+      </div>
+
+      <div class="meth-card-m" style="--mc:#a855f7">
+        <div class="meth-card-head" onclick="toggleMC(this.parentElement)">
+          <div class="meth-orb-sm" style="border-color:#a855f7;--mc:#a855f7"><span class="on">6</span><span class="oc">IA</span></div>
+          <div class="meth-card-title"><h4>Inteligencia Artificial</h4><p>EDD, Guardrails, LLMOps, RAG</p></div>
+          <i class="bi bi-chevron-down meth-chev"></i>
+        </div>
+        <div class="meth-card-body"><div class="meth-items">
+          <div class="meth-row" style="--mc:#a855f7"><strong>Eval-Driven Dev</strong><span>TDD para IA — dataset de evaluación con score mínimo antes de producción</span></div>
+          <div class="meth-row" style="--mc:#a855f7"><strong>Prompt Versioning</strong><span>Changelog + rollback — nunca editar prompts en producción directamente</span></div>
+          <div class="meth-row" style="--mc:#a855f7"><strong>Guardrails</strong><span>Pre + post guard en cada llamada al modelo — seguridad por diseño</span></div>
+          <div class="meth-row" style="--mc:#a855f7"><strong>Human-in-the-Loop</strong><span>Umbral de confianza: IA decide sobre 90%, humano confirma bajo 70%</span></div>
+          <div class="meth-row" style="--mc:#a855f7"><strong>LLMOps</strong><span>Observabilidad total: tokens, latencia, costo, calidad por cada llamada</span></div>
+          <div class="meth-row" style="--mc:#a855f7"><strong>Retrieval Engineering</strong><span>RAG optimizado: chunking, hybrid search, reranking y evaluación</span></div>
+        </div></div>
+      </div>
+
+      <div class="meth-card-m" style="--mc:#4a9eff">
+        <div class="meth-card-head" onclick="toggleMC(this.parentElement)">
+          <div class="meth-orb-sm" style="border-color:#4a9eff;--mc:#4a9eff"><span class="on">6</span><span class="oc">Arq.</span></div>
+          <div class="meth-card-title"><h4>Arquitectura</h4><p>Kaizen, OODA, Poka-Yoke, Jidoka</p></div>
+          <i class="bi bi-chevron-down meth-chev"></i>
+        </div>
+        <div class="meth-card-body"><div class="meth-items">
+          <div class="meth-row" style="--mc:#4a9eff"><strong>Kaizen</strong><span>Mejora continua cada 3 días — assessment automático de código y configuración</span></div>
+          <div class="meth-row" style="--mc:#4a9eff"><strong>OODA</strong><span>Observe, Orient, Decide, Act — decisiones técnicas documentadas</span></div>
+          <div class="meth-row" style="--mc:#4a9eff"><strong>Gemba</strong><span>Verificar producción real — el código dice una cosa, producción manda</span></div>
+          <div class="meth-row" style="--mc:#4a9eff"><strong>Conway's Law</strong><span>Arquitectura refleja al equipo — separación de responsabilidades por diseño</span></div>
+          <div class="meth-row" style="--mc:#4a9eff"><strong>Poka-Yoke</strong><span>Bugs imposibles — tipos estrictos, guards en todos los boundaries</span></div>
+          <div class="meth-row" style="--mc:#4a9eff"><strong>Jidoka</strong><span>Build falla = NO deploy — parar la línea antes que dejar pasar un error</span></div>
+        </div></div>
+      </div>
+
+      <div class="meth-card-m" style="--mc:#ef4444">
+        <div class="meth-card-head" onclick="toggleMC(this.parentElement)">
+          <div class="meth-orb-sm" style="border-color:#ef4444;--mc:#ef4444"><span class="on">2</span><span class="oc">DevOps</span></div>
+          <div class="meth-card-title"><h4>DevOps & SRE</h4><p>GitOps, SLOs, error budgets</p></div>
+          <i class="bi bi-chevron-down meth-chev"></i>
+        </div>
+        <div class="meth-card-body"><div class="meth-items">
+          <div class="meth-row" style="--mc:#ef4444"><strong>GitOps</strong><span>Push = producción, rollback en menos de 15 minutos</span></div>
+          <div class="meth-row" style="--mc:#ef4444"><strong>SRE</strong><span>SLOs, error budgets, 99.9% uptime — confiabilidad como feature de producto</span></div>
+        </div></div>
+      </div>
+
+      <div class="meth-card-m" style="--mc:#84cc16">
+        <div class="meth-card-head" onclick="toggleMC(this.parentElement)">
+          <div class="meth-orb-sm" style="border-color:#84cc16;--mc:#84cc16"><span class="on">3</span><span class="oc">QA</span></div>
+          <div class="meth-card-title"><h4>Quality Assurance</h4><p>Shift Left, Chaos, Exploratory</p></div>
+          <i class="bi bi-chevron-down meth-chev"></i>
+        </div>
+        <div class="meth-card-body"><div class="meth-items">
+          <div class="meth-row" style="--mc:#84cc16"><strong>Shift Left</strong><span>Testear ANTES de implementar — validar specs antes de escribir código</span></div>
+          <div class="meth-row" style="--mc:#84cc16"><strong>Chaos Engineering</strong><span>Romper a propósito para descubrir debilidades ocultas antes que el usuario</span></div>
+          <div class="meth-row" style="--mc:#84cc16"><strong>Exploratory Testing</strong><span>Testing sin script como usuario real — los mejores bugs se encuentran así</span></div>
+        </div></div>
+      </div>
+
+      <div class="meth-card-m" style="--mc:#00e5b0">
+        <div class="meth-card-head" onclick="toggleMC(this.parentElement)">
+          <div class="meth-orb-sm" style="border-color:#00e5b0;--mc:#00e5b0"><span class="on">4</span><span class="oc">Innov.</span></div>
+          <div class="meth-card-title"><h4>Innovación</h4><p>TRIZ, SCAMPER, Blue Ocean</p></div>
+          <i class="bi bi-chevron-down meth-chev"></i>
+        </div>
+        <div class="meth-card-body"><div class="meth-items">
+          <div class="meth-row" style="--mc:#00e5b0"><strong>TRIZ</strong><span>40 principios de invención para resolver contradicciones técnicas sin compromiso</span></div>
+          <div class="meth-row" style="--mc:#00e5b0"><strong>SCAMPER</strong><span>Sustituir, Combinar, Adaptar, Modificar, Poner otro uso, Eliminar, Reversar</span></div>
+          <div class="meth-row" style="--mc:#00e5b0"><strong>Blue Ocean</strong><span>Crear espacio sin competencia — eliminar, reducir, elevar, crear</span></div>
+          <div class="meth-row" style="--mc:#00e5b0"><strong>First Principles</strong><span>Descomponer hasta los fundamentos — no asumir, derivar desde cero</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- DESKTOP: Mind map (idéntico al original, oculto en mobile) -->
+    <div class="mind-map-desktop" id="mindMapWrap">
+      <canvas id="methCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.35"></canvas>
+      <div class="mm-center-d"><span class="big">+50</span><span class="small">Metodologías</span></div>
+      <div class="mm-node" style="--a:0deg;--d:220px;--nc:#f59e0b" onclick="toggleMN(this)"><div class="mm-orb"><span class="name">Gestión</span><span class="cnt">2</span></div><div class="mm-detail"><div class="mm-di">RICE Scoring — Reach × Impact × Confidence / Effort</div><div class="mm-di">Pirate Metrics — AARRR: funnel completo</div></div></div>
+      <div class="mm-node" style="--a:45deg;--d:240px;--nc:#ec4899" onclick="toggleMN(this)"><div class="mm-orb"><span class="name">Comercial</span><span class="cnt">4</span></div><div class="mm-detail"><div class="mm-di">Challenger Sale — Enseñar, no vender</div><div class="mm-di">SPIN Selling — Diagnosticar antes de proponer</div><div class="mm-di">Value-Based Pricing — Cobrar por valor</div><div class="mm-di">Land & Expand — Crecer dentro del cliente</div></div></div>
+      <div class="mm-node" style="--a:90deg;--d:220px;--nc:#06b6d4" onclick="toggleMN(this)"><div class="mm-orb"><span class="name">Producto</span><span class="cnt">4</span></div><div class="mm-detail"><div class="mm-di">Design Thinking — Usuario al centro</div><div class="mm-di">Jobs to Be Done — Sin job, no se construye</div><div class="mm-di">Wardley Mapping — Build, buy o skip</div><div class="mm-di">BPMN 2.0 — Procesos antes de código</div></div></div>
+      <div class="mm-node" style="--a:135deg;--d:240px;--nc:#a855f7" onclick="toggleMN(this)"><div class="mm-orb"><span class="name">IA</span><span class="cnt">6</span></div><div class="mm-detail"><div class="mm-di">Eval-Driven Dev — TDD para IA</div><div class="mm-di">Prompt Versioning — Changelog + rollback</div><div class="mm-di">Guardrails — Pre + post guard</div><div class="mm-di">Human-in-the-Loop — IA + humano</div><div class="mm-di">LLMOps — Observabilidad total</div><div class="mm-di">Retrieval Eng. — RAG optimizado</div></div></div>
+      <div class="mm-node" style="--a:180deg;--d:220px;--nc:#4a9eff" onclick="toggleMN(this)"><div class="mm-orb"><span class="name">Arquitectura</span><span class="cnt">6</span></div><div class="mm-detail"><div class="mm-di">Kaizen — Mejora continua cada 3 días</div><div class="mm-di">OODA — Observe, Orient, Decide, Act</div><div class="mm-di">Gemba — Verificar producción real</div><div class="mm-di">Conway's Law — Arquitectura = equipo</div><div class="mm-di">Poka-Yoke — Bugs imposibles</div><div class="mm-di">Jidoka — Build falla = NO deploy</div></div></div>
+      <div class="mm-node" style="--a:225deg;--d:240px;--nc:#ef4444" onclick="toggleMN(this)"><div class="mm-orb"><span class="name">DevOps</span><span class="cnt">2</span></div><div class="mm-detail"><div class="mm-di">GitOps — Push = producción, rollback &lt;15 min</div><div class="mm-di">SRE — SLOs, error budgets, 99.9% uptime</div></div></div>
+      <div class="mm-node" style="--a:270deg;--d:220px;--nc:#84cc16" onclick="toggleMN(this)"><div class="mm-orb"><span class="name">QA</span><span class="cnt">3</span></div><div class="mm-detail"><div class="mm-di">Shift Left — Testear ANTES de implementar</div><div class="mm-di">Chaos Engineering — Romper a propósito</div><div class="mm-di">Exploratory — Testing sin script</div></div></div>
+      <div class="mm-node" style="--a:315deg;--d:240px;--nc:#00e5b0" onclick="toggleMN(this)"><div class="mm-orb"><span class="name">Innovación</span><span class="cnt">4</span></div><div class="mm-detail"><div class="mm-di">TRIZ — 40 principios de invención</div><div class="mm-di">SCAMPER — 7 lentes creativos</div><div class="mm-di">Blue Ocean — Crear mercado nuevo</div><div class="mm-di">First Principles — Desde los fundamentos</div></div></div>
+      <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1" id="mmLines"></svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STACK TECNOLOGICO -->
+<section id="tecnologias">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Stack tecnológico</span>
+      <h2 class="section-title">Las herramientas detrás de la <span class="hl">magia</span></h2>
+      <p class="section-desc">Elegimos cada tecnología por mérito, no por moda. Benchmarks reales, no marketing.</p>
+    </div>
+
+    <!-- MOBILE + TABLET: pills por categoría -->
+    <div class="stack-pills-wrap aos">
+      <div class="stack-cat">
+        <div class="stack-cat-lbl" style="color:#a855f7">Inteligencia Artificial</div>
+        <div class="pills-row">
+          <span class="pill" style="--pc:#a855f7"><span class="pill-dot" style="background:#a855f7"></span>Claude</span>
+          <span class="pill" style="--pc:#a855f7"><span class="pill-dot" style="background:#a855f7"></span>GPT-4o</span>
+          <span class="pill" style="--pc:#a855f7"><span class="pill-dot" style="background:#a855f7"></span>Groq / Llama</span>
+          <span class="pill" style="--pc:#a855f7"><span class="pill-dot" style="background:#a855f7"></span>Gemini</span>
+          <span class="pill" style="--pc:#a855f7"><span class="pill-dot" style="background:#a855f7"></span>Cohere</span>
+          <span class="pill" style="--pc:#a855f7"><span class="pill-dot" style="background:#a855f7"></span>AWS Bedrock</span>
+        </div>
+      </div>
+      <div class="stack-cat">
+        <div class="stack-cat-lbl" style="color:#00e5b0">Desarrollo Web & Apps</div>
+        <div class="pills-row">
+          <span class="pill" style="--pc:#00e5b0"><span class="pill-dot" style="background:#00e5b0"></span>Next.js 16</span>
+          <span class="pill" style="--pc:#00e5b0"><span class="pill-dot" style="background:#00e5b0"></span>React 19</span>
+          <span class="pill" style="--pc:#00e5b0"><span class="pill-dot" style="background:#00e5b0"></span>TypeScript</span>
+          <span class="pill" style="--pc:#00e5b0"><span class="pill-dot" style="background:#00e5b0"></span>Tailwind v4</span>
+          <span class="pill" style="--pc:#00e5b0"><span class="pill-dot" style="background:#00e5b0"></span>Astro</span>
+          <span class="pill" style="--pc:#00e5b0"><span class="pill-dot" style="background:#00e5b0"></span>Radix UI</span>
+        </div>
+      </div>
+      <div class="stack-cat">
+        <div class="stack-cat-lbl" style="color:#4a9eff">SAP</div>
+        <div class="pills-row">
+          <span class="pill" style="--pc:#4a9eff"><span class="pill-dot" style="background:#4a9eff"></span>SAP BTP</span>
+          <span class="pill" style="--pc:#4a9eff"><span class="pill-dot" style="background:#4a9eff"></span>S/4HANA</span>
+          <span class="pill" style="--pc:#4a9eff"><span class="pill-dot" style="background:#4a9eff"></span>ABAP</span>
+          <span class="pill" style="--pc:#4a9eff"><span class="pill-dot" style="background:#4a9eff"></span>FIORI</span>
+          <span class="pill" style="--pc:#4a9eff"><span class="pill-dot" style="background:#4a9eff"></span>CPI / BTP IS</span>
+          <span class="pill" style="--pc:#4a9eff"><span class="pill-dot" style="background:#4a9eff"></span>CAP / RAP</span>
+        </div>
+      </div>
+      <div class="stack-cat">
+        <div class="stack-cat-lbl" style="color:#f59e0b">Cloud & Infra</div>
+        <div class="pills-row">
+          <span class="pill" style="--pc:#f59e0b"><span class="pill-dot" style="background:#f59e0b"></span>AWS Amplify</span>
+          <span class="pill" style="--pc:#f59e0b"><span class="pill-dot" style="background:#f59e0b"></span>Supabase</span>
+          <span class="pill" style="--pc:#f59e0b"><span class="pill-dot" style="background:#f59e0b"></span>Vercel</span>
+          <span class="pill" style="--pc:#f59e0b"><span class="pill-dot" style="background:#f59e0b"></span>GitHub</span>
+          <span class="pill" style="--pc:#f59e0b"><span class="pill-dot" style="background:#f59e0b"></span>CloudFront</span>
+          <span class="pill" style="--pc:#f59e0b"><span class="pill-dot" style="background:#f59e0b"></span>GCloud</span>
+        </div>
+      </div>
+      <div class="stack-cat">
+        <div class="stack-cat-lbl" style="color:#ec4899">Integraciones</div>
+        <div class="pills-row">
+          <span class="pill" style="--pc:#ec4899"><span class="pill-dot" style="background:#ec4899"></span>WhatsApp</span>
+          <span class="pill" style="--pc:#ec4899"><span class="pill-dot" style="background:#ec4899"></span>PostHog</span>
+          <span class="pill" style="--pc:#ec4899"><span class="pill-dot" style="background:#ec4899"></span>GA4</span>
+          <span class="pill" style="--pc:#ec4899"><span class="pill-dot" style="background:#ec4899"></span>Bsale</span>
+          <span class="pill" style="--pc:#ec4899"><span class="pill-dot" style="background:#ec4899"></span>Resend</span>
+          <span class="pill" style="--pc:#ec4899"><span class="pill-dot" style="background:#ec4899"></span>Airtable</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESKTOP: sistema solar SVG (idéntico al original) -->
+    <div class="solar-desktop aos">
+      <svg viewBox="0 0 700 700" style="width:100%;aspect-ratio:1" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="350" cy="350" r="90" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+        <circle cx="350" cy="350" r="150" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+        <circle cx="350" cy="350" r="210" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+        <circle cx="350" cy="350" r="270" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+        <circle cx="350" cy="350" r="320" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+        <circle cx="350" cy="350" r="55" fill="rgba(0,229,176,0.15)"><animate attributeName="r" values="50;58;50" dur="4s" repeatCount="indefinite"/></circle>
+        <circle cx="350" cy="350" r="35" fill="rgba(0,229,176,0.1)" stroke="rgba(0,229,176,0.7)" stroke-width="2.5"/>
+        <text x="350" y="347" text-anchor="middle" fill="#00e5b0" font-size="9" font-weight="800">SMART</text>
+        <text x="350" y="359" text-anchor="middle" fill="#f1f5f9" font-size="8" font-weight="700">CONNECTION</text>
+        <g><circle cx="350" cy="260" r="14" fill="rgba(168,85,247,0.25)" stroke="rgba(168,85,247,0.6)" stroke-width="1.5"/><text x="350" y="264" text-anchor="middle" fill="#c084fc" font-size="7" font-weight="700">Claude</text></g>
+        <g><circle cx="428" cy="310" r="14" fill="rgba(168,85,247,0.25)" stroke="rgba(168,85,247,0.6)" stroke-width="1.5"/><text x="428" y="314" text-anchor="middle" fill="#c084fc" font-size="7" font-weight="700">GPT</text></g>
+        <g><circle cx="272" cy="310" r="14" fill="rgba(168,85,247,0.25)" stroke="rgba(168,85,247,0.6)" stroke-width="1.5"/><text x="272" y="314" text-anchor="middle" fill="#c084fc" font-size="7" font-weight="700">Groq</text></g>
+        <g><circle cx="410" cy="410" r="14" fill="rgba(168,85,247,0.25)" stroke="rgba(168,85,247,0.6)" stroke-width="1.5"/><text x="410" y="414" text-anchor="middle" fill="#c084fc" font-size="7" font-weight="700">Gemini</text></g>
+        <g><circle cx="350" cy="200" r="16" fill="rgba(0,229,176,0.22)" stroke="rgba(0,229,176,0.6)" stroke-width="1.5"/><text x="350" y="204" text-anchor="middle" fill="#34d399" font-size="7" font-weight="700">Next.js</text></g>
+        <g><circle cx="480" cy="280" r="14" fill="rgba(0,229,176,0.22)" stroke="rgba(0,229,176,0.6)" stroke-width="1.5"/><text x="480" y="284" text-anchor="middle" fill="#34d399" font-size="7" font-weight="700">React</text></g>
+        <g><circle cx="490" cy="400" r="14" fill="rgba(0,229,176,0.22)" stroke="rgba(0,229,176,0.6)" stroke-width="1.5"/><text x="490" y="404" text-anchor="middle" fill="#34d399" font-size="7" font-weight="700">Tailwind</text></g>
+        <g><circle cx="220" cy="280" r="14" fill="rgba(0,229,176,0.22)" stroke="rgba(0,229,176,0.6)" stroke-width="1.5"/><text x="220" y="284" text-anchor="middle" fill="#34d399" font-size="7" font-weight="700">TypeScript</text></g>
+        <g><circle cx="210" cy="400" r="14" fill="rgba(0,229,176,0.22)" stroke="rgba(0,229,176,0.6)" stroke-width="1.5"/><text x="210" y="404" text-anchor="middle" fill="#34d399" font-size="7" font-weight="700">Astro</text></g>
+        <g><circle cx="350" cy="140" r="16" fill="rgba(74,158,255,0.22)" stroke="rgba(74,158,255,0.6)" stroke-width="1.5"/><text x="350" y="144" text-anchor="middle" fill="#60a5fa" font-size="7" font-weight="700">SAP BTP</text></g>
+        <g><circle cx="540" cy="250" r="14" fill="rgba(74,158,255,0.22)" stroke="rgba(74,158,255,0.6)" stroke-width="1.5"/><text x="540" y="254" text-anchor="middle" fill="#60a5fa" font-size="7" font-weight="700">S/4HANA</text></g>
+        <g><circle cx="545" cy="430" r="14" fill="rgba(74,158,255,0.22)" stroke="rgba(74,158,255,0.6)" stroke-width="1.5"/><text x="545" y="434" text-anchor="middle" fill="#60a5fa" font-size="7" font-weight="700">ABAP</text></g>
+        <g><circle cx="160" cy="250" r="14" fill="rgba(74,158,255,0.22)" stroke="rgba(74,158,255,0.6)" stroke-width="1.5"/><text x="160" y="254" text-anchor="middle" fill="#60a5fa" font-size="7" font-weight="700">FIORI</text></g>
+        <g><circle cx="160" cy="430" r="14" fill="rgba(74,158,255,0.22)" stroke="rgba(74,158,255,0.6)" stroke-width="1.5"/><text x="160" y="434" text-anchor="middle" fill="#60a5fa" font-size="7" font-weight="700">CPI</text></g>
+        <g><circle cx="350" cy="80" r="16" fill="rgba(245,158,11,0.22)" stroke="rgba(245,158,11,0.6)" stroke-width="1.5"/><text x="350" y="84" text-anchor="middle" fill="#fbbf24" font-size="7" font-weight="700">AWS</text></g>
+        <g><circle cx="600" cy="250" r="14" fill="rgba(245,158,11,0.22)" stroke="rgba(245,158,11,0.6)" stroke-width="1.5"/><text x="600" y="254" text-anchor="middle" fill="#fbbf24" font-size="7" font-weight="700">Supabase</text></g>
+        <g><circle cx="600" cy="460" r="14" fill="rgba(245,158,11,0.22)" stroke="rgba(245,158,11,0.6)" stroke-width="1.5"/><text x="600" y="464" text-anchor="middle" fill="#fbbf24" font-size="7" font-weight="700">Vercel</text></g>
+        <g><circle cx="100" cy="250" r="14" fill="rgba(245,158,11,0.22)" stroke="rgba(245,158,11,0.6)" stroke-width="1.5"/><text x="100" y="254" text-anchor="middle" fill="#fbbf24" font-size="7" font-weight="700">GitHub</text></g>
+        <g><circle cx="100" cy="460" r="14" fill="rgba(245,158,11,0.22)" stroke="rgba(245,158,11,0.6)" stroke-width="1.5"/><text x="100" y="464" text-anchor="middle" fill="#fbbf24" font-size="7" font-weight="700">GCloud</text></g>
+        <g><circle cx="350" cy="30" r="13" fill="rgba(236,72,153,0.18)" stroke="rgba(236,72,153,0.5)" stroke-width="1.5"/><text x="350" y="34" text-anchor="middle" fill="#f472b6" font-size="6" font-weight="700">WhatsApp</text></g>
+        <g><circle cx="660" cy="380" r="13" fill="rgba(236,72,153,0.18)" stroke="rgba(236,72,153,0.5)" stroke-width="1.5"/><text x="660" y="384" text-anchor="middle" fill="#f472b6" font-size="6" font-weight="700">Bsale</text></g>
+        <g><circle cx="630" cy="190" r="13" fill="rgba(236,72,153,0.18)" stroke="rgba(236,72,153,0.5)" stroke-width="1.5"/><text x="630" y="194" text-anchor="middle" fill="#f472b6" font-size="6" font-weight="700">Jumpseller</text></g>
+        <g><circle cx="560" cy="560" r="13" fill="rgba(236,72,153,0.18)" stroke="rgba(236,72,153,0.5)" stroke-width="1.5"/><text x="560" y="564" text-anchor="middle" fill="#f472b6" font-size="6" font-weight="700">PostHog</text></g>
+        <g><circle cx="140" cy="560" r="13" fill="rgba(236,72,153,0.18)" stroke="rgba(236,72,153,0.5)" stroke-width="1.5"/><text x="140" y="564" text-anchor="middle" fill="#f472b6" font-size="6" font-weight="700">GA4</text></g>
+        <g><circle cx="40" cy="380" r="13" fill="rgba(236,72,153,0.18)" stroke="rgba(236,72,153,0.5)" stroke-width="1.5"/><text x="40" y="384" text-anchor="middle" fill="#f472b6" font-size="6" font-weight="700">Resend</text></g>
+        <g><circle cx="70" cy="190" r="13" fill="rgba(236,72,153,0.18)" stroke="rgba(236,72,153,0.5)" stroke-width="1.5"/><text x="70" y="194" text-anchor="middle" fill="#f472b6" font-size="6" font-weight="700">Airtable</text></g>
+        <circle r="2" fill="rgba(0,229,176,0.5)"><animateMotion dur="15s" repeatCount="indefinite" path="M350 260 A90 90 0 1 1 349.99 260"/></circle>
+        <circle r="1.5" fill="rgba(74,158,255,0.4)"><animateMotion dur="25s" repeatCount="indefinite" path="M350 200 A150 150 0 1 1 349.99 200"/></circle>
+        <circle r="2" fill="rgba(245,158,11,0.4)"><animateMotion dur="35s" repeatCount="indefinite" path="M350 140 A210 210 0 1 1 349.99 140"/></circle>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW WE WORK -->
+<section id="como-trabajamos">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Cómo trabajamos</span>
+      <h2 class="section-title">IA real + <span class="hl">ingeniería seria</span></h2>
+      <p class="section-desc">Combinamos infraestructura de inteligencia artificial en producción con metodologías de ingeniería probadas.</p>
+    </div>
+    <div class="aos" style="margin-bottom:10px"><span class="sub-label green"><i class="bi bi-cpu"></i> Inteligencia Artificial</span></div>
+    <div class="how-grid" style="margin-bottom:20px">
+      <div class="glass-card how-card aos"><div class="ci"><div class="how-icon hi-green"><i class="bi bi-plug"></i></div><h3>Model Context Protocol</h3><p>Nuestros agentes de IA se conectan a herramientas reales y ejecutan acciones concretas.</p><span class="how-ref"><i class="bi bi-circle-fill" style="font-size:4px"></i> Protocolo abierto para conectar IA con el mundo real</span></div></div>
+      <div class="glass-card how-card aos"><div class="ci"><div class="how-icon hi-green"><i class="bi bi-diagram-3"></i></div><h3>Orquestación Multi-Agente</h3><p>Agentes especializados trabajan coordinados en paralelo para resolver tareas complejas.</p><span class="how-ref"><i class="bi bi-circle-fill" style="font-size:4px"></i> Patrón de microservicios aplicado a IA</span></div></div>
+      <div class="glass-card how-card aos"><div class="ci"><div class="how-icon hi-green"><i class="bi bi-search"></i></div><h3>RAG + Vector Search</h3><p>La IA busca en tus documentos reales antes de responder. Búsqueda híbrida y reranking.</p><span class="how-ref"><i class="bi bi-circle-fill" style="font-size:4px"></i> Respuestas con citas, no con fe</span></div></div>
+      <div class="glass-card how-card aos"><div class="ci"><div class="how-icon hi-green"><i class="bi bi-shield-lock"></i></div><h3>AI Guardrails</h3><p>Filtros automáticos antes y después de cada respuesta. Bloquean alucinaciones y PII.</p><span class="how-ref"><i class="bi bi-circle-fill" style="font-size:4px"></i> Middleware de seguridad en cada llamada</span></div></div>
+    </div>
+    <div class="aos" style="margin-bottom:10px"><span class="sub-label gold"><i class="bi bi-gear"></i> Metodologías & Arquitectura</span></div>
+    <div class="how-grid">
+      <div class="glass-card how-card gold-border aos"><div class="ci"><div class="how-icon hi-gold"><i class="bi bi-clipboard-data"></i></div><h3>Eval-Driven Development</h3><p>Cada prompt pasa por dataset de evaluación con score mínimo antes de producción.</p><span class="how-ref gold"><i class="bi bi-circle-fill" style="font-size:4px"></i> TDD adaptado a modelos de lenguaje</span></div></div>
+      <div class="glass-card how-card gold-border aos"><div class="ci"><div class="how-icon hi-gold"><i class="bi bi-arrow-repeat"></i></div><h3>Kaizen — Mejora Continua</h3><p>Ciclo de auditoría periódica: código, configuración, contratos e integraciones.</p><span class="how-ref gold"><i class="bi bi-circle-fill" style="font-size:4px"></i> Toyota Production System aplicado a software</span></div></div>
+      <div class="glass-card how-card gold-border aos"><div class="ci"><div class="how-icon hi-gold"><i class="bi bi-building-gear"></i></div><h3>Governance System</h3><p>Documentos versionados, ownership explícito y trazabilidad de decisiones.</p><span class="how-ref gold"><i class="bi bi-circle-fill" style="font-size:4px"></i> Decisiones con dueño y registro auditable</span></div></div>
+      <div class="glass-card how-card gold-border aos"><div class="ci"><div class="how-icon hi-gold"><i class="bi bi-eye"></i></div><h3>Maqueta-First</h3><p>Prototipo interactivo con datos reales y todos los estados antes de escribir código.</p><span class="how-ref gold"><i class="bi bi-circle-fill" style="font-size:4px"></i> Design Sprint: validas antes de invertir</span></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STATS -->
+<section id="resultados" style="padding:64px 16px">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Resultados</span>
+      <h2 class="section-title">Números reales</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="glass-card stat-card aos"><div class="ci"><div class="stat-number"><span class="hl" data-count="7">0</span>+</div><div class="stat-label">Años experiencia SAP</div></div></div>
+      <div class="glass-card stat-card aos"><div class="ci"><div class="stat-number"><span class="hl" data-count="50">0</span>+</div><div class="stat-label">Proyectos completados</div></div></div>
+      <div class="glass-card stat-card aos"><div class="ci"><div class="stat-number"><span class="hl" data-count="30">0</span>+</div><div class="stat-label">Clientes satisfechos</div></div></div>
+      <div class="glass-card stat-card aos"><div class="ci"><div class="stat-number"><span class="hl" data-count="99">0</span>%</div><div class="stat-label">Uptime garantizado</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PYMES -->
+<section id="pymes">
+  <div class="cx">
+    <div class="pymes-grid">
+      <div class="aos">
+        <span class="section-label gold">Para PYMES y Negocios</span>
+        <h2 class="section-title" style="margin-top:10px">¿Tienes un negocio y necesitas automatizar procesos?</h2>
+        <p style="color:var(--text2);line-height:1.7;margin-bottom:24px;font-size:14px">No necesitas ser una gran empresa para acceder a tecnología de primer nivel. Creamos soluciones a tu medida.</p>
+        <ul class="pymes-benefits">
+          <li><span class="check">&#10003;</span> Sin grandes inversiones iniciales</li>
+          <li><span class="check">&#10003;</span> Implementación rápida con IA</li>
+          <li><span class="check">&#10003;</span> Soporte continuo incluido</li>
+          <li><span class="check">&#10003;</span> Escalable según tu crecimiento</li>
+        </ul>
+        <a href="#contacto" class="btn btn-gold btn-full"><i class="bi bi-chat-dots"></i> Cuéntanos tu proyecto</a>
+      </div>
+      <div class="pymes-examples aos">
+        <div class="pyme-card"><div class="pyme-icon"><i class="bi bi-calculator"></i></div><div><h4>Cotizador Online</h4><p>Automatiza cotizaciones con precios y envío automático.</p></div></div>
+        <div class="pyme-card"><div class="pyme-icon"><i class="bi bi-clipboard-data"></i></div><div><h4>CRM Simple</h4><p>Gestiona clientes y seguimiento de ventas en una plataforma.</p></div></div>
+        <div class="pyme-card"><div class="pyme-icon"><i class="bi bi-bar-chart-line"></i></div><div><h4>Reportes Automáticos</h4><p>Dashboards en tiempo real con tus métricas de negocio.</p></div></div>
+        <div class="pyme-card"><div class="pyme-icon"><i class="bi bi-robot"></i></div><div><h4>Asistente IA</h4><p>Chatbot inteligente para atención al cliente 24/7.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEAM -->
+<section class="team-section" id="equipo">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Nuestro Equipo</span>
+      <h2 class="section-title">Las personas detrás de Smart Connection</h2>
+      <p class="section-desc">Consultores certificados SAP y especialistas en IA con experiencia real.</p>
+    </div>
+    <div class="team-grid">
+      <div class="glass-card team-card aos">
+        <div class="team-avatar">
+          <svg viewBox="0 0 120 120" style="animation:spin 8s linear infinite">
+            <defs><linearGradient id="ringGG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00e5b0"/><stop offset="50%" stop-color="#00c49a"/><stop offset="100%" stop-color="#4a9eff"/></linearGradient></defs>
+            <circle cx="60" cy="60" r="55" fill="none" stroke="url(#ringGG)" stroke-width="5" stroke-linecap="round" stroke-dasharray="130 215" opacity="0.9"/>
+          </svg>
+          <div class="team-initials" style="font-size:30px;color:var(--accent)">GG</div>
+        </div>
+        <div class="team-info">
+          <h3>Guillermo González León</h3>
+          <span class="role">Fundador & Director</span>
+          <p>Consultor SAP certificado con +14 años de experiencia en SAP BTP, S/4HANA y desarrollo con IA.</p>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/in/guillermogonzalezleon/" target="_blank"><i class="bi bi-linkedin"></i></a>
+            <a href="mailto:guillermo.gonzalez@smconnection.cl"><i class="bi bi-envelope"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card team-card aos">
+        <div class="team-avatar">
+          <svg viewBox="0 0 120 120" style="animation:spin 10s linear infinite reverse">
+            <defs><linearGradient id="ringSAP" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4a9eff"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+            <circle cx="60" cy="60" r="55" fill="none" stroke="url(#ringSAP)" stroke-width="5" stroke-linecap="round" stroke-dasharray="130 215" opacity="0.9"/>
+          </svg>
+          <div class="team-initials" style="font-size:22px;color:var(--blue)">SAP</div>
+        </div>
+        <div class="team-info">
+          <h3>Equipo SAP</h3>
+          <span class="role">Consultores Certificados</span>
+          <p>Especialistas SAP BTP (CPI, CAP, RAP, IA) PI/PO · S/4HANA con experiencia en proyectos globales.</p>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/company/smconnection/" target="_blank"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card team-card aos">
+        <div class="team-avatar">
+          <svg viewBox="0 0 120 120" style="animation:spin 9s linear infinite">
+            <defs><linearGradient id="ringIA" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c9a84c"/><stop offset="50%" stop-color="#e0c060"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient></defs>
+            <circle cx="60" cy="60" r="55" fill="none" stroke="url(#ringIA)" stroke-width="5" stroke-linecap="round" stroke-dasharray="130 215" opacity="0.9"/>
+          </svg>
+          <div class="team-initials" style="font-size:26px;color:var(--gold)">IA</div>
+        </div>
+        <div class="team-info">
+          <h3>Equipo Apps + IA</h3>
+          <span class="role">Desarrolladores Full-Stack</span>
+          <p>MCP, Prompt Engineering, RAG, Agentes IA, LLMOps. Claude, Groq, Gemini, AWS Bedrock.</p>
+          <div class="social-links">
+            <a href="https://github.com/guillermogonzalezleon-lgtm" target="_blank"><i class="bi bi-github"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section style="padding:88px 16px;overflow:hidden">
+  <div class="cta-beam"></div>
+  <div class="cta-content aos">
+    <span class="section-label">¿Listo para empezar?</span>
+    <h2 class="cta-title">Tu proyecto merece un <span class="hl">equipo completo</span></h2>
+    <p style="font-size:15px;color:var(--text2);margin-bottom:32px;line-height:1.7">30 minutos. Sin compromiso. Diagnosticamos tu desafío y te decimos honestamente si podemos ayudarte.</p>
+    <div class="cta-buttons">
+      <a href="#contacto" class="btn btn-primary"><i class="bi bi-calendar-plus"></i> Agendar reunión gratuita</a>
+      <a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Smart%20Connection" target="_blank" class="btn btn-ghost"><i class="bi bi-whatsapp"></i> WhatsApp directo</a>
+    </div>
+    <p style="margin-top:18px;font-size:12px;color:var(--muted)">contacto@smconnection.cl &nbsp;|&nbsp; +56 9 5536 1419</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Contacto</span>
+      <h2 class="section-title">Conversemos sobre tu proyecto</h2>
+      <p class="section-desc">Escríbenos y te responderemos en menos de 24 horas.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="aos">
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:24px">Smart Connection</h3>
+        <div class="contact-item"><div class="contact-icon"><i class="bi bi-geo-alt"></i></div><div><h4>Oficina Principal</h4><p>Barros Borgoño 71, Providencia, Santiago</p></div></div>
+        <div class="contact-item"><div class="contact-icon"><i class="bi bi-telephone"></i></div><div><h4>Teléfono</h4><a href="tel:+56955361419">+56 9 5536 1419</a><br><a href="tel:+56977008176">+56 9 7700 8176</a></div></div>
+        <div class="contact-item"><div class="contact-icon"><i class="bi bi-envelope"></i></div><div><h4>Email</h4><a href="mailto:contacto@smconnection.cl">contacto@smconnection.cl</a></div></div>
+        <div class="contact-item"><div class="contact-icon"><i class="bi bi-linkedin"></i></div><div><h4>LinkedIn</h4><a href="https://www.linkedin.com/company/smconnection/" target="_blank">Síguenos en LinkedIn</a></div></div>
+      </div>
+      <div class="glass-card aos" style="padding:0">
+        <div class="ci" style="padding:22px">
+          <form id="contactForm" novalidate>
+            <div class="form-group"><label for="nombre">Nombre *</label><input type="text" id="nombre" name="nombre" required placeholder="Tu nombre"></div>
+            <div class="form-group"><label for="empresa">Empresa</label><input type="text" id="empresa" name="empresa" placeholder="Tu empresa"></div>
+            <div class="form-group"><label for="email">Email *</label><input type="email" id="email" name="email" required placeholder="tu@email.com"></div>
+            <div class="form-group"><label for="telefono">Teléfono</label><input type="tel" id="telefono" name="telefono" placeholder="+56 9 XXXX XXXX"></div>
+            <div class="form-group"><label for="servicio">Tipo de Servicio *</label>
+              <select id="servicio" name="servicio" required>
+                <option value="">Selecciona un servicio</option>
+                <option value="SAP">Consultoría SAP</option>
+                <option value="App con IA">Desarrollo de App con IA</option>
+                <option value="PYME">Solución para PYME</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group"><label for="mensaje">Mensaje *</label><textarea id="mensaje" name="mensaje" required placeholder="Cuéntanos sobre tu proyecto..."></textarea></div>
+            <button type="submit" class="form-submit"><i class="bi bi-send"></i> Enviar Mensaje</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="cx" style="padding:0 16px;position:relative">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo" style="display:inline-block;margin-bottom:12px">Smart<span>Connection</span></a>
+        <p>Servicios profesionales SAP con consultores certificados. Desarrollo de apps con IA para empresas y PYMES en Chile.</p>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/company/smconnection/" target="_blank"><i class="bi bi-linkedin"></i></a>
+          <a href="https://www.instagram.com/smconnection.cl/" target="_blank"><i class="bi bi-instagram"></i></a>
+          <a href="https://x.com/smconnection" target="_blank"><i class="bi bi-twitter-x"></i></a>
+          <a href="https://github.com/guillermogonzalezleon-lgtm" target="_blank"><i class="bi bi-github"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Servicios SAP</h4>
+        <ul>
+          <li><a href="#servicios-sap">SAP BTP & Cloud</a></li>
+          <li><a href="#servicios-sap">S/4HANA</a></li>
+          <li><a href="#servicios-sap">ABAP & FIORI</a></li>
+          <li><a href="#servicios-sap">Migración PI/PO</a></li>
+          <li><a href="#servicios-sap">CAP & RAP</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Apps con IA</h4>
+        <ul>
+          <li><a href="#factory">SaaS Factory</a></li>
+          <li><a href="#factory">Agentes IA</a></li>
+          <li><a href="#factory">RAG & Vector Search</a></li>
+          <li><a href="#pymes">Soluciones PYME</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#equipo">Equipo</a></li>
+          <li><a href="#metodologias">Metodologías</a></li>
+          <li><a href="#resultados">Resultados</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Smart Connection. Todos los derechos reservados.</span>
+      <span>Santiago, Chile &mdash; smconnection.cl</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// NAVBAR
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 40), {passive:true});
+
+// MOBILE MENU
+const menuToggle = document.getElementById('menuToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+menuToggle.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  menuToggle.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+function closeMM() {
+  mobileMenu.classList.remove('open');
+  menuToggle.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// TYPEWRITER
+const words = ['Consultoría SAP', 'Apps con IA', 'SaaS Factory', 'ABAP + FIORI', 'S/4HANA'];
+let wi = 0, ci = 0, del = false;
+const tw = document.getElementById('typewriter');
+function type() {
+  const w = words[wi];
+  tw.textContent = del ? w.slice(0, ci--) : w.slice(0, ci++);
+  if (!del && ci > w.length) { del = true; setTimeout(type, 1200); return; }
+  if (del && ci < 0) { del = false; wi = (wi + 1) % words.length; }
+  setTimeout(type, del ? 40 : 80);
+}
+type();
+
+// AOS INTERSECTION OBSERVER
+const aosObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); aosObs.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.aos').forEach(el => aosObs.observe(el));
+
+// COUNTER ANIMATION
+function animateCount(el) {
+  const target = parseInt(el.dataset.count);
+  let cur = 0;
+  const step = Math.ceil(target / 40);
+  const t = setInterval(() => { cur = Math.min(cur + step, target); el.textContent = cur; if (cur >= target) clearInterval(t); }, 40);
+}
+const cntObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.querySelectorAll('[data-count]').forEach(animateCount); cntObs.unobserve(e.target); } });
+}, { threshold: 0.3 });
+document.querySelectorAll('.stat-card').forEach(c => cntObs.observe(c));
+
+// METODOLOGIAS MOBILE ACCORDION
+function toggleMC(card) {
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.meth-card-m.open').forEach(c => c.classList.remove('open'));
+  if (!isOpen) card.classList.add('open');
+}
+
+// METODOLOGIAS DESKTOP MIND MAP
+function toggleMN(node) {
+  const isActive = node.classList.contains('active');
+  document.querySelectorAll('.mm-node.active').forEach(n => n.classList.remove('active'));
+  if (!isActive) node.classList.add('active');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.mm-node') && !e.target.closest('.mm-center-d')) {
+    document.querySelectorAll('.mm-node.active').forEach(n => n.classList.remove('active'));
+  }
+});
+
+// MIND MAP DESKTOP LINES
+function drawMmLines() {
+  const svg = document.getElementById('mmLines');
+  const wrap = document.getElementById('mindMapWrap');
+  if (!svg || !wrap || wrap.style.display === 'none' || getComputedStyle(wrap).display === 'none') return;
+  const ww = wrap.offsetWidth, wh = wrap.offsetHeight;
+  if (!ww || !wh) return;
+  svg.setAttribute('viewBox', `0 0 ${ww} ${wh}`);
+  svg.innerHTML = '';
+  const cx = ww / 2, cy = wh / 2;
+  document.querySelectorAll('.mm-node').forEach(node => {
+    const nc = node.style.getPropertyValue('--nc').trim();
+    const aDeg = parseFloat(node.style.getPropertyValue('--a'));
+    const dist = parseFloat(node.style.getPropertyValue('--d'));
+    const aRad = aDeg * Math.PI / 180;
+    const x = cx + Math.cos(aRad) * dist;
+    const y = cy + Math.sin(aRad) * dist;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', cx); line.setAttribute('y1', cy);
+    line.setAttribute('x2', x); line.setAttribute('y2', y);
+    line.setAttribute('stroke', nc || 'rgba(0,229,176,0.2)');
+    line.setAttribute('stroke-width', '1');
+    line.setAttribute('stroke-dasharray', '4 6');
+    line.setAttribute('opacity', '0.25');
+    svg.appendChild(line);
+  });
+}
+window.addEventListener('resize', drawMmLines);
+setTimeout(drawMmLines, 400);
+
+// CONTACT FORM
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('.form-submit');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<i class="bi bi-check-circle"></i> ¡Mensaje enviado!';
+  btn.style.background = 'var(--accent-dark)';
+  setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; this.reset(); }, 3000);
+});
+</script>
+</body>
+</html>

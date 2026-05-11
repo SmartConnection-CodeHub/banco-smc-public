@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>RFP · Alpaso Dance Studio</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.6;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:20px}.crumb a{color:#7dd3fc;text-decoration:none}
+.badge{display:inline-block;font-size:10px;padding:4px 10px;background:rgba(0,229,176,.12);border:1px solid rgba(0,229,176,.3);border-radius:30px;color:#00e5b0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px}
+.lead{font-size:15px;color:#cbd5e1;margin-bottom:24px}
+h2{font-size:20px;font-weight:700;color:#f1f5f9;margin:36px 0 14px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px;display:flex;align-items:center;gap:10px}
+h2 .num{font-size:11px;color:#00e5b0;font-family:'JetBrains Mono',monospace;background:rgba(0,229,176,.08);padding:3px 8px;border-radius:4px}
+p{color:#cbd5e1;margin-bottom:12px;font-size:14px}
+.section{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;margin-bottom:14px}
+.callout{background:linear-gradient(135deg,rgba(0,229,176,.06),rgba(0,180,216,.06));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin:14px 0;font-size:13.5px}.callout b{color:#00e5b0}
+ul{padding-left:0;list-style:none}ul li{padding:6px 0 6px 24px;position:relative;color:#cbd5e1;font-size:13.5px}ul li::before{content:"›";position:absolute;left:8px;color:#00e5b0;font-weight:700}
+table{width:100%;border-collapse:collapse;margin:14px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:12.5px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;padding:9px 12px;text-align:left;font-size:11px;text-transform:uppercase}
+td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1}
+.meta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:24px}
+.meta-card{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px}
+.meta-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.meta-val{font-size:13px;color:#f1f5f9;font-weight:700}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../index.html">← Alpaso</a> / Docs / RFP</div>
+<span class="badge">RFP · v1 · patrón landing-only $0.50/mes</span>
+<h1>📋 RFP · Alpaso Dance Studio</h1>
+<p class="lead">Estudio de danza Concón · sitio elegante con clases · profesoras · galería · stack más barato posible · $0.50/mes · patrón replicable a futuros clientes landing-only</p>
+<div class="meta-row">
+<div class="meta-card"><div class="meta-lbl">Cliente</div><div class="meta-val">Alpaso Dance Studio</div></div>
+<div class="meta-card"><div class="meta-lbl">Modelo SMC</div><div class="meta-val">Discovery Sprint (one-time)</div></div>
+<div class="meta-card"><div class="meta-lbl">Estado</div><div class="meta-val">Live · alpasodancestudio.cl</div></div>
+<div class="meta-card"><div class="meta-lbl">Costo cliente</div><div class="meta-val">&lt;$0.50 USD/mes</div></div>
+</div>
+
+<h2><span class="num">01</span>🎯 Contexto</h2>
+<div class="section">
+<p>Estudio de danza familiar en Concón · pequeño · necesita presencia web elegante para mostrar clases · profesoras · galería de eventos. NO necesita reservas online ni ecommerce. Cliente sensible al precio (cuota mensual baja del estudio).</p>
+<div class="callout"><b>💡 Insight:</b> Para landings sin lógica de negocio · el stack más barato gana siempre. HTML estático + S3 + CloudFront = $0.50/mes vs $30/mes Shopify/WordPress. Cliente paga 1 vez el desarrollo y el sitio vive años sin costo recurrente.</div>
+</div>
+
+<h2><span class="num">02</span>🔥 Problema</h2>
+<div class="section">
+<ul>
+<li>Estudio sin presencia web · clientes preguntan vía WhatsApp + Instagram</li>
+<li>Sin galería organizada · fotos eventos dispersas en redes</li>
+<li>Sin información de profesoras · horarios · precios visible</li>
+<li>Presupuesto chico · no puede pagar Shopify/WordPress mensual</li>
+<li>Sin necesidad de CMS · contenido cambia 2-3 veces al año</li>
+</ul>
+</div>
+
+<h2><span class="num">03</span>💡 Hipótesis</h2>
+<div class="section">
+<div class="callout"><b>Hipótesis:</b> HTML puro + S3 + CloudFront = sitio elegante · responsive · &lt;$0.50/mes infra · maqueta = producción (mismo HTML) · patrón replicable a 10+ clientes pequeños tipo Alpaso.</div>
+</div>
+
+<h2><span class="num">04</span>🛠️ Solución</h2>
+<div class="section">
+<h3>Stack</h3>
+<ul>
+<li><b>HTML puro</b> · sin framework · sin build · maqueta = prod</li>
+<li><b>S3</b> · static website hosting · versionado activo</li>
+<li><b>CloudFront</b> · distribution E3QHLN7IN7VTPF · SSL ACM</li>
+<li><b>Route 53</b> · dominio alpasodancestudio.cl</li>
+<li><b>WhatsApp CTA</b> · contacto directo sin formulario</li>
+<li><b>Instagram embed</b> · galería viva sin upload manual</li>
+</ul>
+<h3>Cuándo aplica este patrón a futuros clientes</h3>
+<table>
+<tbody>
+<tr><td>✅ Aplica</td><td>Estudios · gimnasios · consultoras · profesionales · sitios estáticos</td></tr>
+<tr><td>❌ No aplica</td><td>E-commerce con stock · sitios con login · contenido cambia &gt;1 vez/semana</td></tr>
+<tr><td>💰 Precio venta</td><td>15-40 UF Discovery Sprint · sitio &lt;$0.50/mes después</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">05</span>📊 KPIs</h2>
+<div class="section">
+<table>
+<tbody>
+<tr><td>Costo mensual infra</td><td>&lt;$0.50 USD</td></tr>
+<tr><td>Uptime CloudFront</td><td>100%</td></tr>
+<tr><td>LCP global</td><td>&lt;1s</td></tr>
+<tr><td>CMS maintenance</td><td>0 (sin CMS)</td></tr>
+<tr><td>Maqueta == Prod</td><td>100% (mismo HTML)</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">06</span>🛣️ Roadmap</h2>
+<div class="section">
+<h3>Fase 1 · Scan + diseño (✅ 2026-03-23)</h3>
+<ul><li>Scan tecnológico inicial · entrevista cliente · maqueta aprobada</li></ul>
+<h3>Fase 2 · Deploy (✅ LIVE)</h3>
+<ul><li>S3 + CloudFront + Route 53 + ACM</li><li>WhatsApp + Instagram integrados</li></ul>
+<h3>Fase 3 · Replicación</h3>
+<ul><li>Patrón documentado · vendible a 10+ clientes pequeños</li><li>Template reusable</li></ul>
+</div>
+
+<footer>📋 RFP Alpaso · v1 · 2026-05-11 · patrón landing-only · banco SMC<br>
+<a href="../index.html" style="color:#7dd3fc;text-decoration:none">← volver al banco Alpaso</a></footer>
+</div></body></html>

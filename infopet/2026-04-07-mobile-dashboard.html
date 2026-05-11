@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>InfoPet — Panel Mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════
+   TOKENS CSS — InfoPet Dark Forest
+═══════════════════════════════════════════ */
+:root {
+  --bg-base:       #080e09;
+  --bg-surface:    rgba(14, 22, 14, 0.92);
+  --bg-card:       rgba(18, 28, 18, 0.88);
+  --bg-card-hover: rgba(24, 36, 24, 0.95);
+  --border:        rgba(255,255,255,0.07);
+  --border-md:     rgba(255,255,255,0.13);
+
+  --text-primary:  #eef4ee;
+  --text-secondary:#8da88d;
+  --text-muted:    #4a6a4a;
+
+  --green:  #00c853;
+  --orange: #ff6d00;
+  --red:    #ff1744;
+  --teal:   #00e5b0;
+  --blue:   #40c4ff;
+
+  --green-glow:  0 0 20px rgba(0,200,83,0.22);
+  --orange-glow: 0 0 20px rgba(255,109,0,0.22);
+  --red-glow:    0 0 28px rgba(255,23,68,0.32);
+  --teal-glow:   0 0 18px rgba(0,229,176,0.18);
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+
+  --header-h: 56px;
+  --nav-h:    64px;
+  --max-w:    430px;
+}
+
+/* ═══ RESET ═══ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { font-size: 16px; background: #050a05; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Fondo natural CSS */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 55% at 15% 0%, rgba(0,90,20,0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 70% at 85% 100%, rgba(0,50,10,0.12) 0%, transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════
+   LAYOUT PRINCIPAL
+═══════════════════════════════════ */
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+/* ── HEADER STICKY ── */
+.app-header {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--header-h);
+  background: rgba(6,12,6,0.94);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+}
+
+.header-left { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--teal) 0%, #009e76 100%);
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.logo-text { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
+.logo-badge {
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+  background: rgba(0,229,176,0.1); color: var(--teal);
+  border: 1px solid rgba(0,229,176,0.22); border-radius: 5px; padding: 2px 6px; margin-left: 3px;
+}
+.header-right { display: flex; align-items: center; gap: 8px; }
+.hbtn {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; transition: background 0.15s;
+}
+.hbtn:active { background: rgba(255,255,255,0.09); }
+.status-dot {
+  width: 9px; height: 9px; border-radius: 50%; background: var(--green);
+  box-shadow: 0 0 7px var(--green); flex-shrink: 0;
+  animation: blink 2.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;box-shadow:0 0 7px var(--green)} 50%{opacity:.5;box-shadow:0 0 13px var(--green)} }
+
+/* ── SCREENS ── */
+.screen { display: none; padding-bottom: calc(var(--nav-h) + 8px); }
+.screen.active { display: block; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: var(--max-w);
+  height: var(--nav-h);
+  background: rgba(6,12,6,0.96);
+  backdrop-filter: blur(28px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: stretch; z-index: 100;
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; padding: 8px 2px;
+  position: relative; transition: background 0.12s;
+}
+.nav-item:active { background: rgba(255,255,255,0.03); }
+.nav-icon { font-size: 21px; transition: transform 0.18s; }
+.nav-label { font-size: 10px; font-weight: 600; color: var(--text-muted); transition: color 0.15s; }
+.nav-item.active .nav-label { color: var(--teal); }
+.nav-item.active .nav-icon { transform: translateY(-2px); }
+.nav-item.active::before {
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:28px; height:3px; border-radius:0 0 4px 4px;
+  background:var(--teal); box-shadow:0 0 9px var(--teal);
+}
+
+/* ── SECCIÓN LABEL ── */
+.section-label {
+  padding: 20px 16px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════
+   SCREEN 1 — HOME / DASHBOARD
+═══════════════════════════════════ */
+
+/* Hero row */
+.hero-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 16px 16px 4px;
+}
+.hero-store { font-size: 20px; font-weight: 900; letter-spacing: -0.025em; line-height: 1.1; }
+.hero-date  { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+.hero-chip {
+  display: flex; align-items: center; gap: 5px; flex-shrink: 0;
+  background: rgba(0,200,83,0.07); border: 1px solid rgba(0,200,83,0.18);
+  border-radius: 20px; padding: 5px 10px;
+}
+.hero-chip span { font-size: 11px; font-weight: 600; color: var(--green); }
+
+/* Alerta crítica */
+.alert-critical {
+  margin: 10px 16px 0;
+  background: rgba(255,23,68,0.07);
+  border: 1px solid rgba(255,23,68,0.28);
+  border-radius: var(--radius-md);
+  padding: 13px 14px;
+  display: flex; align-items: center; gap: 12px;
+  animation: alert-pulse 3s ease-in-out infinite;
+}
+@keyframes alert-pulse {
+  0%,100%{border-color:rgba(255,23,68,.28);background:rgba(255,23,68,.07)}
+  50%    {border-color:rgba(255,23,68,.45);background:rgba(255,23,68,.11)}
+}
+.al-icon { font-size: 20px; flex-shrink: 0; }
+.al-body { flex: 1; }
+.al-title { font-size: 12px; font-weight: 700; color: var(--red); }
+.al-sub   { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+.al-num   { font-size: 26px; font-weight: 900; color: var(--red); line-height: 1; }
+
+/* KPIs */
+.kpi-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; padding: 0 16px;
+}
+.kpi-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 15px 14px;
+  position: relative; overflow: hidden;
+  cursor: pointer; transition: transform 0.14s, border-color 0.18s;
+}
+.kpi-card:active { transform: scale(0.96); }
+.kpi-card::before {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.025) 0%, transparent 55%);
+  pointer-events: none;
+}
+.kpi-card.g  { border-color:rgba(0,200,83,0.22); box-shadow:var(--green-glow); }
+.kpi-card.r  { border-color:rgba(255,23,68,0.32); box-shadow:var(--red-glow); }
+.kpi-card.t  { border-color:rgba(0,229,176,0.18); box-shadow:var(--teal-glow); }
+.kpi-card.o  { border-color:rgba(255,109,0,0.22); box-shadow:var(--orange-glow); }
+
+.kpi-lbl  { font-size: 10px; font-weight: 600; color: var(--text-secondary); letter-spacing:.04em; margin-bottom: 7px; }
+.kpi-val  { font-size: 32px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+.kpi-card.g .kpi-val { color: var(--green); }
+.kpi-card.r .kpi-val { color: var(--red); }
+.kpi-card.t .kpi-val { color: var(--teal); }
+.kpi-card.o .kpi-val { color: var(--orange); }
+.kpi-sub  { font-size: 10px; color: var(--text-muted); margin-top: 5px; }
+.kpi-trend {
+  position:absolute; top:10px; right:10px;
+  font-size:10px; font-weight:700; padding:2px 6px; border-radius:6px;
+}
+.up  { background:rgba(0,200,83,0.12); color:var(--green); }
+.dn  { background:rgba(255,23,68,0.12); color:var(--red); }
+.neu { background:rgba(255,255,255,0.05); color:var(--text-secondary); }
+
+/* Acciones rápidas */
+.qa-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; padding: 0 16px;
+}
+.qa-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 7px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 16px 6px;
+  cursor: pointer; transition: all 0.13s; min-height: 82px;
+}
+.qa-btn:active { transform: scale(0.94); background: rgba(255,255,255,0.06); }
+.qa-btn.ia { border-color:rgba(0,229,176,0.22); background:rgba(0,229,176,0.04); }
+.qa-btn.ia .qa-lbl { color: var(--teal); }
+.qa-icon { font-size: 24px; }
+.qa-lbl  { font-size: 10px; font-weight: 600; color: var(--text-secondary); text-align:center; line-height:1.2; }
+
+/* Stock semáforo */
+.stock-card {
+  margin: 0 16px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px;
+}
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.stock-item { margin-bottom: 16px; }
+.stock-item:last-child { margin-bottom: 0; }
+.stock-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:7px; }
+.stock-name { display:flex; align-items:center; gap:7px; font-size:12px; font-weight:600; }
+.sdot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.stock-num { font-size:15px; font-weight:800; }
+.stock-num.r { color:var(--red); }
+.stock-num.o { color:var(--orange); }
+.stock-num.g { color:var(--green); }
+.bar-track { height:7px; background:rgba(255,255,255,0.05); border-radius:99px; overflow:hidden; }
+.bar-fill {
+  height:100%; border-radius:99px; transform-origin:left; transform:scaleX(0);
+  animation: grow 0.9s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+.bar-r { background:linear-gradient(90deg,var(--red),#ff6b6b); animation-delay:.15s; }
+.bar-o { background:linear-gradient(90deg,var(--orange),#ffa040); animation-delay:.3s; }
+.bar-g { background:linear-gradient(90deg,var(--green),#69f0ae); animation-delay:.45s; }
+@keyframes grow { to { transform:scaleX(1); } }
+
+/* Top Categorías */
+.cats-card {
+  margin: 0 16px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px;
+}
+.cat-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+}
+.cat-item:last-child { border-bottom: none; padding-bottom: 0; }
+.cat-rank { width:22px; text-align:center; font-size:12px; font-weight:700; color:var(--text-muted); flex-shrink:0; }
+.cat-name { flex:1; font-size:13px; font-weight:500; }
+.cat-bar  { width: 60px; }
+.cat-bar-track { height:4px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden; margin-bottom:3px; }
+.cat-bar-fill  { height:100%; background:var(--teal); border-radius:99px; opacity:0.6; }
+.cat-count { font-size:13px; font-weight:700; color:var(--teal); min-width:38px; text-align:right; }
+
+/* Sync row */
+.sync-row {
+  margin: 0 16px; background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding: 11px 14px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.sync-info { display:flex; align-items:center; gap:8px; }
+.sync-icon { font-size:15px; }
+.sync-txt  { font-size:11px; color:var(--text-secondary); }
+.sync-txt strong { color:var(--text-primary); font-weight:600; }
+.sync-cta {
+  font-size:11px; font-weight:700; color:var(--teal);
+  background:rgba(0,229,176,0.08); border:1px solid rgba(0,229,176,0.22);
+  border-radius:8px; padding:5px 12px; cursor:pointer; white-space:nowrap; flex-shrink:0;
+}
+
+/* Módulos acceso */
+.modules-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; padding: 0 16px;
+}
+.module-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 16px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; transition: all 0.13s;
+}
+.module-card:active { transform: scale(0.96); background: rgba(255,255,255,0.05); }
+.module-icon { font-size: 26px; flex-shrink: 0; }
+.module-info { flex:1; }
+.module-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.module-sub  { font-size: 10px; color: var(--text-secondary); line-height: 1.4; }
+.module-arrow { font-size: 16px; color: var(--text-muted); flex-shrink: 0; }
+
+
+/* ═══════════════════════════════════
+   SCREEN 2 — IA / TSUKAI
+═══════════════════════════════════ */
+
+/* IA panel info */
+.ia-profile {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.ia-avatar {
+  width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
+  background: linear-gradient(135deg, #1a3a2a 0%, #0a1e12 100%);
+  border: 1.5px solid rgba(0,229,176,0.28);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 16px rgba(0,229,176,0.14);
+}
+.ia-avatar svg { width: 34px; height: 34px; }
+.ia-info { flex: 1; }
+.ia-name { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+.ia-nick { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+.ia-chip {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(0,200,83,0.07); border: 1px solid rgba(0,200,83,0.18);
+  border-radius: 20px; padding: 5px 10px; margin-top: 8px; width: fit-content;
+}
+.ia-chip span { font-size: 10px; font-weight: 600; color: var(--green); }
+
+/* Chat messages container — scroll real del browser */
+.chat-wrap {
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+.msg { display: flex; gap: 10px; align-items: flex-end; }
+.msg.user { flex-direction: row-reverse; }
+.msg-av {
+  width: 30px; height: 30px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.msg.bot .msg-av {
+  background: linear-gradient(135deg,#1a3a2a,#0a1e12);
+  border: 1px solid rgba(0,229,176,0.22);
+}
+.msg.user .msg-av { background: rgba(0,229,176,0.09); }
+
+.bubble {
+  max-width: 80%; padding: 11px 14px;
+  border-radius: 17px; font-size: 13px; line-height: 1.55;
+}
+.msg.bot .bubble  { background:var(--bg-card); border:1px solid var(--border); border-bottom-left-radius:4px; }
+.msg.user .bubble { background:rgba(0,229,176,0.11); border:1px solid rgba(0,229,176,0.22); border-bottom-right-radius:4px; }
+
+.msg-t { font-size:10px; color:var(--text-muted); margin-top:4px; }
+.msg.bot .msg-t  { padding-left:40px; }
+.msg.user .msg-t { padding-right:40px; text-align:right; }
+
+/* Inline data card en chat */
+.data-card {
+  background: rgba(0,229,176,0.05);
+  border: 1px solid rgba(0,229,176,0.15);
+  border-radius: 12px; padding: 11px 13px; margin-top: 9px;
+}
+.dc-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; font-size:12px; }
+.dc-row:not(:last-child) { border-bottom:1px solid rgba(255,255,255,0.05); }
+.dc-lbl { color:var(--text-secondary); }
+.dc-val { font-weight:700; }
+.dc-val.r { color:var(--red); }
+.dc-val.o { color:var(--orange); }
+.dc-val.g { color:var(--green); }
+
+/* Sugerencias rápidas */
+.suggestions {
+  display: flex; gap: 8px; padding: 4px 16px 16px; overflow-x: auto; scrollbar-width: none;
+}
+.suggestions::-webkit-scrollbar { display: none; }
+.chip {
+  white-space: nowrap; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-md); border-radius: 20px;
+  padding: 7px 13px; font-size: 11px; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.13s; flex-shrink: 0;
+}
+.chip:active { background:rgba(0,229,176,0.09); color:var(--teal); border-color:rgba(0,229,176,0.3); }
+
+/* Input chat */
+.chat-input-wrap {
+  position: sticky; bottom: var(--nav-h); left: 0; right: 0;
+  padding: 10px 16px;
+  background: rgba(6,12,6,0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; gap: 8px; align-items: center;
+  z-index: 50;
+}
+.chat-input {
+  flex:1; background:var(--bg-card); border:1px solid var(--border-md);
+  border-radius:24px; padding:11px 16px;
+  font-size:13px; color:var(--text-primary); outline:none;
+  font-family:'Inter',sans-serif;
+}
+.chat-input::placeholder { color:var(--text-muted); }
+.chat-send {
+  width:40px; height:40px; border-radius:50%; flex-shrink:0;
+  background:var(--teal); color:#000; font-size:17px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:transform 0.13s;
+  box-shadow:0 0 14px rgba(0,229,176,0.28);
+}
+.chat-send:active { transform:scale(0.9); }
+
+/* Typing dots */
+.typing { display:flex; gap:4px; align-items:center; padding:2px 0; }
+.typing span {
+  width:7px; height:7px; border-radius:50%; background:var(--teal); opacity:0.3;
+  animation: tdot 1.4s ease-in-out infinite;
+}
+.typing span:nth-child(2) { animation-delay:.2s; }
+.typing span:nth-child(3) { animation-delay:.4s; }
+@keyframes tdot { 0%,60%,100%{opacity:.25;transform:translateY(0)} 30%{opacity:1;transform:translateY(-3px)} }
+
+
+/* ═══════════════════════════════════
+   SCREEN 3 — STOCK
+═══════════════════════════════════ */
+.stock-filters {
+  display: flex; gap: 8px; padding: 12px 16px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.stock-filters::-webkit-scrollbar { display: none; }
+.filter-chip {
+  white-space: nowrap; font-size: 11px; font-weight: 600;
+  padding: 7px 14px; border-radius: 20px; cursor: pointer;
+  border: 1px solid var(--border-md); color: var(--text-secondary);
+  background: transparent; transition: all 0.13s;
+}
+.filter-chip.active {
+  background: rgba(0,229,176,0.10); color: var(--teal);
+  border-color: rgba(0,229,176,0.3);
+}
+
+.stock-summary-row {
+  display: flex; gap: 8px; padding: 0 16px 12px;
+}
+.ss-chip {
+  flex: 1; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 11px 12px; text-align: center;
+}
+.ss-num  { font-size: 20px; font-weight: 800; }
+.ss-lbl  { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing:.05em; color:var(--text-secondary); margin-top:2px; }
+.ss-chip.red   { border-color:rgba(255,23,68,0.25); }
+.ss-chip.red .ss-num { color:var(--red); }
+.ss-chip.orange{ border-color:rgba(255,109,0,0.22); }
+.ss-chip.orange .ss-num { color:var(--orange); }
+.ss-chip.green { border-color:rgba(0,200,83,0.22); }
+.ss-chip.green .ss-num { color:var(--green); }
+
+/* Lista de productos stock */
+.product-list { padding: 0 16px; display:flex; flex-direction:column; gap:8px; }
+.prod-item {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:13px 14px;
+  display:flex; align-items:center; gap:12px;
+  cursor:pointer; transition:all 0.13s;
+}
+.prod-item:active { transform:scale(0.98); background:rgba(255,255,255,0.05); }
+.prod-item.crit { border-color:rgba(255,23,68,0.25); }
+.prod-thumb {
+  width:44px; height:44px; border-radius:10px; flex-shrink:0;
+  background:rgba(255,255,255,0.05); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center; font-size:20px;
+}
+.prod-info { flex:1; min-width:0; }
+.prod-name { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.prod-cat  { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+.prod-right { text-align:right; flex-shrink:0; }
+.prod-stock { font-size:14px; font-weight:800; }
+.prod-stock.r { color:var(--red); }
+.prod-stock.o { color:var(--orange); }
+.prod-stock.g { color:var(--green); }
+.prod-label { font-size:9px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-top:2px; }
+
+/* ═══════════════════════════════════
+   SCREEN 4 — REPORTES
+═══════════════════════════════════ */
+.report-period {
+  display: flex; gap: 8px; padding: 12px 16px;
+}
+.period-btn {
+  flex:1; text-align:center; font-size:12px; font-weight:600;
+  padding:8px; border-radius:10px; cursor:pointer;
+  border:1px solid var(--border); color:var(--text-secondary); background:transparent;
+  transition:all 0.13s;
+}
+.period-btn.active {
+  background:rgba(0,229,176,0.1); color:var(--teal); border-color:rgba(0,229,176,0.28);
+}
+
+.report-kpis {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; padding: 0 16px;
+}
+.rk-card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:14px;
+}
+.rk-lbl { font-size:10px; font-weight:600; color:var(--text-secondary); letter-spacing:.04em; margin-bottom:6px; }
+.rk-val { font-size:22px; font-weight:800; color:var(--text-primary); }
+.rk-sub { font-size:10px; color:var(--text-muted); margin-top:4px; }
+.rk-trend { font-size:11px; font-weight:700; margin-top:4px; }
+.rk-trend.up   { color:var(--green); }
+.rk-trend.down { color:var(--red); }
+
+/* Gráfico mini CSS */
+.chart-bar-wrap {
+  margin: 0 16px; background:var(--bg-card);
+  border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px;
+}
+.chart-title { font-size:14px; font-weight:700; margin-bottom:16px; }
+.bar-chart { display:flex; align-items:flex-end; gap:6px; height:100px; }
+.bc-bar {
+  flex:1; border-radius:5px 5px 0 0;
+  background:linear-gradient(180deg, var(--teal) 0%, rgba(0,229,176,0.3) 100%);
+  transition:height 0.8s cubic-bezier(.34,1.56,.64,1);
+  min-height:4px; position:relative;
+}
+.bc-bar.active-bar { background:linear-gradient(180deg, var(--teal) 0%, var(--teal) 100%); }
+.bc-bar::after { content:attr(data-day); position:absolute; bottom:-18px; left:50%; transform:translateX(-50%); font-size:9px; color:var(--text-muted); white-space:nowrap; }
+.bar-chart-wrap { overflow:hidden; }
+.chart-x-labels { display:flex; gap:6px; margin-top:22px; }
+.chart-x-labels span { flex:1; text-align:center; font-size:9px; color:var(--text-muted); }
+
+.top-prods-card {
+  margin:0 16px; background:var(--bg-card);
+  border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px;
+}
+.top-prod-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 0; border-bottom:1px solid var(--border);
+}
+.top-prod-item:last-child { border-bottom:none; }
+.tp-rank { width:20px; font-size:11px; font-weight:700; color:var(--text-muted); flex-shrink:0; }
+.tp-name { flex:1; font-size:12px; font-weight:500; }
+.tp-bar-wrap { width:60px; }
+.tp-bar-track { height:4px; background:rgba(255,255,255,0.06); border-radius:99px; }
+.tp-bar-fill  { height:100%; background:var(--teal); border-radius:99px; opacity:.5; }
+.tp-val  { font-size:12px; font-weight:700; color:var(--teal); min-width:32px; text-align:right; }
+
+/* ═══════════════════════════════════
+   SCREEN 5 — MÁS / MÓDULOS
+═══════════════════════════════════ */
+.mas-section-title {
+  padding: 20px 16px 10px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.mas-list { padding: 0 16px; display:flex; flex-direction:column; gap:8px; }
+.mas-item {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:14px 16px;
+  display:flex; align-items:center; gap:14px;
+  cursor:pointer; transition:all 0.13s;
+}
+.mas-item:active { transform:scale(0.98); background:rgba(255,255,255,0.05); }
+.mas-icon  { font-size:24px; flex-shrink:0; width:42px; text-align:center; }
+.mas-body  { flex:1; }
+.mas-name  { font-size:14px; font-weight:700; margin-bottom:2px; }
+.mas-desc  { font-size:11px; color:var(--text-secondary); line-height:1.4; }
+.mas-arrow { font-size:18px; color:var(--text-muted); flex-shrink:0; }
+.mas-badge {
+  font-size:9px; font-weight:700; padding:3px 7px; border-radius:6px; flex-shrink:0;
+  background:rgba(255,23,68,0.12); color:var(--red); border:1px solid rgba(255,23,68,0.2);
+}
+
+.mas-account {
+  margin: 12px 16px; background:var(--bg-card);
+  border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px;
+  display:flex; align-items:center; gap:14px;
+}
+.mas-account-av {
+  width:48px; height:48px; border-radius:14px; flex-shrink:0;
+  background:linear-gradient(135deg,var(--teal),#007a5e);
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+}
+.mas-account-info { flex:1; }
+.mas-account-name { font-size:15px; font-weight:700; }
+.mas-account-role { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+.logout-btn {
+  font-size:11px; font-weight:700; color:var(--red);
+  background:rgba(255,23,68,0.08); border:1px solid rgba(255,23,68,0.2);
+  border-radius:8px; padding:6px 12px; cursor:pointer; flex-shrink:0;
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══════════ HEADER GLOBAL ══════════ -->
+  <header class="app-header" id="main-header">
+    <div class="header-left">
+      <div class="logo-icon">🐾</div>
+      <div>
+        <span class="logo-text">InfoPet</span>
+        <span class="logo-badge">PANEL</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-dot" title="Conectado"></div>
+      <div class="hbtn" id="notif-btn">🔔</div>
+      <div class="hbtn">⚙️</div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 1 — HOME / DASHBOARD
+  ══════════════════════════════════════ -->
+  <div class="screen active" id="screen-home">
+
+    <div class="hero-row">
+      <div>
+        <div class="hero-store">InfoPet Renaca</div>
+        <div class="hero-date">Martes, 7 de abril de 2026</div>
+      </div>
+      <div class="hero-chip">
+        <div class="status-dot" style="width:7px;height:7px;"></div>
+        <span>Conectado</span>
+      </div>
+    </div>
+
+    <!-- Alerta crítica -->
+    <div class="alert-critical">
+      <div class="al-icon">⚠️</div>
+      <div class="al-body">
+        <div class="al-title">Productos sin stock</div>
+        <div class="al-sub">Requieren reposición urgente</div>
+      </div>
+      <div class="al-num">1.409</div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="section-label">Resumen de hoy</div>
+    <div class="kpi-grid">
+      <div class="kpi-card g">
+        <div class="kpi-lbl">CON STOCK</div>
+        <div class="kpi-val">924</div>
+        <div class="kpi-sub">productos activos</div>
+        <span class="kpi-trend up">▲ 12</span>
+      </div>
+      <div class="kpi-card r">
+        <div class="kpi-lbl">SIN STOCK</div>
+        <div class="kpi-val">1.409</div>
+        <div class="kpi-sub">requieren reposición</div>
+        <span class="kpi-trend dn">▼ 8</span>
+      </div>
+      <div class="kpi-card t">
+        <div class="kpi-lbl">TOTAL UNIDADES</div>
+        <div class="kpi-val">4.211</div>
+        <div class="kpi-sub">en inventario</div>
+        <span class="kpi-trend neu">= 0</span>
+      </div>
+      <div class="kpi-card o">
+        <div class="kpi-lbl">CATEGORÍAS</div>
+        <div class="kpi-val">1.817</div>
+        <div class="kpi-sub">total registradas</div>
+        <span class="kpi-trend up">▲ 3</span>
+      </div>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="section-label">Acciones</div>
+    <div class="qa-grid">
+      <div class="qa-btn" onclick="switchScreen('mas')">
+        <span class="qa-icon">📦</span>
+        <span class="qa-lbl">Carga</span>
+      </div>
+      <div class="qa-btn" onclick="switchScreen('mas')">
+        <span class="qa-icon">📤</span>
+        <span class="qa-lbl">Salidas</span>
+      </div>
+      <div class="qa-btn" onclick="switchScreen('mas')">
+        <span class="qa-icon">🧾</span>
+        <span class="qa-lbl">Facturas</span>
+      </div>
+      <div class="qa-btn ia" onclick="switchScreen('ia')">
+        <span class="qa-icon">🐾</span>
+        <span class="qa-lbl">Tsukai</span>
+      </div>
+    </div>
+
+    <!-- Módulos extra -->
+    <div class="section-label">Módulos</div>
+    <div class="modules-grid">
+      <div class="module-card" onclick="switchScreen('stock')">
+        <div class="module-icon">📊</div>
+        <div class="module-info">
+          <div class="module-name">Stock</div>
+          <div class="module-sub">Inventario completo</div>
+        </div>
+        <div class="module-arrow">›</div>
+      </div>
+      <div class="module-card" onclick="switchScreen('reportes')">
+        <div class="module-icon">📈</div>
+        <div class="module-info">
+          <div class="module-name">Reportes</div>
+          <div class="module-sub">Analytics y ventas</div>
+        </div>
+        <div class="module-arrow">›</div>
+      </div>
+      <div class="module-card" onclick="switchScreen('mas')">
+        <div class="module-icon">🔄</div>
+        <div class="module-info">
+          <div class="module-name">Sync</div>
+          <div class="module-sub">Bsale · Jumpseller</div>
+        </div>
+        <div class="module-arrow">›</div>
+      </div>
+      <div class="module-card" onclick="switchScreen('mas')">
+        <div class="module-icon">📋</div>
+        <div class="module-info">
+          <div class="module-name">Bulk</div>
+          <div class="module-sub">Carga masiva</div>
+        </div>
+        <div class="module-arrow">›</div>
+      </div>
+    </div>
+
+    <!-- Stock semáforo -->
+    <div class="section-label">Estado del stock</div>
+    <div class="stock-card">
+      <div class="card-title">Semáforo de inventario</div>
+      <div class="stock-item">
+        <div class="stock-row">
+          <div class="stock-name">
+            <div class="sdot" style="background:var(--red);box-shadow:0 0 6px var(--red)"></div>
+            Urgente — sin stock
+          </div>
+          <div class="stock-num r">1.409</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-r" style="width:87%"></div></div>
+      </div>
+      <div class="stock-item">
+        <div class="stock-row">
+          <div class="stock-name">
+            <div class="sdot" style="background:var(--orange);box-shadow:0 0 6px var(--orange)"></div>
+            Bajo — reponer pronto
+          </div>
+          <div class="stock-num o">139</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-o" style="width:9%"></div></div>
+      </div>
+      <div class="stock-item">
+        <div class="stock-row">
+          <div class="stock-name">
+            <div class="sdot" style="background:var(--green);box-shadow:0 0 6px var(--green)"></div>
+            OK — stock suficiente
+          </div>
+          <div class="stock-num g">24</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-g" style="width:2%"></div></div>
+      </div>
+    </div>
+
+    <!-- Top categorías -->
+    <div class="section-label">Top categorías</div>
+    <div class="cats-card">
+      <div class="card-title">Por volumen de productos</div>
+      <div class="cat-item">
+        <div class="cat-rank">1</div>
+        <div class="cat-name">Alimentos perros</div>
+        <div class="cat-bar"><div class="cat-bar-track"><div class="cat-bar-fill" style="width:100%"></div></div></div>
+        <div class="cat-count">312</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-rank">2</div>
+        <div class="cat-name">Alimentos gatos</div>
+        <div class="cat-bar"><div class="cat-bar-track"><div class="cat-bar-fill" style="width:79%"></div></div></div>
+        <div class="cat-count">248</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-rank">3</div>
+        <div class="cat-name">Accesorios</div>
+        <div class="cat-bar"><div class="cat-bar-track"><div class="cat-bar-fill" style="width:60%"></div></div></div>
+        <div class="cat-count">187</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-rank">4</div>
+        <div class="cat-name">Higiene y belleza</div>
+        <div class="cat-bar"><div class="cat-bar-track"><div class="cat-bar-fill" style="width:46%"></div></div></div>
+        <div class="cat-count">143</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-rank">5</div>
+        <div class="cat-name">Medicamentos</div>
+        <div class="cat-bar"><div class="cat-bar-track"><div class="cat-bar-fill" style="width:29%"></div></div></div>
+        <div class="cat-count">92</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-rank">6</div>
+        <div class="cat-name">Juguetes</div>
+        <div class="cat-bar"><div class="cat-bar-track"><div class="cat-bar-fill" style="width:22%"></div></div></div>
+        <div class="cat-count">68</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-rank">7</div>
+        <div class="cat-name">Camas y descanso</div>
+        <div class="cat-bar"><div class="cat-bar-track"><div class="cat-bar-fill" style="width:14%"></div></div></div>
+        <div class="cat-count">44</div>
+      </div>
+    </div>
+
+    <!-- Sync -->
+    <div class="section-label">Sincronización</div>
+    <div class="sync-row">
+      <div class="sync-info">
+        <span class="sync-icon">🔄</span>
+        <div class="sync-txt">Última sync <strong>hace 2 min</strong> · Bsale + Jumpseller</div>
+      </div>
+      <div class="sync-cta">Sincronizar</div>
+    </div>
+
+    <div style="height:8px;"></div>
+
+  </div><!-- /screen-home -->
+
+
+  <!-- ══════════════════════════════════════
+       SCREEN 2 — IA / TSUKAI
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-ia">
+
+    <!-- Perfil de Tsukai -->
+    <div class="ia-profile">
+      <div class="ia-avatar">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="20,3 29,11 25,20 20,15 15,20 11,11" fill="#00e5b0" opacity="0.92"/>
+          <polygon points="20,15 25,20 23,29 17,29 15,20" fill="#00b4d8" opacity="0.88"/>
+          <polygon points="9,13 15,20 11,27 6,20" fill="#00e5b0" opacity="0.55"/>
+          <polygon points="31,13 25,20 29,27 34,20" fill="#00e5b0" opacity="0.55"/>
+          <polygon points="11,27 17,29 15,37 9,33" fill="#00b4d8" opacity="0.45"/>
+          <polygon points="29,27 23,29 25,37 31,33" fill="#00b4d8" opacity="0.45"/>
+          <circle cx="17" cy="13" r="1.8" fill="#001a0d"/>
+          <circle cx="23" cy="13" r="1.8" fill="#001a0d"/>
+          <polygon points="20,17 21.5,20 18.5,20" fill="#001a0d" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="ia-info">
+        <div class="ia-name">Tsukai <span style="font-size:12px;color:var(--text-muted);font-weight:400">(Pepito)</span></div>
+        <div class="ia-nick">Akita japonés · Asistente IA InfoPet</div>
+        <div class="ia-chip">
+          <div class="status-dot" style="width:7px;height:7px;"></div>
+          <span>Listo para consultas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensajes del chat -->
+    <div class="chat-wrap" id="chat-messages">
+
+      <div class="msg bot">
+        <div class="msg-av">
+          <svg width="18" height="18" viewBox="0 0 40 40" fill="none">
+            <polygon points="20,3 29,11 25,20 20,15 15,20 11,11" fill="#00e5b0" opacity="0.92"/>
+            <polygon points="20,15 25,20 23,29 17,29 15,20" fill="#00b4d8" opacity="0.88"/>
+          </svg>
+        </div>
+        <div>
+          <div class="bubble">
+            ¡Hola! Soy Tsukai 🐾 El inventario de hoy tiene <strong>1.409 productos sin stock</strong> que necesitan atención. ¿Quieres ver cuáles son más urgentes?
+          </div>
+          <div class="msg-t">09:14</div>
+        </div>
+      </div>
+
+      <div class="msg user">
+        <div class="msg-av">👤</div>
+        <div>
+          <div class="bubble">Sí, muéstrame las categorías más críticas</div>
+          <div class="msg-t">09:15</div>
+        </div>
+      </div>
+
+      <div class="msg bot">
+        <div class="msg-av">
+          <svg width="18" height="18" viewBox="0 0 40 40" fill="none">
+            <polygon points="20,3 29,11 25,20 20,15 15,20 11,11" fill="#00e5b0" opacity="0.92"/>
+            <polygon points="20,15 25,20 23,29 17,29 15,20" fill="#00b4d8" opacity="0.88"/>
+          </svg>
+        </div>
+        <div>
+          <div class="bubble">
+            Estas categorías están sin stock hoy:
+            <div class="data-card">
+              <div class="dc-row"><span class="dc-lbl">Alimentos perros</span><span class="dc-val r">87 productos</span></div>
+              <div class="dc-row"><span class="dc-lbl">Medicamentos</span><span class="dc-val r">63 productos</span></div>
+              <div class="dc-row"><span class="dc-lbl">Higiene y belleza</span><span class="dc-val o">41 productos</span></div>
+              <div class="dc-row"><span class="dc-lbl">Juguetes</span><span class="dc-val o">28 productos</span></div>
+              <div class="dc-row"><span class="dc-lbl">Accesorios</span><span class="dc-val g">12 productos</span></div>
+            </div>
+            ¿Quieres exportar la lista completa o ver las variantes de cada categoría?
+          </div>
+          <div class="msg-t">09:15</div>
+        </div>
+      </div>
+
+      <div class="msg user">
+        <div class="msg-av">👤</div>
+        <div>
+          <div class="bubble">¿Cuántos productos nuevos entraron esta semana?</div>
+          <div class="msg-t">09:16</div>
+        </div>
+      </div>
+
+      <div class="msg bot" id="typing-msg">
+        <div class="msg-av">
+          <svg width="18" height="18" viewBox="0 0 40 40" fill="none">
+            <polygon points="20,3 29,11 25,20 20,15 15,20 11,11" fill="#00e5b0" opacity="0.92"/>
+            <polygon points="20,15 25,20 23,29 17,29 15,20" fill="#00b4d8" opacity="0.88"/>
+          </svg>
+        </div>
+        <div>
+          <div class="bubble" style="padding:13px 16px;">
+            <div class="typing"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chips sugerencias -->
+    <div class="suggestions">
+      <div class="chip" onclick="sendChip('📊 Ver reporte semanal')">📊 Ver reporte semanal</div>
+      <div class="chip" onclick="sendChip('📦 Productos sin stock')">📦 Sin stock urgente</div>
+      <div class="chip" onclick="sendChip('🧾 Facturas pendientes')">🧾 Facturas pendientes</div>
+      <div class="chip" onclick="sendChip('🔍 Buscar producto')">🔍 Buscar producto</div>
+      <div class="chip" onclick="sendChip('📤 Últimas salidas')">📤 Últimas salidas</div>
+    </div>
+
+    <!-- Input chat (sticky sobre nav) -->
+    <div class="chat-input-wrap">
+      <input class="chat-input" id="chat-input" type="text" placeholder="Pregúntale a Tsukai…" />
+      <div class="chat-send" id="chat-send">↑</div>
+    </div>
+
+  </div><!-- /screen-ia -->
+
+
+  <!-- ══════════════════════════════════════
+       SCREEN 3 — STOCK
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-stock">
+
+    <div class="section-label" style="padding-bottom:4px;">Inventario</div>
+
+    <div class="stock-filters">
+      <div class="filter-chip active" onclick="setFilter(this)">Todos</div>
+      <div class="filter-chip" onclick="setFilter(this)">Sin stock ⚠️</div>
+      <div class="filter-chip" onclick="setFilter(this)">Stock bajo</div>
+      <div class="filter-chip" onclick="setFilter(this)">Con stock</div>
+      <div class="filter-chip" onclick="setFilter(this)">Alimentos</div>
+      <div class="filter-chip" onclick="setFilter(this)">Medicamentos</div>
+    </div>
+
+    <div class="stock-summary-row">
+      <div class="ss-chip red"><div class="ss-num">1.409</div><div class="ss-lbl">Sin stock</div></div>
+      <div class="ss-chip orange"><div class="ss-num">139</div><div class="ss-lbl">Stock bajo</div></div>
+      <div class="ss-chip green"><div class="ss-num">924</div><div class="ss-lbl">Con stock</div></div>
+    </div>
+
+    <div class="section-label" style="padding-top:8px;">Urgentes — sin stock</div>
+
+    <div class="product-list">
+      <div class="prod-item crit">
+        <div class="prod-thumb">🐕</div>
+        <div class="prod-info">
+          <div class="prod-name">Royal Canin Medium 15kg</div>
+          <div class="prod-cat">Alimentos perros</div>
+        </div>
+        <div class="prod-right">
+          <div class="prod-stock r">0</div>
+          <div class="prod-label">unidades</div>
+        </div>
+      </div>
+      <div class="prod-item crit">
+        <div class="prod-thumb">💊</div>
+        <div class="prod-info">
+          <div class="prod-name">Frontline Plus Perro Gde.</div>
+          <div class="prod-cat">Medicamentos</div>
+        </div>
+        <div class="prod-right">
+          <div class="prod-stock r">0</div>
+          <div class="prod-label">unidades</div>
+        </div>
+      </div>
+      <div class="prod-item crit">
+        <div class="prod-thumb">🐈</div>
+        <div class="prod-info">
+          <div class="prod-name">Whiskas Adulto Pollo 3kg</div>
+          <div class="prod-cat">Alimentos gatos</div>
+        </div>
+        <div class="prod-right">
+          <div class="prod-stock r">0</div>
+          <div class="prod-label">unidades</div>
+        </div>
+      </div>
+      <div class="prod-item crit">
+        <div class="prod-thumb">🛁</div>
+        <div class="prod-info">
+          <div class="prod-name">Shampoo Hipoalergénico 500ml</div>
+          <div class="prod-cat">Higiene y belleza</div>
+        </div>
+        <div class="prod-right">
+          <div class="prod-stock r">0</div>
+          <div class="prod-label">unidades</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Stock bajo — reponer pronto</div>
+    <div class="product-list">
+      <div class="prod-item">
+        <div class="prod-thumb">🐕</div>
+        <div class="prod-info">
+          <div class="prod-name">Pedigree Adulto 8kg</div>
+          <div class="prod-cat">Alimentos perros</div>
+        </div>
+        <div class="prod-right">
+          <div class="prod-stock o">3</div>
+          <div class="prod-label">unidades</div>
+        </div>
+      </div>
+      <div class="prod-item">
+        <div class="prod-thumb">🧸</div>
+        <div class="prod-info">
+          <div class="prod-name">Kong Classic Mediano</div>
+          <div class="prod-cat">Juguetes</div>
+        </div>
+        <div class="prod-right">
+          <div class="prod-stock o">5</div>
+          <div class="prod-label">unidades</div>
+        </div>
+      </div>
+      <div class="prod-item">
+        <div class="prod-thumb">🐈</div>
+        <div class="prod-info">
+          <div class="prod-name">Pro Plan Sterilised 3kg</div>
+          <div class="prod-cat">Alimentos gatos</div>
+        </div>
+        <div class="prod-right">
+          <div class="prod-stock o">4</div>
+          <div class="prod-label">unidades</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:8px;"></div>
+
+  </div><!-- /screen-stock -->
+
+
+  <!-- ══════════════════════════════════════
+       SCREEN 4 — REPORTES
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-reportes">
+
+    <div class="section-label">Período</div>
+    <div class="report-period">
+      <div class="period-btn">Hoy</div>
+      <div class="period-btn active">7 días</div>
+      <div class="period-btn">30 días</div>
+      <div class="period-btn">Mes</div>
+    </div>
+
+    <div class="section-label">KPIs de la semana</div>
+    <div class="report-kpis">
+      <div class="rk-card">
+        <div class="rk-lbl">VENTAS TOTALES</div>
+        <div class="rk-val">$1.84M</div>
+        <div class="rk-trend up">▲ 8.3% vs sem. ant.</div>
+      </div>
+      <div class="rk-card">
+        <div class="rk-lbl">TRANSACCIONES</div>
+        <div class="rk-val">214</div>
+        <div class="rk-trend up">▲ 12 vs sem. ant.</div>
+      </div>
+      <div class="rk-card">
+        <div class="rk-lbl">TICKET PROMEDIO</div>
+        <div class="rk-val">$8.600</div>
+        <div class="rk-trend down">▼ 2.1%</div>
+      </div>
+      <div class="rk-card">
+        <div class="rk-lbl">PRODUCTOS VENDIDOS</div>
+        <div class="rk-val">438</div>
+        <div class="rk-trend up">▲ 34 unidades</div>
+      </div>
+    </div>
+
+    <div class="section-label">Ventas por día</div>
+    <div class="chart-bar-wrap">
+      <div class="bar-chart" id="bar-chart">
+        <div class="bc-bar" style="height:55%" data-day="L"></div>
+        <div class="bc-bar" style="height:70%" data-day="M"></div>
+        <div class="bc-bar" style="height:45%" data-day="X"></div>
+        <div class="bc-bar" style="height:85%" data-day="J"></div>
+        <div class="bc-bar active-bar" style="height:60%" data-day="V"></div>
+        <div class="bc-bar" style="height:90%" data-day="S"></div>
+        <div class="bc-bar" style="height:35%" data-day="D"></div>
+      </div>
+      <div class="chart-x-labels">
+        <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+      </div>
+    </div>
+
+    <div class="section-label">Productos más vendidos</div>
+    <div class="top-prods-card">
+      <div class="card-title">Top 5 — últimos 7 días</div>
+      <div class="top-prod-item">
+        <div class="tp-rank">1</div>
+        <div class="tp-name">Royal Canin Medium 15kg</div>
+        <div class="tp-bar-wrap"><div class="tp-bar-track"><div class="tp-bar-fill" style="width:100%"></div></div></div>
+        <div class="tp-val">43</div>
+      </div>
+      <div class="top-prod-item">
+        <div class="tp-rank">2</div>
+        <div class="tp-name">Whiskas Adulto Pollo 3kg</div>
+        <div class="tp-bar-wrap"><div class="tp-bar-track"><div class="tp-bar-fill" style="width:75%"></div></div></div>
+        <div class="tp-val">32</div>
+      </div>
+      <div class="top-prod-item">
+        <div class="tp-rank">3</div>
+        <div class="tp-name">Frontline Plus Perro</div>
+        <div class="tp-bar-wrap"><div class="tp-bar-track"><div class="tp-bar-fill" style="width:56%"></div></div></div>
+        <div class="tp-val">24</div>
+      </div>
+      <div class="top-prod-item">
+        <div class="tp-rank">4</div>
+        <div class="tp-name">Pro Plan Sterilised 3kg</div>
+        <div class="tp-bar-wrap"><div class="tp-bar-track"><div class="tp-bar-fill" style="width:44%"></div></div></div>
+        <div class="tp-val">19</div>
+      </div>
+      <div class="top-prod-item">
+        <div class="tp-rank">5</div>
+        <div class="tp-name">Pedigree Adulto 8kg</div>
+        <div class="tp-bar-wrap"><div class="tp-bar-track"><div class="tp-bar-fill" style="width:33%"></div></div></div>
+        <div class="tp-val">14</div>
+      </div>
+    </div>
+
+    <div style="height:8px;"></div>
+
+  </div><!-- /screen-reportes -->
+
+
+  <!-- ══════════════════════════════════════
+       SCREEN 5 — MÁS
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-mas">
+
+    <div class="mas-section-title">Gestión</div>
+    <div class="mas-list">
+      <div class="mas-item">
+        <div class="mas-icon">📦</div>
+        <div class="mas-body">
+          <div class="mas-name">Carga de productos</div>
+          <div class="mas-desc">Importar desde Bsale o subir CSV manual</div>
+        </div>
+        <div class="mas-arrow">›</div>
+      </div>
+      <div class="mas-item">
+        <div class="mas-icon">📤</div>
+        <div class="mas-body">
+          <div class="mas-name">Salidas</div>
+          <div class="mas-desc">Registrar salidas manuales del inventario</div>
+        </div>
+        <span class="mas-badge">3 pendientes</span>
+        <div class="mas-arrow">›</div>
+      </div>
+      <div class="mas-item">
+        <div class="mas-icon">🧾</div>
+        <div class="mas-body">
+          <div class="mas-name">Facturas</div>
+          <div class="mas-desc">Facturación Bsale y documentos tributarios</div>
+        </div>
+        <div class="mas-arrow">›</div>
+      </div>
+      <div class="mas-item">
+        <div class="mas-icon">📋</div>
+        <div class="mas-body">
+          <div class="mas-name">Bulk / Carga masiva</div>
+          <div class="mas-desc">Actualización masiva de stock y precios</div>
+        </div>
+        <div class="mas-arrow">›</div>
+      </div>
+    </div>
+
+    <div class="mas-section-title">Integraciones</div>
+    <div class="mas-list">
+      <div class="mas-item">
+        <div class="mas-icon">🔄</div>
+        <div class="mas-body">
+          <div class="mas-name">Sincronización</div>
+          <div class="mas-desc">Bsale + Jumpseller — última sync hace 2 min</div>
+        </div>
+        <div class="mas-arrow">›</div>
+      </div>
+      <div class="mas-item">
+        <div class="mas-icon">🛒</div>
+        <div class="mas-body">
+          <div class="mas-name">Jumpseller</div>
+          <div class="mas-desc">Estado del ecommerce y pedidos online</div>
+        </div>
+        <div class="mas-arrow">›</div>
+      </div>
+      <div class="mas-item">
+        <div class="mas-icon">📊</div>
+        <div class="mas-body">
+          <div class="mas-name">Bsale</div>
+          <div class="mas-desc">Sistema de punto de venta y facturación</div>
+        </div>
+        <div class="mas-arrow">›</div>
+      </div>
+    </div>
+
+    <div class="mas-section-title">Cuenta</div>
+    <div class="mas-account">
+      <div class="mas-account-av">🐾</div>
+      <div class="mas-account-info">
+        <div class="mas-account-name">InfoPet Renaca</div>
+        <div class="mas-account-role">Administrador · infopetrenaca@gmail.com</div>
+      </div>
+      <div class="logout-btn">Salir</div>
+    </div>
+
+    <div style="height:8px;"></div>
+
+  </div><!-- /screen-mas -->
+
+
+  <!-- ══════════ BOTTOM NAV GLOBAL ══════════ -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <div class="nav-item active" data-screen="home" onclick="switchScreen('home')">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Inicio</div>
+    </div>
+    <div class="nav-item" data-screen="stock" onclick="switchScreen('stock')">
+      <div class="nav-icon">📦</div>
+      <div class="nav-label">Stock</div>
+    </div>
+    <div class="nav-item" data-screen="ia" onclick="switchScreen('ia')">
+      <div class="nav-icon">🐾</div>
+      <div class="nav-label">Tsukai</div>
+    </div>
+    <div class="nav-item" data-screen="reportes" onclick="switchScreen('reportes')">
+      <div class="nav-icon">📈</div>
+      <div class="nav-label">Reportes</div>
+    </div>
+    <div class="nav-item" data-screen="mas" onclick="switchScreen('mas')">
+      <div class="nav-icon">⋯</div>
+      <div class="nav-label">Más</div>
+    </div>
+  </nav>
+
+</div><!-- /app -->
+
+<script>
+/* ── Screen switcher ── */
+function switchScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + name);
+  if (target) { target.classList.add('active'); window.scrollTo(0, 0); }
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.screen === name);
+  });
+}
+
+/* ── Typing indicator resuelve ── */
+setTimeout(() => {
+  const t = document.getElementById('typing-msg');
+  if (!t) return;
+  t.innerHTML = `
+    <div class="msg-av">
+      <svg width="18" height="18" viewBox="0 0 40 40" fill="none">
+        <polygon points="20,3 29,11 25,20 20,15 15,20 11,11" fill="#00e5b0" opacity="0.92"/>
+        <polygon points="20,15 25,20 23,29 17,29 15,20" fill="#00b4d8" opacity="0.88"/>
+      </svg>
+    </div>
+    <div>
+      <div class="bubble">
+        Esta semana ingresaron <strong>23 productos nuevos</strong> desde Bsale.<br>
+        La mayoría en <strong>Alimentos perros</strong> (14 productos) y <strong>Medicamentos</strong> (6 productos).<br>
+        ¿Quieres que los marque como revisados?
+      </div>
+      <div class="msg-t">09:16</div>
+    </div>
+  `;
+}, 2400);
+
+/* ── Chat input ── */
+function addUserMsg(text) {
+  const wrap = document.getElementById('chat-messages');
+  const userDiv = document.createElement('div');
+  userDiv.className = 'msg user';
+  userDiv.innerHTML = `
+    <div class="msg-av">👤</div>
+    <div><div class="bubble">${text}</div><div class="msg-t">ahora</div></div>
+  `;
+  wrap.appendChild(userDiv);
+  const botTyping = document.createElement('div');
+  botTyping.className = 'msg bot';
+  botTyping.innerHTML = `
+    <div class="msg-av">
+      <svg width="18" height="18" viewBox="0 0 40 40" fill="none">
+        <polygon points="20,3 29,11 25,20 20,15 15,20 11,11" fill="#00e5b0" opacity="0.92"/>
+        <polygon points="20,15 25,20 23,29 17,29 15,20" fill="#00b4d8" opacity="0.88"/>
+      </svg>
+    </div>
+    <div><div class="bubble" style="padding:13px 16px;"><div class="typing"><span></span><span></span><span></span></div></div></div>
+  `;
+  wrap.appendChild(botTyping);
+  window.scrollTo(0, document.body.scrollHeight);
+  setTimeout(() => {
+    botTyping.querySelector('.bubble').innerHTML = 'Analizando datos de InfoPet Renaca… Dame un momento 🐾';
+    window.scrollTo(0, document.body.scrollHeight);
+  }, 1600);
+}
+
+function sendChip(text) { addUserMsg(text); }
+
+const inp = document.getElementById('chat-input');
+const snd = document.getElementById('chat-send');
+if (inp && snd) {
+  snd.addEventListener('click', () => { if (inp.value.trim()) { addUserMsg(inp.value.trim()); inp.value = ''; } });
+  inp.addEventListener('keypress', e => { if (e.key === 'Enter' && inp.value.trim()) { addUserMsg(inp.value.trim()); inp.value = ''; } });
+}
+
+/* ── Filter chips ── */
+function setFilter(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ── Period buttons ── */
+document.querySelectorAll('.period-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>

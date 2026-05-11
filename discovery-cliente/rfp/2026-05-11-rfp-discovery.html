@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>RFP · Discovery Cliente</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.6;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:20px}.crumb a{color:#7dd3fc;text-decoration:none}
+.badge{display:inline-block;font-size:10px;padding:4px 10px;background:rgba(0,229,176,.12);border:1px solid rgba(0,229,176,.3);border-radius:30px;color:#00e5b0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px}
+.lead{font-size:15px;color:#cbd5e1;margin-bottom:24px}
+h2{font-size:20px;font-weight:700;color:#f1f5f9;margin:36px 0 14px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px;display:flex;align-items:center;gap:10px}
+h2 .num{font-size:11px;color:#00e5b0;font-family:'JetBrains Mono',monospace;background:rgba(0,229,176,.08);padding:3px 8px;border-radius:4px}
+p{color:#cbd5e1;margin-bottom:12px;font-size:14px}
+.section{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;margin-bottom:14px}
+.callout{background:linear-gradient(135deg,rgba(0,229,176,.06),rgba(0,180,216,.06));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin:14px 0;font-size:13.5px}.callout b{color:#00e5b0}
+ul{padding-left:0;list-style:none}ul li{padding:6px 0 6px 24px;position:relative;color:#cbd5e1;font-size:13.5px}ul li::before{content:"›";position:absolute;left:8px;color:#00e5b0;font-weight:700}
+table{width:100%;border-collapse:collapse;margin:14px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:12.5px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;padding:9px 12px;text-align:left;font-size:11px;text-transform:uppercase}
+td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1}
+.meta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:24px}
+.meta-card{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px}
+.meta-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.meta-val{font-size:13px;color:#f1f5f9;font-weight:700}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../index.html">← Discovery</a> / Docs / RFP</div>
+<span class="badge">RFP · proceso transversal · 3 fases</span>
+<h1>📋 RFP · Discovery Cliente · transcript → propuesta</h1>
+<p class="lead">Proceso transversal SMC · cada reunión con prospecto genera transcript → análisis SPIN/BANT → infografía + reporte + propuesta cotizable · 3 fases (manual → script → app)</p>
+<div class="meta-row">
+<div class="meta-card"><div class="meta-lbl">Cliente</div><div class="meta-val">Equipo Business-Dev SMC</div></div>
+<div class="meta-card"><div class="meta-lbl">Modelo</div><div class="meta-val">Proceso interno · habilitador comercial</div></div>
+<div class="meta-card"><div class="meta-lbl">Estado</div><div class="meta-val">Fase 1-2 · manual + script</div></div>
+<div class="meta-card"><div class="meta-lbl">Owner</div><div class="meta-val">💰 Business-Dev + 🐾 Hoku</div></div>
+</div>
+
+<h2><span class="num">01</span>🎯 Contexto</h2>
+<div class="section">
+<p>Business-Dev SMC tiene reuniones con prospectos semanales · cada una genera transcript grabado (Otter · Zoom) que después queda en limbo. Análisis SPIN/BANT manual toma 45-60 min · propuesta cotizable otros 30-45 min. Total 90-120 min por prospecto. Si Business-Dev tiene 10 reuniones/semana · son 15-20 horas en post-procesamiento.</p>
+<div class="callout"><b>💡 Insight:</b> El transcript no es el problema · es el análisis estructurado SPIN/BANT y la propuesta. Con Claude API + plantillas + Discovery app · reducimos a 5 min con calidad superior.</div>
+</div>
+
+<h2><span class="num">02</span>🔥 Problema</h2>
+<div class="section">
+<ul>
+<li>Transcripts quedan en limbo · sin análisis SPIN/BANT</li>
+<li>Business-Dev gasta 90-120 min/prospecto en post-procesamiento</li>
+<li>Calidad inconsistente entre análisis (depende del operario)</li>
+<li>Propuestas tardan días en llegar al prospecto · pierde momentum</li>
+<li>Sin trazabilidad histórica de qué se cerró · qué se perdió · por qué</li>
+</ul>
+</div>
+
+<h2><span class="num">03</span>💡 Hipótesis</h2>
+<div class="section">
+<div class="callout"><b>Hipótesis:</b> Pipeline transcript → SPIN/BANT → infografía + reporte + propuesta automatizado en 3 fases (manual con plantillas → script bash → app web self-service) reduce post-procesamiento de 90 min a 5 min · libera 15-20 horas/semana de Business-Dev.</div>
+</div>
+
+<h2><span class="num">04</span>🛠️ Solución · 3 fases</h2>
+<div class="section">
+<h3>Fase 1 · Manual con plantillas (✅ ACTIVO)</h3>
+<ul>
+<li>Plantillas HTML editables para infografía · reporte · propuesta</li>
+<li>Business-Dev copia transcript · pega · análisis SPIN/BANT manual con guía</li>
+<li>Tiempo: ~30 min por discovery</li>
+</ul>
+<h3>Fase 2 · Script bash + Claude (🔄 WIP)</h3>
+<ul>
+<li>Script lee transcript .txt · llama Claude API con prompt SPIN/BANT versionado</li>
+<li>Genera HTMLs automáticos (infografía + reporte + propuesta)</li>
+<li>Tiempo: ~5 min por discovery</li>
+</ul>
+<h3>Fase 3 · App web self-service (⏳ FUTURO)</h3>
+<ul>
+<li>Cliente sube transcript desde intranet.smconnection.cl</li>
+<li>Sistema genera todo · cliente descarga PDF · email automático</li>
+<li>Tiempo: ~1 min cliente · cero operario SMC</li>
+</ul>
+
+<h3>Frameworks aplicados</h3>
+<table>
+<thead><tr><th>Framework</th><th>Uso</th></tr></thead>
+<tbody>
+<tr><td>SPIN Selling</td><td>Situación · Problema · Implicación · Necesidad-beneficio</td></tr>
+<tr><td>BANT</td><td>Budget · Authority · Need · Timeline (calificación deal)</td></tr>
+<tr><td>4 modelos SMC</td><td>Discovery Sprint · SaaS Start · Build Premium · Project+Care</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">05</span>📊 KPIs</h2>
+<div class="section">
+<table>
+<thead><tr><th>Métrica</th><th>Fase 1</th><th>Fase 2</th><th>Fase 3</th></tr></thead>
+<tbody>
+<tr><td>Tiempo por discovery</td><td>30 min</td><td>5 min</td><td>1 min (cliente self-service)</td></tr>
+<tr><td>Calidad análisis (subj.)</td><td>Media</td><td>Alta</td><td>Alta</td></tr>
+<tr><td>Trazabilidad histórica</td><td>Baja</td><td>Media (script logs)</td><td>Alta (DB Supabase)</td></tr>
+<tr><td>Costo Business-Dev/semana</td><td>5h</td><td>50 min</td><td>0 min</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">06</span>🛣️ Roadmap</h2>
+<div class="section">
+<h3>Fase 1 · Plantillas (✅ ACTIVO desde 2026-04-15)</h3>
+<ul><li>9 maquetas iteradas · Discovery v2 · v3 · motor · public · self-service</li></ul>
+<h3>Fase 2 · Script (🔄 WIP)</h3>
+<ul><li>Diseño prompt versionado · Hoku implementa</li></ul>
+<h3>Fase 3 · App web</h3>
+<ul><li>Integración intranet.smconnection.cl</li><li>Upload transcript · generación automática · PDF + email</li></ul>
+</div>
+
+<footer>📋 RFP Discovery Cliente · v1 · 2026-05-11 · banco SMC<br>
+<a href="../index.html" style="color:#7dd3fc;text-decoration:none">← volver al banco Discovery</a></footer>
+</div></body></html>

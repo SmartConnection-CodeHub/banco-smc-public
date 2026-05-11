@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discovery — Smart Connection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060912;
+  --surface: #0a0d14;
+  --elevated: #0f1520;
+  --glass: rgba(15,22,35,0.85);
+  --glass-light: rgba(15,22,35,0.6);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.15);
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --muted: #475569;
+  --accent: #00b4d8;
+  --accent-dark: #0090b0;
+  --accent-glow: rgba(0,180,216,0.12);
+  --accent-strong: rgba(0,180,216,0.25);
+  --gold: #f97316;
+  --font: 'Inter', system-ui, sans-serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.4;
+}
+
+/* Cursor Glow */
+#cursor-glow {
+  position: fixed; left: 0; top: 0;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,180,216,0.06) 0%, transparent 70%);
+  pointer-events: none; will-change: transform; z-index: 0;
+  transition: opacity 0.3s;
+}
+
+/* Particle Canvas */
+#hero-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  background: rgba(6,9,18,0.85);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-left { display: flex; align-items: center; gap: 12px; }
+.nav-logo {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), #0077b6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff;
+}
+.nav-brand { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+.nav-sep { color: var(--muted); font-weight: 300; }
+.nav-product { font-size: 13px; font-weight: 500; color: var(--text2); }
+.nav-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: var(--radius-pill);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+  border: 1px solid rgba(0,180,216,0.3); color: var(--accent);
+  background: rgba(0,180,216,0.08);
+}
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+/* ─── MAIN ─── */
+main {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  padding-top: 56px;
+  display: flex; flex-direction: column;
+  align-items: center;
+}
+
+/* ─── HERO ─── */
+.hero {
+  text-align: center;
+  padding: 80px 24px 40px;
+  max-width: 640px;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.hero h1 strong { font-weight: 700; }
+.hero h1 .gradient {
+  background: linear-gradient(135deg, var(--accent), #4a9eff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  font-size: 16px; color: var(--text2);
+  line-height: 1.7; max-width: 440px; margin: 0 auto;
+}
+
+/* ─── PROGRESS BAR ─── */
+.progress-wrap {
+  display: flex; align-items: center; gap: 8px;
+  padding: 16px 24px;
+  max-width: 560px; width: 100%;
+  margin-bottom: 8px;
+}
+.progress-step {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.progress-bar {
+  width: 100%; height: 3px; border-radius: 2px;
+  background: rgba(255,255,255,0.06);
+  overflow: hidden; position: relative;
+}
+.progress-bar .fill {
+  height: 100%; border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.progress-step.active .fill { width: 100%; animation: pillGlow 2s ease-in-out infinite; }
+.progress-step.done .fill { width: 100%; background: var(--accent); }
+.progress-step.pending .fill { width: 0; }
+@keyframes pillGlow {
+  0%,100% { box-shadow: 0 0 8px rgba(0,180,216,0.4); }
+  50% { box-shadow: 0 0 20px rgba(0,180,216,0.7); }
+}
+.progress-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--muted);
+  transition: color 0.3s;
+}
+.progress-step.active .progress-label { color: var(--accent); }
+.progress-step.done .progress-label { color: var(--text2); }
+
+/* ─── CHAT CONTAINER ─── */
+.chat-container {
+  width: 100%; max-width: 640px;
+  padding: 0 24px;
+  flex: 1;
+  display: flex; flex-direction: column;
+  margin-bottom: 120px;
+}
+
+.chat-card {
+  background: var(--glass);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+/* Messages */
+.messages {
+  display: flex; flex-direction: column; gap: 16px;
+  max-height: 360px; overflow-y: auto;
+  padding-right: 4px; margin-bottom: 20px;
+}
+.messages::-webkit-scrollbar { width: 3px; }
+.messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.msg {
+  display: flex; align-items: flex-start; gap: 12px;
+  animation: msgIn 0.4s cubic-bezier(0.4,0,0.2,1) both;
+}
+.msg.user { flex-direction: row-reverse; }
+@keyframes msgIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+.msg-avatar {
+  width: 32px; height: 32px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.msg-avatar.ai {
+  background: linear-gradient(135deg, var(--accent), #0077b6);
+  color: #fff; font-weight: 700; font-size: 11px;
+}
+.msg-avatar.usr {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+}
+
+.bubble {
+  padding: 14px 18px;
+  border-radius: 16px 16px 16px 6px;
+  font-size: 14px; line-height: 1.65;
+  color: var(--text);
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  max-width: 80%;
+}
+.msg.user .bubble {
+  background: rgba(0,180,216,0.12);
+  border-color: rgba(0,180,216,0.2);
+  border-radius: 16px 16px 6px 16px;
+  color: var(--text);
+}
+
+.bubble.typing {
+  display: flex; align-items: center; gap: 5px; padding: 16px 20px;
+}
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text2);
+  animation: bounce 1.2s ease infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+
+/* Quick chips */
+.quick-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 10px;
+}
+.quick-chip {
+  padding: 6px 14px; border-radius: var(--radius-pill);
+  border: 1px solid rgba(0,180,216,0.25);
+  background: rgba(0,180,216,0.06);
+  color: var(--accent); font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.quick-chip:hover {
+  background: rgba(0,180,216,0.15);
+  border-color: rgba(0,180,216,0.5);
+  transform: translateY(-1px);
+}
+
+/* ─── INPUT AREA ─── */
+.input-area {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.pill-input {
+  display: flex; align-items: center; gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 10px 12px 10px 20px;
+  background: var(--elevated);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.pill-input:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,180,216,0.12);
+}
+.pill-input input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-size: 14px; color: var(--text); font-family: var(--font);
+  letter-spacing: -0.01em;
+}
+.pill-input input::placeholder { color: var(--muted); }
+
+.btn-attach {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.btn-attach:hover {
+  background: rgba(0,180,216,0.1); border-color: rgba(0,180,216,0.3);
+}
+.btn-attach svg { width: 16px; height: 16px; stroke: var(--text2); fill: none; }
+
+.btn-send {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.btn-send:hover { background: #00cce6; transform: scale(1.05); box-shadow: 0 0 16px rgba(0,180,216,0.4); }
+.btn-send svg { width: 16px; height: 16px; fill: #000; }
+
+/* Attached files */
+.attached-files {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.file-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  font-size: 12px; color: var(--text2);
+  transition: all 0.2s;
+}
+.file-chip:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.file-chip .file-icon { font-size: 14px; }
+.file-chip .file-remove {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 10px; color: var(--muted);
+  transition: all 0.15s;
+}
+.file-chip .file-remove:hover { background: rgba(239,68,68,0.2); color: #ef4444; }
+
+/* ─── TRUST FOOTER ─── */
+.trust-footer {
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  padding: 20px 24px;
+  max-width: 640px; width: 100%;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--muted); font-weight: 500;
+}
+.trust-item span { font-size: 13px; }
+
+/* ─── BOTTOM BANNER ─── */
+.bottom-banner {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(6,9,18,0.92);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  z-index: 100;
+}
+.bottom-banner a {
+  color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 500;
+  transition: color 0.2s;
+}
+.bottom-banner a:hover { color: #00cce6; }
+.bottom-banner .sep { color: var(--muted); font-size: 11px; }
+.bottom-banner .powered {
+  font-size: 12px; color: var(--muted); font-weight: 400;
+}
+
+/* ─── COMPLETION STATE ─── */
+.completion-card {
+  text-align: center; padding: 40px 32px;
+  display: none;
+}
+.completion-card.show { display: block; animation: msgIn 0.5s ease both; }
+.completion-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #0077b6);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px; font-size: 28px;
+  box-shadow: 0 0 40px rgba(0,180,216,0.3);
+}
+.completion-card h2 {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.completion-card p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 24px; }
+.btn-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--accent), #0077b6);
+  background-size: 200% auto;
+  animation: gradShift 3s ease infinite;
+  color: #fff; font-size: 14px; font-weight: 600;
+  border: none; cursor: pointer; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,180,216,0.35);
+}
+@keyframes gradShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+/* ─── REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 700ms cubic-bezier(0.4,0,0.2,1), transform 700ms cubic-bezier(0.4,0,0.2,1); }
+.reveal.in-view { opacity: 1; transform: none; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .hero { padding: 60px 20px 32px; }
+  .hero h1 { font-size: 2rem; }
+  .chat-card { padding: 16px; border-radius: var(--radius); }
+  .messages { max-height: 280px; }
+  .progress-wrap { padding: 12px 16px; gap: 6px; }
+  .progress-label { font-size: 9px; }
+  .trust-footer { gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .bottom-banner { padding: 12px 16px; }
+  nav { padding: 0 16px; }
+}
+
+@media (max-width: 375px) {
+  .hero h1 { font-size: 1.75rem; }
+  .hero p { font-size: 14px; }
+  .quick-chips { gap: 6px; }
+  .quick-chip { font-size: 11px; padding: 5px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor Glow -->
+<div id="cursor-glow"></div>
+
+<!-- Particle Canvas -->
+<canvas id="hero-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo">SC</div>
+    <span class="nav-brand">Smart Connection</span>
+    <span class="nav-sep">/</span>
+    <span class="nav-product">Discovery</span>
+  </div>
+  <div class="nav-badge">
+    <span class="nav-dot"></span>
+    Activo
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- HERO -->
+  <section class="hero reveal">
+    <h1>
+      Cuéntanos tu <strong class="gradient">proyecto.</strong>
+    </h1>
+    <p>Discovery analiza lo que necesitas, extrae los puntos clave y genera tu diagnóstico — sin reuniones, a tu ritmo.</p>
+  </section>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap reveal">
+    <div class="progress-step active" id="step-1">
+      <div class="progress-bar"><div class="fill" style="width:50%"></div></div>
+      <span class="progress-label">Contexto</span>
+    </div>
+    <div class="progress-step pending" id="step-2">
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span class="progress-label">Problema</span>
+    </div>
+    <div class="progress-step pending" id="step-3">
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span class="progress-label">Alcance</span>
+    </div>
+    <div class="progress-step pending" id="step-4">
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span class="progress-label">Diagnóstico</span>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-container reveal">
+    <div class="chat-card">
+
+      <!-- Messages -->
+      <div class="messages" id="messages">
+        <div class="msg">
+          <div class="msg-avatar ai">D</div>
+          <div>
+            <div class="bubble">
+              Hola 👋 Soy Discovery. Cuéntame en qué industria o rubro está tu empresa y qué problema te gustaría resolver.
+            </div>
+            <div class="quick-chips">
+              <span class="quick-chip" onclick="sendQuick(this)">Retail / E-commerce</span>
+              <span class="quick-chip" onclick="sendQuick(this)">Servicios profesionales</span>
+              <span class="quick-chip" onclick="sendQuick(this)">Logística / Distribución</span>
+              <span class="quick-chip" onclick="sendQuick(this)">Otro rubro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="input-area">
+        <div class="attached-files" id="attachedFiles"></div>
+        <div class="pill-input">
+          <input type="text" id="chatInput" placeholder="Escribe tu respuesta..." autocomplete="off" onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="btn-attach" onclick="attachFile()" title="Adjuntar archivo">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+            </svg>
+          </button>
+          <button class="btn-send" onclick="sendMsg()">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Completion (hidden) -->
+      <div class="completion-card" id="completionCard">
+        <div class="completion-icon">✓</div>
+        <h2>Diagnóstico generado</h2>
+        <p>Analizamos tu información con SPIN + BANT. Tu diagnóstico ejecutivo y propuesta están listos.</p>
+        <a href="#" class="btn-cta">Ver mi diagnóstico →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Trust -->
+  <div class="trust-footer reveal">
+    <div class="trust-item"><span>🔒</span> Encriptado</div>
+    <div class="trust-item"><span>⚡</span> Respuesta inmediata</div>
+    <div class="trust-item"><span>📎</span> Adjunta archivos</div>
+    <div class="trust-item"><span>🇨🇱</span> 100% chileno</div>
+  </div>
+
+</main>
+
+<!-- Bottom Banner — Smart Connection -->
+<div class="bottom-banner">
+  <span class="powered">Powered by</span>
+  <a href="https://smconnection.cl" target="_blank">Smart Connection</a>
+  <span class="sep">·</span>
+  <a href="https://smconnection.cl/#precios" target="_blank">Ver planes</a>
+</div>
+
+<!-- Hidden file input -->
+<input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.csv,.txt" style="display:none" onchange="handleFiles(this.files)">
+
+<script>
+// ─── PARTICLES ───
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const PARTICLE_COUNT = 40;
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.opacity = Math.random() * 0.4 + 0.1;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,180,216,${this.opacity})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  // Draw connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0,180,216,${0.06 * (1 - dist/120)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ─── CURSOR GLOW ───
+const glow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => {
+  glow.style.transform = `translate(${e.clientX - 250}px, ${e.clientY - 250}px)`;
+});
+
+// ─── SCROLL REVEAL ───
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ─── CHAT LOGIC ───
+const messagesEl = document.getElementById('messages');
+const chatInput = document.getElementById('chatInput');
+const attachedFilesEl = document.getElementById('attachedFiles');
+let attachedFiles = [];
+let currentStep = 1;
+
+const discoveryFlow = [
+  { q: "¿Cuál es el principal dolor o problema que quieres resolver? Sé específico — mientras más detalles, mejor será el diagnóstico.", chips: ["Procesos manuales que toman horas", "Sistemas que no se conectan", "No tengo visibilidad de mis datos", "Quiero automatizar con IA"] },
+  { q: "¿Cuántas personas en tu equipo se ven afectadas por este problema? ¿Y hace cuánto tiempo lo tienen?", chips: ["2-5 personas, más de 6 meses", "Todo el equipo, hace años", "Solo yo, pero me consume tiempo", "Es nuevo, quiero prevenirlo"] },
+  { q: "Último paso: ¿tienes un presupuesto estimado y un plazo ideal para resolverlo? Si adjuntaste archivos, ya los tengo en cuenta.", chips: ["15-40 UF, 2 semanas", "80-200 UF, 1-2 meses", "No tengo claro el presupuesto", "Necesito propuesta primero"] },
+];
+let flowIndex = 0;
+
+function addMessage(text, isUser = false) {
+  const div = document.createElement('div');
+  div.className = `msg ${isUser ? 'user' : ''}`;
+  div.innerHTML = isUser
+    ? `<div class="msg-avatar usr">👤</div><div><div class="bubble">${text}</div></div>`
+    : `<div class="msg-avatar ai">D</div><div><div class="bubble">${text}</div></div>`;
+  div.style.animationDelay = '0.1s';
+  messagesEl.appendChild(div);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg'; div.id = 'typing';
+  div.innerHTML = `<div class="msg-avatar ai">D</div><div><div class="bubble typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  messagesEl.appendChild(div);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function removeTyping() { const t = document.getElementById('typing'); if(t) t.remove(); }
+
+function addChips(chips) {
+  const wrap = document.createElement('div');
+  wrap.className = 'quick-chips';
+  wrap.style.marginTop = '10px';
+  chips.forEach(c => {
+    const span = document.createElement('span');
+    span.className = 'quick-chip';
+    span.textContent = c;
+    span.onclick = () => sendQuick(span);
+    wrap.appendChild(span);
+  });
+  const lastMsg = messagesEl.lastElementChild;
+  if (lastMsg) lastMsg.querySelector('div:last-child').appendChild(wrap);
+}
+
+function advanceStep() {
+  currentStep++;
+  for (let i = 1; i <= 4; i++) {
+    const step = document.getElementById(`step-${i}`);
+    if (i < currentStep) { step.className = 'progress-step done'; step.querySelector('.fill').style.width = '100%'; }
+    else if (i === currentStep) { step.className = 'progress-step active'; step.querySelector('.fill').style.width = '50%'; }
+    else { step.className = 'progress-step pending'; step.querySelector('.fill').style.width = '0'; }
+  }
+}
+
+function showCompletion() {
+  document.querySelector('.messages').style.display = 'none';
+  document.querySelector('.input-area').style.display = 'none';
+  document.getElementById('completionCard').classList.add('show');
+  // All steps done
+  for (let i = 1; i <= 4; i++) {
+    const step = document.getElementById(`step-${i}`);
+    step.className = 'progress-step done';
+    step.querySelector('.fill').style.width = '100%';
+  }
+}
+
+function sendMsg() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  chatInput.value = '';
+  // Add file info if attached
+  let fullText = text;
+  if (attachedFiles.length > 0) {
+    fullText += ` <span style="opacity:0.5; font-size:12px;">[+${attachedFiles.length} archivo${attachedFiles.length>1?'s':''}]</span>`;
+    attachedFiles = [];
+    attachedFilesEl.innerHTML = '';
+  }
+  addMessage(fullText, true);
+  processResponse();
+}
+
+function sendQuick(el) {
+  const text = el.textContent;
+  // Remove all chips
+  document.querySelectorAll('.quick-chips').forEach(c => c.remove());
+  addMessage(text, true);
+  processResponse();
+}
+
+function processResponse() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    if (flowIndex < discoveryFlow.length) {
+      const step = discoveryFlow[flowIndex];
+      addMessage(step.q);
+      addChips(step.chips);
+      advanceStep();
+      flowIndex++;
+    } else {
+      advanceStep();
+      setTimeout(() => showCompletion(), 600);
+    }
+  }, 1200 + Math.random() * 800);
+}
+
+// ─── FILE ATTACH ───
+function attachFile() { document.getElementById('fileInput').click(); }
+
+function handleFiles(files) {
+  Array.from(files).forEach(f => {
+    if (attachedFiles.length >= 5) return;
+    attachedFiles.push(f);
+    renderFiles();
+  });
+}
+
+function renderFiles() {
+  attachedFilesEl.innerHTML = '';
+  attachedFiles.forEach((f, i) => {
+    const ext = f.name.split('.').pop().toUpperCase();
+    const icons = { PDF: '📄', DOC: '📝', DOCX: '📝', XLS: '📊', XLSX: '📊', PNG: '🖼️', JPG: '🖼️', JPEG: '🖼️', CSV: '📊', TXT: '📄' };
+    const icon = icons[ext] || '📎';
+    const size = f.size < 1024*1024 ? `${(f.size/1024).toFixed(0)}KB` : `${(f.size/(1024*1024)).toFixed(1)}MB`;
+    const chip = document.createElement('div');
+    chip.className = 'file-chip';
+    chip.innerHTML = `<span class="file-icon">${icon}</span><span>${f.name.length > 20 ? f.name.substring(0,18)+'...' : f.name}</span><span style="color:var(--muted)">${size}</span><span class="file-remove" onclick="removeFile(${i})">✕</span>`;
+    attachedFilesEl.appendChild(chip);
+  });
+}
+
+function removeFile(i) {
+  attachedFiles.splice(i, 1);
+  renderFiles();
+}
+
+function setMsg(text) { chatInput.value = text; chatInput.focus(); }
+</script>
+</body>
+</html>

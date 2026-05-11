@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOY v2 — Maqueta de Pantallas</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 40px 20px; }
+
+  h1 { text-align: center; font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+  .subtitle { text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 48px; }
+
+  .section { margin-bottom: 60px; }
+  .section-title { font-size: 18px; font-weight: 700; color: #60a5fa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .section-desc { color: #64748b; font-size: 13px; margin-bottom: 24px; }
+
+  .phones { display: flex; gap: 24px; overflow-x: auto; padding-bottom: 16px; scroll-snap-type: x mandatory; }
+  .phone { min-width: 375px; max-width: 375px; scroll-snap-align: start; background: #fff; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 4px solid #334155; }
+  .phone-label { text-align: center; color: #94a3b8; font-size: 11px; margin-top: 8px; font-weight: 600; }
+
+  /* Header */
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #fff; border-bottom: 1px solid #e2e8f0; }
+  .header .logo { font-size: 20px; font-weight: 900; color: #0f172a; }
+  .header .user { display: flex; align-items: center; gap: 8px; }
+  .header .user span { font-size: 12px; color: #64748b; }
+  .header .bell { width: 20px; height: 20px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+  /* Bottom nav */
+  .bottom-nav { display: flex; background: #fff; border-top: 1px solid #e2e8f0; padding: 8px 0 20px; }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; color: #94a3b8; }
+  .nav-item.active { color: #2563eb; }
+  .nav-icon { font-size: 18px; }
+
+  /* Content area */
+  .content { padding: 16px; background: #f8fafc; min-height: 600px; }
+
+  /* Cards */
+  .card { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 12px; }
+  .card-green { background: #059669; color: white; border: none; }
+  .card-blue { background: #2563eb; color: white; border: none; }
+  .card-red { background: #dc2626; color: white; border: none; }
+  .card-dark { background: #0f172a; color: white; border: none; }
+
+  .stat-label { font-size: 10px; opacity: 0.7; }
+  .stat-value { font-size: 22px; font-weight: 700; }
+  .stat-small { font-size: 16px; font-weight: 700; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+
+  .page-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 16px; }
+
+  .badge { font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 99px; display: inline-block; }
+  .badge-green { background: #dcfce7; color: #15803d; }
+  .badge-blue { background: #dbeafe; color: #1d4ed8; }
+  .badge-red { background: #fee2e2; color: #dc2626; }
+  .badge-amber { background: #fef3c7; color: #b45309; }
+  .badge-purple { background: #f3e8ff; color: #7c3aed; }
+
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #64748b; flex-shrink: 0; }
+  .avatar-sm { width: 32px; height: 32px; font-size: 12px; }
+  .avatar-green { background: #dcfce7; color: #15803d; }
+
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .flex-1 { flex: 1; }
+  .text-xs { font-size: 11px; }
+  .text-sm { font-size: 13px; }
+  .text-slate { color: #64748b; }
+  .text-dark { color: #0f172a; }
+  .font-bold { font-weight: 700; }
+  .font-medium { font-weight: 500; }
+  .mt-1 { margin-top: 4px; }
+  .mt-2 { margin-top: 8px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .btn { display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; border: none; cursor: pointer; gap: 6px; }
+  .btn-blue { background: #2563eb; color: white; }
+  .btn-green { background: #059669; color: white; }
+  .btn-red { background: #dc2626; color: white; }
+  .btn-outline { background: white; color: #0f172a; border: 1px solid #e2e8f0; }
+
+  .input { width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 13px; background: white; }
+
+  .progress-bar { height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; border-radius: 99px; }
+  .progress-green { background: #059669; }
+  .progress-blue { background: #2563eb; }
+
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 500; }
+  .chip-active { background: #2563eb; color: white; }
+  .chip-inactive { background: white; border: 1px solid #e2e8f0; color: #64748b; }
+
+  .separator { height: 1px; background: #f1f5f9; margin: 12px 0; }
+
+  .toggle { width: 44px; height: 24px; border-radius: 99px; position: relative; }
+  .toggle-on { background: #059669; }
+  .toggle-off { background: #e2e8f0; }
+  .toggle-dot { width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; }
+  .toggle-on .toggle-dot { right: 2px; }
+  .toggle-off .toggle-dot { left: 2px; }
+
+  /* Chart */
+  .chart { display: flex; align-items: flex-end; gap: 6px; height: 100px; }
+  .chart-bar { flex: 1; border-radius: 6px; min-height: 4px; }
+  .chart-bar-active { background: #059669; }
+  .chart-bar-inactive { background: #e2e8f0; }
+  .chart-label { text-align: center; font-size: 8px; color: #94a3b8; margin-top: 4px; }
+
+  /* Worker card */
+  .worker-card { background: white; border-radius: 16px; padding: 14px; border: 1px solid #e2e8f0; margin-bottom: 10px; }
+
+  /* Map placeholder */
+  .map { background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 50%, #cffafe 100%); border-radius: 16px; height: 200px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; margin-bottom: 12px; }
+  .map-pin { width: 24px; height: 24px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); position: absolute; }
+  .map-pin-1 { background: #2563eb; top: 40px; left: 80px; }
+  .map-pin-2 { background: #059669; top: 90px; left: 200px; }
+  .map-pin-3 { background: #f59e0b; top: 60px; left: 280px; }
+  .map-pin-4 { background: #8b5cf6; top: 130px; left: 140px; }
+  .map-label { color: #3b82f6; font-size: 11px; font-weight: 600; z-index: 1; }
+
+  /* Timeline */
+  .timeline { display: flex; gap: 0; margin-bottom: 12px; }
+  .timeline-step { flex: 1; text-align: center; }
+  .timeline-dot { width: 28px; height: 28px; border-radius: 50%; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .timeline-dot-done { background: #dcfce7; color: #15803d; }
+  .timeline-dot-pending { background: #f1f5f9; color: #94a3b8; }
+  .timeline-label { font-size: 8px; color: #94a3b8; }
+  .timeline-label-done { color: #15803d; font-weight: 600; }
+
+  /* Star rating */
+  .stars { display: flex; gap: 2px; }
+  .star { font-size: 16px; }
+  .star-filled { color: #f59e0b; }
+  .star-empty { color: #e2e8f0; }
+
+  /* Upload area */
+  .upload-area { border: 2px dashed #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; color: #94a3b8; font-size: 12px; }
+
+  /* Urgent */
+  .urgent-card { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 16px; padding: 14px; margin-bottom: 10px; }
+
+  /* Chat */
+  .chat-bubble { max-width: 70%; padding: 10px 14px; border-radius: 16px; font-size: 13px; margin-bottom: 6px; }
+  .chat-mine { background: #2563eb; color: white; border-bottom-right-radius: 4px; margin-left: auto; }
+  .chat-other { background: white; color: #0f172a; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; }
+  .chat-time { font-size: 9px; opacity: 0.6; margin-top: 2px; }
+  .chat-image { width: 180px; height: 120px; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border-radius: 12px; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+
+  /* Drawer */
+  .drawer { position: relative; background: white; border-radius: 16px; overflow: hidden; box-shadow: -4px 0 20px rgba(0,0,0,0.1); }
+
+  /* Scroll hint */
+  .scroll-hint { text-align: center; color: #475569; font-size: 12px; margin-top: 4px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<h1>VOY v2</h1>
+<p class="subtitle">Marketplace de servicios para el hogar — Quinta Región, Chile</p>
+
+<!-- ==================== LANDING ==================== -->
+<div class="section">
+  <div class="section-title">Landing Page</div>
+  <div class="section-desc">Página principal para usuarios no autenticados</div>
+  <div class="phones">
+    <div>
+      <div class="phone">
+        <div style="padding: 48px 20px; background: linear-gradient(135deg, #0f172a, #1e293b); text-align: center;">
+          <div style="font-size: 48px; font-weight: 900; color: white; margin-bottom: 8px;">VOY</div>
+          <p style="color: #94a3b8; font-size: 14px; margin-bottom: 24px;">Profesionales de confianza<br>para tu hogar</p>
+          <button class="btn btn-blue" style="max-width: 260px; margin: 0 auto 12px;">Buscar profesional</button>
+          <button class="btn btn-outline" style="max-width: 260px; margin: 0 auto;">Soy profesional</button>
+
+          <div class="grid-4" style="margin-top: 32px;">
+            <div style="text-align: center;"><div style="font-size: 22px; font-weight: 800; color: white;">548+</div><div style="font-size: 9px; color: #64748b;">Profesionales</div></div>
+            <div style="text-align: center;"><div style="font-size: 22px; font-weight: 800; color: white;">3.2K</div><div style="font-size: 9px; color: #64748b;">Clientes</div></div>
+            <div style="text-align: center;"><div style="font-size: 22px; font-weight: 800; color: white;">4.8</div><div style="font-size: 9px; color: #64748b;">Rating</div></div>
+            <div style="text-align: center;"><div style="font-size: 22px; font-weight: 800; color: white;">12</div><div style="font-size: 9px; color: #64748b;">Categorías</div></div>
+          </div>
+        </div>
+
+        <div class="content">
+          <p class="text-sm text-slate mb-3" style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Categorías</p>
+          <div class="grid-4">
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🔧</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Gasfitería</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">⚡</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Electricidad</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🏠</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Limpieza</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🎨</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Pintura</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🔒</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Cerrajería</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">❄️</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Clima</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🌳</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Jardín</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🚛</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Mudanzas</div></div>
+          </div>
+
+          <div class="card" style="background: #f0fdf4; border-color: #bbf7d0; text-align: center; margin-top: 16px;">
+            <div style="font-size: 28px; margin-bottom: 8px;">🔐</div>
+            <div style="font-size: 14px; font-weight: 700; color: #166534;">Pago seguro con escrow</div>
+            <div style="font-size: 11px; color: #15803d; margin-top: 4px;">Tu dinero está protegido hasta que confirmes el trabajo</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Landing</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CLIENTE ==================== -->
+<div class="section">
+  <div class="section-title">App del Cliente</div>
+  <div class="section-desc">Dashboard, explorar, solicitudes, bookings, chat, reclamos</div>
+  <p class="scroll-hint">← Desliza para ver más →</p>
+  <div class="phones">
+
+    <!-- Dashboard Cliente -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>Sergio G.</span><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Hola, Sergio 👋</div>
+
+          <div style="margin-bottom: 16px;">
+            <div class="input" style="padding-left: 36px; position: relative; color: #94a3b8;">🔍 ¿Qué servicio necesitas?</div>
+          </div>
+
+          <p class="text-xs text-slate font-bold mb-2" style="text-transform: uppercase; letter-spacing: 0.5px;">Categorías</p>
+          <div style="display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px;">
+            <div class="chip chip-active">🔧 Gasfitería</div>
+            <div class="chip chip-inactive">⚡ Electricidad</div>
+            <div class="chip chip-inactive">🏠 Limpieza</div>
+            <div class="chip chip-inactive">🎨 Pintura</div>
+          </div>
+
+          <div class="card" style="border-left: 3px solid #2563eb;">
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm" style="background: #dbeafe; color: #2563eb;">JR</div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-dark">Reparación llave cocina</div>
+                <div class="text-xs text-slate">Juan Rodríguez · En camino</div>
+              </div>
+              <span class="badge badge-blue">En curso</span>
+            </div>
+          </div>
+
+          <button class="btn btn-blue" style="margin-top: 12px;">➕ Nueva solicitud</button>
+
+          <p class="text-xs text-slate font-bold mt-2 mb-2" style="text-transform: uppercase; letter-spacing: 0.5px; margin-top: 20px;">Mis solicitudes recientes</p>
+          <div class="card">
+            <div class="flex items-center gap-2">
+              <span style="font-size: 20px;">⚡</span>
+              <div class="flex-1">
+                <div class="text-sm font-medium text-dark">Instalación enchufe exterior</div>
+                <div class="text-xs text-slate">📍 Viña del Mar · 2 cotizaciones</div>
+              </div>
+              <span class="badge badge-green">Abierta</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="flex items-center gap-2">
+              <span style="font-size: 20px;">🎨</span>
+              <div class="flex-1">
+                <div class="text-sm font-medium text-dark">Pintar dormitorio principal</div>
+                <div class="text-xs text-slate">📍 Reñaca · Completada</div>
+              </div>
+              <span class="badge badge-green" style="background: #f0fdf4;">✓ Lista</span>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item active"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Reservas</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Dashboard Cliente</div>
+    </div>
+
+    <!-- Explorar con Mapa -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="page-title" style="margin: 0;">Explorar</div>
+            <div style="margin-left: auto; display: flex; gap: 4px;">
+              <div style="padding: 6px 10px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 10px;">📋 Lista</div>
+              <div style="padding: 6px 10px; background: #2563eb; color: white; border-radius: 8px; font-size: 10px;">🗺️ Mapa</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
+            <div class="chip chip-active">Todos</div>
+            <div class="chip chip-inactive">🔧 Gasfitería</div>
+            <div class="chip chip-inactive">⚡ Electricidad</div>
+          </div>
+
+          <div class="map">
+            <div class="map-pin map-pin-1"></div>
+            <div class="map-pin map-pin-2"></div>
+            <div class="map-pin map-pin-3"></div>
+            <div class="map-pin map-pin-4"></div>
+            <div class="map-label">Viña del Mar · 4 profesionales</div>
+          </div>
+
+          <div class="worker-card">
+            <div class="flex items-center gap-2">
+              <div class="avatar" style="background: #dbeafe; color: #2563eb;">MV</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-bold text-dark">María Vargas</span>
+                  <span class="badge badge-blue" style="font-size: 8px;">✓ Verificada</span>
+                </div>
+                <div class="text-xs text-slate">⭐ 4.9 · 48 trabajos · 🔧 Gasfitería</div>
+                <div class="text-xs text-slate mt-1">📍 1.2 km · Desde $15.000</div>
+              </div>
+              <span style="font-size: 18px; color: #e2e8f0;">♡</span>
+            </div>
+          </div>
+
+          <div class="worker-card">
+            <div class="flex items-center gap-2">
+              <div class="avatar" style="background: #fef3c7; color: #b45309;">PL</div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-dark">Pedro López</div>
+                <div class="text-xs text-slate">⭐ 4.7 · 32 trabajos · ⚡ Electricidad</div>
+                <div class="text-xs text-slate mt-1">📍 3.4 km · Desde $12.000</div>
+              </div>
+              <span style="font-size: 18px; color: #ef4444;">♥</span>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item active"><span class="nav-icon">🔍</span>Explorar</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Reservas</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Explorar + Mapa</div>
+    </div>
+
+    <!-- Cotizaciones comparador -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="font-size: 18px; color: #94a3b8;">←</span>
+            <div>
+              <div class="text-sm font-bold text-dark">Reparar llave de cocina</div>
+              <span class="badge badge-amber">En cotización</span>
+            </div>
+          </div>
+
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 10px; text-align: center; margin-bottom: 12px;">
+            <span class="text-xs" style="color: #1d4ed8; font-weight: 500;">Comparando 3 cotizaciones — mejor relación calidad/precio destacada</span>
+          </div>
+
+          <div style="font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 10px;">Cotizaciones (3)</div>
+
+          <!-- Best value -->
+          <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 16px; padding: 14px; margin-bottom: 10px;">
+            <div class="flex items-center gap-2 mb-2"><span style="font-size: 12px; color: #059669;">🏆</span><span style="font-size: 11px; font-weight: 700; color: #059669;">Mejor precio</span></div>
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm avatar-green">MV</div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-dark">María Vargas</div>
+                <div class="text-xs text-slate">⭐ 4.9 · ✓ Verificada</div>
+              </div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a;">$25.000</div>
+            </div>
+            <div class="separator"></div>
+            <div class="flex gap-3 text-xs text-slate">
+              <span>💼 48 trabajos</span>
+              <span>⏱ Responde en 1h</span>
+              <span style="color: #2563eb;">🛡️ Verificada</span>
+            </div>
+            <button class="btn btn-green" style="margin-top: 10px;">Aceptar</button>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm">PL</div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-dark">Pedro López</div>
+                <div class="text-xs text-slate">⭐ 4.7 · 32 trabajos</div>
+              </div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a;">$28.000</div>
+            </div>
+            <div class="separator"></div>
+            <div class="text-xs text-slate">Mano de obra: $20.000 · Materiales: $8.000</div>
+            <button class="btn btn-blue" style="margin-top: 10px;">Aceptar</button>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm">RG</div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-dark">Roberto Gómez</div>
+                <div class="text-xs text-slate">⭐ 4.5 · 18 trabajos</div>
+              </div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a;">$35.000</div>
+            </div>
+            <button class="btn btn-blue" style="margin-top: 10px;">Aceptar</button>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item active"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Reservas</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Comparador Cotizaciones</div>
+    </div>
+
+    <!-- Booking Detail -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="font-size: 18px; color: #94a3b8;">←</span>
+            <div class="text-sm font-bold text-dark">Detalle de reserva</div>
+          </div>
+
+          <!-- Timeline -->
+          <div class="card">
+            <div class="timeline">
+              <div class="timeline-step"><div class="timeline-dot timeline-dot-done">✓</div><div class="timeline-label timeline-label-done">Confirmada</div></div>
+              <div class="timeline-step"><div class="timeline-dot timeline-dot-done">✓</div><div class="timeline-label timeline-label-done">Pagada</div></div>
+              <div class="timeline-step"><div class="timeline-dot timeline-dot-done">✓</div><div class="timeline-label timeline-label-done">En camino</div></div>
+              <div class="timeline-step"><div class="timeline-dot" style="background: #dbeafe; color: #2563eb;">●</div><div class="timeline-label" style="color: #2563eb; font-weight: 600;">En curso</div></div>
+              <div class="timeline-step"><div class="timeline-dot timeline-dot-pending">○</div><div class="timeline-label">Completada</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="text-xs text-slate mb-2">👤 María Vargas</div>
+            <div class="text-xs text-slate">📍 Av. Libertad 1234, Viña del Mar</div>
+            <div class="text-xs text-slate mt-1">📅 Lunes 24 de marzo</div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center" style="justify-content: space-between;">
+              <span class="text-xs text-slate">Total</span>
+              <span style="font-size: 18px; font-weight: 800; color: #0f172a;">$25.000</span>
+            </div>
+          </div>
+
+          <button class="btn btn-outline" style="margin-bottom: 8px;">💬 Chat con María</button>
+          <button class="btn" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">⚠️ Reportar problema</button>
+
+          <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 12px; margin-top: 12px; display: none;">
+            <div class="flex items-center gap-2">
+              <span>⚠️</span>
+              <span class="text-xs" style="color: #dc2626;">Reclamo en proceso. Nuestro equipo lo está revisando.</span>
+            </div>
+          </div>
+
+          <!-- Review -->
+          <div class="card" style="margin-top: 12px;">
+            <div class="text-sm font-bold text-dark mb-2">Califica al profesional</div>
+            <div class="stars">
+              <span class="star star-filled">★</span>
+              <span class="star star-filled">★</span>
+              <span class="star star-filled">★</span>
+              <span class="star star-filled">★</span>
+              <span class="star star-filled">★</span>
+            </div>
+            <textarea class="input" style="margin-top: 8px; min-height: 50px; resize: none;" placeholder="Cuéntanos cómo fue tu experiencia..."></textarea>
+            <button class="btn btn-blue" style="margin-top: 8px;">Enviar reseña</button>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div>
+          <div class="nav-item active"><span class="nav-icon">📋</span>Reservas</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Detalle Booking + Review</div>
+    </div>
+
+    <!-- Chat con fotos -->
+    <div>
+      <div class="phone">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: white; border-bottom: 1px solid #e2e8f0;">
+          <span style="color: #94a3b8;">←</span>
+          <div class="avatar avatar-sm" style="background: #dbeafe; color: #2563eb;">MV</div>
+          <span class="text-sm font-bold text-dark">María Vargas</span>
+        </div>
+        <div style="background: #f8fafc; padding: 16px; min-height: 520px; display: flex; flex-direction: column; justify-content: flex-end;">
+          <div class="chat-bubble chat-other">
+            <div>Hola, voy en camino. Llego en 15 min 🚗</div>
+            <div class="chat-time">14:30</div>
+          </div>
+          <div class="chat-bubble chat-mine">
+            <div>Perfecto, te espero. La entrada es por el portón lateral</div>
+            <div class="chat-time">14:32</div>
+          </div>
+          <div class="chat-bubble chat-other">
+            <div class="chat-image">📸</div>
+            <div>Ya llegué, estoy afuera</div>
+            <div class="chat-time">14:48</div>
+          </div>
+          <div class="chat-bubble chat-mine">
+            <div>Ya te abro!</div>
+            <div class="chat-time">14:48</div>
+          </div>
+          <div class="chat-bubble chat-mine">
+            <div class="chat-image" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">📷</div>
+            <div class="chat-time">14:50</div>
+          </div>
+        </div>
+        <div style="padding: 12px 16px; background: white; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; align-items: center;">
+          <div style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px;">🖼️</div>
+          <div class="input" style="flex: 1; color: #94a3b8;">Escribe un mensaje...</div>
+          <div style="width: 32px; height: 32px; background: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">→</div>
+        </div>
+      </div>
+      <div class="phone-label">Chat con Fotos</div>
+    </div>
+
+    <!-- Reclamo -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="font-size: 18px; color: #94a3b8;">←</span>
+            <div class="text-sm font-bold text-dark">Reportar problema</div>
+          </div>
+
+          <div class="text-sm font-bold text-dark mb-2">¿Cuál es el problema?</div>
+
+          <div style="border: 2px solid #fca5a5; background: #fef2f2; border-radius: 12px; padding: 12px; margin-bottom: 8px;">
+            <div class="text-sm font-medium" style="color: #b91c1c;">Mala calidad</div>
+            <div class="text-xs text-slate">El trabajo no cumple con lo acordado</div>
+          </div>
+          <div class="card" style="padding: 12px;">
+            <div class="text-sm font-medium text-dark">No se presentó</div>
+            <div class="text-xs text-slate">El profesional no llegó a la cita</div>
+          </div>
+          <div class="card" style="padding: 12px;">
+            <div class="text-sm font-medium text-dark">Trabajo incompleto</div>
+            <div class="text-xs text-slate">No se terminó lo que se pactó</div>
+          </div>
+          <div class="card" style="padding: 12px;">
+            <div class="text-sm font-medium text-dark">Daños</div>
+            <div class="text-xs text-slate">Se produjeron daños en la propiedad</div>
+          </div>
+
+          <div class="text-sm font-bold text-dark mt-2 mb-2">Describe lo que pasó</div>
+          <textarea class="input" style="min-height: 70px; resize: none;" placeholder="Cuéntanos con detalle..."></textarea>
+
+          <div class="text-sm font-bold text-dark mt-2 mb-2">Evidencia fotográfica</div>
+          <div class="upload-area">📷 Agregar fotos</div>
+
+          <button class="btn btn-red" style="margin-top: 12px;">⚠️ Enviar reclamo</button>
+          <div class="text-xs text-slate" style="text-align: center; margin-top: 8px;">Revisaremos tu caso en máximo 48 horas hábiles</div>
+        </div>
+      </div>
+      <div class="phone-label">Reclamo / Disputa</div>
+    </div>
+
+    <!-- Solicitud urgente -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="font-size: 18px; color: #94a3b8;">←</span>
+            <div class="text-sm font-bold text-dark">Nueva solicitud</div>
+          </div>
+
+          <div class="text-sm font-medium text-dark mb-2">Categoría</div>
+          <div class="grid-4" style="margin-bottom: 16px;">
+            <div style="text-align: center; padding: 8px; background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px;"><div style="font-size: 20px;">🔧</div><div style="font-size: 8px; color: #2563eb; font-weight: 600;">Gasfitería</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">⚡</div><div style="font-size: 8px; color: #64748b;">Electricidad</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">🏠</div><div style="font-size: 8px; color: #64748b;">Limpieza</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">🎨</div><div style="font-size: 8px; color: #64748b;">Pintura</div></div>
+          </div>
+
+          <div class="input mb-2" style="color: #0f172a;">Cañería rota en el baño</div>
+          <textarea class="input" style="min-height: 50px; resize: none; margin-bottom: 12px; color: #0f172a;">Hay una cañería rota y está saliendo agua, necesito ayuda urgente</textarea>
+          <div class="input mb-2" style="color: #0f172a;">📍 Av. San Martín 567, Viña del Mar</div>
+
+          <!-- Urgent toggle ON -->
+          <div style="border: 2px solid #fca5a5; background: #fef2f2; border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; flex-shrink: 0;">⚡</div>
+            <div class="flex-1">
+              <div class="text-sm font-bold" style="color: #b91c1c;">Solicitud urgente</div>
+              <div class="text-xs" style="color: #dc2626;">Se notificará inmediatamente a los profesionales cercanos</div>
+            </div>
+            <div style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid #dc2626; background: #dc2626; display: flex; align-items: center; justify-content: center;">
+              <div style="width: 8px; height: 8px; background: white; border-radius: 50%;"></div>
+            </div>
+          </div>
+
+          <button class="btn btn-red" style="height: 48px; font-size: 15px;">⚡ Publicar solicitud urgente</button>
+        </div>
+      </div>
+      <div class="phone-label">Solicitud Urgente</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== WORKER ==================== -->
+<div class="section">
+  <div class="section-title">App del Profesional</div>
+  <div class="section-desc">Dashboard, solicitudes, ganancias, calendario, verificación, disponibilidad</div>
+  <p class="scroll-hint">← Desliza para ver más →</p>
+  <div class="phones">
+
+    <!-- Worker Dashboard -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>María V.</span><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Buenas tardes, María ☀️</div>
+
+          <div class="grid-2">
+            <div class="card card-green">
+              <div class="stat-label">💰 Ganancia mes</div>
+              <div class="stat-value">$285.000</div>
+            </div>
+            <div class="card">
+              <div class="text-xs text-slate">📋 Trabajos mes</div>
+              <div class="stat-small text-dark">12</div>
+            </div>
+            <div class="card">
+              <div class="text-xs text-slate">⭐ Reseñas</div>
+              <div class="stat-small text-dark">4.9</div>
+            </div>
+            <div class="card" style="position: relative;">
+              <div class="text-xs text-slate">🔔 Solicitudes</div>
+              <div class="stat-small text-dark">3</div>
+              <div style="position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; background: #dc2626; border-radius: 50%; animation: pulse 1.5s infinite;"></div>
+            </div>
+          </div>
+
+          <!-- Chart -->
+          <div class="card">
+            <div class="text-xs font-bold text-dark mb-2">Últimos 6 meses</div>
+            <div class="chart">
+              <div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 25%;"></div><div class="chart-label">oct</div></div>
+              <div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 45%;"></div><div class="chart-label">nov</div></div>
+              <div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 60%;"></div><div class="chart-label">dic</div></div>
+              <div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 40%;"></div><div class="chart-label">ene</div></div>
+              <div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 70%;"></div><div class="chart-label">feb</div></div>
+              <div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-active" style="height: 85%;"></div><div class="chart-label">mar</div></div>
+            </div>
+          </div>
+
+          <!-- Active job -->
+          <div class="card card-blue">
+            <div class="text-xs" style="opacity: 0.7;">Trabajo activo</div>
+            <div class="text-sm font-bold">Reparar llave de cocina</div>
+            <div class="text-xs mt-1" style="opacity: 0.7;">📍 Av. Libertad 1234 · En progreso</div>
+            <div class="flex gap-2" style="margin-top: 10px;">
+              <button class="btn btn-outline" style="flex: 1; padding: 8px; font-size: 11px; color: #2563eb;">💬 Chat</button>
+              <button class="btn" style="flex: 1; padding: 8px; font-size: 11px; background: white; color: #059669;">✓ Completar</button>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item active"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Solicitudes</div>
+          <div class="nav-item"><span class="nav-icon">📅</span>Agenda</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Dashboard Profesional</div>
+    </div>
+
+    <!-- Solicitudes con urgente -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Solicitudes abiertas</div>
+
+          <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
+            <div class="chip chip-active">🔍 Todas</div>
+            <div class="chip chip-inactive">🔧 Gasfitería</div>
+            <div class="chip chip-inactive">⚡ Electricidad</div>
+          </div>
+
+          <!-- Urgent request -->
+          <div class="urgent-card">
+            <div class="flex items-center gap-2">
+              <span style="font-size: 22px;">🔧</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-bold" style="color: #0f172a;">Cañería rota en el baño</span>
+                  <span class="badge badge-red" style="font-size: 8px;">⚡ URGENTE</span>
+                </div>
+                <div class="text-xs text-slate mt-1">📍 Viña del Mar · ⏱ 5m</div>
+              </div>
+              <span style="color: #94a3b8;">›</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 14px;">
+            <div class="flex items-center gap-2">
+              <span style="font-size: 22px;">⚡</span>
+              <div class="flex-1">
+                <span class="text-sm font-medium text-dark">Instalación enchufe exterior</span>
+                <div class="text-xs text-slate mt-1">📍 Reñaca · ⏱ 2h · $50.000</div>
+              </div>
+              <span style="color: #94a3b8;">›</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 14px;">
+            <div class="flex items-center gap-2">
+              <span style="font-size: 22px;">🔧</span>
+              <div class="flex-1">
+                <span class="text-sm font-medium text-dark">Revisión calefón</span>
+                <div class="text-xs text-slate mt-1">📍 Valparaíso · ⏱ 4h</div>
+              </div>
+              <span style="color: #94a3b8;">›</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 14px;">
+            <div class="flex items-center gap-2">
+              <span style="font-size: 22px;">🏠</span>
+              <div class="flex-1">
+                <span class="text-sm font-medium text-dark">Limpieza profunda departamento</span>
+                <div class="text-xs text-slate mt-1">📍 Concón · ⏱ 6h · $40.000</div>
+              </div>
+              <span style="color: #94a3b8;">›</span>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item active"><span class="nav-icon">📋</span>Solicitudes</div>
+          <div class="nav-item"><span class="nav-icon">📅</span>Agenda</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Solicitudes + Urgente</div>
+    </div>
+
+    <!-- Ganancias -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Ganancias</div>
+
+          <!-- Level -->
+          <div class="card">
+            <div class="flex items-center gap-3">
+              <span style="font-size: 28px;">🥈</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2"><span class="badge" style="background: #f1f5f9; color: #475569; font-weight: 700;">Plata</span><span style="font-size: 12px;">🏆</span></div>
+                <div class="text-xs text-slate mt-1">48 trabajos completados</div>
+                <div style="margin-top: 6px;">
+                  <div class="flex items-center" style="justify-content: space-between;"><span style="font-size: 9px; color: #94a3b8;">Siguiente: 🥇 Oro</span><span style="font-size: 9px; color: #94a3b8;">50 trabajos</span></div>
+                  <div class="progress-bar"><div class="progress-fill progress-blue" style="width: 96%;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card card-green">
+              <div class="stat-label">💰 Total recibido</div>
+              <div class="stat-value">$1.2M</div>
+            </div>
+            <div class="card">
+              <div class="text-xs text-slate">⏳ Pendiente</div>
+              <div class="stat-small text-dark">$85.000</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="text-xs text-slate">Este mes</div>
+              <div class="stat-small text-dark">$285.000</div>
+              <div class="text-xs" style="color: #059669; margin-top: 2px;">📈 12 trabajos</div>
+            </div>
+            <div class="card">
+              <div class="text-xs text-slate">Este año</div>
+              <div class="stat-small text-dark">$980.000</div>
+              <div class="text-xs text-slate mt-1">Comisiones: $138.000</div>
+            </div>
+          </div>
+
+          <!-- Performance -->
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Rendimiento</div>
+            <div class="grid-2">
+              <div class="flex items-center gap-2"><span>🎯</span><div><div class="font-bold text-dark">92%</div><div style="font-size: 9px; color: #94a3b8;">Tasa aceptación</div></div></div>
+              <div class="flex items-center gap-2"><span>📊</span><div><div class="font-bold text-dark">$25.000</div><div style="font-size: 9px; color: #94a3b8;">Precio promedio</div></div></div>
+              <div class="flex items-center gap-2"><span>📅</span><div><div class="font-bold text-dark">Viernes</div><div style="font-size: 9px; color: #94a3b8;">Mejor día</div></div></div>
+              <div class="flex items-center gap-2"><span>⚡</span><div><div class="font-bold text-dark">8</div><div style="font-size: 9px; color: #94a3b8;">Racha actual</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Solicitudes</div>
+          <div class="nav-item"><span class="nav-icon">📅</span>Agenda</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item active"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Ganancias + Nivel</div>
+    </div>
+
+    <!-- Cotización con materiales -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="font-size: 18px; color: #94a3b8;">←</span>
+            <div><div class="text-sm font-bold text-dark">Enviar cotización</div><div class="text-xs text-slate">Cañería rota en el baño</div></div>
+          </div>
+
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Mano de obra</div>
+            <div class="grid-2">
+              <div><div style="font-size: 9px; color: #94a3b8;">Tarifa (CLP)</div><div class="input" style="margin-top: 4px;">15.000</div></div>
+              <div><div style="font-size: 9px; color: #94a3b8;">Horas</div><div class="input" style="margin-top: 4px;">2</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center" style="justify-content: space-between; margin-bottom: 8px;">
+              <div class="text-sm font-bold text-dark">Materiales</div>
+              <div class="flex gap-2"><span style="font-size: 11px; color: #d97706; font-weight: 600; cursor: pointer;">📦 Mis materiales</span><span style="font-size: 11px; color: #2563eb; font-weight: 600;">+ Agregar</span></div>
+            </div>
+
+            <!-- Saved materials picker -->
+            <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 8px; margin-bottom: 10px;">
+              <div style="font-size: 9px; color: #b45309; font-weight: 600; margin-bottom: 4px;">Selecciona un material:</div>
+              <div style="padding: 6px 8px; border-radius: 6px; display: flex; justify-content: space-between; cursor: pointer;" onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='transparent'">
+                <span style="font-size: 11px; font-weight: 500; color: #0f172a;">Cañería PVC 1/2</span><span style="font-size: 11px; color: #64748b;">$2.500</span>
+              </div>
+              <div style="padding: 6px 8px; border-radius: 6px; display: flex; justify-content: space-between;">
+                <span style="font-size: 11px; font-weight: 500; color: #0f172a;">Llave de paso</span><span style="font-size: 11px; color: #64748b;">$4.500</span>
+              </div>
+              <div style="padding: 6px 8px; border-radius: 6px; display: flex; justify-content: space-between;">
+                <span style="font-size: 11px; font-weight: 500; color: #0f172a;">Teflón</span><span style="font-size: 11px; color: #64748b;">$800</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2" style="margin-bottom: 6px;">
+              <div class="input" style="flex: 1;">Cañería PVC 1/2</div>
+              <div class="input" style="width: 50px;">2</div>
+              <div class="input" style="width: 70px;">2.500</div>
+              <span style="color: #ef4444; cursor: pointer;">🗑️</span>
+            </div>
+          </div>
+
+          <!-- Resumen -->
+          <div class="card card-dark">
+            <div class="text-sm font-bold mb-2">Resumen</div>
+            <div class="flex" style="justify-content: space-between; margin-bottom: 4px;"><span class="text-xs" style="color: #94a3b8;">Mano de obra</span><span class="text-xs">$30.000</span></div>
+            <div class="flex" style="justify-content: space-between; margin-bottom: 8px;"><span class="text-xs" style="color: #94a3b8;">Materiales</span><span class="text-xs">$5.000</span></div>
+            <div class="separator" style="background: #334155;"></div>
+            <div class="flex" style="justify-content: space-between; margin-bottom: 4px;"><span class="text-xs" style="color: #cbd5e1;">Total cliente paga</span><span style="font-size: 18px; font-weight: 800;">$35.000</span></div>
+            <div class="flex" style="justify-content: space-between; margin-bottom: 4px;"><span class="text-xs" style="color: #94a3b8;">ℹ️ Comisión VOY (12%)</span><span class="text-xs" style="color: #f87171;">-$4.200</span></div>
+            <div class="separator" style="background: #334155;"></div>
+            <div class="flex" style="justify-content: space-between;"><span class="text-sm font-bold" style="color: #34d399;">Tú recibes</span><span class="text-sm font-bold" style="color: #34d399;">$30.800</span></div>
+          </div>
+
+          <button class="btn btn-blue" style="margin-top: 12px; height: 48px;">Enviar cotización — $35.000</button>
+        </div>
+      </div>
+      <div class="phone-label">Cotización + Materiales</div>
+    </div>
+
+    <!-- Verificación -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Verificación</div>
+
+          <!-- Progress -->
+          <div class="flex gap-2 mb-3">
+            <div style="flex: 1;"><div style="height: 5px; background: #059669; border-radius: 99px;"></div><div style="font-size: 8px; color: #059669; text-align: center; margin-top: 2px; font-weight: 600;">Documento</div></div>
+            <div style="flex: 1;"><div style="height: 5px; background: #2563eb; border-radius: 99px;"></div><div style="font-size: 8px; color: #2563eb; text-align: center; margin-top: 2px; font-weight: 600;">Selfie</div></div>
+            <div style="flex: 1;"><div style="height: 5px; background: #e2e8f0; border-radius: 99px;"></div><div style="font-size: 8px; color: #94a3b8; text-align: center; margin-top: 2px;">Certificado</div></div>
+            <div style="flex: 1;"><div style="height: 5px; background: #e2e8f0; border-radius: 99px;"></div><div style="font-size: 8px; color: #94a3b8; text-align: center; margin-top: 2px;">Referencias</div></div>
+          </div>
+
+          <div class="card" style="text-align: center;">
+            <div style="width: 56px; height: 56px; background: #eff6ff; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px;">📸</div>
+            <div class="text-sm font-bold text-dark">Paso 2: Selfie de verificación</div>
+            <div class="text-xs text-slate mt-1">Tómale una foto sosteniendo tu cédula al lado de tu rostro.</div>
+
+            <!-- Uploaded file -->
+            <div style="background: #f0fdf4; border-radius: 8px; padding: 8px; display: flex; align-items: center; gap: 6px; margin-top: 12px;">
+              <span style="font-size: 12px; color: #059669;">🖼️</span>
+              <span style="font-size: 11px; color: #15803d; flex: 1; text-align: left;">selfie_cedula.jpg</span>
+              <span style="font-size: 12px; color: #059669;">✓</span>
+            </div>
+
+            <div class="upload-area" style="margin-top: 12px;">
+              📤 Seleccionar archivo<br><span style="font-size: 10px;">JPG, PNG o PDF</span>
+            </div>
+          </div>
+
+          <div class="flex gap-2" style="margin-top: 12px;">
+            <button class="btn btn-outline" style="flex: 1;">← Anterior</button>
+            <button class="btn btn-blue" style="flex: 1;">Siguiente →</button>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Solicitudes</div>
+          <div class="nav-item"><span class="nav-icon">📅</span>Agenda</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item active"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Verificación Wizard</div>
+    </div>
+
+    <!-- Disponibilidad -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Disponibilidad</div>
+
+          <!-- Available toggle -->
+          <div style="border: 2px solid #86efac; background: #f0fdf4; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <div><div class="text-sm font-bold text-dark">Disponible</div><div class="text-xs" style="color: #059669;">Recibirás solicitudes de clientes cercanos</div></div>
+            <div class="toggle toggle-on"><div class="toggle-dot"></div></div>
+          </div>
+
+          <!-- Geo -->
+          <div style="background: #eff6ff; border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 14px;">📍</span>
+            <span class="text-xs" style="color: #1d4ed8;">Ubicación activa — clientes pueden verte en el mapa</span>
+          </div>
+
+          <!-- Coverage -->
+          <div class="card">
+            <div class="flex items-center" style="justify-content: space-between; margin-bottom: 6px;">
+              <span class="text-sm font-bold text-dark">Radio de cobertura</span>
+              <span class="text-sm font-bold" style="color: #2563eb;">15 km</span>
+            </div>
+            <div style="height: 6px; background: #e2e8f0; border-radius: 99px; position: relative;">
+              <div style="height: 6px; background: #2563eb; border-radius: 99px; width: 30%;"></div>
+            </div>
+            <div class="flex" style="justify-content: space-between; margin-top: 4px;"><span style="font-size: 9px; color: #94a3b8;">1 km</span><span style="font-size: 9px; color: #94a3b8;">25 km</span><span style="font-size: 9px; color: #94a3b8;">50 km</span></div>
+          </div>
+
+          <!-- Vacation -->
+          <div style="border: 2px solid #e2e8f0; background: white; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <div class="flex items-center gap-2"><span>🌴</span><div><div class="text-sm font-bold text-dark">Modo vacaciones</div><div class="text-xs text-slate">Pausa temporalmente todas las solicitudes</div></div></div>
+            <div class="toggle toggle-off"><div class="toggle-dot"></div></div>
+          </div>
+
+          <!-- Schedule -->
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Horario semanal</div>
+            <div style="font-size: 12px;">
+              <div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #94a3b8;">☐</span><span style="width: 40px; color: #94a3b8;">Dom</span><span class="text-xs text-slate">No disponible</span></div>
+              <div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Lun</span><span class="text-xs text-slate">09:00 a 18:00</span></div>
+              <div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Mar</span><span class="text-xs text-slate">09:00 a 18:00</span></div>
+              <div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Mié</span><span class="text-xs text-slate">09:00 a 18:00</span></div>
+              <div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Jue</span><span class="text-xs text-slate">09:00 a 18:00</span></div>
+              <div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Vie</span><span class="text-xs text-slate">09:00 a 17:00</span></div>
+              <div class="flex items-center gap-2" style="padding: 6px 0;"><span style="color: #94a3b8;">☐</span><span style="width: 40px; color: #94a3b8;">Sáb</span><span class="text-xs text-slate">No disponible</span></div>
+            </div>
+          </div>
+
+          <button class="btn btn-blue" style="margin-top: 8px;">💾 Guardar configuración</button>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Solicitudes</div>
+          <div class="nav-item"><span class="nav-icon">📅</span>Agenda</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item active"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Disponibilidad + Geo</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== ADMIN ==================== -->
+<div class="section">
+  <div class="section-title">Panel Admin</div>
+  <div class="section-desc">Dashboard, usuarios, transacciones, reclamos</div>
+  <p class="scroll-hint">← Desliza para ver más →</p>
+  <div class="phones">
+
+    <!-- Admin Dashboard -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>Admin</span></div></div>
+        <div class="content">
+          <div class="page-title">Panel de Administración</div>
+
+          <div class="grid-2">
+            <div class="card card-blue"><div class="stat-label">👥 Usuarios</div><div class="stat-value">1,247</div></div>
+            <div class="card card-green"><div class="stat-label">💼 Trabajadores</div><div class="stat-value">548</div></div>
+            <div class="card" style="background: #7c3aed; color: white; border: none;"><div class="stat-label">💰 Comisiones</div><div class="stat-value">$2.1M</div></div>
+            <div class="card" style="background: #059669; color: white; border: none;"><div class="stat-label">✓ Completados</div><div class="stat-value">3,241</div></div>
+          </div>
+
+          <div class="text-xs text-slate font-bold mb-2" style="text-transform: uppercase; letter-spacing: 0.5px;">Acciones rápidas</div>
+
+          <div class="card" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+            <div style="font-size: 28px;">🛡️</div>
+            <div class="flex-1"><div class="text-sm font-bold text-dark">Verificaciones pendientes</div><div class="text-xs text-slate">5 trabajador(es) esperando revisión</div></div>
+            <span class="badge badge-amber">5</span>
+          </div>
+
+          <div class="card" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+            <div style="font-size: 28px;">👥</div>
+            <div class="flex-1"><div class="text-sm font-bold text-dark">Gestionar usuarios</div><div class="text-xs text-slate">1,247 usuarios registrados</div></div>
+          </div>
+
+          <div class="card" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+            <div style="font-size: 28px;">💰</div>
+            <div class="flex-1"><div class="text-sm font-bold text-dark">Transacciones</div><div class="text-xs text-slate">3,241 bookings · $2.1M comisiones</div></div>
+          </div>
+
+          <div class="card" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+            <div style="font-size: 28px;">⚠️</div>
+            <div class="flex-1"><div class="text-sm font-bold text-dark">Reclamos</div><div class="text-xs text-slate">Gestionar disputas y reclamos</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Admin Dashboard</div>
+    </div>
+
+    <!-- Admin Users -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>Admin</span></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="font-size: 18px;">👥</span>
+            <div class="page-title" style="margin: 0;">Usuarios</div>
+            <span class="text-xs text-slate" style="margin-left: auto;">1,247 total</span>
+          </div>
+
+          <div class="input mb-2" style="padding-left: 32px;">🔍 Buscar por nombre, email...</div>
+
+          <div class="flex gap-2 mb-3">
+            <div class="chip chip-active">Todos</div>
+            <div class="chip chip-inactive">Clientes</div>
+            <div class="chip chip-inactive">Profesionales</div>
+            <div class="chip chip-inactive">Admins</div>
+          </div>
+
+          <div class="card" style="padding: 12px;">
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm">SG</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2"><span class="text-sm font-bold text-dark">Sergio Gary</span><span class="badge badge-blue" style="font-size: 8px;">Cliente</span><span class="badge badge-green" style="font-size: 8px;">Activo</span></div>
+                <div class="text-xs text-slate">✉️ sergio@email.com</div>
+                <div class="text-xs text-slate">📍 Viña del Mar · 📅 15/01/2026</div>
+              </div>
+              <span style="color: #ef4444; font-size: 16px; cursor: pointer;">🚫</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 12px;">
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm avatar-green">MV</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2"><span class="text-sm font-bold text-dark">María Vargas</span><span class="badge" style="background: #dcfce7; color: #059669; font-size: 8px;">Profesional</span><span class="badge badge-green" style="font-size: 8px;">Activo</span></div>
+                <div class="text-xs text-slate">✉️ maria@email.com</div>
+                <div class="text-xs text-slate">📍 Valparaíso · 📅 08/12/2025</div>
+              </div>
+              <span style="color: #ef4444; font-size: 16px; cursor: pointer;">🚫</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 12px;">
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm" style="background: #fecaca; color: #dc2626;">JR</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2"><span class="text-sm font-bold text-dark">Juan Rodríguez</span><span class="badge" style="background: #dcfce7; color: #059669; font-size: 8px;">Profesional</span><span class="badge badge-red" style="font-size: 8px;">Suspendido</span></div>
+                <div class="text-xs text-slate">✉️ juan@email.com</div>
+              </div>
+              <span style="color: #059669; font-size: 16px; cursor: pointer;">🛡️</span>
+            </div>
+          </div>
+
+          <div class="flex items-center" style="justify-content: center; gap: 12px; margin-top: 12px;">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 12px; font-size: 12px;">‹</button>
+            <span class="text-xs text-slate">1 de 84</span>
+            <button class="btn btn-outline" style="width: auto; padding: 6px 12px; font-size: 12px;">›</button>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Admin Usuarios</div>
+    </div>
+
+    <!-- Admin Claims -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>Admin</span></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="font-size: 18px; color: #dc2626;">⚠️</span>
+            <div class="page-title" style="margin: 0;">Reclamos</div>
+            <span class="badge badge-red" style="margin-left: auto;">3 abiertos</span>
+          </div>
+
+          <div class="grid-3">
+            <div style="background: #fef2f2; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #fecaca;"><div style="font-size: 16px; font-weight: 700; color: #dc2626;">3</div><div style="font-size: 9px; color: #ef4444;">Abiertos</div></div>
+            <div style="background: #fffbeb; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #fde68a;"><div style="font-size: 16px; font-weight: 700; color: #d97706;">1</div><div style="font-size: 9px; color: #f59e0b;">En revisión</div></div>
+            <div style="background: #f8fafc; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #e2e8f0;"><div style="font-size: 16px; font-weight: 700; color: #475569;">8</div><div style="font-size: 9px; color: #94a3b8;">Total</div></div>
+          </div>
+
+          <div class="flex gap-2 mb-3">
+            <div class="chip chip-active">Todos</div>
+            <div class="chip chip-inactive">Abiertos</div>
+            <div class="chip chip-inactive">En revisión</div>
+            <div class="chip chip-inactive">Resueltos</div>
+          </div>
+
+          <!-- Expanded claim -->
+          <div class="card" style="border-left: 3px solid #dc2626;">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-sm font-bold text-dark">Ana Muñoz</span>
+              <span class="badge badge-red">Abierto</span>
+            </div>
+            <div class="text-xs text-slate">Mala calidad · 20/03/2026</div>
+            <div class="text-xs text-slate">Reserva: $35.000</div>
+
+            <div class="separator"></div>
+
+            <div class="text-xs text-slate mb-2"><strong style="color: #475569;">Descripción:</strong> El trabajo de pintura quedó con marcas y el color no es el que pedí...</div>
+
+            <textarea class="input" style="min-height: 40px; resize: none; margin-bottom: 8px; font-size: 11px;" placeholder="Nota interna del admin..."></textarea>
+
+            <button class="btn btn-outline" style="margin-bottom: 6px; font-size: 11px; padding: 8px;">💬 Tomar caso (en revisión)</button>
+
+            <div class="input mb-2" style="font-size: 11px;" placeholder="Monto reembolso">Monto reembolso: $35.000</div>
+
+            <div class="grid-3">
+              <button class="btn btn-green" style="font-size: 10px; padding: 8px;">Reembolso total</button>
+              <button class="btn btn-blue" style="font-size: 10px; padding: 8px;">Parcial</button>
+              <button class="btn btn-outline" style="font-size: 10px; padding: 8px;">Sin reembolso</button>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 12px; border-left: 3px solid #f59e0b;">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-dark">Pedro Soto</span>
+              <span class="badge badge-amber">En revisión</span>
+            </div>
+            <div class="text-xs text-slate">No se presentó · 18/03/2026 · $28.000</div>
+          </div>
+
+          <div class="card" style="padding: 12px; border-left: 3px solid #22c55e;">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-dark">Carlos Díaz</span>
+              <span class="badge badge-green">Reembolso total</span>
+            </div>
+            <div class="text-xs text-slate">Daños · 10/03/2026 · 💰 $45.000</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Admin Reclamos</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div style="text-align: center; padding: 40px 0; color: #475569; font-size: 13px;">
+  <div style="font-size: 24px; font-weight: 900; color: white; margin-bottom: 8px;">VOY v2</div>
+  <p>Next.js 16 · Supabase · TypeScript · Tailwind · Leaflet · Framer Motion</p>
+  <p style="color: #64748b; margin-top: 4px;">Marketplace de servicios para el hogar — Quinta Región, Chile</p>
+</div>
+
+<style>
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+</style>
+
+</body>
+</html>

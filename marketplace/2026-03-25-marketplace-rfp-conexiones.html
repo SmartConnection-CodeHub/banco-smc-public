@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RFP Marketplace Intelligence — Panchita Handoff para Hoku</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+  :root {
+    --bg-base: #0a0d14;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2232;
+    --border: #1f2937;
+    --border-hover: #374151;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --text-dim: #6b7280;
+    --text-ghost: #374151;
+    --primary: #2dd4bf;
+    --purple: #8b5cf6;
+    --orange: #fb923c;
+    --pink: #f472b6;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-main);
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Navigation */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 32px;
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-tab {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    background: none;
+  }
+  .nav-tab:hover { color: var(--text-main); background: var(--bg-card-hover); }
+  .nav-tab.active { color: var(--primary); background: rgba(45,212,191,0.1); }
+
+  /* Sections */
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Header */
+  .rfp-header {
+    text-align: center;
+    padding: 40px 20px;
+    margin-bottom: 32px;
+    background: linear-gradient(135deg, rgba(45,212,191,0.05), rgba(139,92,246,0.05));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+  .rfp-header h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .rfp-header .subtitle { color: var(--text-dim); font-size: 14px; }
+  .rfp-header .meta { display: flex; gap: 24px; justify-content: center; margin-top: 16px; font-size: 12px; color: var(--text-muted); }
+  .rfp-header .meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border-hover); }
+  .card h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .card h3 { font-size: 15px; font-weight: 600; margin: 16px 0 10px; color: var(--text-muted); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 12px; color: var(--text-dim); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid rgba(31,41,55,0.5); color: var(--text-muted); }
+  tr:hover td { background: var(--bg-card-hover); }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(34,197,94,0.12); color: var(--success); }
+  .badge-red { background: rgba(239,68,68,0.12); color: var(--danger); }
+  .badge-yellow { background: rgba(245,158,11,0.12); color: var(--warning); }
+  .badge-blue { background: rgba(59,130,246,0.12); color: var(--info); }
+  .badge-purple { background: rgba(139,92,246,0.12); color: var(--purple); }
+  .badge-orange { background: rgba(251,146,60,0.12); color: var(--orange); }
+  .badge-pink { background: rgba(244,114,182,0.12); color: var(--pink); }
+  .badge-gray { background: rgba(107,114,128,0.12); color: var(--text-dim); }
+  .badge-primary { background: rgba(45,212,191,0.12); color: var(--primary); }
+
+  /* Priority indicators */
+  .priority-1 { border-left: 3px solid var(--danger); }
+  .priority-2 { border-left: 3px solid var(--warning); }
+  .priority-3 { border-left: 3px solid var(--info); }
+
+  /* Grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* Flow diagram */
+  .flow-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+  }
+  .flow-box .icon { font-size: 24px; margin-bottom: 8px; }
+  .flow-box .label { font-size: 13px; font-weight: 600; }
+  .flow-box .status { font-size: 11px; margin-top: 4px; }
+  .flow-arrow { display: flex; align-items: center; justify-content: center; color: var(--text-ghost); font-size: 20px; }
+  .flow-arrow.broken { color: var(--danger); }
+  .flow-arrow.connected { color: var(--success); }
+
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    gap: 8px;
+    align-items: center;
+    margin: 16px 0;
+  }
+
+  /* Competitor cards */
+  .competitor-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+  }
+  .competitor-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .competitor-card .name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .competitor-card .tagline { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+  .competitor-card .price-tag { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .competitor-card .features { list-style: none; padding: 0; }
+  .competitor-card .features li { font-size: 12px; color: var(--text-muted); padding: 4px 0; display: flex; align-items: center; gap: 6px; }
+
+  /* Score bars */
+  .score-bar { height: 6px; background: var(--bg-card-hover); border-radius: 3px; overflow: hidden; margin: 4px 0; }
+  .score-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+
+  /* User story */
+  .user-story {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .user-story .as { color: var(--primary); font-weight: 600; font-size: 13px; }
+  .user-story .want { color: var(--text-main); font-size: 14px; margin: 6px 0; }
+  .user-story .so { color: var(--text-dim); font-size: 12px; }
+  .user-story .criteria { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
+
+  /* Checklist */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    border-bottom: 1px solid rgba(31,41,55,0.3);
+  }
+  .checklist li i { font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+  .check-pending { color: var(--text-ghost); }
+  .check-done { color: var(--success); }
+
+  /* ER Diagram */
+  .er-table {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .er-header {
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .er-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 16px;
+    font-size: 12px;
+    border-top: 1px solid rgba(31,41,55,0.3);
+  }
+  .er-row .col-name { color: var(--text-main); font-family: monospace; }
+  .er-row .col-type { color: var(--text-dim); font-family: monospace; font-size: 11px; }
+  .er-row .col-pk { color: var(--warning); font-size: 10px; font-weight: 600; }
+  .er-row .col-fk { color: var(--info); font-size: 10px; font-weight: 600; }
+
+  /* Code block */
+  code {
+    background: rgba(45,212,191,0.08);
+    color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* Handoff */
+  .handoff-box {
+    background: linear-gradient(135deg, rgba(45,212,191,0.08), rgba(139,92,246,0.08));
+    border: 1px solid rgba(45,212,191,0.3);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+
+  /* KPI mini */
+  .kpi-mini {
+    text-align: center;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .kpi-mini .value { font-size: 28px; font-weight: 800; }
+  .kpi-mini .label { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .highlight { color: var(--primary); font-weight: 600; }
+  .text-danger { color: var(--danger); }
+  .text-warning { color: var(--warning); }
+  .text-success { color: var(--success); }
+  .mt-16 { margin-top: 16px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-8 { margin-bottom: 8px; }
+
+  /* Phase timeline */
+  .phase-timeline { display: flex; gap: 0; margin: 24px 0; }
+  .phase-item {
+    flex: 1;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    border-top: 3px solid var(--border);
+  }
+  .phase-item.phase-1 { border-color: var(--danger); }
+  .phase-item.phase-2 { border-color: var(--warning); }
+  .phase-item.phase-3 { border-color: var(--info); }
+  .phase-item.phase-4 { border-color: var(--purple); }
+  .phase-item .phase-num { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+  .phase-item .phase-name { font-size: 13px; font-weight: 600; color: var(--text-main); }
+  .phase-item .phase-cost { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr 1fr 1fr;
+    gap: 0;
+    font-size: 12px;
+  }
+  .comparison-row > div {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(31,41,55,0.3);
+  }
+  .comparison-header > div {
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  .comparison-row > div:first-child { color: var(--text-main); font-weight: 500; }
+
+  @media (max-width: 768px) {
+    .comparison-row { grid-template-columns: 120px 1fr 1fr 1fr 1fr; font-size: 10px; }
+    .flow-grid { grid-template-columns: 1fr; }
+    .flow-arrow { transform: rotate(90deg); }
+    .phase-timeline { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="rfp-header">
+  <h1><i class="bi bi-file-earmark-text" style="color: var(--primary)"></i> RFP — Marketplace Intelligence v4</h1>
+  <div class="subtitle">Conectar las islas: de 24 paginas sueltas a plataforma integrada</div>
+  <div class="meta">
+    <span><i class="bi bi-calendar3"></i> 2026-03-25</span>
+    <span><i class="bi bi-person"></i> Panchita para Hoku</span>
+    <span><i class="bi bi-building"></i> Smart Connection</span>
+    <span><i class="bi bi-git"></i> smartconnection-marketplace</span>
+  </div>
+</div>
+
+<!-- ═══ NAVIGATION ═══ -->
+<div class="nav-tabs" id="navTabs">
+  <button class="nav-tab active" data-tab="benchmark">Benchmark</button>
+  <button class="nav-tab" data-tab="diagnostico">Diagnostico</button>
+  <button class="nav-tab" data-tab="stories">User Stories</button>
+  <button class="nav-tab" data-tab="datos">Modelo Datos</button>
+  <button class="nav-tab" data-tab="fases">Fases</button>
+  <button class="nav-tab" data-tab="checklist">Checklist</button>
+  <button class="nav-tab" data-tab="handoff">Handoff</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 1: BENCHMARK COMPETIDORES
+     ═══════════════════════════════════════════════ -->
+<div class="section active" id="benchmark">
+  <div class="card">
+    <h2><i class="bi bi-trophy" style="color: var(--orange)"></i> Benchmark — 3 Competidores Analizados</h2>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">Analisis de Helium 10, Jungle Scout y Nubimetrics para identificar patrones ganadores y oportunidades de diferenciacion.</p>
+
+    <div class="grid-3 mb-16">
+      <div class="competitor-card" style="border-top: 3px solid var(--orange);">
+        <div class="name" style="color: var(--orange);"><i class="bi bi-gem"></i> Helium 10</div>
+        <div class="tagline">Amazon + Walmart + TikTok Shop</div>
+        <div class="price-tag">USD $99-359/mes <span class="badge badge-red">Caro</span></div>
+        <ul class="features">
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> 30+ herramientas integradas</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Black Box (producto) + Cerebro (keywords) + Magnet</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Flujo conectado: buscar &rarr; validar &rarr; listar &rarr; trackear</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> PPC Manager con IA</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Multi-canal (Amazon, Walmart, TikTok)</li>
+          <li><i class="bi bi-x-circle-fill" style="color: var(--danger)"></i> No soporta MercadoLibre</li>
+          <li><i class="bi bi-x-circle-fill" style="color: var(--danger)"></i> Precios altos para LATAM</li>
+        </ul>
+      </div>
+
+      <div class="competitor-card" style="border-top: 3px solid var(--success);">
+        <div class="name" style="color: var(--success);"><i class="bi bi-tree"></i> Jungle Scout</div>
+        <div class="tagline">Amazon FBA especializado</div>
+        <div class="price-tag">USD $49-399/mes <span class="badge badge-yellow">Medio-Alto</span></div>
+        <ul class="features">
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> 20+ herramientas</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Product Database + Opportunity Finder</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Supplier Database (proveedores verificados)</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Sales Analytics robusto</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Review Automation</li>
+          <li><i class="bi bi-x-circle-fill" style="color: var(--danger)"></i> No soporta MercadoLibre</li>
+          <li><i class="bi bi-x-circle-fill" style="color: var(--danger)"></i> Solo Amazon</li>
+        </ul>
+      </div>
+
+      <div class="competitor-card" style="border-top: 3px solid var(--purple);">
+        <div class="name" style="color: var(--purple);"><i class="bi bi-graph-up"></i> Nubimetrics</div>
+        <div class="tagline">MercadoLibre nativo (18 paises)</div>
+        <div class="price-tag">~USD $100+/mes <span class="badge badge-yellow">Medio</span></div>
+        <ul class="features">
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Hecho para MercadoLibre</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Explorador Categorias + Publicaciones</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Optimizador de publicaciones con IA</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Monitoreo competidores historico</li>
+          <li><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> 10TB datos/dia, 200M productos</li>
+          <li><i class="bi bi-x-circle-fill" style="color: var(--danger)"></i> Sin herramienta de listing builder</li>
+          <li><i class="bi bi-x-circle-fill" style="color: var(--danger)"></i> Pricing opaco (contactar ventas)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="card">
+    <h2><i class="bi bi-table" style="color: var(--info)"></i> Tabla Comparativa</h2>
+    <div style="overflow-x: auto;">
+      <div class="comparison-row comparison-header">
+        <div>Feature</div>
+        <div style="color: var(--orange);">Helium 10</div>
+        <div style="color: var(--success);">Jungle Scout</div>
+        <div style="color: var(--purple);">Nubimetrics</div>
+        <div style="color: var(--primary);">Nosotros (v4)</div>
+      </div>
+      <div class="comparison-row">
+        <div>Marketplace</div>
+        <div>Amazon, Walmart, TikTok</div>
+        <div>Amazon</div>
+        <div>MercadoLibre (18 paises)</div>
+        <div class="highlight">MercadoLibre Chile</div>
+      </div>
+      <div class="comparison-row">
+        <div>Busqueda productos</div>
+        <div><span class="badge badge-green">Black Box</span></div>
+        <div><span class="badge badge-green">Product DB</span></div>
+        <div><span class="badge badge-green">Explorador</span></div>
+        <div><span class="badge badge-yellow">Demo data</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Keywords research</div>
+        <div><span class="badge badge-green">Cerebro+Magnet</span></div>
+        <div><span class="badge badge-green">Keyword Scout</span></div>
+        <div><span class="badge badge-yellow">Basico</span></div>
+        <div><span class="badge badge-red">Extracto titulos</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Listing Builder</div>
+        <div><span class="badge badge-green">IA + templates</span></div>
+        <div><span class="badge badge-green">Listing Builder</span></div>
+        <div><span class="badge badge-red">No tiene</span></div>
+        <div><span class="badge badge-green">Groq IA</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Analisis competencia</div>
+        <div><span class="badge badge-green">Completo</span></div>
+        <div><span class="badge badge-green">CI Tool</span></div>
+        <div><span class="badge badge-green">Historico</span></div>
+        <div><span class="badge badge-yellow">Solo busqueda</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Tracker precios</div>
+        <div><span class="badge badge-green">Automatico</span></div>
+        <div><span class="badge badge-green">Product Tracker</span></div>
+        <div><span class="badge badge-green">Real-time</span></div>
+        <div><span class="badge badge-red">Vacio</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Alertas</div>
+        <div><span class="badge badge-green">Push + email</span></div>
+        <div><span class="badge badge-green">Email</span></div>
+        <div><span class="badge badge-green">Dashboard</span></div>
+        <div><span class="badge badge-red">localStorage</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Reportes IA</div>
+        <div><span class="badge badge-green">Completos</span></div>
+        <div><span class="badge badge-green">Analytics</span></div>
+        <div><span class="badge badge-green">Insights IA</span></div>
+        <div><span class="badge badge-green">Groq IA</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Flujos conectados</div>
+        <div><span class="badge badge-green">Todo conectado</span></div>
+        <div><span class="badge badge-green">End-to-end</span></div>
+        <div><span class="badge badge-green">Integrado</span></div>
+        <div><span class="badge badge-red">Islas</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Calculadora costos</div>
+        <div><span class="badge badge-green">Profits</span></div>
+        <div><span class="badge badge-green">FBA Calculator</span></div>
+        <div><span class="badge badge-yellow">Basico</span></div>
+        <div><span class="badge badge-green">Completa</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Precio</div>
+        <div>$99-359 USD/mes</div>
+        <div>$49-399 USD/mes</div>
+        <div>~$100+ USD/mes</div>
+        <div class="highlight">Gratis (propio)</div>
+      </div>
+      <div class="comparison-row">
+        <div>Dato real MeLi</div>
+        <div><span class="badge badge-red">No</span></div>
+        <div><span class="badge badge-red">No</span></div>
+        <div><span class="badge badge-green">API oficial</span></div>
+        <div><span class="badge badge-yellow">API publica sin OAuth</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Insights -->
+  <div class="card">
+    <h2><i class="bi bi-lightbulb" style="color: var(--warning)"></i> Insights del Benchmark</h2>
+    <div class="grid-2">
+      <div>
+        <h3 style="color: var(--success);">Oportunidades</h3>
+        <ul style="font-size: 13px; color: var(--text-muted); padding-left: 20px;">
+          <li><strong>Unico nicho:</strong> No existe un Helium 10 para MeLi Chile. Nubimetrics es lo mas cercano pero es caro y opaco.</li>
+          <li><strong>Listing Builder con IA:</strong> Ni Nubimetrics lo tiene. Nosotros ya tenemos Groq integrado.</li>
+          <li><strong>Gratis:</strong> Nuestro costo es $0 vs $100+ USD/mes de competidores.</li>
+          <li><strong>API MeLi publica:</strong> Muchos endpoints funcionan sin OAuth (trends, search, categories).</li>
+          <li><strong>Stack moderno:</strong> Next.js 16 + Tailwind v4 vs apps legacy de competidores.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color: var(--danger);">Brechas criticas</h3>
+        <ul style="font-size: 13px; color: var(--text-muted); padding-left: 20px;">
+          <li><strong>Flujos desconectados:</strong> La diferencia #1. Helium 10 conecta todo en un flujo. Nosotros somos islas.</li>
+          <li><strong>Sin datos reales:</strong> Todo es demo. Sin OAuth activo, sin Supabase poblado.</li>
+          <li><strong>Sin persistencia:</strong> Ideas, KW Lists, Alerts usan localStorage.</li>
+          <li><strong>4 placeholders:</strong> Ads, Influencers, Follow-Up, Market Tracker vacios.</li>
+          <li><strong>Sin tracking historico:</strong> Competidores tienen historial de precios/ventas. Nosotros no.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; padding: 16px; background: rgba(45,212,191,0.06); border: 1px solid rgba(45,212,191,0.2); border-radius: 10px;">
+      <strong style="color: var(--primary);">Patron ganador de Helium 10 a copiar:</strong>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+        <strong>Buscar</strong> (Black Box) &rarr; <strong>Validar</strong> (Cerebro keywords) &rarr; <strong>Crear listing</strong> (Builder) &rarr; <strong>Monitorear</strong> (Tracker) &rarr; <strong>Alertar</strong> (cambios precio/stock).<br>
+        Cada herramienta alimenta la siguiente. Los datos de una accion se pasan automaticamente a la siguiente. <strong>Ese es el flujo que nos falta.</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 2: DIAGNOSTICO
+     ═══════════════════════════════════════════════ -->
+<div class="section" id="diagnostico">
+
+  <!-- KPIs de estado -->
+  <div class="grid-3 mb-16" style="grid-template-columns: repeat(6, 1fr);">
+    <div class="kpi-mini"><div class="value" style="color: var(--text-main);">24</div><div class="label">Paginas totales</div></div>
+    <div class="kpi-mini"><div class="value" style="color: var(--success);">3</div><div class="label">Funcionales reales</div></div>
+    <div class="kpi-mini"><div class="value" style="color: var(--warning);">17</div><div class="label">Demo/parcial</div></div>
+    <div class="kpi-mini"><div class="value" style="color: var(--danger);">4</div><div class="label">Placeholder</div></div>
+    <div class="kpi-mini"><div class="value" style="color: var(--danger);">0</div><div class="label">Flujos end-to-end</div></div>
+    <div class="kpi-mini"><div class="value" style="color: var(--danger);">0</div><div class="label">Datos en Supabase</div></div>
+  </div>
+
+  <!-- Current flow -->
+  <div class="card">
+    <h2><i class="bi bi-diagram-3" style="color: var(--danger)"></i> Flujo Actual — Todo Roto</h2>
+    <div class="flow-grid">
+      <div class="flow-box" style="border-color: var(--orange);">
+        <div class="icon" style="color: var(--orange);"><i class="bi bi-search"></i></div>
+        <div class="label">Buscar producto</div>
+        <div class="status"><span class="badge badge-yellow">Demo data</span></div>
+      </div>
+      <div class="flow-arrow broken"><i class="bi bi-x-lg"></i></div>
+      <div class="flow-box">
+        <div class="icon" style="color: var(--text-ghost);"><i class="bi bi-database"></i></div>
+        <div class="label">Guardar en Supabase</div>
+        <div class="status"><span class="badge badge-red">No guarda</span></div>
+      </div>
+      <div class="flow-arrow broken"><i class="bi bi-x-lg"></i></div>
+      <div class="flow-box">
+        <div class="icon" style="color: var(--text-ghost);"><i class="bi bi-eye"></i></div>
+        <div class="label">Trackear precio</div>
+        <div class="status"><span class="badge badge-red">Vacio</span></div>
+      </div>
+      <div class="flow-arrow broken"><i class="bi bi-x-lg"></i></div>
+      <div class="flow-box">
+        <div class="icon" style="color: var(--text-ghost);"><i class="bi bi-bell"></i></div>
+        <div class="label">Alertar cambio</div>
+        <div class="status"><span class="badge badge-red">localStorage</span></div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 12px; color: var(--danger); margin-top: 8px;"><i class="bi bi-exclamation-triangle"></i> 0 de 4 conexiones funcionan</p>
+  </div>
+
+  <!-- Target flow -->
+  <div class="card">
+    <h2><i class="bi bi-diagram-3" style="color: var(--success)"></i> Flujo Target v4 — Todo Conectado</h2>
+    <div class="flow-grid">
+      <div class="flow-box" style="border-color: var(--primary);">
+        <div class="icon" style="color: var(--primary);"><i class="bi bi-search"></i></div>
+        <div class="label">Buscar producto</div>
+        <div class="status"><span class="badge badge-primary">MeLi API real</span></div>
+      </div>
+      <div class="flow-arrow connected"><i class="bi bi-arrow-right"></i></div>
+      <div class="flow-box" style="border-color: var(--success);">
+        <div class="icon" style="color: var(--success);"><i class="bi bi-database-fill-check"></i></div>
+        <div class="label">Auto-save Supabase</div>
+        <div class="status"><span class="badge badge-green">Persistido</span></div>
+      </div>
+      <div class="flow-arrow connected"><i class="bi bi-arrow-right"></i></div>
+      <div class="flow-box" style="border-color: var(--warning);">
+        <div class="icon" style="color: var(--warning);"><i class="bi bi-eye-fill"></i></div>
+        <div class="label">Trackear historico</div>
+        <div class="status"><span class="badge badge-green">Snapshots</span></div>
+      </div>
+      <div class="flow-arrow connected"><i class="bi bi-arrow-right"></i></div>
+      <div class="flow-box" style="border-color: var(--pink);">
+        <div class="icon" style="color: var(--pink);"><i class="bi bi-bell-fill"></i></div>
+        <div class="label">Alerta inteligente</div>
+        <div class="status"><span class="badge badge-green">Supabase</span></div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 12px; color: var(--success); margin-top: 8px;"><i class="bi bi-check-circle"></i> 4 de 4 conexiones activas — flujo Helium 10 style</p>
+  </div>
+
+  <!-- Estado por pagina -->
+  <div class="card">
+    <h2><i class="bi bi-list-check" style="color: var(--purple)"></i> Estado Detallado — 24 Paginas</h2>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Pagina</th>
+            <th>Vertical</th>
+            <th>Estado</th>
+            <th>Data source</th>
+            <th>Problema</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Dashboard</td><td>Core</td><td><span class="badge badge-red">KPIs en 0</span></td><td>Supabase (vacia)</td><td>Sin seed, sin fallback</td></tr>
+          <tr><td>Products (Black Box)</td><td>Descubrir</td><td><span class="badge badge-yellow">Demo</span></td><td>demo-data.ts</td><td>No guarda busquedas ni snapshots</td></tr>
+          <tr><td>Product Finder</td><td>Descubrir</td><td><span class="badge badge-yellow">Demo</span></td><td>meliSearch (fallback demo)</td><td>Filtros no persisten</td></tr>
+          <tr><td>Ideas</td><td>Descubrir</td><td><span class="badge badge-yellow">localStorage</span></td><td>localStorage</td><td>Se pierde al limpiar browser</td></tr>
+          <tr><td>Strategy Builder</td><td>Descubrir</td><td><span class="badge badge-green">Funcional</span></td><td>Groq IA</td><td>No guarda resultado</td></tr>
+          <tr><td>Keywords</td><td>Keywords</td><td><span class="badge badge-yellow">Demo</span></td><td>demo-data.ts trending</td><td>Sin keywords reales</td></tr>
+          <tr><td>Cerebro</td><td>Keywords</td><td><span class="badge badge-yellow">Demo</span></td><td>Extrae de titulos demo</td><td>No es reverse ASIN real</td></tr>
+          <tr><td>KW Tracker</td><td>Keywords</td><td><span class="badge badge-yellow">localStorage</span></td><td>localStorage</td><td>Se pierde al limpiar browser</td></tr>
+          <tr><td>KW Lists</td><td>Keywords</td><td><span class="badge badge-yellow">localStorage</span></td><td>localStorage</td><td>Se pierde al limpiar browser</td></tr>
+          <tr><td>Listing Builder</td><td>Crear</td><td><span class="badge badge-green">Funcional</span></td><td>Groq IA</td><td>No guarda listings generados</td></tr>
+          <tr><td>Listing Analyzer</td><td>Crear</td><td><span class="badge badge-yellow">Demo</span></td><td>Score de producto demo</td><td>Score es local, no real</td></tr>
+          <tr><td>Index Checker</td><td>Crear</td><td><span class="badge badge-yellow">Demo</span></td><td>meliSearch</td><td>Busca en demo data</td></tr>
+          <tr><td>Ads Manager</td><td>Promocionar</td><td><span class="badge badge-red">Placeholder</span></td><td>—</td><td>Solo titulo</td></tr>
+          <tr><td>Influencers</td><td>Promocionar</td><td><span class="badge badge-red">Placeholder</span></td><td>—</td><td>Solo titulo</td></tr>
+          <tr><td>Follow-Up</td><td>Promocionar</td><td><span class="badge badge-red">Placeholder</span></td><td>—</td><td>Solo titulo</td></tr>
+          <tr><td>Profits</td><td>Monitorear</td><td><span class="badge badge-red">Vacio</span></td><td>Supabase (vacia)</td><td>Depende de mkt_products</td></tr>
+          <tr><td>Tracker</td><td>Monitorear</td><td><span class="badge badge-red">Vacio</span></td><td>Supabase (vacia)</td><td>Sin productos trackeados</td></tr>
+          <tr><td>Inventory</td><td>Monitorear</td><td><span class="badge badge-red">Vacio</span></td><td>Supabase (vacia)</td><td>Depende de mkt_products</td></tr>
+          <tr><td>Alerts</td><td>Monitorear</td><td><span class="badge badge-yellow">localStorage</span></td><td>localStorage</td><td>Sin backend, sin cron</td></tr>
+          <tr><td>Competitors</td><td>Competencia</td><td><span class="badge badge-yellow">Demo</span></td><td>Sellers hardcoded</td><td>No guarda en Supabase</td></tr>
+          <tr><td>Market Tracker</td><td>Competencia</td><td><span class="badge badge-red">Placeholder</span></td><td>—</td><td>Solo titulo</td></tr>
+          <tr><td>Niches</td><td>Competencia</td><td><span class="badge badge-yellow">Demo</span></td><td>demo-data.ts</td><td>Nichos hardcodeados</td></tr>
+          <tr><td>Reports</td><td>Sistema</td><td><span class="badge badge-green">Funcional</span></td><td>Groq IA + Supabase</td><td>Genera pero no conecta con otros</td></tr>
+          <tr><td>Calculator</td><td>Sistema</td><td><span class="badge badge-green">Funcional</span></td><td>Calculo local</td><td>Funciona bien, standalone</td></tr>
+          <tr><td>Logs</td><td>Sistema</td><td><span class="badge badge-red">Vacio</span></td><td>Supabase (vacia)</td><td>Tabla no existe</td></tr>
+          <tr><td>Settings</td><td>Sistema</td><td><span class="badge badge-yellow">Parcial</span></td><td>OAuth flow</td><td>Tokens se muestran pero hay que copiar manual</td></tr>
+          <tr><td>Learn</td><td>Aprender</td><td><span class="badge badge-green">Funcional</span></td><td>Contenido estatico</td><td>OK</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 3: USER STORIES
+     ═══════════════════════════════════════════════ -->
+<div class="section" id="stories">
+  <div class="card">
+    <h2><i class="bi bi-person-circle" style="color: var(--primary)"></i> User Stories — Flujos Conectados</h2>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">Cada story representa un flujo end-to-end que conecta multiples paginas.</p>
+
+    <div class="user-story priority-1">
+      <div class="as">US-01: Flujo Buscar &rarr; Guardar &rarr; Trackear</div>
+      <div class="want">Como vendedor MeLi, quiero buscar un producto, guardarlo automaticamente en mi base de datos, y poder trackearlo en el tiempo.</div>
+      <div class="so">Para que pueda monitorear cambios de precio y stock sin tener que buscar manualmente cada vez.</div>
+      <div class="criteria">
+        <strong>Criterios:</strong><br>
+        <code>DADO</code> que busco "iphone 16" en Products<br>
+        <code>CUANDO</code> veo los resultados<br>
+        <code>ENTONCES</code> la busqueda se guarda en <code>mkt_searches</code> automaticamente<br>
+        <code>Y</code> cada producto visible se guarda como snapshot en <code>mkt_products</code><br>
+        <code>Y</code> aparece boton "Trackear" que agrega a <code>mkt_tracker</code><br>
+        <code>Y</code> el Dashboard KPI se actualiza con el nuevo conteo<br>
+        <strong>Paginas involucradas:</strong> Products &rarr; Dashboard &rarr; Tracker &rarr; Profits &rarr; Inventory
+      </div>
+    </div>
+
+    <div class="user-story priority-1">
+      <div class="as">US-02: Flujo Analizar &rarr; Reportar</div>
+      <div class="want">Como vendedor, quiero que al ver un producto pueda generar un reporte IA con un click, y que ese reporte se guarde.</div>
+      <div class="so">Para tener un historial de analisis que me ayude a tomar decisiones.</div>
+      <div class="criteria">
+        <strong>Criterios:</strong><br>
+        <code>DADO</code> que estoy viendo un producto en Products<br>
+        <code>CUANDO</code> hago click en "Analizar con IA"<br>
+        <code>ENTONCES</code> se genera un reporte via Groq y se guarda en <code>mkt_reports</code><br>
+        <code>Y</code> puedo ver el reporte en la pagina Reports<br>
+        <strong>Paginas involucradas:</strong> Products &rarr; Reports
+      </div>
+    </div>
+
+    <div class="user-story priority-1">
+      <div class="as">US-03: Dashboard con vida</div>
+      <div class="want">Como usuario, quiero que el Dashboard muestre datos reales desde el primer momento, con fallback demo si no hay actividad.</div>
+      <div class="so">Para que no se vea vacio y me motive a usar la plataforma.</div>
+      <div class="criteria">
+        <strong>Criterios:</strong><br>
+        <code>DADO</code> que abro el Dashboard por primera vez<br>
+        <code>CUANDO</code> Supabase esta vacia<br>
+        <code>ENTONCES</code> se ejecuta auto-seed con datos demo<br>
+        <code>Y</code> los KPIs muestran numeros reales<br>
+        <code>Y</code> las busquedas recientes muestran datos seed<br>
+        <strong>Paginas involucradas:</strong> Dashboard
+      </div>
+    </div>
+
+    <div class="user-story priority-1">
+      <div class="as">US-04: Migrar localStorage a Supabase</div>
+      <div class="want">Como usuario, quiero que mis Ideas, KW Lists, KW Tracker y Alertas persistan en Supabase.</div>
+      <div class="so">Para que no pierda mis datos al limpiar el browser o cambiar de dispositivo.</div>
+      <div class="criteria">
+        <strong>Criterios:</strong><br>
+        <code>DADO</code> que creo una idea de producto<br>
+        <code>CUANDO</code> guardo<br>
+        <code>ENTONCES</code> se persiste en <code>mkt_ideas</code> en Supabase<br>
+        <code>Y</code> al recargar la pagina los datos siguen ahi<br>
+        <strong>Paginas involucradas:</strong> Ideas, KW Lists, KW Tracker, Alerts
+      </div>
+    </div>
+
+    <div class="user-story priority-2">
+      <div class="as">US-05: Competidores &rarr; Alerta</div>
+      <div class="want">Como vendedor, quiero guardar un competidor y recibir alerta cuando cambie precios o agregue productos.</div>
+      <div class="so">Para reaccionar rapido a movimientos de la competencia.</div>
+      <div class="criteria">
+        <strong>Criterios:</strong><br>
+        <code>DADO</code> que busco un competidor en Competitors<br>
+        <code>CUANDO</code> hago click en "Monitorear"<br>
+        <code>ENTONCES</code> se guarda en <code>mkt_competitors</code><br>
+        <code>Y</code> puedo crear una alerta desde ahi<br>
+        <strong>Paginas involucradas:</strong> Competitors &rarr; Alerts
+      </div>
+    </div>
+
+    <div class="user-story priority-2">
+      <div class="as">US-06: Nicho &rarr; Estrategia</div>
+      <div class="want">Como vendedor, quiero que al detectar un nicho rentable pueda generar una estrategia de entrada con IA.</div>
+      <div class="so">Para tener un plan antes de invertir en inventario.</div>
+      <div class="criteria">
+        <strong>Criterios:</strong><br>
+        <code>DADO</code> que veo un nicho con score alto en Niches<br>
+        <code>CUANDO</code> hago click en "Crear estrategia"<br>
+        <code>ENTONCES</code> me lleva a Strategy Builder con el nicho pre-llenado<br>
+        <code>Y</code> genera un plan via Groq IA<br>
+        <strong>Paginas involucradas:</strong> Niches &rarr; Strategy Builder
+      </div>
+    </div>
+
+    <div class="user-story priority-2">
+      <div class="as">US-07: Keyword &rarr; Listing Builder</div>
+      <div class="want">Como vendedor, quiero seleccionar keywords de mi investigacion y usarlas para generar un listing optimizado.</div>
+      <div class="so">Para crear publicaciones con las keywords correctas desde el inicio.</div>
+      <div class="criteria">
+        <strong>Criterios:</strong><br>
+        <code>DADO</code> que tengo una lista de keywords en KW Lists<br>
+        <code>CUANDO</code> hago click en "Usar en Listing"<br>
+        <code>ENTONCES</code> me lleva a Listing Builder con keywords pre-cargadas<br>
+        <strong>Paginas involucradas:</strong> KW Lists &rarr; Listing Builder
+      </div>
+    </div>
+
+    <div class="user-story priority-3">
+      <div class="as">US-08: Tablas faltantes + API Logs</div>
+      <div class="want">Como admin, quiero ver logs de todas las llamadas a MeLi API para monitorear uso y errores.</div>
+      <div class="so">Para detectar cuando la API falla y optimizar el uso.</div>
+      <div class="criteria">
+        <strong>Criterios:</strong><br>
+        <code>DADO</code> que cualquier pagina hace una llamada a MeLi API<br>
+        <code>CUANDO</code> la respuesta llega<br>
+        <code>ENTONCES</code> se registra en <code>mkt_api_logs</code> (endpoint, status, duracion)<br>
+        <code>Y</code> puedo verlo en la pagina Logs<br>
+        <strong>Paginas involucradas:</strong> Logs, todas las que usan MeLi API
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 4: MODELO DATOS
+     ═══════════════════════════════════════════════ -->
+<div class="section" id="datos">
+  <div class="card">
+    <h2><i class="bi bi-database" style="color: var(--purple)"></i> Modelo de Datos — Tablas Supabase</h2>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">
+      <span class="badge badge-green">Existente</span> = ya creada &nbsp;
+      <span class="badge badge-yellow">Modificar</span> = agregar campos &nbsp;
+      <span class="badge badge-red">Nueva</span> = crear desde cero
+    </p>
+
+    <div class="grid-2">
+      <!-- mkt_searches -->
+      <div class="er-table">
+        <div class="er-header" style="background: rgba(34,197,94,0.08); color: var(--success);"><i class="bi bi-table"></i> mkt_searches <span class="badge badge-green" style="margin-left: auto;">Existente</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">query</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">results_count</span><span class="col-type">INTEGER</span><span></span></div>
+        <div class="er-row"><span class="col-name">category</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">filters</span><span class="col-type">JSONB</span><span></span></div>
+        <div class="er-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMPTZ</span><span></span></div>
+      </div>
+
+      <!-- mkt_products -->
+      <div class="er-table">
+        <div class="er-header" style="background: rgba(34,197,94,0.08); color: var(--success);"><i class="bi bi-table"></i> mkt_products <span class="badge badge-green" style="margin-left: auto;">Existente</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">meli_id</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">title, price, sold_quantity...</span><span class="col-type">varios</span><span></span></div>
+        <div class="er-row"><span class="col-name">snapshot_at</span><span class="col-type">TIMESTAMPTZ</span><span></span></div>
+      </div>
+
+      <!-- mkt_niches -->
+      <div class="er-table">
+        <div class="er-header" style="background: rgba(34,197,94,0.08); color: var(--success);"><i class="bi bi-table"></i> mkt_niches <span class="badge badge-green" style="margin-left: auto;">Existente</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">keyword</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">category, results_count, avg_price...</span><span class="col-type">varios</span><span></span></div>
+        <div class="er-row"><span class="col-name">opportunity_score</span><span class="col-type">INTEGER</span><span></span></div>
+        <div class="er-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMPTZ</span><span></span></div>
+      </div>
+
+      <!-- mkt_competitors -->
+      <div class="er-table">
+        <div class="er-header" style="background: rgba(34,197,94,0.08); color: var(--success);"><i class="bi bi-table"></i> mkt_competitors <span class="badge badge-green" style="margin-left: auto;">Existente</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">seller_id</span><span class="col-type">BIGINT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">nickname, total_products, avg_price...</span><span class="col-type">varios</span><span></span></div>
+        <div class="er-row"><span class="col-name">last_scan</span><span class="col-type">TIMESTAMPTZ</span><span></span></div>
+      </div>
+
+      <!-- mkt_reports -->
+      <div class="er-table">
+        <div class="er-header" style="background: rgba(34,197,94,0.08); color: var(--success);"><i class="bi bi-table"></i> mkt_reports <span class="badge badge-green" style="margin-left: auto;">Existente</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">title, type, keyword...</span><span class="col-type">varios</span><span></span></div>
+        <div class="er-row"><span class="col-name">content</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">agent</span><span class="col-type">TEXT</span><span></span></div>
+      </div>
+
+      <!-- mkt_tracker — NUEVA -->
+      <div class="er-table" style="border: 1px solid rgba(239,68,68,0.3);">
+        <div class="er-header" style="background: rgba(239,68,68,0.08); color: var(--danger);"><i class="bi bi-table"></i> mkt_tracker <span class="badge badge-red" style="margin-left: auto;">Nueva</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID DEFAULT gen_random_uuid()</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">meli_id</span><span class="col-type">TEXT NOT NULL</span><span class="col-fk">FK mkt_products</span></div>
+        <div class="er-row"><span class="col-name">title</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">target_price</span><span class="col-type">NUMERIC</span><span></span></div>
+        <div class="er-row"><span class="col-name">active</span><span class="col-type">BOOLEAN DEFAULT true</span><span></span></div>
+        <div class="er-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMPTZ DEFAULT NOW()</span><span></span></div>
+      </div>
+
+      <!-- mkt_alerts — NUEVA -->
+      <div class="er-table" style="border: 1px solid rgba(239,68,68,0.3);">
+        <div class="er-header" style="background: rgba(239,68,68,0.08); color: var(--danger);"><i class="bi bi-table"></i> mkt_alerts <span class="badge badge-red" style="margin-left: auto;">Nueva</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID DEFAULT gen_random_uuid()</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">nombre</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">tipo</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">umbral</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">meli_id</span><span class="col-type">TEXT</span><span class="col-fk">FK opcional</span></div>
+        <div class="er-row"><span class="col-name">seller_id</span><span class="col-type">BIGINT</span><span class="col-fk">FK opcional</span></div>
+        <div class="er-row"><span class="col-name">active</span><span class="col-type">BOOLEAN DEFAULT true</span><span></span></div>
+        <div class="er-row"><span class="col-name">last_triggered</span><span class="col-type">TIMESTAMPTZ</span><span></span></div>
+        <div class="er-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMPTZ DEFAULT NOW()</span><span></span></div>
+      </div>
+
+      <!-- mkt_api_logs — NUEVA -->
+      <div class="er-table" style="border: 1px solid rgba(239,68,68,0.3);">
+        <div class="er-header" style="background: rgba(239,68,68,0.08); color: var(--danger);"><i class="bi bi-table"></i> mkt_api_logs <span class="badge badge-red" style="margin-left: auto;">Nueva</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID DEFAULT gen_random_uuid()</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">endpoint</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">method</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">status_code</span><span class="col-type">INTEGER</span><span></span></div>
+        <div class="er-row"><span class="col-name">duration_ms</span><span class="col-type">INTEGER</span><span></span></div>
+        <div class="er-row"><span class="col-name">request_params</span><span class="col-type">JSONB</span><span></span></div>
+        <div class="er-row"><span class="col-name">error_message</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">source</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMPTZ DEFAULT NOW()</span><span></span></div>
+      </div>
+
+      <!-- mkt_ideas — NUEVA -->
+      <div class="er-table" style="border: 1px solid rgba(239,68,68,0.3);">
+        <div class="er-header" style="background: rgba(239,68,68,0.08); color: var(--danger);"><i class="bi bi-table"></i> mkt_ideas <span class="badge badge-red" style="margin-left: auto;">Nueva</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID DEFAULT gen_random_uuid()</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">title</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">category</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">notes</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">score</span><span class="col-type">INTEGER DEFAULT 50</span><span></span></div>
+        <div class="er-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMPTZ DEFAULT NOW()</span><span></span></div>
+      </div>
+
+      <!-- mkt_kw_lists — NUEVA -->
+      <div class="er-table" style="border: 1px solid rgba(239,68,68,0.3);">
+        <div class="er-header" style="background: rgba(239,68,68,0.08); color: var(--danger);"><i class="bi bi-table"></i> mkt_kw_lists <span class="badge badge-red" style="margin-left: auto;">Nueva</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID DEFAULT gen_random_uuid()</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">name</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">keywords</span><span class="col-type">JSONB DEFAULT '[]'</span><span></span></div>
+        <div class="er-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMPTZ DEFAULT NOW()</span><span></span></div>
+      </div>
+
+      <!-- mkt_kw_tracked — NUEVA -->
+      <div class="er-table" style="border: 1px solid rgba(239,68,68,0.3);">
+        <div class="er-header" style="background: rgba(239,68,68,0.08); color: var(--danger);"><i class="bi bi-table"></i> mkt_kw_tracked <span class="badge badge-red" style="margin-left: auto;">Nueva</span></div>
+        <div class="er-row"><span class="col-name">id</span><span class="col-type">UUID DEFAULT gen_random_uuid()</span><span class="col-pk">PK</span></div>
+        <div class="er-row"><span class="col-name">keyword</span><span class="col-type">TEXT NOT NULL</span><span></span></div>
+        <div class="er-row"><span class="col-name">product_title</span><span class="col-type">TEXT</span><span></span></div>
+        <div class="er-row"><span class="col-name">position</span><span class="col-type">INTEGER</span><span></span></div>
+        <div class="er-row"><span class="col-name">history</span><span class="col-type">JSONB DEFAULT '[]'</span><span></span></div>
+        <div class="er-row"><span class="col-name">last_check</span><span class="col-type">TIMESTAMPTZ</span><span></span></div>
+        <div class="er-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMPTZ DEFAULT NOW()</span><span></span></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; padding: 16px; background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.2); border-radius: 10px; font-size: 13px; color: var(--text-muted);">
+      <strong style="color: var(--purple);">SQL para tablas nuevas:</strong> Hoku debe generar el SQL y agregarlo a <code>supabase-tables.sql</code>. Tambien agregar las tablas nuevas al array <code>allowed</code> en <code>app/api/data/route.ts</code> (actualmente: mkt_searches, mkt_products, mkt_niches, mkt_competitors, mkt_reports, mkt_tracker, mkt_alerts, mkt_api_logs — faltan: mkt_ideas, mkt_kw_lists, mkt_kw_tracked).
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 5: FASES DE IMPLEMENTACION
+     ═══════════════════════════════════════════════ -->
+<div class="section" id="fases">
+  <div class="card">
+    <h2><i class="bi bi-kanban" style="color: var(--warning)"></i> Fases de Implementacion</h2>
+
+    <div class="phase-timeline">
+      <div class="phase-item phase-1">
+        <div class="phase-num" style="color: var(--danger);">FASE 1</div>
+        <div class="phase-name">Cimientos</div>
+        <div class="phase-cost">~8% sesion</div>
+      </div>
+      <div class="phase-item phase-2">
+        <div class="phase-num" style="color: var(--warning);">FASE 2</div>
+        <div class="phase-name">Conexiones</div>
+        <div class="phase-cost">~6% sesion</div>
+      </div>
+      <div class="phase-item phase-3">
+        <div class="phase-num" style="color: var(--info);">FASE 3</div>
+        <div class="phase-name">Migracion</div>
+        <div class="phase-cost">~9% sesion</div>
+      </div>
+      <div class="phase-item phase-4">
+        <div class="phase-num" style="color: var(--purple);">FASE 4</div>
+        <div class="phase-name">Benchmark</div>
+        <div class="phase-cost">~5% sesion (futuro)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 1 -->
+  <div class="card priority-1">
+    <h2><span class="badge badge-red">FASE 1</span> Cimientos — Dejar de ser isla (~8%)</h2>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px;">Minimo viable para que la plataforma se sienta conectada. Sin esto, todo lo demas es cosmetico.</p>
+    <table>
+      <thead><tr><th>#</th><th>Tarea</th><th>Archivos</th><th>%</th><th>User Story</th></tr></thead>
+      <tbody>
+        <tr><td>1.1</td><td>Auto-seed al primer visit (si KPIs = 0, llamar /api/seed)</td><td><code>dashboard/page.tsx</code></td><td>~1%</td><td>US-03</td></tr>
+        <tr><td>1.2</td><td>Guardar cada busqueda en <code>mkt_searches</code></td><td><code>products/page.tsx</code>, <code>api-client.ts</code></td><td>~2%</td><td>US-01</td></tr>
+        <tr><td>1.3</td><td>Auto-snapshot: guardar productos de cada busqueda en <code>mkt_products</code></td><td><code>products/page.tsx</code>, <code>api/snapshot/route.ts</code></td><td>~2%</td><td>US-01</td></tr>
+        <tr><td>1.4</td><td>KPIs con datos reales + fallback inteligente (si 0, mostrar "Busca para empezar")</td><td><code>dashboard/page.tsx</code></td><td>~1%</td><td>US-03</td></tr>
+        <tr><td>1.5</td><td>Categorias trending desde MeLi API real (no hardcoded)</td><td><code>dashboard/page.tsx</code>, <code>meli-client.ts</code></td><td>~2%</td><td>US-03</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 12px; font-size: 12px; color: var(--success);">
+      <strong>Resultado:</strong> Dashboard con numeros reales, busquedas se guardan, productos se persisten. La plataforma ya no se siente vacia.
+    </div>
+  </div>
+
+  <!-- FASE 2 -->
+  <div class="card priority-2">
+    <h2><span class="badge badge-yellow">FASE 2</span> Conexiones entre paginas (~6%)</h2>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px;">Botones que cruzan paginas. Esto es lo que hace Helium 10 especial.</p>
+    <table>
+      <thead><tr><th>#</th><th>Tarea</th><th>Archivos</th><th>%</th><th>User Story</th></tr></thead>
+      <tbody>
+        <tr><td>2.1</td><td>Boton "Trackear" en Products &rarr; agrega a <code>mkt_tracker</code></td><td><code>products/page.tsx</code>, <code>tracker/page.tsx</code></td><td>~2%</td><td>US-01</td></tr>
+        <tr><td>2.2</td><td>Boton "Analizar con IA" en Products &rarr; genera reporte y guarda</td><td><code>products/page.tsx</code>, <code>api/analyze/route.ts</code></td><td>~1%</td><td>US-02</td></tr>
+        <tr><td>2.3</td><td>Niches &rarr; "Crear estrategia" lleva a Strategy Builder prellenado</td><td><code>niches/page.tsx</code>, <code>strategy/page.tsx</code></td><td>~1%</td><td>US-06</td></tr>
+        <tr><td>2.4</td><td>Competitors &rarr; "Monitorear" guarda en Supabase + opcion crear alerta</td><td><code>competitors/page.tsx</code>, <code>alerts/page.tsx</code></td><td>~1%</td><td>US-05</td></tr>
+        <tr><td>2.5</td><td>KW Lists &rarr; "Usar en Listing" lleva a Listing Builder con keywords</td><td><code>kw-lists/page.tsx</code>, <code>listing-builder/page.tsx</code></td><td>~1%</td><td>US-07</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 12px; font-size: 12px; color: var(--warning);">
+      <strong>Resultado:</strong> Flujo Helium 10: buscar &rarr; trackear &rarr; analizar &rarr; crear listing. Las herramientas se hablan entre si.
+    </div>
+  </div>
+
+  <!-- FASE 3 -->
+  <div class="card priority-3">
+    <h2><span class="badge badge-blue">FASE 3</span> Migracion localStorage &rarr; Supabase (~9%)</h2>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px;">Datos que hoy se pierden al limpiar browser pasan a persistir en Supabase.</p>
+    <table>
+      <thead><tr><th>#</th><th>Tarea</th><th>Archivos</th><th>%</th><th>User Story</th></tr></thead>
+      <tbody>
+        <tr><td>3.1</td><td>Crear 7 tablas nuevas en Supabase + actualizar SQL</td><td><code>supabase-tables.sql</code>, <code>api/data/route.ts</code></td><td>~1%</td><td>US-04, US-08</td></tr>
+        <tr><td>3.2</td><td>Migrar Ideas: localStorage &rarr; <code>mkt_ideas</code></td><td><code>ideas/page.tsx</code></td><td>~2%</td><td>US-04</td></tr>
+        <tr><td>3.3</td><td>Migrar KW Lists: localStorage &rarr; <code>mkt_kw_lists</code></td><td><code>kw-lists/page.tsx</code></td><td>~2%</td><td>US-04</td></tr>
+        <tr><td>3.4</td><td>Migrar KW Tracker: localStorage &rarr; <code>mkt_kw_tracked</code></td><td><code>kw-tracker/page.tsx</code></td><td>~2%</td><td>US-04</td></tr>
+        <tr><td>3.5</td><td>Migrar Alerts: localStorage &rarr; <code>mkt_alerts</code></td><td><code>alerts/page.tsx</code></td><td>~2%</td><td>US-04</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 12px; font-size: 12px; color: var(--info);">
+      <strong>Resultado:</strong> Datos persisten entre sesiones y dispositivos. La plataforma se siente profesional.
+    </div>
+  </div>
+
+  <!-- FASE 4 -->
+  <div class="card" style="border-left: 3px solid var(--purple);">
+    <h2><span class="badge badge-purple">FASE 4</span> (Futuro) OAuth MeLi + Placeholders (~5%+)</h2>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px;">Depende de aprobacion de app en developers.mercadolibre.cl.</p>
+    <table>
+      <thead><tr><th>#</th><th>Tarea</th><th>Requisito</th></tr></thead>
+      <tbody>
+        <tr><td>4.1</td><td>Activar OAuth MeLi: conectar <code>meli-oauth.ts</code> en produccion</td><td>App aprobada en MeLi developers</td></tr>
+        <tr><td>4.2</td><td>Implementar Ads Manager (basico)</td><td>Diseno de Panchita</td></tr>
+        <tr><td>4.3</td><td>Implementar Market Tracker 360</td><td>Diseno de Panchita</td></tr>
+        <tr><td>4.4</td><td>Implementar Follow-Up Reviews</td><td>OAuth (acceso a ordenes)</td></tr>
+        <tr><td>4.5</td><td>Implementar Influencers</td><td>API externa (Instagram/TikTok)</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 12px; font-size: 12px; color: var(--purple);">
+      <strong>Resultado:</strong> Datos 100% reales, 0 placeholders. Feature parity con Nubimetrics.
+    </div>
+  </div>
+
+  <!-- Resumen costos -->
+  <div class="card" style="background: linear-gradient(135deg, rgba(45,212,191,0.06), rgba(139,92,246,0.06));">
+    <h2><i class="bi bi-calculator" style="color: var(--primary)"></i> Resumen de Costos</h2>
+    <div class="grid-3" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="kpi-mini" style="border-color: var(--danger);"><div class="value" style="color: var(--danger);">~8%</div><div class="label">Fase 1: Cimientos</div></div>
+      <div class="kpi-mini" style="border-color: var(--warning);"><div class="value" style="color: var(--warning);">~6%</div><div class="label">Fase 2: Conexiones</div></div>
+      <div class="kpi-mini" style="border-color: var(--info);"><div class="value" style="color: var(--info);">~9%</div><div class="label">Fase 3: Migracion</div></div>
+      <div class="kpi-mini" style="border-color: var(--primary);"><div class="value" style="color: var(--primary);">~23%</div><div class="label">Total F1-F3</div></div>
+    </div>
+    <p style="font-size: 12px; color: var(--text-dim); margin-top: 12px; text-align: center;">Modelo recomendado: <strong>Opus 200K</strong> — Suficiente contexto para multi-archivo sin el costo de 1M.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 6: CHECKLIST
+     ═══════════════════════════════════════════════ -->
+<div class="section" id="checklist">
+  <div class="card">
+    <h2><i class="bi bi-clipboard-check" style="color: var(--success)"></i> Checklist para Hoku</h2>
+
+    <h3>Fase 1 — Cimientos</h3>
+    <ul class="checklist">
+      <li><i class="bi bi-square check-pending"></i> Dashboard: auto-seed si KPIs = 0 (llamar /api/seed una vez)</li>
+      <li><i class="bi bi-square check-pending"></i> Products: al buscar, guardar query en <code>mkt_searches</code> via <code>dataInsert</code></li>
+      <li><i class="bi bi-square check-pending"></i> Products: al recibir resultados, guardar primeros 10 productos en <code>mkt_products</code> via <code>/api/snapshot</code></li>
+      <li><i class="bi bi-square check-pending"></i> Dashboard KPIs: mostrar conteos reales, si 0 mostrar "Busca para empezar" con link</li>
+      <li><i class="bi bi-square check-pending"></i> Dashboard trending: llamar <code>meliCategories()</code> + <code>meliCategoryTrends()</code> en vez de array hardcoded</li>
+      <li><i class="bi bi-square check-pending"></i> Verificar que <code>SUPABASE_SERVICE_KEY</code> esta en env vars de Amplify</li>
+    </ul>
+
+    <h3>Fase 2 — Conexiones</h3>
+    <ul class="checklist">
+      <li><i class="bi bi-square check-pending"></i> Products: agregar boton "Trackear" por producto &rarr; <code>POST /api/data</code> a <code>mkt_tracker</code></li>
+      <li><i class="bi bi-square check-pending"></i> Products: agregar boton "Analizar IA" por producto &rarr; <code>POST /api/analyze</code> + guardar en <code>mkt_reports</code></li>
+      <li><i class="bi bi-square check-pending"></i> Niches: boton "Crear estrategia" &rarr; navegar a <code>/dashboard/strategy?niche=keyword</code></li>
+      <li><i class="bi bi-square check-pending"></i> Strategy: leer query param <code>niche</code> y prellenar campo producto</li>
+      <li><i class="bi bi-square check-pending"></i> Competitors: boton "Monitorear" &rarr; guardar en <code>mkt_competitors</code></li>
+      <li><i class="bi bi-square check-pending"></i> Competitors: boton "Crear alerta" &rarr; navegar a <code>/dashboard/alerts?seller=id</code></li>
+      <li><i class="bi bi-square check-pending"></i> KW Lists: boton "Usar en Listing" &rarr; navegar a <code>/dashboard/listing-builder?keywords=...</code></li>
+      <li><i class="bi bi-square check-pending"></i> Listing Builder: leer query param <code>keywords</code> y prellenar campo</li>
+    </ul>
+
+    <h3>Fase 3 — Migracion localStorage &rarr; Supabase</h3>
+    <ul class="checklist">
+      <li><i class="bi bi-square check-pending"></i> Crear tablas: <code>mkt_tracker</code>, <code>mkt_alerts</code>, <code>mkt_api_logs</code>, <code>mkt_ideas</code>, <code>mkt_kw_lists</code>, <code>mkt_kw_tracked</code></li>
+      <li><i class="bi bi-square check-pending"></i> Actualizar <code>allowed</code> en <code>app/api/data/route.ts</code> con las 7 tablas nuevas</li>
+      <li><i class="bi bi-square check-pending"></i> Ideas: reemplazar localStorage por <code>dataQuery/dataInsert('mkt_ideas')</code></li>
+      <li><i class="bi bi-square check-pending"></i> KW Lists: reemplazar localStorage por <code>dataQuery/dataInsert('mkt_kw_lists')</code></li>
+      <li><i class="bi bi-square check-pending"></i> KW Tracker: reemplazar localStorage por <code>dataQuery/dataInsert('mkt_kw_tracked')</code></li>
+      <li><i class="bi bi-square check-pending"></i> Alerts: reemplazar localStorage por <code>dataQuery/dataInsert('mkt_alerts')</code></li>
+      <li><i class="bi bi-square check-pending"></i> Crear indices para tablas nuevas (keyword, meli_id)</li>
+    </ul>
+
+    <h3>Generales</h3>
+    <ul class="checklist">
+      <li><i class="bi bi-square check-pending"></i> Build exitoso antes de cada commit</li>
+      <li><i class="bi bi-square check-pending"></i> Tests existentes siguen pasando (22 tests)</li>
+      <li><i class="bi bi-square check-pending"></i> No romper paginas que ya funcionan (Calculator, Learn, Reports)</li>
+      <li><i class="bi bi-square check-pending"></i> Mobile responsive: verificar 320px, 768px, 1024px</li>
+      <li><i class="bi bi-square check-pending"></i> Commits descriptivos en espanol</li>
+      <li><i class="bi bi-square check-pending"></i> No push sin build exitoso</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 7: HANDOFF
+     ═══════════════════════════════════════════════ -->
+<div class="section" id="handoff">
+  <div class="handoff-box">
+    <h2 style="margin-bottom: 16px;">
+      <span style="font-size: 24px;">🐕</span> Panchita &rarr; <span style="font-size: 24px;">🐾</span> Hoku — Handoff Marketplace v4
+    </h2>
+    <div style="font-size: 14px; color: var(--text-muted); line-height: 1.8;">
+      <p><strong>Maqueta/RFP:</strong> <code>~/Downloads/maquetas/marketplace/2026-03-25-marketplace-rfp-conexiones.html</code></p>
+      <p><strong>Benchmark:</strong> 3 competidores (Helium 10, Jungle Scout, Nubimetrics)</p>
+      <p><strong>User Stories:</strong> 8 historias con criterios de aceptacion</p>
+      <p><strong>Modelo datos:</strong> 5 tablas existentes + 7 tablas nuevas = 12 tablas</p>
+      <p><strong>Fases:</strong> 4 fases, 18 tareas</p>
+      <p style="margin-top: 12px;"><strong style="color: var(--primary);">Prioridad de ejecucion:</strong></p>
+      <ol style="padding-left: 20px; margin-top: 8px;">
+        <li><strong style="color: var(--danger);">CRITICO:</strong> Fase 1 — Cimientos (auto-seed, guardar busquedas, snapshots, KPIs reales)</li>
+        <li><strong style="color: var(--warning);">SIGUIENTE:</strong> Fase 2 — Conexiones (botones cruzados entre paginas)</li>
+        <li><strong style="color: var(--info);">NICE TO HAVE:</strong> Fase 3 — Migracion localStorage a Supabase</li>
+        <li><strong style="color: var(--purple);">FUTURO:</strong> Fase 4 — OAuth MeLi + placeholders</li>
+      </ol>
+      <p style="margin-top: 16px;"><strong style="color: var(--warning);">Modelo recomendado:</strong> Opus 200K (suficiente contexto, menor costo que 1M)</p>
+      <p><strong style="color: var(--warning);">Costo estimado F1-F3:</strong> ~23% sesion</p>
+      <p style="margin-top: 16px; padding: 12px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px;">
+        <strong style="color: var(--danger);">Pregunta bloqueante:</strong> Guillermo, tienes la app aprobada en developers.mercadolibre.cl? Sin eso, Fase 4 (datos 100% reales) queda bloqueada. Fases 1-3 funcionan con la API publica sin OAuth.
+      </p>
+    </div>
+  </div>
+
+  <!-- Sources -->
+  <div class="card" style="margin-top: 16px;">
+    <h3 style="font-size: 13px; color: var(--text-dim);"><i class="bi bi-link-45deg"></i> Fuentes del Benchmark</h3>
+    <ul style="font-size: 12px; color: var(--text-dim); padding-left: 20px; line-height: 2;">
+      <li>Helium 10 Features 2026 — revenuegeeks.com/helium10-features/</li>
+      <li>Helium 10 Pricing 2026 — revenuegeeks.com/helium-10-pricing/</li>
+      <li>Helium 10 Cerebro Review — wfeed.in/2026/03/helium-10-cerebro-tool-review</li>
+      <li>Jungle Scout Review 2026 — demandsage.com/jungle-scout-review/</li>
+      <li>Jungle Scout Features — support.junglescout.com</li>
+      <li>Nubimetrics — nubimetrics.com/en/</li>
+      <li>Nubimetrics Competencia — nubimetrics.com/producto/competencia</li>
+      <li>Nubimetrics en MeLi Partners — centrodepartners.mercadolibre.cl/apps/nubimetrics</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ JS: Tab Navigation ═══ -->
+<script>
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>

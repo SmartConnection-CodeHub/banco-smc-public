@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🏢 Holding · banco</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;min-height:100vh;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%);pointer-events:none;z-index:0}.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}
+.wip{display:inline-block;font-size:9.5px;padding:3px 10px;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);border-radius:30px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(251,191,36,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.section{display:none}.section.active{display:block}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;font-weight:600;margin-left:auto}
+.stage-wip{background:rgba(251,191,36,.12);color:#fbbf24}
+.stage-live{background:rgba(0,229,176,.15);color:#00e5b0}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}.info-meta b{color:#f1f5f9}
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.spa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.spa{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}
+.spa-name{font-size:14px;font-weight:700;color:#00e5b0;margin-bottom:4px}
+.spa-status{font-size:10px;padding:2px 7px;background:rgba(15,22,35,.8);border:1px solid rgba(255,255,255,.06);border-radius:30px;color:#94a3b8;display:inline-block;margin-bottom:6px}
+.spa-info{font-size:11px;color:#94a3b8;line-height:1.5}
+.spa-info b{color:#f1f5f9}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.form{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center}
+.form-name{font-size:14px;font-weight:800;color:#00e5b0;margin-bottom:3px}
+.form-desc{font-size:10.5px;color:#94a3b8}
+.matrix{width:100%;border-collapse:collapse;font-size:11px;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden}
+.matrix th{background:rgba(0,229,176,.08);color:#00e5b0;padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+.matrix td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1}
+.matrix tr:hover{background:rgba(0,229,176,.03)}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.doc{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;text-decoration:none;color:#cbd5e1;display:block;transition:all .15s}
+.doc:hover{border-color:rgba(0,229,176,.3);transform:translateY(-2px)}
+.doc-icon{font-size:18px;margin-bottom:6px}
+.doc-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.doc-date{font-size:10px;color:#7dd3fc;font-family:'JetBrains Mono',monospace}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / Holding</div>
+<h1>🏢 Holding · panel tributario</h1>
+<p class="subtitle">Maqueta WIP · consolidación 4 SpA · Controller IA + Gladys</p>
+<span class="wip">⏳ Maqueta · panel objetivo holding.smconnection.cl</span>
+<div class="rfp"><b>📋 RFP:</b> Tras reunión Gladys (07-may-2026) Guillermo necesita consolidar 4 SpA (SMC · Kanki · Marketplace · smc-XPort) en un panel tributario único. Agente Controller IA prepara F29 mensual + F22 anual + conciliación SII↔banco↔MeLi↔MP. <b>Estado:</b> agente Controller listo · maqueta en diseño.</div>
+
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="amb">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">💻</span><span class="info-name">Maqueta local</span><span class="info-stage stage-wip">WIP</span></div><div class="info-meta">Diseño en curso · estructura panel tributario consolidado</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🚀</span><span class="info-name">PROD (futuro)</span><span class="info-stage stage-wip">Pending</span></div><div class="info-meta"><b>Objetivo:</b> <code>holding.smconnection.cl</code><br><b>Stack:</b> Next.js + Supabase RLS</div></div>
+</div>
+</div>
+
+<div class="section" id="inf">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🗄️</span><span class="info-name">Supabase</span></div><div class="info-meta"><b>Tablas:</b> spa · facturas · gastos · conciliacion · retiros<br><b>RLS:</b> por rol (Guille · Martín · Javier · Gladys · Bárbara)</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📡</span><span class="info-name">SII Chile</span></div><div class="info-meta"><b>Acceso:</b> Puppeteer scraping (mientras no haya API)<br><b>F29/F22:</b> descarga + parsing</div></div>
+</div>
+</div>
+
+<div class="section" id="cnx">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🏦</span><span class="info-name">Banco (cartolas)</span></div><div class="info-meta">CSV manual hasta API · conciliación contra SII</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🛒</span><span class="info-name">MercadoLibre</span></div><div class="info-meta">Ventas + comisiones · cruz con DTE emitido</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">💳</span><span class="info-name">MercadoPago</span></div><div class="info-meta">Transferencias · pagos · retenciones</div></div>
+</div>
+</div>
+
+<div class="section" id="doc">
+<div class="doc-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-holding.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<a class="doc" href="2026-05-07_153400-reunion-gladys-smc.html"><div class="doc-icon">📋</div><div class="doc-name">Reunión Gladys 7-may</div><div class="doc-date">2026-05-07 · 15:34</div></a>
+<a class="doc" href="2026-05-07_151400-holding-kanki-magazine.html"><div class="doc-icon">📊</div><div class="doc-name">Holding · Kanki Magazine</div><div class="doc-date">2026-05-07 · 15:14</div></a>
+<a class="doc" href="2026-05-07_143100-holding-smconnection.html"><div class="doc-icon">🏢</div><div class="doc-name">Holding SmartConnection</div><div class="doc-date">2026-05-07 · 14:31</div></a>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">🏢 4 SpA del holding</span></div>
+<div class="tbl-desc">Las sociedades que viven bajo el holding · cada una con dueños y estado tributario propio.</div>
+<div class="spa-grid">
+<div class="spa"><div class="spa-name">SMC SpA</div><span class="spa-status">100% Guillermo · OPERANDO</span><div class="spa-info"><b>Giros:</b> SAP · IA · Broker · Cruzado<br><b>Clientes:</b> Cencosud · Parque · MeLi · etc</div></div>
+<div class="spa"><div class="spa-name">Kanki SpA</div><span class="spa-status">50/50 Guille+Martín · EN CONSTITUCIÓN</span><div class="spa-info"><b>Capital:</b> $2.245.284<br><b>Giro:</b> e-commerce streetwear B2C</div></div>
+<div class="spa"><div class="spa-name">Marketplace SMC SpA</div><span class="spa-status">Guille+Javier · FUTURA</span><div class="spa-info"><b>Canales:</b> MeLi · B2G · B2B<br><b>Equity:</b> por definir</div></div>
+<div class="spa"><div class="spa-name">smc-XPort SpA</div><span class="spa-status">Por definir · DIFERIDA</span><div class="spa-info"><b>Función:</b> importadora<br><b>Trigger:</b> Kanki + Marketplace con pulso 6+ meses</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">📋 Formularios SII por mes</span></div>
+<div class="tbl-desc">Lo que Controller IA prepara · Gladys firma.</div>
+<div class="form-grid">
+<div class="form"><div class="form-name">F29</div><div class="form-desc">Mensual · IVA · día 12</div></div>
+<div class="form"><div class="form-name">F22</div><div class="form-desc">Anual · renta · abril</div></div>
+<div class="form"><div class="form-name">PPM</div><div class="form-desc">Mensual · pago provisional</div></div>
+<div class="form"><div class="form-name">F30</div><div class="form-desc">Previsionales · trabajadores</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">🔄 Matriz facturación cruzada N×N</span></div>
+<div class="tbl-desc">Cómo se factura entre SpA del holding · todas son partes relacionadas (Art. 41 E LIR).</div>
+<table class="matrix">
+<thead><tr><th>DE \ A</th><th>SMC</th><th>Kanki</th><th>Marketplace</th><th>smc-XPort</th></tr></thead>
+<tbody>
+<tr><td><b>SMC</b></td><td>—</td><td>Servicios IA · plataforma</td><td>Servicios IA · multi-canal</td><td>Sourcing IA</td></tr>
+<tr><td><b>Kanki</b></td><td>Comisión canal</td><td>—</td><td>Comisión branding</td><td>—</td></tr>
+<tr><td><b>Marketplace</b></td><td>Comisión canal</td><td>Servicio canal B2B</td><td>—</td><td>—</td></tr>
+<tr><td><b>smc-XPort</b></td><td>Equipos importados</td><td>Mercadería streetwear</td><td>Mercadería multi-categoría</td><td>—</td></tr>
+</tbody>
+</table>
+<div style="font-size:10.5px;color:#94a3b8;margin-top:8px">⚠️ Toda factura cruzada requiere: contrato escrito · precio mercado documentado · DTE 33 aceptado · bitácora uso/servicio</div>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · Holding · 5 tabs · 3 tablas · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← maestro</a></footer>
+</div>
+<script>function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}</script>
+</body></html>

@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kick-off Stack OSS — Smart Connection · 31-03-2026</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f0f2f5;
+    padding: 32px 16px;
+    min-height: 100vh;
+  }
+  .email-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #060912 0%, #0a1628 50%, #0f2040 100%);
+    padding: 40px 40px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 60% 40%, rgba(0,229,176,0.08) 0%, transparent 60%);
+  }
+  .header-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #00e5b0;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .header-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+  }
+  .accent-line {
+    width: 48px;
+    height: 3px;
+    background: #00e5b0;
+    margin: 16px auto 0;
+    border-radius: 2px;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 32px 40px;
+    border-bottom: 1px solid #f0f2f5;
+  }
+  .section:last-child { border-bottom: none; }
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* PROJECT BOX */
+  .project-box {
+    background: linear-gradient(135deg, #060912, #0a1628);
+    border: 1px solid rgba(0,229,176,0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .project-box h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+  .project-box .obj {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+  .project-box .obj span {
+    color: #00e5b0;
+    font-weight: 600;
+  }
+
+  /* INFO ROW */
+  .info-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .info-chip {
+    background: rgba(0,229,176,0.08);
+    border: 1px solid rgba(0,229,176,0.2);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: #00e5b0;
+    font-weight: 600;
+  }
+
+  /* AGENTS GRID */
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .agent-card {
+    background: #060912;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .agent-emoji { font-size: 22px; display: block; margin-bottom: 6px; }
+  .agent-name { font-size: 11px; font-weight: 700; color: #f1f5f9; display: block; margin-bottom: 3px; }
+  .agent-role { font-size: 9px; color: #64748b; line-height: 1.3; }
+
+  /* ARCH DIAGRAM */
+  .arch {
+    background: #060912;
+    border-radius: 10px;
+    padding: 24px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 12px;
+  }
+  .arch-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 8px;
+  }
+  .arch-box {
+    background: rgba(0,229,176,0.08);
+    border: 1px solid rgba(0,229,176,0.25);
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: #00e5b0;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .arch-box.red { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.25); color: #f87171; }
+  .arch-box.yellow { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.25); color: #fbbf24; }
+  .arch-box.gray { background: rgba(100,116,139,0.15); border-color: rgba(100,116,139,0.3); color: #94a3b8; }
+  .arch-arrow {
+    color: #475569;
+    font-size: 14px;
+    padding: 0 6px;
+  }
+  .arch-label { font-size: 10px; color: #475569; margin-left: 8px; }
+  .arch-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 12px 0; }
+
+  /* COMPLETADO / PENDIENTE */
+  .status-block { margin-bottom: 24px; }
+  .status-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .status-icon { font-size: 18px; }
+
+  .item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border-left: 3px solid transparent;
+  }
+  .item.done { border-left-color: #10b981; }
+  .item.pending-p1 { border-left-color: #ef4444; }
+  .item.pending-p2 { border-left-color: #f59e0b; }
+  .item.pending-p3 { border-left-color: #6366f1; }
+
+  .item-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .item-content { flex: 1; }
+  .item-agent {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .item-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+  }
+  .item-detail {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.6;
+  }
+  .item-detail code {
+    background: #e2e8f0;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 11px;
+    color: #334155;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-red { background: #fee2e2; color: #dc2626; }
+  .badge-yellow { background: #fef3c7; color: #d97706; }
+  .badge-blue { background: #e0e7ff; color: #4338ca; }
+  .badge-green { background: #dcfce7; color: #16a34a; }
+
+  /* KAIZEN TABLE */
+  table.kaizen {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  table.kaizen th {
+    background: #060912;
+    color: #94a3b8;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  table.kaizen td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+  }
+  table.kaizen tr:last-child td { border-bottom: none; }
+  table.kaizen tr:hover td { background: #f8fafc; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .dot-green { background: #10b981; }
+  .dot-yellow { background: #f59e0b; }
+  .dot-red { background: #ef4444; }
+
+  /* FILES */
+  .file-list { list-style: none; }
+  .file-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+  .file-list li:last-child { border-bottom: none; }
+  .file-icon { font-size: 16px; flex-shrink: 0; }
+  .file-path { font-family: monospace; font-size: 12px; color: #3b82f6; }
+  .file-desc { font-size: 11px; color: #94a3b8; }
+
+  /* NEXT STEPS */
+  .next-box {
+    background: linear-gradient(135deg, #060912, #0a1628);
+    border: 1px solid rgba(0,229,176,0.15);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .next-box h3 { font-size: 13px; font-weight: 700; color: #00e5b0; margin-bottom: 12px; }
+  .cmd {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+  }
+  .cmd .prompt { color: #00e5b0; }
+
+  /* FOOTER */
+  .footer {
+    background: #060912;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-brand { font-size: 13px; font-weight: 700; color: #ffffff; }
+  .footer-agents { font-size: 11px; color: #475569; }
+  .footer-date { font-size: 11px; color: #475569; }
+</style>
+</head>
+<body>
+
+<div class="email-wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-label">Kick-off del Proyecto</div>
+    <div class="header-title">Stack Open Source + Claude Code</div>
+    <div class="header-sub">SMART CONNECTION · 31 DE MARZO 2026</div>
+    <div class="accent-line"></div>
+  </div>
+
+  <!-- PROYECTO -->
+  <div class="section">
+    <div class="section-label">Proyecto</div>
+    <div class="project-box">
+      <h2>Continuidad sin Tokens</h2>
+      <p class="obj">Arquitectura de desarrollo que permite seguir trabajando cuando se acaban los créditos de Claude Code, usando herramientas gratuitas y locales — <span>Aider + Ollama + LiteLLM + Engram MCP</span> — con sincronización automática via <span>claude-config</span>.</p>
+      <div class="info-row">
+        <span class="info-chip">Mac M1 Pro 16GB</span>
+        <span class="info-chip">8 fases de implementación</span>
+        <span class="info-chip">~/claude-config/ ya existe</span>
+        <span class="info-chip">Ollama instalado ✓</span>
+      </div>
+    </div>
+
+    <!-- AGENTS -->
+    <div class="section-label" style="margin-top:20px">Equipo asignado</div>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <span class="agent-emoji">🔍</span>
+        <span class="agent-name">Arielito</span>
+        <span class="agent-role">Arq. técnica & ADRs</span>
+      </div>
+      <div class="agent-card">
+        <span class="agent-emoji">🐕</span>
+        <span class="agent-name">Panchita</span>
+        <span class="agent-role">Funcional & maquetas</span>
+      </div>
+      <div class="agent-card">
+        <span class="agent-emoji">🛠️</span>
+        <span class="agent-name">Pipeline</span>
+        <span class="agent-role">DevOps & sync.sh</span>
+      </div>
+      <div class="agent-card">
+        <span class="agent-emoji">🐾</span>
+        <span class="agent-name">Hoku</span>
+        <span class="agent-role">MCP & LLMOps</span>
+      </div>
+      <div class="agent-card">
+        <span class="agent-emoji">🔌</span>
+        <span class="agent-name">Integrador</span>
+        <span class="agent-role">Providers & routing</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARQUITECTURA -->
+  <div class="section">
+    <div class="section-label">Arquitectura diseñada</div>
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-box">Con créditos</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">Claude Code</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">sync.sh push</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">GitHub</div>
+      </div>
+      <hr class="arch-divider">
+      <div class="arch-row">
+        <div class="arch-box red">Sin créditos</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">Aider CLI</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">Ollama local</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">sync.sh pull</div>
+      </div>
+      <hr class="arch-divider">
+      <div class="arch-row">
+        <div class="arch-box gray">Shared brain</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">claude-config/</div>
+        <div class="arch-label">agents/ (12) + memory/ (31) + skills/</div>
+      </div>
+      <hr class="arch-divider">
+      <div class="arch-row">
+        <div class="arch-box yellow">Routing (Fase 3)</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">LiteLLM</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">simple: Ollama · medio: Groq · avanzado: Claude</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETADO -->
+  <div class="section">
+    <div class="status-title"><span class="status-icon">✅</span> Completado hoy</div>
+
+    <!-- 1. ARQUITECTURA -->
+    <div class="item done">
+      <span class="item-icon">🔍</span>
+      <div class="item-content">
+        <div class="item-agent">Arielito — Decisión arquitectónica</div>
+        <div class="item-title">Arquitectura dual-CLI diseñada y documentada</div>
+        <div class="item-detail">
+          <strong>Problema resuelto:</strong> ¿qué hacer cuando se acaban los créditos de Claude Code sin perder contexto ni workflow?<br><br>
+          <strong>Decisión final (ADR):</strong> NO routing transparente. Dos CLIs explícitas que comparten el mismo contexto via git:<br>
+          &nbsp;• <strong>Claude Code</strong> → sesiones con créditos, tareas complejas, agentes completos<br>
+          &nbsp;• <strong>Aider CLI</strong> → sesiones sin créditos, conectado a Ollama local (gratis, sin límites)<br><br>
+          <strong>Opciones descartadas:</strong><br>
+          &nbsp;• Antigravity (Electron) → no CLI, pesado, no añade valor real<br>
+          &nbsp;• Routing transparente automático → demasiado frágil, contexto diferente por CLI<br>
+          &nbsp;• OpenRouter directo en Claude Code → gasta créditos igual<br><br>
+          <strong>Branch strategy:</strong><br>
+          &nbsp;• <code>main</code> → Claude Code únicamente (producción)<br>
+          &nbsp;• <code>dev</code> → Aider por defecto (experimental)<br>
+          &nbsp;• <code>feature/*</code> → cualquiera de las dos CLIs<br><br>
+          <strong>Regla de sincronización:</strong> al cerrar sesión → <code>sync.sh push</code>. Al abrir → <code>sync.sh pull</code>. Ambas CLIs trabajan con el mismo <code>~/claude-config/</code> local.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. KAIZEN SCAN -->
+    <div class="item done">
+      <span class="item-icon">🐕</span>
+      <div class="item-content">
+        <div class="item-agent">Panchita — Kaizen scan</div>
+        <div class="item-title">Scan completo del entorno de desarrollo (datos reales)</div>
+        <div class="item-detail">
+          <strong>Herramientas dev:</strong><br>
+          &nbsp;• Claude Code v2.1.87 <span class="badge badge-green">OK</span><br>
+          &nbsp;• Ollama v0.19.0 <span class="badge badge-green">OK</span> — 3 modelos operativos<br>
+          &nbsp;• Node.js v22.14.0 <span class="badge badge-green">OK</span> — LTS actual<br>
+          &nbsp;• supabase CLI 2.75.0 <span class="badge badge-green">OK</span><br>
+          &nbsp;• Python 3.9.6 <span class="badge badge-yellow">Actualizar</span> — disponible 3.13<br>
+          &nbsp;• gh CLI 2.88.1 <span class="badge badge-yellow">Actualizar</span> — versión nueva disponible<br>
+          &nbsp;• deno 2.7.5 <span class="badge badge-yellow">Actualizar</span> — versión nueva disponible<br>
+          &nbsp;• Aider <span class="badge badge-red">No instalado</span><br>
+          &nbsp;• LiteLLM <span class="badge badge-red">No instalado</span><br>
+          &nbsp;• Engram MCP <span class="badge badge-red">No instalado</span><br><br>
+          <strong>npm outdated por proyecto:</strong><br>
+          &nbsp;• <code>smartconnection-intranet</code> → @aws-sdk (3.1014→3.1021), @sentry (10.46→10.47), @types/node (20→25 MAJOR), axios (1.13→1.14)<br>
+          &nbsp;• <code>smartconnection-marketing</code> → astro (6.0.6→6.1.2), @astrojs/node (10.0.3→10.0.4)<br>
+          &nbsp;• <code>smartconnection-marketplace</code> → next (16.2.1→16.2.2), typescript (5.9→6.0 MAJOR), vitest (4.1→4.1.2)<br>
+          &nbsp;• <code>voy-app</code> → resend (6.9→6.10) solo — <span class="badge badge-green">saludable</span><br>
+          &nbsp;• <code>infopet-next</code> → next (15→16 MAJOR), eslint (9→10 MAJOR), typescript (5→6 MAJOR) — <span class="badge badge-red">3 MAJOR críticos</span><br><br>
+          <strong style="color:#ef4444">⚠ ALERTA CRÍTICA:</strong> infopet-next <strong>deploy fallando hace 30 min</strong>. Causa probable: Next.js 15→16 MAJOR con breaking changes sin resolver. Requiere sesión dedicada urgente.<br><br>
+          <strong>claude-config sync status:</strong><br>
+          &nbsp;• Agentes: 5/12 sincronizados <span class="badge badge-red">faltan 7</span> (ABAP, FIORI, PM, INTEGRADOR, PIPELINE, CLIENTEX, COMERCIAL)<br>
+          &nbsp;• Memorias: 23/31 sincronizadas <span class="badge badge-yellow">faltan 8</span><br>
+          &nbsp;• CLAUDE.md: en sync <span class="badge badge-green">OK</span><br>
+          &nbsp;• Último push: hace 2 días
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. MAQUETA -->
+    <div class="item done">
+      <span class="item-icon">🐕</span>
+      <div class="item-content">
+        <div class="item-agent">Panchita — Diseño UX</div>
+        <div class="item-title">Maqueta Stack Dashboard — lista para implementar</div>
+        <div class="item-detail">
+          <strong>Archivo:</strong> <code>~/Downloads/maquetas/intranet/2026-03-31-stack-dashboard.html</code><br>
+          <strong>Página destino:</strong> <code>intranet.smconnection.cl/dashboard/stack</code><br><br>
+          <strong>Secciones del dashboard:</strong><br>
+          &nbsp;• <strong>5 KPI cards:</strong> proyectos activos, herramientas OK, créditos sesión, tokens estimados restantes, última sync<br>
+          &nbsp;• <strong>2 alertas críticas:</strong> infopet-next deploy fallido + claude-config desync<br>
+          &nbsp;• <strong>Proyectos con semáforo:</strong> cada proyecto muestra versión actual vs disponible, estado deploy, última actualización (con diferencial de tiempo simulado en JS)<br>
+          &nbsp;• <strong>Herramientas dev:</strong> tabla con versión, estado, comando de actualización sugerido<br>
+          &nbsp;• <strong>claude-config sync:</strong> barra progreso agentes (5/12), barra memorias (23/31), botón "Sync ahora"<br>
+          &nbsp;• <strong>Créditos IA:</strong> Claude Code 78% usado, OpenRouter saldo disponible, Groq rate limit OK, Gemini disponible, contador 18 API keys<br>
+          &nbsp;• <strong>Ollama models:</strong> llama3.2/qwen2.5-coder/mistral con tamaño, RAM estimada, botón "Cargar"<br>
+          &nbsp;• <strong>Últimos deploys:</strong> 5 proyectos con estado, plataforma, hace cuánto<br>
+          &nbsp;• <strong>Roadmap OSS:</strong> 5 fases con estado (pendiente/en progreso/completo)<br><br>
+          <strong>Diseño:</strong> dark mode premium · glassmorphism · <code>--bg-base: #060912</code> · <code>--accent: #00e5b0</code> · tokens CSS Smart Connection · responsive · simulación JS tiempo real con <code>setInterval</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. OLLAMA -->
+    <div class="item done">
+      <span class="item-icon">🛠️</span>
+      <div class="item-content">
+        <div class="item-agent">Pipeline — Instalación</div>
+        <div class="item-title">Ollama instalado + 3 modelos descargados y verificados</div>
+        <div class="item-detail">
+          <strong>Instalación:</strong> <code>brew install ollama</code> → <code>ollama serve</code> (background)<br><br>
+          <strong>Modelos instalados:</strong><br>
+          &nbsp;• <code>llama3.2:latest</code> → 2.0GB — conversacional rápido, ideal para chat general<br>
+          &nbsp;• <code>qwen2.5-coder:7b</code> → 4.7GB — especializado en código, <strong>modelo recomendado para Aider</strong><br>
+          &nbsp;• <code>mistral:latest</code> → 4.4GB — análisis, razonamiento, buena capacidad de contexto<br><br>
+          <strong>Análisis de capacidad M1 Pro 16GB:</strong><br>
+          &nbsp;• Sweet spot: modelos 7-8B (usan ~6-8GB RAM, dejan margen para el SO)<br>
+          &nbsp;• Límite práctico: 13B params con quantización Q4 (~8GB)<br>
+          &nbsp;• NO recomendado: 70B+ (no cabe en RAM, swap lentísimo)<br>
+          &nbsp;• Los 3 modelos instalados suman ~11.1GB — no correr los 3 a la vez<br><br>
+          <strong>Test realizado:</strong> <code>ollama run qwen2.5-coder:7b "escribe un hello world en TypeScript"</code> → respuesta correcta en ~2s
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. DOCUMENTO MAESTRO -->
+    <div class="item done">
+      <span class="item-icon">🔍</span>
+      <div class="item-content">
+        <div class="item-agent">Arielito — Documentación</div>
+        <div class="item-title">Documento maestro de implementación creado</div>
+        <div class="item-detail">
+          <strong>Archivo:</strong> <code>~/Claude/PROMPT-PROXIMA-SESION-AIDER-STACK.md</code><br><br>
+          <strong>Contenido completo del documento:</strong><br>
+          &nbsp;• Diagrama arquitectura Stack completo (Claude Code + Aider + Ollama + LiteLLM + Engram + Langfuse)<br>
+          &nbsp;• Diagrama flujo de agentes y memoria (cómo viaja el contexto entre sesiones)<br>
+          &nbsp;• Diagrama sincronización (push/pull lifecycle completo)<br>
+          &nbsp;• Diagrama fases de implementación con dependencias<br>
+          &nbsp;• Kaizen scan con versiones reales de todos los proyectos<br>
+          &nbsp;• <code>npm outdated</code> completo de los 5 proyectos<br>
+          &nbsp;• Plan 8 fases con <strong>comandos exactos listos para copiar/pegar</strong><br>
+          &nbsp;• Template <code>.aider.conf.yml</code> para cada proyecto<br>
+          &nbsp;• Template <code>.task-state.md</code> para handoff entre CLIs<br>
+          &nbsp;• Mapa completo agentes/memorias (qué falta sincronizar)<br>
+          &nbsp;• Reglas de colaboración Claude Code ↔ Aider (qué hace cada uno)
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. RESEARCH -->
+    <div class="item done">
+      <span class="item-icon">🐾</span>
+      <div class="item-content">
+        <div class="item-agent">Hoku — Research de herramientas OSS</div>
+        <div class="item-title">Ecosistema de herramientas existentes evaluado</div>
+        <div class="item-detail">
+          <strong>Aider CLI</strong> <span class="badge badge-green">ADOPTAR Fase 1</span><br>
+          &nbsp;Open source coding CLI. Lee todo el codebase, edita archivos, hace git commits. Funciona con Ollama local (gratis) o cualquier API (OpenRouter). Más maduro que alternativas (Continue, Cursor local).<br><br>
+          <strong>Engram MCP</strong> <span class="badge badge-green">ADOPTAR Fase 4</span><br>
+          &nbsp;"Cerebro compartido" persistente entre sesiones y entre CLIs via git. Almacena contexto, decisiones, estado de proyectos. Tanto Claude Code como Aider pueden leer/escribir el mismo brain.<br><br>
+          <strong>LiteLLM Proxy</strong> <span class="badge badge-yellow">ADOPTAR Fase 3</span><br>
+          &nbsp;Router de modelos unificado. Un endpoint local que enruta: simple→Ollama (gratis), medio→Groq (gratis con rate limit), complejo→Claude vía OpenRouter (key ya en Amplify). Permite cambiar de modelo sin tocar código.<br><br>
+          <strong>Langfuse</strong> <span class="badge badge-yellow">ADOPTAR Fase 5</span><br>
+          &nbsp;LLMOps: logs de cada llamada IA, costo por feature, latencia p50/p95, tasa de error. Self-hosted gratis. Funciona con Claude Code, Aider y cualquier provider vía LiteLLM.<br><br>
+          <strong>OpenRouter</strong> <span class="badge badge-green">DISPONIBLE</span><br>
+          &nbsp;300+ modelos vía API unificada. Key ya configurada en Amplify. Permite usar Llama, Mistral, Gemini, Claude sin cuentas separadas. Precio por token, no por suscripción.<br><br>
+          <strong>Descartados:</strong><br>
+          &nbsp;• OpenClaw / Antfarm → multi-agent scheduling, demasiado complejo para el caso de uso actual<br>
+          &nbsp;• Continue (VS Code) → solo extensión, no CLI independiente<br>
+          &nbsp;• Cursor local → cerrado, no compatible con flujo de agentes
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KAIZEN SCAN -->
+  <div class="section">
+    <div class="section-label">Kaizen scan — herramientas dev</div>
+    <table class="kaizen">
+      <thead>
+        <tr>
+          <th>Herramienta</th>
+          <th>Versión</th>
+          <th>Estado</th>
+          <th>Notas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Claude Code</td><td>v2.1.87</td><td><span class="dot dot-green"></span>OK</td><td>—</td></tr>
+        <tr><td>Ollama</td><td>v0.19.0</td><td><span class="dot dot-green"></span>OK</td><td>3 modelos instalados</td></tr>
+        <tr><td>Node.js</td><td>v22.14.0</td><td><span class="dot dot-green"></span>OK</td><td>LTS actual</td></tr>
+        <tr><td>supabase CLI</td><td>2.75.0</td><td><span class="dot dot-green"></span>OK</td><td>—</td></tr>
+        <tr><td>Python</td><td>3.9.6</td><td><span class="dot dot-yellow"></span>Actualizar</td><td>disponible 3.13</td></tr>
+        <tr><td>gh CLI</td><td>2.88.1</td><td><span class="dot dot-yellow"></span>Actualizar</td><td>versión nueva disponible</td></tr>
+        <tr><td>deno</td><td>2.7.5</td><td><span class="dot dot-yellow"></span>Actualizar</td><td>versión nueva disponible</td></tr>
+        <tr><td>Aider</td><td>—</td><td><span class="dot dot-red"></span>No instalado</td><td>Fase 1</td></tr>
+        <tr><td>LiteLLM</td><td>—</td><td><span class="dot dot-red"></span>No instalado</td><td>Fase 3</td></tr>
+        <tr><td>Engram MCP</td><td>—</td><td><span class="dot dot-red"></span>No instalado</td><td>Fase 4</td></tr>
+        <tr><td>claude-config sync</td><td>—</td><td><span class="dot dot-red"></span>Incompleto</td><td>5/12 agentes · 23/31 memorias</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PENDIENTE -->
+  <div class="section">
+    <div class="status-title"><span class="status-icon">⏳</span> Pendiente por fases</div>
+
+    <!-- FASE 1 -->
+    <div class="item pending-p1">
+      <span class="item-icon">🛠️</span>
+      <div class="item-content">
+        <div class="item-agent">Pipeline — Fase 1 <span class="badge badge-red">P1 · Primer paso</span></div>
+        <div class="item-title">Instalar Aider CLI y configurar para Ollama local</div>
+        <div class="item-detail">
+          <strong>¿Qué es Aider?</strong> CLI open source de coding que lee el codebase completo, edita archivos y hace git commits automáticos. Se conecta directamente a Ollama (sin costo, sin límites).<br><br>
+          <strong>Comandos:</strong><br>
+          <code>pip install aider-chat</code><br>
+          <code>aider --version</code> &nbsp;← verificar instalación<br><br>
+          <strong>Configuración global</strong> → crear <code>~/.aider.conf.yml</code>:<br>
+          <code>model: ollama/qwen2.5-coder:7b</code><br>
+          <code>auto-commits: true</code><br>
+          <code>git: true</code><br>
+          <code>dark-mode: true</code><br><br>
+          <strong>Test de funcionamiento:</strong><br>
+          <code>cd ~/infopet-next</code><br>
+          <code>ollama serve &amp;</code> &nbsp;← arrancar Ollama en background<br>
+          <code>aider src/app/page.tsx</code> &nbsp;← Aider lee el archivo y espera instrucciones<br><br>
+          <strong>¿Cómo se usa?</strong> En el prompt de Aider escribes en lenguaje natural: "agrega un botón de logout al header" → Aider edita los archivos y hace el commit. Sin tokens de Claude Code.
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="item pending-p1">
+      <span class="item-icon">🛠️</span>
+      <div class="item-content">
+        <div class="item-agent">Pipeline — Fase 2 <span class="badge badge-red">P1 · Crítico</span></div>
+        <div class="item-title">Completar claude-config — el puente entre las dos CLIs</div>
+        <div class="item-detail">
+          <strong>¿Por qué es crítico?</strong> <code>~/claude-config/</code> ya existe y tiene sync.sh funcionando, pero solo tiene 5/12 agentes y 23/31 memorias. Sin completarlo, Aider no tendrá acceso al contexto completo del equipo.<br><br>
+          <strong>Paso 1 — Copiar los 7 agentes faltantes:</strong><br>
+          <code>cp ~/.claude/agents/ABAP.md ~/claude-config/agents/</code><br>
+          <code>cp ~/.claude/agents/FIORI.md ~/claude-config/agents/</code><br>
+          <code>cp ~/.claude/agents/PM.md ~/claude-config/agents/</code><br>
+          <code>cp ~/.claude/agents/INTEGRADOR.md ~/claude-config/agents/</code><br>
+          <code>cp ~/.claude/agents/PIPELINE.md ~/claude-config/agents/</code><br>
+          <code>cp ~/.claude/agents/CLIENTEX.md ~/claude-config/agents/</code><br>
+          <code>cp ~/.claude/agents/COMERCIAL.md ~/claude-config/agents/</code><br><br>
+          <strong>Paso 2 — Sincronizar memorias faltantes:</strong><br>
+          <code>cp ~/.claude/projects/.../memory/*.md ~/claude-config/memory/</code><br>
+          (comparar MEMORY.md con lo que existe en claude-config/memory/)<br><br>
+          <strong>Paso 3 — Extender sync.sh para incluir:</strong><br>
+          &nbsp;• <code>~/.claude/skills/</code> → todos los skills<br>
+          &nbsp;• <code>.claudeignore</code> de cada proyecto<br>
+          &nbsp;• <code>CLAUDE.md</code> de cada proyecto activo<br><br>
+          <strong>Paso 4 — Hook Stop automático</strong> en <code>~/.claude/settings.json</code>:<br>
+          <code>"Stop": [{ "command": "cd ~/claude-config &amp;&amp; ./sync.sh push" }]</code><br>
+          → Al cerrar cualquier sesión de Claude Code, sync automático al GitHub<br><br>
+          <strong>Paso 5 — Crear .aider.conf.yml en cada proyecto:</strong><br>
+          <code>~/smartconnection-intranet/.aider.conf.yml</code><br>
+          <code>~/infopet-next/.aider.conf.yml</code><br>
+          <code>~/smartconnection-marketing/.aider.conf.yml</code><br>
+          <code>~/voy-app/.aider.conf.yml</code><br>
+          <code>~/smartconnection-marketplace/.aider.conf.yml</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="item pending-p2">
+      <span class="item-icon">🛠️</span>
+      <div class="item-content">
+        <div class="item-agent">Pipeline — Fase 3 <span class="badge badge-yellow">P2</span></div>
+        <div class="item-title">LiteLLM Proxy — router inteligente de modelos</div>
+        <div class="item-detail">
+          <strong>¿Qué resuelve?</strong> Un solo endpoint local (<code>localhost:4000</code>) que enruta automáticamente al modelo correcto según la complejidad. Tanto Claude Code como Aider apuntan a este proxy.<br><br>
+          <strong>Instalación:</strong><br>
+          <code>pip install 'litellm[proxy]'</code><br><br>
+          <strong>Crear <code>~/litellm-config.yaml</code>:</strong><br>
+          <code>model_list:</code><br>
+          <code>&nbsp;&nbsp;- model_name: fast</code><br>
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;litellm_params:</code><br>
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;model: ollama/qwen2.5-coder:7b</code> &nbsp;← gratis, local<br>
+          <code>&nbsp;&nbsp;- model_name: medium</code><br>
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;litellm_params:</code><br>
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;model: groq/llama-3.3-70b-versatile</code> &nbsp;← gratis rate limit<br>
+          <code>&nbsp;&nbsp;- model_name: advanced</code><br>
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;litellm_params:</code><br>
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;model: openrouter/anthropic/claude-sonnet-4-6</code> &nbsp;← key en Amplify<br><br>
+          <strong>Arrancar:</strong><br>
+          <code>litellm --config ~/litellm-config.yaml --port 4000</code><br><br>
+          <strong>Usar en Aider:</strong><br>
+          <code>aider --openai-api-base http://localhost:4000 --model fast</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 4 -->
+    <div class="item pending-p2">
+      <span class="item-icon">🐾</span>
+      <div class="item-content">
+        <div class="item-agent">Hoku — Fase 4 <span class="badge badge-yellow">P2</span></div>
+        <div class="item-title">Engram MCP — memoria persistente y compartida entre CLIs</div>
+        <div class="item-detail">
+          <strong>¿Qué resuelve?</strong> Ambas CLIs (Claude Code y Aider) pueden leer y escribir en el mismo "cerebro" — decisiones tomadas, contexto de proyectos, estado de tareas. Se persiste en git, no en memoria RAM.<br><br>
+          <strong>Instalación:</strong><br>
+          <code>npm install -g @empathize/engram-mcp</code><br><br>
+          <strong>Agregar a <code>~/.claude/settings.json</code> en la sección mcpServers:</strong><br>
+          <code>"engram": {</code><br>
+          <code>&nbsp;&nbsp;"command": "engram-mcp",</code><br>
+          <code>&nbsp;&nbsp;"args": ["--brain-dir", "/Users/guillermogonzalezleon/engram-brain"]</code><br>
+          <code>}</code><br><br>
+          <strong>Inicializar brain repo:</strong><br>
+          <code>mkdir ~/engram-brain &amp;&amp; cd ~/engram-brain</code><br>
+          <code>git init &amp;&amp; git remote add origin git@github.com:guillermogonzalezleon-lgtm/engram-brain.git</code><br><br>
+          <strong>Resultado:</strong> Claude Code puede guardar contexto con <code>engram save "..."</code> y Aider puede recuperarlo en la próxima sesión.
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 5 -->
+    <div class="item pending-p2">
+      <span class="item-icon">🐾</span>
+      <div class="item-content">
+        <div class="item-agent">Hoku — Fase 5 <span class="badge badge-yellow">P2</span></div>
+        <div class="item-title">Herramientas complementarias del stack OSS</div>
+        <div class="item-detail">
+          <strong>Langfuse</strong> — observabilidad LLM (costos, tokens, latencia por feature):<br>
+          <code>pip install langfuse</code><br>
+          Self-hosted gratis. Dashboard con: costo por llamada, latencia p50/p95, prompts usados, errores. Conectar via LiteLLM callbacks.<br><br>
+          <strong>Tavily</strong> — búsqueda web para Aider (cuando necesite buscar docs):<br>
+          <code>pip install tavily-python</code><br>
+          API key gratuita con 1000 búsquedas/mes. Aider puede buscar documentación actualizada sin depender del contexto de entrenamiento.<br><br>
+          <strong>direnv</strong> — variables de entorno por directorio:<br>
+          <code>brew install direnv</code><br>
+          Crea <code>.envrc</code> en cada proyecto → al entrar al directorio se cargan automáticamente las env vars. Útil para API keys de Ollama, LiteLLM, Langfuse.<br><br>
+          <strong>fswatch</strong> — watcher de archivos para auto-sync memorias:<br>
+          <code>brew install fswatch</code><br>
+          Detecta cambios en <code>~/.claude/projects/.../memory/</code> → dispara <code>sync.sh push</code> automáticamente sin depender del hook Stop.<br><br>
+          <strong>repomix</strong> — empaquetar codebase para contexto de Aider:<br>
+          <code>pip install repomix</code><br>
+          Genera un único archivo con todo el código del proyecto (respetando .gitignore). Útil para darle contexto completo a Aider en proyectos grandes sin consumir RAM con cada archivo individual.
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 6 -->
+    <div class="item pending-p2">
+      <span class="item-icon">🎨</span>
+      <div class="item-content">
+        <div class="item-agent">Fiori + ABAP — Fase 6 <span class="badge badge-yellow">P2</span></div>
+        <div class="item-title">Implementar /dashboard/stack en intranet</div>
+        <div class="item-detail">
+          <strong>¿Qué es?</strong> La maqueta ya está lista. Esta fase es implementarla como página real en la intranet con datos verdaderos (no simulados).<br><br>
+          <strong>Ruta:</strong> <code>src/app/(dashboard)/stack/page.tsx</code><br>
+          <strong>URL final:</strong> <code>intranet.smconnection.cl/dashboard/stack</code><br><br>
+          <strong>ABAP — API a crear (<code>/api/stack/status</code>):</strong><br>
+          &nbsp;• Corre <code>npm outdated --json</code> en cada proyecto y retorna el resultado<br>
+          &nbsp;• Lee versiones de herramientas: <code>ollama --version</code>, <code>node --version</code>, <code>claude --version</code><br>
+          &nbsp;• Lee estado de claude-config: cuenta archivos en agents/ y memory/ vs total esperado<br>
+          &nbsp;• Lee últimos deploys desde Amplify API y Vercel API<br>
+          &nbsp;• Retorna JSON unificado con todo el estado<br><br>
+          <strong>Fiori — Página a implementar:</strong><br>
+          &nbsp;• Server Component que fetch <code>/api/stack/status</code><br>
+          &nbsp;• Renderiza las mismas secciones de la maqueta con datos reales<br>
+          &nbsp;• Revalidación cada 5 minutos (stale-while-revalidate)<br>
+          &nbsp;• Botones "Actualizar ahora" / "Sync ahora" como Client Components con Server Actions<br><br>
+          <strong>Deploy:</strong> push a main → Amplify auto-deploy → disponible en intranet
+        </div>
+      </div>
+    </div>
+
+    <!-- FASES 7-8 -->
+    <div class="item pending-p3">
+      <span class="item-icon">🛠️</span>
+      <div class="item-content">
+        <div class="item-agent">Pipeline — Fases 7 y 8 <span class="badge badge-blue">P3 · Cuando haya tiempo</span></div>
+        <div class="item-title">Automatización de calidad + Governance en Google Drive</div>
+        <div class="item-detail">
+          <strong>Fase 7 — Quality gates automáticos:</strong><br>
+          &nbsp;• Git hook <code>post-commit</code> en <code>~/claude-config/</code> → auto-push a GitHub sin tener que acordarse<br>
+          &nbsp;• <code>fswatch ~/.claude/projects/ -o | xargs -I{} ./sync.sh push</code> → daemon que sincroniza en tiempo real cada vez que Claude Code modifica una memoria<br>
+          &nbsp;• GitHub Action en <code>claude-config</code> repo: verifica que agents/ tenga exactamente 12 archivos y memory/ tenga exactamente 31 antes de aceptar el PR<br><br>
+          <strong>Fase 8 — Governance en Google Drive:</strong><br>
+          &nbsp;• Bloqueada en: <code>gcloud auth login</code> — requiere abrir browser manualmente<br>
+          &nbsp;• Una vez autenticado: script que sincroniza los 31 documentos de governance desde Supabase → Google Drive (formato Google Docs)<br>
+          &nbsp;• Resultado: <code>intranet.smconnection.cl/dashboard/governance/</code> conectado a Google Drive como fuente de verdad editable
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHIVOS CLAVE -->
+  <div class="section">
+    <div class="section-label">Archivos generados esta sesión</div>
+    <ul class="file-list">
+      <li>
+        <span class="file-icon">📄</span>
+        <div>
+          <div class="file-path">~/Claude/PROMPT-PROXIMA-SESION-AIDER-STACK.md</div>
+          <div class="file-desc">Documento maestro: arquitectura completa, plan 8 fases con comandos exactos, Kaizen scan, templates</div>
+        </div>
+      </li>
+      <li>
+        <span class="file-icon">🖼️</span>
+        <div>
+          <div class="file-path">~/Downloads/maquetas/intranet/2026-03-31-stack-dashboard.html</div>
+          <div class="file-desc">Maqueta Stack Dashboard lista para que Fiori implemente — datos reales, dark mode, glassmorphism</div>
+        </div>
+      </li>
+      <li>
+        <span class="file-icon">⚙️</span>
+        <div>
+          <div class="file-path">~/claude-config/sync.sh</div>
+          <div class="file-desc">Script existente — extender en Fase 2 para incluir skills/, .claudeignore, project CLAUDE.md</div>
+        </div>
+      </li>
+      <li>
+        <span class="file-icon">⚙️</span>
+        <div>
+          <div class="file-path">~/.claude/settings.json</div>
+          <div class="file-desc">Agregar hook Stop → auto-run sync.sh push al cerrar sesión</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- PRÓXIMA SESIÓN -->
+  <div class="section">
+    <div class="section-label">Próxima sesión — primer comando</div>
+    <div class="next-box">
+      <h3>▶ Ejecutar primero</h3>
+      <div class="cmd"><span class="prompt">$</span> pip install aider-chat &amp;&amp; aider --version</div>
+      <div class="cmd"><span class="prompt">$</span> cat ~/Claude/PROMPT-PROXIMA-SESION-AIDER-STACK.md</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>
+      <div class="footer-brand">Smart Connection</div>
+      <div class="footer-date">31 de Marzo 2026</div>
+    </div>
+    <div class="footer-agents">Pipeline 🛠️ · Arielito 🔍 · Panchita 🐕 · Hoku 🐾 · Integrador 🔌</div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="white">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Smart Connection — White Premium Theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ─────────────────────────────────────────
+   TOKENS: SPACE (dark, default)
+───────────────────────────────────────── */
+:root {
+  --bg: #060912;
+  --surface: #0a0d14;
+  --elevated: #0f1520;
+  --glass: rgba(15,22,35,0.85);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.15);
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --muted: #475569;
+  --accent: #00b4d8;
+  --accent-dark: #0090b0;
+  --gold: #f97316;
+  --font: 'Inter', system-ui, sans-serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --nav-bg: rgba(6,9,18,0.88);
+}
+
+/* ─────────────────────────────────────────
+   TOKENS: WHITE PREMIUM (light)
+───────────────────────────────────────── */
+[data-theme="white"] {
+  --bg: #f4f7ff;
+  --surface: rgba(255,255,255,0.65);
+  --glass: rgba(255,255,255,0.65);
+  --border: rgba(0,180,216,0.12);
+  --border-hover: rgba(0,180,216,0.28);
+  --text: #0f172a;
+  --text2: #475569;
+  --muted: #94a3b8;
+  --accent: #0090b0;
+  --accent-dark: #0076a8;
+  --gold: #ea6b0e;
+  --nav-bg: rgba(244,247,255,0.88);
+  color-scheme: light;
+}
+
+/* ─────────────────────────────────────────
+   RESET & BASE
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ── SPACE: starfield background ── */
+[data-theme="space"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(0,180,216,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 80%, rgba(0,229,176,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(0,180,216,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 70% at 10% 80%, rgba(74,158,255,0.05) 0%, transparent 60%);
+  animation: meshDriftSpace 25s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes meshDriftSpace {
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(20px,-15px) scale(1.02); }
+  66%  { transform: translate(-10px,20px) scale(0.98); }
+  100% { transform: translate(15px,10px) scale(1.01); }
+}
+
+/* ── WHITE PREMIUM: mesh gradient background ── */
+[data-theme="white"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(0,144,176,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 80%, rgba(0,229,176,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 60% 30%, rgba(0,144,176,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 70% at 10% 80%, rgba(0,180,216,0.03) 0%, transparent 60%);
+  animation: meshDriftWhite 20s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes meshDriftWhite {
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(15px,-10px) scale(1.015); }
+  66%  { transform: translate(-8px,18px) scale(0.985); }
+  100% { transform: translate(12px,8px) scale(1.008); }
+}
+
+/* ── WHITE PREMIUM: noise texture ── */
+[data-theme="white"] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── SPACE: noise ── */
+[data-theme="space"] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 0;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+.container { max-width: 430px; margin: 0 auto; padding: 0 20px; }
+.section { padding: 80px 0; position: relative; z-index: 1; }
+
+/* ─────────────────────────────────────────
+   TYPOGRAPHY
+───────────────────────────────────────── */
+h1, h2, h3 { line-height: 1.15; letter-spacing: -0.025em; }
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent), #00b4d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="white"] .gradient-text {
+  background: linear-gradient(135deg, #0090b0, #00b4d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.gradient-text-gold {
+  background: linear-gradient(135deg, var(--gold), #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─────────────────────────────────────────
+   GLASS CARD
+───────────────────────────────────────── */
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+[data-theme="white"] .glass-card {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 2px 24px rgba(0,144,176,0.07), 0 0 0 1px rgba(0,180,216,0.06);
+}
+.glass-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-3px);
+}
+[data-theme="space"] .glass-card:hover {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,180,216,0.1);
+}
+[data-theme="white"] .glass-card:hover {
+  box-shadow: 0 12px 40px rgba(0,144,176,0.14), 0 0 0 1px rgba(0,180,216,0.12);
+}
+
+/* ─────────────────────────────────────────
+   BADGE
+───────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  background: var(--glass);
+}
+.badge-accent {
+  border-color: rgba(0,180,216,0.25);
+  color: var(--accent);
+  background: rgba(0,180,216,0.07);
+}
+[data-theme="white"] .badge-accent {
+  border-color: rgba(0,144,176,0.2);
+  color: #0076a8;
+  background: rgba(0,144,176,0.07);
+}
+.badge-gold {
+  border-color: rgba(234,107,14,0.3);
+  color: var(--gold);
+  background: rgba(234,107,14,0.07);
+}
+.badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor;
+  animation: pulseDot 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+/* ─────────────────────────────────────────
+   BUTTONS
+───────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+  min-height: 48px;
+  font-family: var(--font);
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), #c45600);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(234,107,14,0.3);
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(234,107,14,0.4); }
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(0,144,176,0.25);
+}
+.btn-accent:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,144,176,0.35); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,144,176,0.04); }
+
+.btn-full { width: 100%; justify-content: center; }
+.btn-lg { padding: 17px 32px; font-size: 16px; border-radius: 14px; min-height: 54px; }
+
+/* ─────────────────────────────────────────
+   THEME TOGGLE — NAV INLINE
+───────────────────────────────────────── */
+#theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.tg-opt {
+  padding: 6px 11px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  transition: all 0.25s;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.tg-opt.active {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 100px;
+}
+[data-theme="white"] .tg-opt.active {
+  background: #0090b0;
+  color: #fff;
+}
+
+/* ─────────────────────────────────────────
+   NAVBAR
+───────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  padding: 14px 0;
+  transition: all 0.3s ease;
+}
+nav.scrolled {
+  background: var(--nav-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.nav-logo {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+}
+.nav-logo span { color: var(--accent); }
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+#hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: 110px 0 72px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+.hero-badge { margin-bottom: 20px; }
+.hero-title {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1.08;
+  margin-bottom: 18px;
+  letter-spacing: -0.03em;
+}
+.hero-subtitle {
+  font-size: 16px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin-bottom: 32px;
+  max-width: 340px;
+}
+.hero-ctas { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.hero-ctas .btn { width: 100%; justify-content: center; }
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+  width: 100%;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 0 12px;
+  position: relative;
+}
+.stat-item + .stat-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 10%; bottom: 10%;
+  width: 1px;
+  background: var(--border);
+}
+.stat-number {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; text-align: center; line-height: 1.4; }
+
+/* ─────────────────────────────────────────
+   BENEFIT CARDS — HORIZONTAL SCROLL
+───────────────────────────────────────── */
+#benefits { padding: 64px 0; }
+.benefits-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+  padding: 0 20px;
+}
+.benefits-label::before {
+  content: '';
+  width: 20px; height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.benefits-title {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 28px;
+  padding: 0 20px;
+}
+
+.benefits-scroll-wrap {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  gap: 14px;
+  padding: 4px 20px 16px;
+  scrollbar-width: none;
+}
+.benefits-scroll-wrap::-webkit-scrollbar { display: none; }
+
+.benefit-card {
+  scroll-snap-align: start;
+  flex: 0 0 280px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.benefit-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.benefit-icon-1 { background: rgba(0,180,216,0.1); }
+.benefit-icon-2 { background: rgba(234,107,14,0.1); }
+.benefit-icon-3 { background: rgba(34,197,94,0.1); }
+[data-theme="white"] .benefit-icon-1 { background: rgba(0,144,176,0.08); }
+[data-theme="white"] .benefit-icon-2 { background: rgba(234,107,14,0.08); }
+[data-theme="white"] .benefit-icon-3 { background: rgba(34,197,94,0.08); }
+
+.benefit-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.benefit-card p {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.benefit-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: auto;
+}
+.benefit-tag::before {
+  content: '';
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%2300b4d8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/8px no-repeat;
+  flex-shrink: 0;
+}
+[data-theme="white"] .benefit-tag::before {
+  border-color: #0090b0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%230090b0' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.scroll-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.scroll-dot {
+  width: 6px; height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  transition: all 0.3s;
+}
+.scroll-dot.active {
+  width: 20px;
+  background: var(--accent);
+}
+
+/* ─────────────────────────────────────────
+   PRICING
+───────────────────────────────────────── */
+#pricing { padding: 64px 0; }
+.pricing-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.pricing-label::before, .pricing-label::after {
+  content: '';
+  flex: 1;
+  max-width: 32px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.pricing-title {
+  font-size: 26px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 28px;
+  line-height: 1.2;
+}
+
+.pricing-card {
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #00b4d8);
+  border-radius: 2px 2px 0 0;
+}
+[data-theme="white"] .pricing-card::before {
+  background: linear-gradient(90deg, #0090b0, #00b4d8);
+}
+
+.popular-badge {
+  position: absolute;
+  top: 18px; right: 18px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, var(--gold), #c45600);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  box-shadow: 0 2px 12px rgba(234,107,14,0.3);
+}
+
+.pricing-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.pricing-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.price-amount {
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.04em;
+}
+.price-currency {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-right: 2px;
+}
+.price-period {
+  font-size: 13px;
+  color: var(--muted);
+}
+.pricing-desc {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.55;
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.features-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+.features-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.4;
+}
+.feat-check {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: rgba(0,180,216,0.12);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+[data-theme="white"] .feat-check {
+  background: rgba(0,144,176,0.1);
+}
+.feat-check svg {
+  width: 10px; height: 10px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pricing-note {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 14px;
+}
+.pricing-note strong { color: var(--text2); }
+
+/* ─────────────────────────────────────────
+   CTA FINAL
+───────────────────────────────────────── */
+#cta-final { padding: 64px 0 80px; }
+.cta-box {
+  padding: 36px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,144,176,0.06), rgba(0,180,216,0.03));
+  pointer-events: none;
+}
+[data-theme="space"] .cta-box::before {
+  background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(0,229,176,0.04));
+}
+
+.cta-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.cta-title {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  letter-spacing: -0.025em;
+}
+.cta-subtitle {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 28px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cta-trust {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  align-items: center;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.trust-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+footer {
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.footer-logo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+.footer-logo span { color: var(--accent); }
+.footer-copy {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* ─────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.delay-1 { transition-delay: 0.08s; }
+.delay-2 { transition-delay: 0.16s; }
+.delay-3 { transition-delay: 0.24s; }
+
+/* ─────────────────────────────────────────
+   CURSOR GLOW (space only)
+───────────────────────────────────────── */
+#cursor-glow {
+  position: fixed;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,180,216,0.05) 0%, transparent 70%);
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  z-index: 0;
+  transition: opacity 0.4s;
+}
+[data-theme="white"] #cursor-glow { opacity: 0; }
+
+</style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+
+<!-- ═══════════════════════════════════════
+     NAV
+════════════════════════════════════════ -->
+<nav id="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Smart <span>Connection</span></a>
+      <div id="theme-toggle" role="group" aria-label="Cambiar tema">
+        <button class="tg-opt" data-t="space" onclick="setTheme('space')">🌌 Space</button>
+        <button class="tg-opt active" data-t="white" onclick="setTheme('white')">☀️ White</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-badge fade-up">
+        <span class="badge badge-accent">
+          <span class="badge-dot"></span>
+          SaaS Factory — Chile
+        </span>
+      </div>
+
+      <h1 class="hero-title fade-up delay-1">
+        Un solo lugar.<br>
+        <span class="gradient-text">Todos tus sistemas.</span><br>
+        Todo bajo control.
+      </h1>
+
+      <p class="hero-subtitle fade-up delay-2">
+        Automatizamos tus procesos, conectamos tus sistemas y ponemos IA a trabajar por tu empresa. Sin freelancers eternos. Resultados en semanas.
+      </p>
+
+      <div class="hero-ctas fade-up delay-3">
+        <a href="#cta-final" class="btn btn-gold btn-lg">
+          Agenda un Discovery
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#benefits" class="btn btn-ghost">
+          Ver cómo funciona
+        </a>
+      </div>
+
+      <div class="hero-stats fade-up delay-3">
+        <div class="stat-item">
+          <span class="stat-number gradient-text">+40</span>
+          <span class="stat-label">Sistemas<br>conectados</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number gradient-text">72h</span>
+          <span class="stat-label">Primera<br>entrega</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number gradient-text">100%</span>
+          <span class="stat-label">Código<br>tuyo</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     BENEFITS
+════════════════════════════════════════ -->
+<section id="benefits">
+  <div class="benefits-label fade-up">Lo que obtienes</div>
+  <h2 class="benefits-title fade-up">
+    Tres cosas que<br>
+    <span class="gradient-text">cambian tu operación</span>
+  </h2>
+
+  <div class="benefits-scroll-wrap" id="benefitsScroll">
+
+    <div class="benefit-card glass-card fade-up">
+      <div class="benefit-icon benefit-icon-1">⚡</div>
+      <h3>Velocidad de implementación</h3>
+      <p>Tu primera automatización lista en 72 horas. Sin reuniones infinitas, sin documentos que nadie lee. Directo al resultado.</p>
+      <span class="benefit-tag">Entrega en semanas, no meses</span>
+    </div>
+
+    <div class="benefit-card glass-card fade-up delay-1">
+      <div class="benefit-icon benefit-icon-2">🔗</div>
+      <h3>Conexión entre sistemas</h3>
+      <p>Bsale, Jumpseller, Airtable, SAP, ERP propio — los conectamos sin que tu equipo de TI tenga que hacer nada raro.</p>
+      <span class="benefit-tag">+40 integraciones disponibles</span>
+    </div>
+
+    <div class="benefit-card glass-card fade-up delay-2">
+      <div class="benefit-icon benefit-icon-3">📈</div>
+      <h3>Crecimiento sin contratar</h3>
+      <p>La IA y la automatización hacen el trabajo de 3 personas adicionales. Escalas sin inflar la planilla ni depender de freelancers.</p>
+      <span class="benefit-tag">ROI medible desde el primer mes</span>
+    </div>
+
+  </div>
+
+  <div class="scroll-dots" id="scrollDots">
+    <div class="scroll-dot active"></div>
+    <div class="scroll-dot"></div>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PRICING
+════════════════════════════════════════ -->
+<section id="pricing">
+  <div class="container">
+    <div class="pricing-label fade-up">Inversión</div>
+    <h2 class="pricing-title fade-up">
+      Empieza sin<br>
+      <span class="gradient-text">inversión inicial</span>
+    </h2>
+
+    <div class="pricing-card glass-card fade-up">
+      <span class="popular-badge">Más popular</span>
+
+      <p class="pricing-name">SaaS Start</p>
+      <div class="pricing-price">
+        <span class="price-currency">Desde</span>
+        <span class="price-amount gradient-text">$100K</span>
+      </div>
+      <p class="price-period" style="margin-bottom: 6px; color: var(--muted); font-size: 13px;">CLP / mes — sin inversión inicial</p>
+
+      <p class="pricing-desc">
+        Plataforma operativa desde el día 1. Pagas mientras usas, sin comprometer capital en desarrollo. Ideal para PYMEs que necesitan resultados rápido.
+      </p>
+
+      <ul class="features-list">
+        <li>
+          <span class="feat-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>
+          </span>
+          Panel de control centralizado con todos tus sistemas
+        </li>
+        <li>
+          <span class="feat-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>
+          </span>
+          Automatizaciones activas desde la primera semana
+        </li>
+        <li>
+          <span class="feat-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>
+          </span>
+          Soporte en español L–V, respuesta en &lt;4 horas
+        </li>
+        <li>
+          <span class="feat-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>
+          </span>
+          Onboarding guiado — listo en 3 días hábiles
+        </li>
+        <li>
+          <span class="feat-check">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>
+          </span>
+          Sin permanencia mínima — cancelas cuando quieras
+        </li>
+      </ul>
+
+      <a href="#cta-final" class="btn btn-accent btn-full btn-lg">
+        Empezar ahora
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+
+      <p class="pricing-note">¿Proyecto a medida? <strong>Build Premium desde 80 UF.</strong> Cotizamos en 24h.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CTA FINAL
+════════════════════════════════════════ -->
+<section id="cta-final">
+  <div class="container">
+    <div class="cta-box glass-card fade-up">
+
+      <p class="cta-eyebrow">Siguiente paso</p>
+      <h2 class="cta-title">
+        ¿Listo para dejar de<br>
+        <span class="gradient-text-gold">pegar datos a mano?</span>
+      </h2>
+      <p class="cta-subtitle">
+        Agendamos un Discovery de 45 minutos. Sin costo. Diagnosticamos tu operación y te decimos exactamente qué automatizar primero.
+      </p>
+
+      <a href="https://wa.me/56912345678?text=Hola,%20quiero%20agendar%20un%20Discovery%20con%20Smart%20Connection" class="btn btn-gold btn-full btn-lg">
+        Agenda tu Discovery gratis
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+
+      <div class="cta-trust">
+        <div class="trust-item">
+          <span class="trust-dot"></span>
+          Sin compromiso — 45 min de diagnóstico gratuito
+        </div>
+        <div class="trust-item">
+          <span class="trust-dot"></span>
+          Respuesta en menos de 2 horas hábiles
+        </div>
+        <div class="trust-item">
+          <span class="trust-dot"></span>
+          Empresa chilena, equipo local, soporte en español
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-logo">Smart <span>Connection</span></span>
+      <p class="footer-copy">smconnection.cl — Santiago, Chile &copy; 2026</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+// ── Theme management ──
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelectorAll('.tg-opt').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.t === t);
+  });
+  localStorage.setItem('smc-theme', t);
+}
+
+// Init theme: default to white for this preview
+(function() {
+  const saved = localStorage.getItem('smc-theme') || 'white';
+  setTheme(saved);
+})();
+
+// ── Navbar scroll ──
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ── Cursor glow (space only) ──
+const cursorGlow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => {
+  cursorGlow.style.left = e.clientX + 'px';
+  cursorGlow.style.top = e.clientY + 'px';
+});
+
+// ── Fade-up on scroll ──
+const fadeEls = document.querySelectorAll('.fade-up');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+fadeEls.forEach(el => observer.observe(el));
+
+// ── Benefits scroll dots ──
+const scrollWrap = document.getElementById('benefitsScroll');
+const dots = document.querySelectorAll('.scroll-dot');
+if (scrollWrap && dots.length) {
+  const cards = scrollWrap.querySelectorAll('.benefit-card');
+  scrollWrap.addEventListener('scroll', () => {
+    const idx = Math.round(scrollWrap.scrollLeft / (scrollWrap.scrollWidth / cards.length));
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }, { passive: true });
+}
+</script>
+</body>
+</html>

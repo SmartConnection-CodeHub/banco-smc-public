@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing Cards — Mobile Snap + Badge Fix</title>
+<style>
+  :root {
+    --bg: #060912;
+    --bg-surface: #0a0d14;
+    --glass: rgba(15,22,35,0.85);
+    --border: rgba(255,255,255,0.06);
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --accent: #00e5b0;
+    --gold: #f97316;
+    --blue: #00b4d8;
+    --muted: #475569;
+    --font: 'Inter', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    padding: 40px 0 60px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    font-weight: 700;
+    padding: 0 20px 8px;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  /* ───────────────────────────────────
+     SECTION WRAPPER
+  ─────────────────────────────────── */
+  .section {
+    margin-bottom: 60px;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .section-title.bug  { color: #ef4444; }
+  .section-title.fix  { color: var(--accent); }
+
+  .section-desc {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--text2);
+    margin-bottom: 16px;
+    padding: 0 16px;
+    line-height: 1.5;
+  }
+
+  /* ───────────────────────────────────
+     SHARED CARD STYLES
+  ─────────────────────────────────── */
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 20px 24px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    backdrop-filter: blur(20px);
+    transition: box-shadow 0.25s;
+    flex-shrink: 0;
+  }
+  .card:hover {
+    box-shadow: 0 0 28px rgba(0,229,176,0.1);
+  }
+
+  .card-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .card-price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .card-price span {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text2);
+  }
+  .card-desc {
+    font-size: 0.78rem;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+  .card-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .card-features li {
+    font-size: 0.75rem;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-features li::before {
+    content: '✓';
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .card-cta {
+    margin-top: auto;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .card-cta:hover { opacity: 0.85; }
+
+  /* Badge base */
+  .badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .badge-accent { background: var(--accent); color: #060912; }
+  .badge-gold   { background: var(--gold);   color: #060912; }
+  .badge-gray   { background: var(--bg-surface); color: var(--text2); border: 1px solid var(--border); }
+  .badge-blue   { background: var(--blue);   color: #060912; }
+
+  /* CTA colors */
+  .cta-accent { background: var(--accent); color: #060912; }
+  .cta-gold   { background: var(--gold);   color: #060912; }
+  .cta-gray   { background: var(--bg-surface); color: var(--text); border: 1px solid var(--border); }
+  .cta-blue   { background: var(--blue);   color: #060912; }
+
+  /* ───────────────────────────────────
+     BUG SECTION — overflow: hidden
+  ─────────────────────────────────── */
+  .pricing-bug {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding: 0 20px 16px;
+    scrollbar-width: none;
+  }
+  .pricing-bug::-webkit-scrollbar { display: none; }
+
+  /* BUG: no padding-top, card overflow hidden */
+  .pricing-bug .card {
+    width: 82vw;
+    max-width: 320px;
+    scroll-snap-align: center;
+    overflow: hidden; /* ← este es el bug: corta el badge */
+  }
+
+  /* ───────────────────────────────────
+     FIX SECTION — padding-top + overflow visible
+  ─────────────────────────────────── */
+  .pricing-wrap {
+    padding-top: 20px; /* ← espacio para el badge */
+  }
+
+  .pricing-fix {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding: 0 20px 16px;
+    scrollbar-width: none;
+  }
+  .pricing-fix::-webkit-scrollbar { display: none; }
+
+  .pricing-fix .card {
+    width: 82vw;
+    max-width: 320px;
+    scroll-snap-align: center;
+    overflow: visible; /* ← fix */
+  }
+
+  /* ───────────────────────────────────
+     DOTS
+  ─────────────────────────────────── */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.2s, width 0.2s;
+    cursor: pointer;
+  }
+  .dot.active {
+    background: var(--accent);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  /* ───────────────────────────────────
+     DESKTOP GRID — 4 columnas
+  ─────────────────────────────────── */
+  @media (min-width: 900px) {
+    body { padding: 60px 0 80px; }
+
+    h1 { font-size: 2rem; }
+
+    .pricing-bug,
+    .pricing-fix {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      overflow-x: unset;
+      padding: 0 40px 0;
+      scroll-snap-type: unset;
+    }
+
+    .pricing-bug .card,
+    .pricing-fix .card {
+      width: 100%;
+      max-width: none;
+    }
+
+    .dots { display: none; }
+  }
+
+  /* ───────────────────────────────────
+     BUG/FIX indicator pill
+  ─────────────────────────────────── */
+  .indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin: 0 auto 10px;
+  }
+  .indicator-wrap { display: flex; justify-content: center; }
+  .indicator.bug { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+  .indicator.fix { background: rgba(0,229,176,0.1); color: var(--accent); border: 1px solid rgba(0,229,176,0.3); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 40px 20px;
+  }
+
+  .code-block {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 0.68rem;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 0 20px 20px;
+    overflow-x: auto;
+  }
+  .code-block .hl { color: var(--accent); }
+  .code-block .hl2 { color: #ef4444; }
+  .code-block .comment { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<h1>Pricing Cards</h1>
+<p class="section-label">Mobile Scroll Snap · Badge Fix · Desktop Grid</p>
+
+<!-- ═══════════════════════════════
+     BUG SECTION
+════════════════════════════════ -->
+<div class="section">
+  <p class="section-title bug">❌ BUG — overflow: hidden corta el badge</p>
+  <p class="section-desc">El badge tiene <code>top: -14px</code> pero la card tiene <code>overflow: hidden</code>. El badge queda cortado o invisible.</p>
+
+  <div class="indicator-wrap">
+    <span class="indicator bug">⚠ Bug visual</span>
+  </div>
+
+  <!-- BUG: sin padding-top, sin overflow visible -->
+  <div class="pricing-bug" id="bugScroll">
+    <!-- Card 1 -->
+    <div class="card">
+      <span class="badge badge-accent">Más popular</span>
+      <div class="card-name">SaaS Start</div>
+      <div class="card-price">Desde $100K <span>CLP/mes</span></div>
+      <p class="card-desc">Plataforma lista para usar, sin inversión inicial.</p>
+      <ul class="card-features">
+        <li>Setup incluido</li>
+        <li>Soporte mensual</li>
+        <li>Actualizaciones</li>
+      </ul>
+      <button class="card-cta cta-accent">Empezar ahora</button>
+    </div>
+    <!-- Card 2 -->
+    <div class="card">
+      <span class="badge badge-gold">Empezar fácil</span>
+      <div class="card-name">Discovery Sprint</div>
+      <div class="card-price">Desde $500K <span>CLP</span></div>
+      <p class="card-desc">Ordenamos tu visión antes de construir.</p>
+      <ul class="card-features">
+        <li>Diagnóstico</li>
+        <li>Prototipo funcional</li>
+        <li>Roadmap técnico</li>
+      </ul>
+      <button class="card-cta cta-gold">Agendar sprint</button>
+    </div>
+    <!-- Card 3 -->
+    <div class="card">
+      <span class="badge badge-gray">Tú eres el dueño</span>
+      <div class="card-name">Build Premium</div>
+      <div class="card-price">Desde $2M <span>CLP</span></div>
+      <p class="card-desc">Desarrollo a medida, código 100% tuyo.</p>
+      <ul class="card-features">
+        <li>Código fuente tuyo</li>
+        <li>Deploy propio</li>
+        <li>Sin lock-in</li>
+      </ul>
+      <button class="card-cta cta-gray">Cotizar</button>
+    </div>
+    <!-- Card 4 -->
+    <div class="card">
+      <span class="badge badge-blue">Todo incluido</span>
+      <div class="card-name">Project + Support</div>
+      <div class="card-price">Todo <span>incluido</span></div>
+      <p class="card-desc">Desarrollo + operación continua. Sin equipo técnico propio.</p>
+      <ul class="card-features">
+        <li>Build + Care</li>
+        <li>SLA garantizado</li>
+        <li>Escalable</li>
+      </ul>
+      <button class="card-cta cta-blue">Ver planes</button>
+    </div>
+  </div>
+  <div class="dots" id="bugDots">
+    <div class="dot active" onclick="scrollTo('bugScroll','bugDots',0)"></div>
+    <div class="dot" onclick="scrollTo('bugScroll','bugDots',1)"></div>
+    <div class="dot" onclick="scrollTo('bugScroll','bugDots',2)"></div>
+    <div class="dot" onclick="scrollTo('bugScroll','bugDots',3)"></div>
+  </div>
+
+  <div class="code-block">
+<span class="comment">/* BUG: sin padding-top en el contenedor + overflow: hidden en la card */</span>
+.pricing-grid {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  <span class="hl2">/* padding-top: 0; ← falta espacio para el badge */</span>
+}
+.card {
+  scroll-snap-align: center;
+  <span class="hl2">overflow: hidden; /* ← badge queda cortado */</span>
+}
+.badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════
+     FIX SECTION
+════════════════════════════════ -->
+<div class="section">
+  <p class="section-title fix">✅ FIX — padding-top: 20px + overflow: visible</p>
+  <p class="section-desc">El wrapper tiene <code>padding-top: 20px</code> para dar espacio al badge. La card tiene <code>overflow: visible</code>. Badge visible y correcto.</p>
+
+  <div class="indicator-wrap">
+    <span class="indicator fix">✓ Fix aplicado</span>
+  </div>
+
+  <!-- FIX: pricing-wrap agrega padding-top, overflow visible -->
+  <div class="pricing-wrap">
+    <div class="pricing-fix" id="fixScroll">
+      <!-- Card 1 -->
+      <div class="card">
+        <span class="badge badge-accent">Más popular</span>
+        <div class="card-name">SaaS Start</div>
+        <div class="card-price">Desde $100K <span>CLP/mes</span></div>
+        <p class="card-desc">Plataforma lista para usar, sin inversión inicial.</p>
+        <ul class="card-features">
+          <li>Setup incluido</li>
+          <li>Soporte mensual</li>
+          <li>Actualizaciones</li>
+        </ul>
+        <button class="card-cta cta-accent">Empezar ahora</button>
+      </div>
+      <!-- Card 2 -->
+      <div class="card">
+        <span class="badge badge-gold">Empezar fácil</span>
+        <div class="card-name">Discovery Sprint</div>
+        <div class="card-price">Desde $500K <span>CLP</span></div>
+        <p class="card-desc">Ordenamos tu visión antes de construir.</p>
+        <ul class="card-features">
+          <li>Diagnóstico</li>
+          <li>Prototipo funcional</li>
+          <li>Roadmap técnico</li>
+        </ul>
+        <button class="card-cta cta-gold">Agendar sprint</button>
+      </div>
+      <!-- Card 3 -->
+      <div class="card">
+        <span class="badge badge-gray">Tú eres el dueño</span>
+        <div class="card-name">Build Premium</div>
+        <div class="card-price">Desde $2M <span>CLP</span></div>
+        <p class="card-desc">Desarrollo a medida, código 100% tuyo.</p>
+        <ul class="card-features">
+          <li>Código fuente tuyo</li>
+          <li>Deploy propio</li>
+          <li>Sin lock-in</li>
+        </ul>
+        <button class="card-cta cta-gray">Cotizar</button>
+      </div>
+      <!-- Card 4 -->
+      <div class="card">
+        <span class="badge badge-blue">Todo incluido</span>
+        <div class="card-name">Project + Support</div>
+        <div class="card-price">Todo <span>incluido</span></div>
+        <p class="card-desc">Desarrollo + operación continua. Sin equipo técnico propio.</p>
+        <ul class="card-features">
+          <li>Build + Care</li>
+          <li>SLA garantizado</li>
+          <li>Escalable</li>
+        </ul>
+        <button class="card-cta cta-blue">Ver planes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dots" id="fixDots">
+    <div class="dot active" onclick="scrollToCard('fixScroll','fixDots',0)"></div>
+    <div class="dot" onclick="scrollToCard('fixScroll','fixDots',1)"></div>
+    <div class="dot" onclick="scrollToCard('fixScroll','fixDots',2)"></div>
+    <div class="dot" onclick="scrollToCard('fixScroll','fixDots',3)"></div>
+  </div>
+
+  <div class="code-block">
+<span class="comment">/* FIX: padding-top en el wrapper + overflow: visible en la card */</span>
+.pricing-wrap {
+  <span class="hl">padding-top: 20px; /* ← espacio para que el badge no se corte */</span>
+}
+.pricing-grid {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 16px;
+  padding: 0 20px 16px;
+}
+.card {
+  scroll-snap-align: center;
+  <span class="hl">overflow: visible; /* ← badge visible arriba */</span>
+  position: relative;
+}
+.badge {
+  position: absolute;
+  <span class="hl">top: -14px;</span>
+  left: 50%;
+  transform: translateX(-50%);
+  <span class="hl">white-space: nowrap; /* ← no romper en varias líneas */</span>
+}
+  </div>
+</div>
+
+<script>
+  // ─── Scroll helpers ───
+  function getCardWidth(scrollEl) {
+    const card = scrollEl.querySelector('.card');
+    if (!card) return 0;
+    const gap = 16;
+    return card.offsetWidth + gap;
+  }
+
+  function scrollToCard(scrollId, dotsId, index) {
+    const sc = document.getElementById(scrollId);
+    const cardW = getCardWidth(sc);
+    sc.scrollTo({ left: index * cardW, behavior: 'smooth' });
+    updateDots(dotsId, index);
+  }
+
+  // alias for bug section
+  function scrollTo(scrollId, dotsId, index) {
+    scrollToCard(scrollId, dotsId, index);
+  }
+
+  function updateDots(dotsId, activeIdx) {
+    const container = document.getElementById(dotsId);
+    if (!container) return;
+    container.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === activeIdx);
+    });
+  }
+
+  // ─── Observe scroll position → update dots ───
+  function bindScrollObserver(scrollId, dotsId) {
+    const sc = document.getElementById(scrollId);
+    if (!sc) return;
+    sc.addEventListener('scroll', () => {
+      const cardW = getCardWidth(sc);
+      if (cardW === 0) return;
+      const idx = Math.round(sc.scrollLeft / cardW);
+      updateDots(dotsId, idx);
+    }, { passive: true });
+  }
+
+  bindScrollObserver('bugScroll', 'bugDots');
+  bindScrollObserver('fixScroll', 'fixDots');
+</script>
+</body>
+</html>

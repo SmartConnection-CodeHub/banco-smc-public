@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🚐 VOY · banco</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;min-height:100vh;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%);pointer-events:none;z-index:0}.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.section{display:none}.section.active{display:block}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;font-weight:600;margin-left:auto;background:rgba(0,229,176,.15);color:#00e5b0}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}.info-meta b{color:#f1f5f9}
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px}
+.stat{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;text-align:center}
+.stat-big{font-size:32px;font-weight:800;color:#00e5b0;line-height:1.1}
+.stat-label{font-size:11px;color:#94a3b8;margin-top:6px}
+.flow{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2}
+.flow-node{display:inline-block;padding:8px 14px;margin:4px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.3);border-radius:6px;color:#00e5b0;font-weight:700}
+.flow-arrow{color:#7dd3fc;font-size:14px;margin:0 6px}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.doc{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;text-decoration:none;color:#cbd5e1;display:block;transition:all .15s}
+.doc:hover{border-color:rgba(0,229,176,.3);transform:translateY(-2px)}
+.doc-icon{font-size:18px;margin-bottom:6px}
+.doc-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.doc-date{font-size:10px;color:#7dd3fc;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.doc-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / VOY</div>
+<h1>🚐 VOY · cotizaciones transporte</h1>
+<p class="subtitle">Live · Vercel free · cliente externo · caso de éxito vendible</p>
+<div class="rfp"><b>📋 RFP:</b> Cliente VOY reducir cotización <b>45 min → 3 min</b>. Stack barato: Airtable como DB + Vanilla JS + jsPDF + Vercel free. Sidebar 260px desktop-first (única excepción al mobile-first SMC). <b>Resultado:</b> caso de éxito vendible · ROI 15x en tiempo del operario.</div>
+
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="amb">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🚀</span><span class="info-name">PROD</span><span class="info-stage">Live</span></div><div class="info-meta"><a href="https://voy-app-3.vercel.app/" target="_blank" style="color:#00e5b0">voy-app-3.vercel.app</a><br><b>Vercel free tier</b></div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🧪</span><span class="info-name">TEST</span><span class="info-stage">Live</span></div><div class="info-meta"><a href="https://voy-app-2.vercel.app/" target="_blank" style="color:#7dd3fc">voy-app-2.vercel.app</a><br><b>Vercel staging</b></div></div>
+</div>
+</div>
+
+<div class="section" id="inf">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">▲</span><span class="info-name">Vercel</span></div><div class="info-meta"><b>Plan:</b> Hobby (free)<br><b>Deploy:</b> push GitHub → auto<br><b>Build:</b> static · &lt;5s</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">Airtable</span></div><div class="info-meta"><b>Uso:</b> DB principal (productos · clientes · cotizaciones)<br><b>Plan:</b> Free</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📄</span><span class="info-name">jsPDF</span></div><div class="info-meta"><b>Uso:</b> generar PDF cotización en cliente<br><b>Sin servidor:</b> 100% client-side</div></div>
+</div>
+</div>
+
+<div class="section" id="cnx">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">Airtable API</span><span class="info-stage">Live</span></div><div class="info-meta"><b>Tablas:</b> Products · Clients · Quotes<br><b>Auth:</b> API key en cliente (ojo · escalable a backend)</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📧</span><span class="info-name">Email envío</span><span class="info-stage">Live</span></div><div class="info-meta"><b>Método:</b> mailto: con PDF adjunto generado<br><b>Cliente:</b> recibe en su email</div></div>
+</div>
+</div>
+
+<div class="section" id="doc">
+<div class="doc-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-voy.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<a class="doc" href="2026-03-24-voy-scan-especificacion.html"><div class="doc-icon">📋</div><div class="doc-name">Scan + Especificación</div><div class="doc-date">2026-03-24</div><div class="doc-desc">Scan tecnológico + especificación funcional/técnica completa</div></a>
+<a class="doc" href="2026-03-24-voy-v3-completa.html"><div class="doc-icon">🎨</div><div class="doc-name">Maqueta v3 definitiva</div><div class="doc-date">2026-03-24</div><div class="doc-desc">La versión que se aprobó para implementar</div></a>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<!-- TABLA #1 · IMPACTO ROI -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">💰 Impacto VOY · antes vs después</span></div>
+<div class="tbl-desc">El número estrella: redujo cotización de 45 min a 3 min · ROI 15x.</div>
+<div class="stats">
+<div class="stat"><div class="stat-big">45 min</div><div class="stat-label">Antes · manual Excel</div></div>
+<div class="stat"><div class="stat-big">3 min</div><div class="stat-label">Después · VOY</div></div>
+<div class="stat"><div class="stat-big">15x</div><div class="stat-label">Mejora productividad</div></div>
+<div class="stat"><div class="stat-big">~95%</div><div class="stat-label">Tiempo ahorrado</div></div>
+</div>
+</div>
+
+<!-- TABLA #2 · FLOW -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">🔄 Flow de cotización</span></div>
+<div class="tbl-desc">Cómo el operario cotiza en 3 minutos.</div>
+<div class="flow">
+<span class="flow-node">Cliente +Datos</span><span class="flow-arrow">→</span><span class="flow-node">Airtable</span><span class="flow-arrow">→</span><span class="flow-node">Pricing JS</span><span class="flow-arrow">→</span><span class="flow-node">jsPDF</span><span class="flow-arrow">→</span><span class="flow-node">Email</span><br>
+<span style="color:#6b7b8e;font-size:10px">selección productos · cálculo automático · PDF generado · envío directo</span>
+</div>
+</div>
+
+<!-- TABLA #3 · 6 MAQUETAS EVOLUCIÓN -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">🎨 6 maquetas · evolución hasta v3</span></div>
+<div class="tbl-desc">Iteraciones de Panchita (BA) con Celia · de scan inicial a maqueta final implementada.</div>
+<div class="doc-grid">
+<a class="doc" href="2026-03-23-voy-v2-panchita.html"><div class="doc-icon">🎨</div><div class="doc-name">v2 Panchita</div><div class="doc-date">2026-03-23</div></a>
+<a class="doc" href="2026-03-23-voy-v2-completa.html"><div class="doc-icon">🎨</div><div class="doc-name">v2 Completa</div><div class="doc-date">2026-03-23</div></a>
+<a class="doc" href="2026-03-23-voy-v2-delta.html"><div class="doc-icon">📊</div><div class="doc-name">v2 Delta · gaps</div><div class="doc-date">2026-03-23</div></a>
+<a class="doc" href="2026-03-23-voy-v2-maqueta-celia.html"><div class="doc-icon">🎨</div><div class="doc-name">v2 con Celia</div><div class="doc-date">2026-03-23</div></a>
+<a class="doc" href="2026-03-24-voy-scan-especificacion.html"><div class="doc-icon">📋</div><div class="doc-name">Scan + Specs</div><div class="doc-date">2026-03-24</div></a>
+<a class="doc" href="2026-03-24-voy-v3-completa.html"><div class="doc-icon">✅</div><div class="doc-name">v3 final</div><div class="doc-date">2026-03-24</div></a>
+</div>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · VOY · 5 tabs · 3 tablas visual rico · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← maestro</a></footer>
+</div>
+<script>function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}</script>
+</body></html>

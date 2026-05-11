@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@smc/ui — Para Eduardo</title>
+<style>
+:root {
+  --bg-base: #060912;
+  --bg-surface: #0a0d14;
+  --bg-elevated: #0f1520;
+  --bg-glass: rgba(15,22,35,0.7);
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-medium: rgba(255,255,255,0.12);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --accent: #00e5b0;
+  --accent2: #00b4d8;
+  --purple: #a78bfa;
+  --yellow: #fbbf24;
+  --red: #f87171;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* PARTICLES */
+#particles {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  animation: float linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-100px) scale(1); opacity: 0; }
+}
+
+/* MAIN */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+}
+
+/* FADE IN SECTIONS */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* GRADIENT TEXT */
+.grad {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.grad2 {
+  background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 20px 0 60px;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,229,176,0.08);
+  border: 1px solid rgba(0,229,176,0.2);
+  border-radius: 100px;
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.hero-tag .dot {
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+.hero h1 {
+  font-size: clamp(36px, 8vw, 64px);
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ANIMATED DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), var(--purple), transparent);
+  background-size: 200% 100%;
+  animation: shimmer-line 3s linear infinite;
+  margin: 48px 0;
+  border-radius: 100px;
+}
+
+@keyframes shimmer-line {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* SECTION LABEL */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--accent);
+  display: block;
+}
+
+/* BEFORE/AFTER */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+@media(min-width: 600px) {
+  .compare { grid-template-columns: 1fr 1fr; }
+}
+
+.compare-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.compare-card.bad { border-color: rgba(248,113,113,0.2); }
+.compare-card.good { border-color: rgba(0,229,176,0.25); box-shadow: 0 0 30px rgba(0,229,176,0.06); }
+
+.compare-header {
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.compare-card.bad .compare-header { color: var(--red); background: rgba(248,113,113,0.05); }
+.compare-card.good .compare-header { color: var(--accent); background: rgba(0,229,176,0.05); }
+
+.compare-body {
+  padding: 16px;
+}
+
+pre {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.line-count {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.bad .line-count { background: rgba(248,113,113,0.1); color: var(--red); }
+.good .line-count { background: rgba(0,229,176,0.1); color: var(--accent); }
+
+/* TYPEWRITER */
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--accent);
+  animation: type 2s steps(40) 0.5s both, blink 0.7s step-end infinite;
+}
+
+@keyframes type {
+  from { width: 0; }
+  to { width: 100%; }
+}
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+/* STAT BAR */
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  background: var(--bg-elevated);
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.stat-icon { font-size: 24px; }
+.stat-text { flex: 1; }
+.stat-text strong { display: block; font-size: 22px; font-weight: 900; }
+.stat-text span { font-size: 12px; color: var(--text-secondary); }
+.stat-text strong.green { color: var(--accent); }
+.stat-text strong.red { color: var(--red); }
+
+/* COMPONENT CATALOG */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.comp-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 18px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.comp-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(0,229,176,0.08), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.comp-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(0,229,176,0.3);
+  box-shadow: 0 8px 32px rgba(0,229,176,0.12), 0 0 0 1px rgba(0,229,176,0.1);
+}
+
+.comp-card:hover::before { opacity: 1; }
+
+.comp-preview {
+  margin-bottom: 12px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.comp-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.comp-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* MINI COMPONENTS PREVIEW */
+.mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mini-btn.default { background: var(--accent); color: #000; }
+.mini-btn.outline { background: transparent; color: var(--accent); border: 1px solid rgba(0,229,176,0.4); }
+.mini-btn.ghost { background: rgba(255,255,255,0.05); color: var(--text-secondary); }
+.mini-btn.danger { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+
+.mini-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.mini-badge.green { background: rgba(0,229,176,0.12); color: var(--accent); border: 1px solid rgba(0,229,176,0.25); }
+.mini-badge.blue { background: rgba(0,180,216,0.12); color: var(--accent2); border: 1px solid rgba(0,180,216,0.25); }
+.mini-badge.purple { background: rgba(167,139,250,0.12); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.mini-badge.pulse { animation: badge-pulse 2s ease-in-out infinite; }
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,176,0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(0,229,176,0); }
+}
+
+.mini-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-medium);
+  border-radius: 7px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.mini-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  width: 100%;
+  text-align: left;
+}
+
+.mini-toast {
+  background: var(--bg-elevated);
+  border: 1px solid rgba(0,229,176,0.2);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.mini-dialog {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 10px;
+  width: 100%;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.mini-dialog strong { display: block; color: var(--text-primary); margin-bottom: 4px; font-size: 11px; }
+
+/* BENEFITS */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.benefit-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 20px 16px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.benefit-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-medium);
+}
+
+.benefit-icon { font-size: 28px; margin-bottom: 10px; }
+.benefit-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.benefit-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+/* GOLDEN RULE */
+.golden-rule {
+  background: linear-gradient(135deg, rgba(0,229,176,0.06), rgba(0,180,216,0.04));
+  border: 1px solid rgba(0,229,176,0.2);
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.golden-rule::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(0,229,176,0.08), transparent 70%);
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+  50% { transform: translateX(-50%) scale(1.3); opacity: 0.5; }
+}
+
+.golden-rule h3 {
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.golden-rule p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  position: relative;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* CTA SHIMMER */
+.cta {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #000;
+  letter-spacing: 0.03em;
+}
+
+.cta::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  100% { left: 150%; }
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  margin-top: 60px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<!-- PARTICLES -->
+<canvas id="particles"></canvas>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero reveal">
+    <div class="hero-tag">
+      <span class="dot"></span>
+      Smart Connection Design System
+    </div>
+    <h1><span class="grad">@smc/ui</span><br><span class="grad2">La caja mágica</span></h1>
+    <p>Para Eduardo — todo lo que necesitas saber sobre cómo construimos interfaces en Smart Connection. Sin CSS desde cero. Nunca más.</p>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider reveal"></div>
+
+  <!-- BEFORE/AFTER -->
+  <div class="reveal">
+    <div class="section-label">El problema que resuelve</div>
+
+    <div class="compare">
+      <div class="compare-card bad">
+        <div class="compare-header">❌ Antes — HTML + CSS crudo</div>
+        <div class="compare-body">
+<pre>&lt;button style="
+  background: #00e5b0;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px
+    rgba(0,229,176,0.3);
+  font-family: Inter,
+    sans-serif;
+"&gt;
+  Guardar
+&lt;/button&gt;</pre>
+          <span class="line-count">😰 18 líneas por botón</span>
+        </div>
+      </div>
+
+      <div class="compare-card good">
+        <div class="compare-header">✅ Después — @smc/ui</div>
+        <div class="compare-body">
+<pre class="typewriter">&lt;Button&gt;Guardar&lt;/Button&gt;</pre>
+          <br><br><br><br><br><br><br><br><br>
+          <span class="line-count">🚀 1 línea. Siempre.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-text">
+        <strong class="green">18x</strong>
+        <span>menos código. Mismo resultado. Mejor calidad.</span>
+      </div>
+      <div class="stat-text" style="text-align:right">
+        <strong class="red" style="font-size:14px">Si cambia el color</strong>
+        <span>→ se actualiza en todos lados solo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider reveal"></div>
+
+  <!-- CATALOG -->
+  <div class="reveal">
+    <div class="section-label">Catálogo de componentes</div>
+
+    <div class="catalog-grid">
+
+      <!-- Button -->
+      <div class="comp-card">
+        <div class="comp-preview" style="flex-direction:column; gap:5px;">
+          <button class="mini-btn default">Guardar</button>
+          <button class="mini-btn outline">Cancelar</button>
+          <button class="mini-btn ghost">Ver más</button>
+          <button class="mini-btn danger">Eliminar</button>
+        </div>
+        <span class="comp-name">Button</span>
+        <span class="comp-desc">4 variantes. Hover, focus y loading incluidos.</span>
+      </div>
+
+      <!-- Badge -->
+      <div class="comp-card">
+        <div class="comp-preview" style="flex-direction:column; gap:5px;">
+          <span class="mini-badge green pulse">● Activo</span>
+          <span class="mini-badge blue">Nuevo</span>
+          <span class="mini-badge purple">Beta</span>
+        </div>
+        <span class="comp-name">Badge</span>
+        <span class="comp-desc">Etiquetas de estado con animación pulse.</span>
+      </div>
+
+      <!-- Input -->
+      <div class="comp-card">
+        <div class="comp-preview">
+          <input class="mini-input" placeholder="Tu nombre..." />
+        </div>
+        <span class="comp-name">Input</span>
+        <span class="comp-desc">Con label, error state y helper text.</span>
+      </div>
+
+      <!-- Card -->
+      <div class="comp-card">
+        <div class="comp-preview">
+          <div class="mini-card">
+            <strong style="color:var(--text-primary); font-size:11px;">Dashboard</strong><br>
+            Glassmorphism con hover glow.
+          </div>
+        </div>
+        <span class="comp-name">Card</span>
+        <span class="comp-desc">Glassmorphism. Hover state incluido.</span>
+      </div>
+
+      <!-- Toast -->
+      <div class="comp-card">
+        <div class="comp-preview">
+          <div class="mini-toast">
+            <span style="color:var(--accent)">✓</span>
+            <span style="font-size:10px;">¡Guardado con éxito!</span>
+          </div>
+        </div>
+        <span class="comp-name">Toast</span>
+        <span class="comp-desc">Notificaciones que aparecen y desaparecen.</span>
+      </div>
+
+      <!-- Dialog -->
+      <div class="comp-card">
+        <div class="comp-preview">
+          <div class="mini-dialog">
+            <strong>¿Confirmar?</strong>
+            Esta acción no se puede deshacer.
+            <br><br>
+            <button class="mini-btn danger" style="font-size:9px; padding:3px 8px;">Sí, eliminar</button>
+          </div>
+        </div>
+        <span class="comp-name">Dialog</span>
+        <span class="comp-desc">Modal accesible. Focus trap automático.</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider reveal"></div>
+
+  <!-- BENEFITS -->
+  <div class="reveal">
+    <div class="section-label">Por qué te conviene, Eduardo</div>
+
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">🧩</div>
+        <div class="benefit-title">Sin CSS avanzado</div>
+        <div class="benefit-text">Los estilos ya están resueltos. Tú solo dices qué mostrar.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🛡️</div>
+        <div class="benefit-title">No puedes romper el diseño</div>
+        <div class="benefit-text">Siempre usas los colores y tipografía correctos del sistema.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🚀</div>
+        <div class="benefit-title">Trabajas más rápido</div>
+        <div class="benefit-text">Una línea en vez de veinte. Más features en menos tiempo.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🔄</div>
+        <div class="benefit-title">Actualizaciones gratis</div>
+        <div class="benefit-text">Fiori mejora un componente → tú lo recibes sin tocar nada.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider reveal"></div>
+
+  <!-- GOLDEN RULE -->
+  <div class="reveal">
+    <div class="golden-rule">
+      <h3>🏆 La regla de oro</h3>
+      <p style="font-size:18px; font-weight:700; color:var(--text-primary); margin-bottom:12px;">
+        ¿Necesitas un botón, card, badge, input, modal o toast?
+      </p>
+      <p>
+        <strong style="color:var(--accent)">Importa de @smc/ui.</strong><br>
+        Nunca escribas HTML + CSS para estas piezas desde cero.<br>
+        Si no existe → habla con Fiori. Él lo agrega.
+      </p>
+      <button class="cta">Entendido. Vamos a construir. →</button>
+    </div>
+  </div>
+
+</main>
+
+<div class="footer reveal">🐕 Panchita — Smart Connection · 2026-04-09 · Para Eduardo</div>
+
+<script>
+// PARTICLES
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+const particles = [];
+const colors = ['#00e5b0', '#00b4d8', '#a78bfa', '#fbbf24'];
+
+for (let i = 0; i < 60; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height + canvas.height,
+    size: Math.random() * 2 + 0.5,
+    speed: Math.random() * 0.8 + 0.3,
+    opacity: Math.random() * 0.5 + 0.1,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    drift: (Math.random() - 0.5) * 0.5
+  });
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.y -= p.speed;
+    p.x += p.drift;
+    if (p.y < -10) {
+      p.y = canvas.height + 10;
+      p.x = Math.random() * canvas.width;
+    }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.opacity;
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// HOVER GLOW on comp cards
+document.querySelectorAll('.comp-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(0,229,176,0.06), rgba(15,22,35,0.7) 60%)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.background = 'var(--bg-glass)';
+  });
+});
+</script>
+</body>
+</html>

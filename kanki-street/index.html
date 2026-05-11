@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🛒 Kanki Street · banco completo del proyecto</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;position:relative;overflow-x:hidden;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%),radial-gradient(ellipse 1000px 700px at 90% 100%,rgba(0,180,216,.05),transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px;letter-spacing:-.02em}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}.crumb a:hover{color:#00e5b0}
+.search{width:100%;max-width:500px;padding:10px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#f1f5f9;font-size:13px;margin-bottom:24px}
+.search:focus{outline:none;border-color:#00e5b0}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600;transition:all .15s}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.tab:hover{border-color:rgba(0,229,176,.2);color:#cbd5e1}
+.section{display:none}.section.active{display:block}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.section-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.section-count{font-size:11px;color:#475569;padding:3px 9px;background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.04);border-radius:30px;font-family:'JetBrains Mono',monospace}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;transition:all .15s}
+.info:hover{border-color:rgba(0,229,176,.25)}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}
+.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-left:auto}
+.stage-live{background:rgba(0,229,176,.15);color:#00e5b0}
+.stage-qas{background:rgba(125,211,252,.12);color:#7dd3fc}
+.stage-dev{background:rgba(251,191,36,.12);color:#fbbf24}
+.info-url{font-size:12px;color:#00e5b0;text-decoration:none;display:block;word-break:break-all;margin-bottom:6px}
+.info-url:hover{text-decoration:underline}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}
+.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc;display:inline-block;margin:2px 2px}
+.info-meta b{color:#f1f5f9}
+.minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.mini{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:0;text-decoration:none;color:#cbd5e1;transition:all .15s;display:flex;flex-direction:column;overflow:hidden}
+.mini:hover{border-color:rgba(0,229,176,.4);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,229,176,.12)}
+.thumb{position:relative;width:100%;height:165px;background:#0a0d14;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.05)}
+.thumb iframe{position:absolute;top:0;left:0;width:880px;height:660px;border:0;transform:scale(.25);transform-origin:0 0;pointer-events:none;background:#fff}
+.mini-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 12px 4px;font-size:10px;color:#6b7b8e}
+.mini-icon{font-size:14px}.mini-date{font-family:'JetBrains Mono',monospace}
+.mini-title{padding:0 12px 12px;color:#f1f5f9;font-weight:600;font-size:12px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+.timeline{position:relative;padding-left:32px;margin-top:8px}
+.timeline::before{content:"";position:absolute;left:10px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,rgba(0,229,176,.6),rgba(0,180,216,.3),rgba(255,255,255,.05))}
+.tl-item{position:relative;margin-bottom:18px;padding:12px 16px;background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:8px;transition:all .15s}
+.tl-item:hover{border-color:rgba(0,229,176,.3);transform:translateX(2px)}
+.tl-item::before{content:"";position:absolute;left:-28px;top:18px;width:16px;height:16px;border-radius:50%;background:#060912;border:2px solid #00e5b0;z-index:2}
+.tl-date{font-size:10px;color:#00e5b0;font-family:'JetBrains Mono',monospace;letter-spacing:.04em;font-weight:700;margin-bottom:4px}
+.tl-icon{font-size:14px;margin-right:6px}
+.tl-title{font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:4px}
+.tl-desc{font-size:11.5px;color:#94a3b8;line-height:1.5}
+.tl-link{font-size:11px;color:#7dd3fc;text-decoration:none;margin-top:6px;display:inline-block}
+.tl-link:hover{color:#00e5b0;text-decoration:underline}
+.tl-milestone::before{background:#00e5b0;width:18px;height:18px;left:-29px;box-shadow:0 0 12px rgba(0,229,176,.5)}
+.tl-pivot::before{background:#fbbf24;border-color:#fbbf24}
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title-x{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc-x{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.brand-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.brand{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}
+.brand-name{font-size:14px;font-weight:800;color:#00e5b0;margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase}
+.brand-info{font-size:11px;color:#94a3b8;line-height:1.5}.brand-info b{color:#f1f5f9}
+.stats-x{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat-x{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px;text-align:center}
+.stat-big-x{font-size:24px;font-weight:800;color:#00e5b0;line-height:1.1}
+.stat-label-x{font-size:11px;color:#94a3b8;margin-top:4px}
+.cnt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.cnt{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px;display:flex;gap:10px;align-items:flex-start}
+.cnt-num{font-size:20px;font-weight:800;color:#fbbf24;min-width:30px;line-height:1.1}
+.cnt-body{flex:1}
+.cnt-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:3px}
+.cnt-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / Kanki Street</div>
+<h1>🛒 Kanki Street · streetwear B2C</h1>
+<p class="subtitle">Live · 3 ambientes · 21 maquetas · SpA Guillermo+Martín 50/50 en constitución</p>
+<div class="rfp"><b>📋 RFP:</b> Guillermo + Martín levantan marca streetwear (Essential FW24 · Grizzly · 35 prendas iniciales) sin pagar Shopify. Stack mínimo: Supabase Auth+DB+Realtime + Apps Script Gmail + Vanilla JS + pago transferencia manual. <b>Resultado:</b> 3 ambientes con embajadores Instagram >5K.</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('ambientes',this)">🌐 Ambientes (3)</div>
+  <div class="tab" onclick="showTab('infra',this)">☁️ Infra (5)</div>
+  <div class="tab" onclick="showTab('conexiones',this)">🔌 Conexiones (4)</div>
+  <div class="tab" onclick="showTab('docs',this)">📄 Docs técnicas (3)</div>
+  <div class="tab" onclick="showTab('maquetas',this)">🎨 Maquetas (21)</div>
+  <div class="tab" onclick="showTab('tml',this)">🕐 Timeline (14)</div>
+  <div class="tab" onclick="showTab('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="ambientes">
+  <div class="section-head"><span class="section-title">🌐 Ambientes</span><span class="section-count">3</span></div>
+  <div class="info-grid">
+    <div class="info">
+      <div class="info-head"><span class="info-icon">🚀</span><span class="info-name">PROD</span><span class="info-stage stage-live">Live</span></div>
+      <a href="https://kanki.smconnection.cl/" target="_blank" class="info-url">kanki.smconnection.cl</a>
+      <div class="info-meta"><b>Stack:</b> S3 + CloudFront en otra cuenta AWS<br><b>Deploy:</b> manual push S3 sync<br><b>Costo:</b> ~$0.50/mes</div>
+    </div>
+    <div class="info">
+      <div class="info-head"><span class="info-icon">🧪</span><span class="info-name">QAS</span><span class="info-stage stage-qas">Testing</span></div>
+      <a href="https://qas.kanki.smconnection.cl/" target="_blank" class="info-url">qas.kanki.smconnection.cl</a>
+      <div class="info-meta"><b>Stack:</b> GitHub Pages · dominio custom<br><b>Repo:</b> <code>SmartConnection-CodeHub/kanki-qas</code><br><b>Costo:</b> $0</div>
+    </div>
+    <div class="info">
+      <div class="info-head"><span class="info-icon">💻</span><span class="info-name">DEV local</span><span class="info-stage stage-dev">Local</span></div>
+      <div class="info-meta"><code>~/Claude/Proyectos/kanki-street/</code></div>
+      <div class="info-meta"><b>Server:</b> <code>python3 -m http.server 8080</code><br><b>Datos:</b> Supabase prod (con RLS)</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="infra">
+  <div class="section-head"><span class="section-title">☁️ Infra</span><span class="section-count">5 recursos</span></div>
+  <div class="info-grid">
+    <div class="info"><div class="info-head"><span class="info-icon">📦</span><span class="info-name">S3 PROD bucket</span></div><div class="info-meta"><b>Bucket:</b> <code>kanki.smconnection.cl</code><br><b>Region:</b> us-east-1 (otra cuenta)<br><b>Versionado:</b> activo</div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">☁️</span><span class="info-name">CloudFront PROD</span></div><div class="info-meta"><b>SSL:</b> ACM cert<br><b>Cache:</b> default TTL 24h<br><b>Invalidación:</b> manual al deploy</div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">🌐</span><span class="info-name">Route 53 DNS</span></div><div class="info-meta"><b>Hosted Zone:</b> <code>Z3DOBGB40V1Y3P</code><br><b>Records:</b> kanki A → CloudFront · qas.kanki CNAME → github.io</div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">🐙</span><span class="info-name">GitHub Pages QAS</span></div><div class="info-meta"><b>Repo:</b> <code>kanki-qas</code><br><b>Branch:</b> <code>main</code><br><b>CNAME:</b> qas.kanki.smconnection.cl</div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">🗄️</span><span class="info-name">Supabase project</span></div><div class="info-meta"><b>Region:</b> sa-east-1<br><b>RLS:</b> activo en todas las tablas<br><b>Plan:</b> Free tier (500MB)</div></div>
+  </div>
+</div>
+
+<div class="section" id="conexiones">
+  <div class="section-head"><span class="section-title">🔌 Conexiones · APIs · Integraciones</span><span class="section-count">4</span></div>
+  <div class="info-grid">
+    <div class="info"><div class="info-head"><span class="info-icon">🔐</span><span class="info-name">Supabase Auth</span><span class="info-stage stage-live">Activo</span></div><div class="info-meta"><b>Tipo:</b> Email + password<br><b>OAuth:</b> Instagram (popup única vez)<br><b>Tabla:</b> <code>auth.users</code> + <code>profiles</code></div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">📡</span><span class="info-name">Supabase Realtime</span><span class="info-stage stage-live">Activo</span></div><div class="info-meta"><b>Canales:</b> stock · orders · cupones<br><b>Uso:</b> stock 0 marca agotado live<br><b>Tablas:</b> <code>products</code> · <code>orders</code></div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">📧</span><span class="info-name">Apps Script Gmail</span><span class="info-stage stage-live">Activo</span></div><div class="info-meta"><b>Cuenta:</b> ventas@kanki.cl<br><b>Triggers:</b> onOrder onPayment onShipped<br><b>Templates:</b> 4 HTML responsive</div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">📱</span><span class="info-name">Instagram OAuth</span><span class="info-stage stage-live">Activo</span></div><div class="info-meta"><b>App:</b> Kanki Street IG App<br><b>Uso:</b> embajadores >5K seguidores<br><b>Cupón:</b> 10% welcome · 7 días</div></div>
+  </div>
+</div>
+
+<div class="section" id="docs">
+  <div class="section-head"><span class="section-title">📄 Docs técnicas</span><span class="section-count">3 docs</span></div>
+  <div class="info-grid">
+    <div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-kanki-street.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">🏗️</span><span class="info-name">Arquitectura del sistema</span></div><a href="2026-04-29_182500-arquitectura.html" class="info-url">2026-04-29 · Arquitectura completa</a><div class="info-meta">Diagrama componentes · flujos auth · realtime · checkout</div></div>
+    <div class="info"><div class="info-head"><span class="info-icon">📊</span><span class="info-name">Status Report</span></div><a href="2026-04-01-status-report.html" class="info-url">2026-04-01 · Status Report inicial</a><div class="info-meta">Estado proyecto · pendientes · KPIs</div></div>
+  </div>
+</div>
+
+<div class="section" id="maquetas">
+  <div class="section-head"><span class="section-title">🎨 Maquetas · preview iframe live</span><span class="section-count">21 docs</span></div>
+  <input type="text" class="search" placeholder="🔍 Filtrar maquetas..." oninput="filtreMinis(this.value)">
+  <div class="minis" id="minis-list">
+    <a class="mini" href="2026-05-10_131415-storefront.html" title="Tienda última"><div class="thumb"><iframe src="2026-05-10_131415-storefront.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🛒</span><span class="mini-date">2026-05-10</span></div><div class="mini-title">Tienda · última versión</div></a>
+    <a class="mini" href="2026-05-09_140335-producto-detalle.html" title="Raider Hoodie"><div class="thumb"><iframe src="2026-05-09_140335-producto-detalle.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📄</span><span class="mini-date">2026-05-09</span></div><div class="mini-title">Producto detalle · Raider Hoodie</div></a>
+    <a class="mini" href="2026-05-08_181500-storefront-mobile-zoom.html" title="Mobile zoom"><div class="thumb"><iframe src="2026-05-08_181500-storefront-mobile-zoom.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📱</span><span class="mini-date">2026-05-08</span></div><div class="mini-title">Tienda · mobile zoom</div></a>
+    <a class="mini" href="2026-04-29_183000-storefront-v2.html" title="v2"><div class="thumb"><iframe src="2026-04-29_183000-storefront-v2.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🛒</span><span class="mini-date">2026-04-29</span></div><div class="mini-title">Tienda v2</div></a>
+    <a class="mini" href="2026-04-29_183000-login-emails.html" title="Login emails"><div class="thumb"><iframe src="2026-04-29_183000-login-emails.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📧</span><span class="mini-date">2026-04-29</span></div><div class="mini-title">Login Mi Cuenta Emails</div></a>
+    <a class="mini" href="2026-04-29_182500-arquitectura.html" title="Arq"><div class="thumb"><iframe src="2026-04-29_182500-arquitectura.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🏗️</span><span class="mini-date">2026-04-29</span></div><div class="mini-title">Arquitectura del sistema</div></a>
+    <a class="mini" href="2026-04-29_154700-admin.html" title="Admin"><div class="thumb"><iframe src="2026-04-29_154700-admin.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🎛️</span><span class="mini-date">2026-04-29</span></div><div class="mini-title">Admin Panel</div></a>
+    <a class="mini" href="2026-04-29_154700-storefront.html" title="Tienda"><div class="thumb"><iframe src="2026-04-29_154700-storefront.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🛒</span><span class="mini-date">2026-04-29</span></div><div class="mini-title">Tienda · 29-abr</div></a>
+    <a class="mini" href="2026-04-14_114139-panel-socios-v2.html" title="Panel v2"><div class="thumb"><iframe src="2026-04-14_114139-panel-socios-v2.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🎛️</span><span class="mini-date">2026-04-14</span></div><div class="mini-title">Panel Socios v2</div></a>
+    <a class="mini" href="2026-04-13_192913-admin.html" title="Admin"><div class="thumb"><iframe src="2026-04-13_192913-admin.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🎛️</span><span class="mini-date">2026-04-13</span></div><div class="mini-title">Admin · 13-abr 19:29</div></a>
+    <a class="mini" href="2026-04-13_163455-panel-socios.html" title="Panel"><div class="thumb"><iframe src="2026-04-13_163455-panel-socios.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🎛️</span><span class="mini-date">2026-04-13</span></div><div class="mini-title">Panel Socios</div></a>
+    <a class="mini" href="2026-04-13_163455-storefront.html" title="Tienda"><div class="thumb"><iframe src="2026-04-13_163455-storefront.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🛒</span><span class="mini-date">2026-04-13</span></div><div class="mini-title">Tienda · 13-abr</div></a>
+    <a class="mini" href="2026-04-13_163455-admin.html" title="Admin"><div class="thumb"><iframe src="2026-04-13_163455-admin.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🎛️</span><span class="mini-date">2026-04-13</span></div><div class="mini-title">Admin Panel · 13-abr</div></a>
+    <a class="mini" href="LEGACY-2026-04-10-kanki-apple-nav.html" title="LEGACY"><div class="thumb"><iframe src="LEGACY-2026-04-10-kanki-apple-nav.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📄</span><span class="mini-date">2026-04-10</span></div><div class="mini-title">LEGACY · Apple Nav</div></a>
+    <a class="mini" href="2026-04-01-storefront.html" title="Inicial"><div class="thumb"><iframe src="2026-04-01-storefront.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🛒</span><span class="mini-date">2026-04-01</span></div><div class="mini-title">Storefront · primera</div></a>
+    <a class="mini" href="2026-04-01-admin-dashboard.html" title="Dashboard"><div class="thumb"><iframe src="2026-04-01-admin-dashboard.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📊</span><span class="mini-date">2026-04-01</span></div><div class="mini-title">Admin Dashboard</div></a>
+    <a class="mini" href="2026-04-01-status-report.html" title="Status"><div class="thumb"><iframe src="2026-04-01-status-report.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">📋</span><span class="mini-date">2026-04-01</span></div><div class="mini-title">Status Report · 01-abr</div></a>
+    <a class="mini" href="kanki-surf-platform.html" title="Surf"><div class="thumb"><iframe src="kanki-surf-platform.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🏄</span><span class="mini-date">—</span></div><div class="mini-title">Kanki Surf · Tienda + Escuela</div></a>
+    <a class="mini" href="kanki-surf-v3.html" title="Surf v3"><div class="thumb"><iframe src="kanki-surf-v3.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🏄</span><span class="mini-date">—</span></div><div class="mini-title">Kanki Surf v3 · Concón</div></a>
+    <a class="mini" href="kanki-surf-rider-ux.html" title="Rider"><div class="thumb"><iframe src="kanki-surf-rider-ux.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🏄</span><span class="mini-date">—</span></div><div class="mini-title">Surf Rider UX</div></a>
+    <a class="mini" href="kanki-surf-rider-ux_1.html" title="Rider 2"><div class="thumb"><iframe src="kanki-surf-rider-ux_1.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div><div class="mini-foot"><span class="mini-icon">🏄</span><span class="mini-date">—</span></div><div class="mini-title">Surf Rider UX · variante 2</div></a>
+  </div>
+</div>
+
+</div>
+
+<div class="section" id="tml-old-disabled" style="display:none">
+<div class="section-head"><span class="section-title">🕐 Timeline · historia del proyecto</span><span class="section-count">16 hitos</span></div>
+<div class="timeline">
+
+<div class="tl-item tl-milestone">
+<div class="tl-date">2026-03-15 · ORIGEN</div>
+<div class="tl-title"><span class="tl-icon">🌱</span>Idea: marca streetwear B2C</div>
+<div class="tl-desc">Guillermo + Martín conversan sobre levantar marca propia (Essential FW24 · Grizzly) sin pagar Shopify. Stack barato + control 100%.</div>
+</div>
+
+<div class="tl-item tl-milestone">
+<div class="tl-date">2026-03-20</div>
+<div class="tl-title"><span class="tl-icon">💼</span>Discovery con Martín · split 50/50</div>
+<div class="tl-desc">Acuerdo SpA en constitución · 50% c/u · capital inicial $2.245.284 · 35 prendas inicial. Marcas: Essential FW24 + Grizzly.</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-04-01</div>
+<div class="tl-title"><span class="tl-icon">🎨</span>Primera maqueta: storefront + admin</div>
+<div class="tl-desc">Panchita entrega 3 HTMLs: storefront · admin dashboard · status report. Look & feel base.</div>
+<a class="tl-link" href="2026-04-01-storefront.html">→ Ver storefront inicial</a>
+</div>
+
+<div class="tl-item tl-pivot">
+<div class="tl-date">2026-04-10 · PIVOT</div>
+<div class="tl-title"><span class="tl-icon">🔄</span>Pivot legacy: probamos Apple Nav style</div>
+<div class="tl-desc">Iteración exploratoria con nav estilo Apple. Descartada después por no encajar con identidad streetwear · queda como LEGACY.</div>
+<a class="tl-link" href="LEGACY-2026-04-10-kanki-apple-nav.html">→ Ver iteración descartada</a>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-04-13</div>
+<div class="tl-title"><span class="tl-icon">🎛️</span>Panel de socios: split 50/50 visualizado</div>
+<div class="tl-desc">Nueva vista para que Martín y Guillermo vean ventas · stock · split de utilidades. Storefront + admin + panel socios alineados.</div>
+<a class="tl-link" href="2026-04-13_163455-panel-socios.html">→ Ver panel socios</a>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-04-14</div>
+<div class="tl-title"><span class="tl-icon">📊</span>Panel socios v2 · ajustes Martín</div>
+<div class="tl-desc">Feedback Martín: agregar KPIs por marca · gráfico de ventas semana. Versión 2 con métricas más claras.</div>
+<a class="tl-link" href="2026-04-14_114139-panel-socios-v2.html">→ Ver v2</a>
+</div>
+
+<div class="tl-item tl-milestone">
+<div class="tl-date">2026-04-29 · DECISIÓN ARQ</div>
+<div class="tl-title"><span class="tl-icon">🏗️</span>Stack final: Supabase + Apps Script + Vanilla JS</div>
+<div class="tl-desc">Architect decide NO Next.js (overkill para landing+ecommerce simple). Stack: Supabase Auth+DB+Realtime + Apps Script Gmail + Vanilla JS + tailwind via CDN. Pago manual por transferencia.</div>
+<a class="tl-link" href="2026-04-29_182500-arquitectura.html">→ Ver diagrama arquitectura</a>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-04-29</div>
+<div class="tl-title"><span class="tl-icon">📧</span>Login + emails: Mi Cuenta + Apps Script Gmail</div>
+<div class="tl-desc">Implementación auth Supabase + 4 templates Gmail (welcome · order · payment · shipped) via Apps Script.</div>
+<a class="tl-link" href="2026-04-29_183000-login-emails.html">→ Ver emails templates</a>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-05-04</div>
+<div class="tl-title"><span class="tl-icon">🚀</span>PROD live: kanki.smconnection.cl</div>
+<div class="tl-desc">Deploy a S3 + CloudFront en otra cuenta AWS (Martín). Costo ~$0.50/mes. Versionado S3 activo.</div>
+<a class="tl-link" href="https://kanki.smconnection.cl/" target="_blank">→ Sitio en vivo</a>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-05-08</div>
+<div class="tl-title"><span class="tl-icon">📱</span>Mobile zoom · UX para Instagram</div>
+<div class="tl-desc">Optimización mobile · zoom de producto al click · pensado para tráfico Instagram (embajadores >5K).</div>
+<a class="tl-link" href="2026-05-08_181500-storefront-mobile-zoom.html">→ Ver mobile zoom</a>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-05-09 · DNS</div>
+<div class="tl-title"><span class="tl-icon">🌍</span>QAS en GitHub Pages · $0</div>
+<div class="tl-desc">CNAME <code>qas.kanki.smconnection.cl</code> apunta a github.io. Costo cero. Restaurado en Route 53 Z3DOBGB40V1Y3P.</div>
+<a class="tl-link" href="https://qas.kanki.smconnection.cl/" target="_blank">→ Ver QAS</a>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-05-09</div>
+<div class="tl-title"><span class="tl-icon">📄</span>Producto detalle: Raider Hoodie</div>
+<div class="tl-desc">Primera vista de producto individual con galería · tallas · color picker · CTA WhatsApp + transferencia.</div>
+<a class="tl-link" href="2026-05-09_140335-producto-detalle.html">→ Ver Raider Hoodie</a>
+</div>
+
+<div class="tl-item">
+<div class="tl-date">2026-05-10</div>
+<div class="tl-title"><span class="tl-icon">🛒</span>Storefront última versión</div>
+<div class="tl-desc">Iteración más reciente del storefront · hoy en sincronía con producción.</div>
+<a class="tl-link" href="2026-05-10_131415-storefront.html">→ Ver última versión</a>
+</div>
+
+<div class="tl-item tl-milestone">
+<div class="tl-date">2026-05-10 · HOY</div>
+<div class="tl-title"><span class="tl-icon">📚</span>Banco SMC: Kanki tiene su propio index</div>
+<div class="tl-desc">Sesión Sentinela arma el banco · Kanki es piloto del template 5+1 tabs (Ambientes · Infra · Conexiones · Docs · Maquetas · Timeline). Pendiente: aplicar a 10 proyectos más.</div>
+<a class="tl-link" href="../SmartConnection/index.html">→ Ver banco maestro</a>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="section" id="tml">
+<div class="section-head"><span class="section-title">🕐 Timeline · historia del proyecto</span><span class="section-count">14 hitos</span></div>
+<div class="timeline">
+<div class="tl-item tl-milestone"><div class="tl-date">2026-03-15 · ORIGEN</div><div class="tl-title"><span class="tl-icon">🌱</span>Idea: marca streetwear B2C</div><div class="tl-desc">Guillermo + Martín conversan levantar marca propia (Essential FW24 · Grizzly) sin pagar Shopify. Stack barato + control 100%.</div></div>
+<div class="tl-item tl-milestone"><div class="tl-date">2026-03-20</div><div class="tl-title"><span class="tl-icon">💼</span>Discovery con Martín · split 50/50</div><div class="tl-desc">Acuerdo SpA en constitución · capital $2.245.284 · 35 prendas inicial. Marcas: Essential FW24 + Grizzly.</div></div>
+<div class="tl-item"><div class="tl-date">2026-04-01</div><div class="tl-title"><span class="tl-icon">🎨</span>Primera maqueta: storefront + admin</div><div class="tl-desc">Panchita entrega 3 HTMLs base · look & feel inicial.</div><a class="tl-link" href="2026-04-01-storefront.html">→ Ver storefront inicial</a></div>
+<div class="tl-item tl-pivot"><div class="tl-date">2026-04-10 · PIVOT</div><div class="tl-title"><span class="tl-icon">🔄</span>Pivot legacy: Apple Nav style descartado</div><div class="tl-desc">Iteración exploratoria con nav estilo Apple. Descartada · no encaja con identidad streetwear.</div><a class="tl-link" href="LEGACY-2026-04-10-kanki-apple-nav.html">→ Ver descartada</a></div>
+<div class="tl-item"><div class="tl-date">2026-04-13</div><div class="tl-title"><span class="tl-icon">🎛️</span>Panel de socios: split visualizado</div><div class="tl-desc">Vista para Martín + Guillermo: ventas · stock · split utilidades 50/50.</div><a class="tl-link" href="2026-04-13_163455-panel-socios.html">→ Ver panel socios</a></div>
+<div class="tl-item"><div class="tl-date">2026-04-14</div><div class="tl-title"><span class="tl-icon">📊</span>Panel socios v2 · feedback Martín</div><div class="tl-desc">Agregar KPIs por marca · gráfico ventas semana.</div><a class="tl-link" href="2026-04-14_114139-panel-socios-v2.html">→ Ver v2</a></div>
+<div class="tl-item tl-milestone"><div class="tl-date">2026-04-29 · DECISIÓN ARQ</div><div class="tl-title"><span class="tl-icon">🏗️</span>Stack: Supabase + Apps Script + Vanilla JS</div><div class="tl-desc">Architect decide NO Next.js (overkill). Supabase Auth+DB+Realtime + Apps Script Gmail + Vanilla JS + Tailwind CDN. Pago manual transferencia.</div><a class="tl-link" href="2026-04-29_182500-arquitectura.html">→ Diagrama arquitectura</a></div>
+<div class="tl-item"><div class="tl-date">2026-04-29</div><div class="tl-title"><span class="tl-icon">📧</span>Login + Apps Script Gmail</div><div class="tl-desc">Auth Supabase + 4 templates Gmail (welcome · order · payment · shipped).</div><a class="tl-link" href="2026-04-29_183000-login-emails.html">→ Ver emails</a></div>
+<div class="tl-item tl-milestone"><div class="tl-date">2026-05-04</div><div class="tl-title"><span class="tl-icon">🚀</span>PROD live · kanki.smconnection.cl</div><div class="tl-desc">Deploy S3 + CloudFront en cuenta AWS Martín. Costo ~$0.50/mes. Versionado S3 activo.</div><a class="tl-link" href="https://kanki.smconnection.cl/" target="_blank">→ Sitio live</a></div>
+<div class="tl-item"><div class="tl-date">2026-05-08</div><div class="tl-title"><span class="tl-icon">📱</span>Mobile zoom · UX para Instagram</div><div class="tl-desc">Optimización mobile · zoom producto al click · tráfico de embajadores >5K Instagram.</div><a class="tl-link" href="2026-05-08_181500-storefront-mobile-zoom.html">→ Ver mobile</a></div>
+<div class="tl-item"><div class="tl-date">2026-05-09</div><div class="tl-title"><span class="tl-icon">🌍</span>QAS DNS · github.io $0</div><div class="tl-desc">CNAME qas.kanki.smconnection.cl → github.io. Costo cero. Restaurado en Route 53 <code>Z3DOBGB40V1Y3P</code>.</div><a class="tl-link" href="https://qas.kanki.smconnection.cl/" target="_blank">→ Ver QAS</a></div>
+<div class="tl-item"><div class="tl-date">2026-05-09</div><div class="tl-title"><span class="tl-icon">📄</span>Producto detalle: Raider Hoodie</div><div class="tl-desc">Vista producto individual · galería · tallas · color · CTA WhatsApp + transferencia.</div><a class="tl-link" href="2026-05-09_140335-producto-detalle.html">→ Ver Raider</a></div>
+<div class="tl-item"><div class="tl-date">2026-05-10</div><div class="tl-title"><span class="tl-icon">🛒</span>Storefront última versión</div><div class="tl-desc">Iteración más reciente · hoy en sincronía con producción.</div><a class="tl-link" href="2026-05-10_131415-storefront.html">→ Ver última</a></div>
+<div class="tl-item tl-milestone"><div class="tl-date">2026-05-10 · HOY</div><div class="tl-title"><span class="tl-icon">📚</span>Banco SMC v7.1 · Kanki piloto 6 tabs</div><div class="tl-desc">Sentinela arma el banco · Kanki es piloto del template 5+1 tabs (Ambientes · Infra · Conexiones · Docs · Maquetas · Timeline). Pendiente: aplicar a 10 proyectos más.</div><a class="tl-link" href="../SmartConnection/index.html">→ Ver maestro</a></div>
+</div>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title-x">👕 2 Marcas · 35 prendas inicial</span></div>
+<div class="tbl-desc-x">Las marcas que vende Kanki Street en su catálogo de lanzamiento FW24.</div>
+<div class="brand-grid">
+<div class="brand"><div class="brand-name">Essential FW24</div><div class="brand-info"><b>Tipo:</b> hoodies · t-shirts · básicos<br><b>Mood:</b> minimalista premium<br><b>Target:</b> 18-30 urban Concón</div></div>
+<div class="brand"><div class="brand-name">Grizzly</div><div class="brand-info"><b>Tipo:</b> streetwear ilustración<br><b>Mood:</b> heavy gráficos · oso<br><b>Target:</b> skater · surfer</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title-x">📊 KPIs Kanki · estado actual</span></div>
+<div class="tbl-desc-x">Los números que importan al lanzamiento · cero a primera venta.</div>
+<div class="stats-x">
+<div class="stat-x"><div class="stat-big-x">35</div><div class="stat-label-x">Prendas inicial</div></div>
+<div class="stat-x"><div class="stat-big-x">2</div><div class="stat-label-x">Marcas FW24</div></div>
+<div class="stat-x"><div class="stat-big-x">50/50</div><div class="stat-label-x">Split SpA G+M</div></div>
+<div class="stat-x"><div class="stat-big-x">$2.2M</div><div class="stat-label-x">Capital inicial CLP</div></div>
+<div class="stat-x"><div class="stat-big-x">$0.50</div><div class="stat-label-x">Infra USD/mes</div></div>
+<div class="stat-x"><div class="stat-big-x">3</div><div class="stat-label-x">Ambientes DEV/QAS/PROD</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title-x">⏳ Pendientes pre-escalamiento</span></div>
+<div class="tbl-desc-x">Lo que falta para que Kanki pase de "tienda abierta" a "negocio escalable".</div>
+<div class="cnt-grid">
+<div class="cnt"><span class="cnt-num">1</span><div class="cnt-body"><div class="cnt-name">Webpay/Flow integración</div><div class="cnt-desc">Cambiar transferencia manual → pago automático</div></div></div>
+<div class="cnt"><span class="cnt-num">2</span><div class="cnt-body"><div class="cnt-name">Chilexpress API</div><div class="cnt-desc">Cotización envío automática en checkout</div></div></div>
+<div class="cnt"><span class="cnt-num">3</span><div class="cnt-body"><div class="cnt-name">Bsale DTE</div><div class="cnt-desc">Emisión boleta/factura electrónica automática</div></div></div>
+<div class="cnt"><span class="cnt-num">4</span><div class="cnt-body"><div class="cnt-name">Sistema embajadores</div><div class="cnt-desc">Tracking códigos · comisiones · pago automático</div></div></div>
+<div class="cnt"><span class="cnt-num">5</span><div class="cnt-body"><div class="cnt-name">Newsletter Mailchimp</div><div class="cnt-desc">Drops · ediciones limitadas · recuperar carritos</div></div></div>
+<div class="cnt"><span class="cnt-num">6</span><div class="cnt-body"><div class="cnt-name">Dashboard ventas socios</div><div class="cnt-desc">Panel split 50/50 con métricas live</div></div></div>
+</div>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · Kanki Street · 7 tabs · 21 maquetas + 14 hitos + 3 tablas · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← volver al maestro</a></footer>
+</div>
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+function filtreMinis(q){
+  q = q.toLowerCase().trim();
+  document.querySelectorAll('#minis-list .mini').forEach(m => {
+    const t = (m.querySelector('.mini-title').textContent + ' ' + (m.title || '')).toLowerCase();
+    m.style.display = !q || t.includes(q) ? '' : 'none';
+  });
+}
+</script>
+</body></html>

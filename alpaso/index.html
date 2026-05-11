@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🩰 Alpaso · banco</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;min-height:100vh;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%);pointer-events:none;z-index:0}.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.section{display:none}.section.active{display:block}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;font-weight:600;margin-left:auto;background:rgba(0,229,176,.15);color:#00e5b0}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}.info-meta b{color:#f1f5f9}
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px}
+.stat{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;text-align:center}
+.stat-big{font-size:24px;font-weight:800;color:#00e5b0;line-height:1.1}
+.stat-label{font-size:11px;color:#94a3b8;margin-top:6px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.feat{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}
+.feat-icon{font-size:22px;margin-bottom:6px}
+.feat-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.feat-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / Alpaso</div>
+<h1>🩰 Alpaso Dance Studio</h1>
+<p class="subtitle">Live · estudio de danza Concón · sitio &lt;$0.50/mes · patrón replicable landings</p>
+<div class="rfp"><b>📋 RFP:</b> Cliente estudio de danza necesitaba sitio elegante (clases · profesoras · galería). Stack más barato posible: HTML puro · S3 estático · CloudFront global. <b>Resultado:</b> sitio &lt;$0.50/mes · maqueta y producción son el mismo HTML · patrón replicable para clientes "landing-only".</div>
+
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="amb">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🚀</span><span class="info-name">PROD</span><span class="info-stage">Live</span></div><div class="info-meta"><a href="https://alpasodancestudio.cl/" target="_blank" style="color:#00e5b0">alpasodancestudio.cl</a><br><b>CF:</b> <code>E3QHLN7IN7VTPF</code><br><b>Costo:</b> &lt;$0.50/mes</div></div>
+</div>
+</div>
+
+<div class="section" id="inf">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📦</span><span class="info-name">S3 bucket</span></div><div class="info-meta"><b>Hosting:</b> static website<br><b>Versionado:</b> activo</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">☁️</span><span class="info-name">CloudFront</span></div><div class="info-meta"><b>Distribution:</b> <code>E3QHLN7IN7VTPF</code><br><b>SSL:</b> ACM cert</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🌐</span><span class="info-name">Route 53</span></div><div class="info-meta"><b>Dominio .cl:</b> alpasodancestudio.cl</div></div>
+</div>
+</div>
+
+<div class="section" id="cnx">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">💬</span><span class="info-name">WhatsApp CTA</span><span class="info-stage">Live</span></div><div class="info-meta">Contacto directo · sin formulario</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📸</span><span class="info-name">Instagram</span><span class="info-stage">Live</span></div><div class="info-meta">Galería embed · contenido vivo</div></div>
+</div>
+</div>
+
+<div class="section" id="doc">
+<div class="info-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-alpaso.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">Scan inicial</span></div><div class="info-meta"><a href="2026-03-23-scan-alpaso.html" style="color:#7dd3fc">Scan tecnológico 23-mar</a><br>RFP + análisis inicial</div></div>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">💰 Caso de estudio · sitio &lt;$0.50/mes</span></div>
+<div class="tbl-desc">El número que vende el patrón "landing-only" replicable a futuros clientes pequeños.</div>
+<div class="stats">
+<div class="stat"><div class="stat-big">$0.50</div><div class="stat-label">USD/mes total</div></div>
+<div class="stat"><div class="stat-big">100%</div><div class="stat-label">Uptime CloudFront</div></div>
+<div class="stat"><div class="stat-big">&lt;1s</div><div class="stat-label">LCP global</div></div>
+<div class="stat"><div class="stat-big">0</div><div class="stat-label">CMS · sin maintenance</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">🎯 Por qué el patrón funciona</span></div>
+<div class="tbl-desc">Lo que hace este stack ideal para clientes pequeños · sirve como template comercial.</div>
+<div class="feat-grid">
+<div class="feat"><div class="feat-icon">⚡</div><div class="feat-name">Velocidad</div><div class="feat-desc">HTML puro · sin frameworks · CDN global</div></div>
+<div class="feat"><div class="feat-icon">💰</div><div class="feat-name">Costo mínimo</div><div class="feat-desc">$0.50/mes vs $30/mes WordPress shared hosting</div></div>
+<div class="feat"><div class="feat-icon">🛠️</div><div class="feat-name">Sin maintenance</div><div class="feat-desc">Sin updates · sin plugins · sin DB que respaldar</div></div>
+<div class="feat"><div class="feat-icon">🔒</div><div class="feat-name">Seguro</div><div class="feat-desc">Sin servidor · sin admin panel · superficie ataque mínima</div></div>
+<div class="feat"><div class="feat-icon">📱</div><div class="feat-name">Mobile-first</div><div class="feat-desc">375px responsive · funciona en cualquier dispositivo</div></div>
+<div class="feat"><div class="feat-icon">🎨</div><div class="feat-name">Maqueta = Prod</div><div class="feat-desc">El HTML que aprueba el cliente es el que se sube · sin gap</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">📋 Cuándo aplica este patrón</span></div>
+<div class="tbl-desc">Criterios para vender "Alpaso-style" a futuros clientes SMC.</div>
+<div class="feat-grid">
+<div class="feat"><div class="feat-icon">✅</div><div class="feat-name">Aplica</div><div class="feat-desc">Estudios · gimnasios · consultoras · profesionales · sitios estáticos</div></div>
+<div class="feat"><div class="feat-icon">❌</div><div class="feat-name">No aplica</div><div class="feat-desc">E-commerce con stock · sitios con login · contenido cambia &gt;1 vez por semana</div></div>
+<div class="feat"><div class="feat-icon">💰</div><div class="feat-name">Precio venta</div><div class="feat-desc">15-40 UF Discovery Sprint · sitio &lt;$0.50/mes después</div></div>
+</div>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · Alpaso · 5 tabs · 3 tablas · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← maestro</a></footer>
+</div>
+<script>function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}</script>
+</body></html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide Deck — Smart Connection</title>
+<style>
+:root {
+  --bg-base:#060912;--bg-surface:#0a0d14;--bg-elevated:#0f1520;
+  --bg-glass:rgba(15,22,35,.85);--border:rgba(255,255,255,.06);
+  --text:#f1f5f9;--muted:#94a3b8;--dim:#475569;
+  --accent:#00e5b0;--blue:#00b4d8;--gold:#f97316;
+  --font:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-base);color:var(--text);font-family:var(--font);overflow:hidden;height:100vh;display:flex;flex-direction:column}
+/* TOOLBAR */
+.toolbar{background:var(--bg-surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
+.toolbar-brand{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.04em;margin-right:8px}
+.tb-btn{background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600;padding:5px 12px;transition:all .15s;white-space:nowrap}
+.tb-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tb-btn.active{background:rgba(0,229,176,.1);border-color:rgba(0,229,176,.3);color:var(--accent)}
+.tb-sep{width:1px;height:20px;background:var(--border)}
+.slide-counter{font-family:var(--mono);font-size:12px;color:var(--dim);margin-left:auto}
+/* MAIN */
+.main{flex:1;display:flex;overflow:hidden}
+/* SIDEBAR */
+.sidebar{width:180px;background:var(--bg-surface);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0}
+.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:var(--border)}
+.thumb{cursor:pointer;border-bottom:1px solid var(--border);padding:10px;transition:background .15s;position:relative}
+.thumb:hover{background:var(--bg-elevated)}
+.thumb.active{background:rgba(0,229,176,.06)}
+.thumb.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent)}
+.thumb-num{font-size:10px;color:var(--dim);font-family:var(--mono);margin-bottom:4px}
+.thumb-mini{width:100%;aspect-ratio:16/9;border-radius:4px;overflow:hidden;font-size:5px}
+/* CANVAS */
+.canvas-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,.005) 10px,rgba(255,255,255,.005) 11px)}
+.slide-frame{width:100%;max-width:960px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6);position:relative;flex-shrink:0}
+/* SLIDE LAYOUTS */
+.slide{width:100%;height:100%;position:relative;display:flex;flex-direction:column;padding:6% 7%}
+.bg-dark{background:linear-gradient(135deg,#060912,#0f1520)}
+.bg-green{background:linear-gradient(135deg,#001a12,#002a1c)}
+.bg-blue{background:linear-gradient(135deg,#00080f,#001a2e)}
+.bg-split{background:linear-gradient(135deg,#060912 50%,#0a1a15 100%)}
+/* Glow */
+.slide::after{content:'';position:absolute;top:-20%;right:-10%;width:50%;height:70%;border-radius:50%;background:radial-gradient(circle,rgba(0,229,176,.07) 0%,transparent 70%);pointer-events:none}
+.bg-blue .slide::after{background:radial-gradient(circle,rgba(0,180,216,.08) 0%,transparent 70%)}
+.bg-green .slide::after{background:radial-gradient(circle,rgba(0,229,176,.1) 0%,transparent 70%)}
+/* Typography scale */
+.tag{display:inline-block;background:rgba(0,229,176,.12);color:var(--accent);border:1px solid rgba(0,229,176,.2);border-radius:100px;font-size:.65em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25em .8em;margin-bottom:.6em}
+.h1{font-size:clamp(18px,5cqw,48px);font-weight:800;line-height:1.15;margin-bottom:.4em}
+.h2{font-size:clamp(14px,3.5cqw,32px);font-weight:700;line-height:1.2;margin-bottom:.4em}
+.h1 em,h2 em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.body{font-size:clamp(10px,2cqw,18px);color:var(--muted);line-height:1.6;max-width:70%}
+.stat-big{font-size:clamp(32px,12cqw,110px);font-weight:900;font-family:var(--mono);line-height:1;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:clamp(9px,1.8cqw,16px);color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-top:.3em}
+/* Two column */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:6%}
+/* List */
+.deck-list{list-style:none;margin-top:.8em}
+.deck-list li{font-size:clamp(9px,1.8cqw,17px);color:rgba(255,255,255,.7);padding:.4em 0;padding-left:1.4em;position:relative;line-height:1.4}
+.deck-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:.85em}
+/* Table */
+.deck-table{width:100%;border-collapse:collapse;font-size:clamp(8px,1.5cqw,13px);margin-top:.8em}
+.deck-table th{text-align:left;color:var(--dim);font-size:.85em;padding:.5em .6em;border-bottom:1px solid var(--border);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.deck-table td{padding:.5em .6em;border-bottom:1px solid rgba(255,255,255,.03);color:var(--muted)}
+.deck-table td:first-child{color:var(--text);font-weight:500}
+.deck-table tr td.accent{color:var(--accent);font-family:var(--mono)}
+/* Logo/brand footer */
+.slide-footer{position:absolute;bottom:5%;left:7%;right:7%;display:flex;align-items:center;justify-content:space-between}
+.footer-brand{font-size:clamp(7px,1.2cqw,11px);font-weight:700;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.06em}
+.footer-pg{font-family:var(--mono);font-size:clamp(7px,1.1cqw,10px);color:rgba(255,255,255,.2)}
+/* Progress bar */
+.progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue));transition:width .4s}
+/* Big vs small column */
+.big-col{font-size:clamp(14px,3.8cqw,36px);font-weight:800;line-height:1.2}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <span class="toolbar-brand">SMC Deck Builder</span>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="prevSlide()">← Anterior</button>
+  <button class="tb-btn" onclick="nextSlide()">Siguiente →</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-present" onclick="togglePresent()">Presentar</button>
+  <button class="tb-btn" onclick="window.print()">Exportar PDF</button>
+  <span class="slide-counter" id="counter">1 / 10</span>
+</div>
+
+<div class="main">
+  <!-- SIDEBAR THUMBNAILS -->
+  <div class="sidebar" id="sidebar"></div>
+
+  <!-- MAIN CANVAS -->
+  <div class="canvas-wrap">
+    <div class="slide-frame" id="slide-frame" style="container-type:inline-size"></div>
+  </div>
+</div>
+
+<script>
+const DECK = [
+  {
+    id:'cover', bg:'bg-dark',
+    html:`
+      <div class="tag">Smart Connection</div>
+      <div class="h1" style="max-width:70%">SAP + <em>Inteligencia Artificial</em><br>en producción</div>
+      <div class="body" style="margin-top:.8em">Automatizamos los procesos que tu equipo hace a mano.<br>IA real. Ingeniería seria. Resultados medibles.</div>
+      <div style="margin-top:auto;font-size:clamp(9px,1.5cqw,13px);color:var(--dim)">smconnection.cl</div>`
+  },
+  {
+    id:'agenda', bg:'bg-dark',
+    html:`
+      <div class="tag">Agenda</div>
+      <div class="h2">Lo que cubrimos hoy</div>
+      <ul class="deck-list" style="columns:2;gap:6%">
+        <li>Quiénes somos</li>
+        <li>El problema que resolvemos</li>
+        <li>Cómo lo resolvemos</li>
+        <li>Casos reales con números</li>
+        <li>Nuestros servicios</li>
+        <li>ROI y payback</li>
+        <li>Próximo paso</li>
+      </ul>`
+  },
+  {
+    id:'problem', bg:'bg-dark',
+    html:`
+      <div class="tag">El problema</div>
+      <div class="cols" style="flex:1;align-items:center">
+        <div>
+          <div class="h2">SAP activo.<br>Procesos <em>manuales</em>.</div>
+          <div class="body" style="max-width:100%;margin-top:.6em">El 70% de las empresas con SAP activo siguen haciendo el cierre mensual, la conciliación y los reportes a mano.</div>
+        </div>
+        <div>
+          <div style="font-size:clamp(9px,1.6cqw,14px);color:var(--muted);margin-bottom:.8em">Costo mensual típico por proceso manual:</div>
+          <table class="deck-table">
+            <tr><td>3 personas × 8h/sem</td><td class="accent">~28 UF/mes</td></tr>
+            <tr><td>Errores de conciliación</td><td class="accent">~5 UF/mes</td></tr>
+            <tr><td>Retrasos en decisiones</td><td class="accent">~? UF/mes</td></tr>
+          </table>
+        </div>
+      </div>`
+  },
+  {
+    id:'solution', bg:'bg-green',
+    html:`
+      <div class="tag">La solución</div>
+      <div class="h2">SMC conecta, automatiza y entrega</div>
+      <div class="cols" style="margin-top:.6em">
+        <ul class="deck-list">
+          <li>SAP conectado con tus sistemas</li>
+          <li>IA entrenada en tus procesos</li>
+          <li>Código tuyo desde el día 1</li>
+        </ul>
+        <ul class="deck-list">
+          <li>Hitos cada 2-3 semanas</li>
+          <li>Sin dependencia de SMC</li>
+          <li>ROI medible en meses</li>
+        </ul>
+      </div>`
+  },
+  {
+    id:'stat1', bg:'bg-blue',
+    html:`
+      <div class="tag">Resultado real</div>
+      <div class="cols" style="flex:1;align-items:center">
+        <div>
+          <div class="stat-big">60%</div>
+          <div class="stat-label">reducción de tiempo<br>en cierre mensual</div>
+        </div>
+        <div>
+          <div class="h2" style="font-size:clamp(12px,2.5cqw,22px)">Empresa retail, SAP ECC<br>80 empleados — Chile 2025</div>
+          <div class="body" style="max-width:100%;margin-top:.6em">De 3 días de trabajo manual a 4 horas automáticas. El equipo ahora está en el negocio, no en planillas.</div>
+        </div>
+      </div>`
+  },
+  {
+    id:'services', bg:'bg-dark',
+    html:`
+      <div class="tag">Servicios</div>
+      <div class="h2">Cómo trabajamos</div>
+      <table class="deck-table" style="margin-top:.6em">
+        <thead><tr><th>Producto</th><th>Qué incluye</th><th>Precio</th><th>Plazo</th></tr></thead>
+        <tbody>
+          <tr><td>Discovery Sprint</td><td>Diagnóstico + roadmap</td><td class="accent">15–40 UF</td><td>2 semanas</td></tr>
+          <tr><td>SaaS Start</td><td>Plataforma lista</td><td class="accent">3–15 UF/mes</td><td>Inmediato</td></tr>
+          <tr><td>Build Premium</td><td>Desarrollo a medida</td><td class="accent">80–500 UF</td><td>4–12 sem</td></tr>
+          <tr><td>Project + Care</td><td>Dev + operación continua</td><td class="accent">80–500 UF + mensual</td><td>4–12 sem</td></tr>
+        </tbody>
+      </table>`
+  },
+  {
+    id:'roi', bg:'bg-dark',
+    html:`
+      <div class="tag">ROI</div>
+      <div class="cols" style="flex:1;align-items:center">
+        <div>
+          <div class="h2">El cálculo es simple</div>
+          <div class="body" style="max-width:100%;margin-top:.6em">Un proyecto de 40 UF se paga solo en 3–4 meses si el proceso actual cuesta más de 10 UF/mes en horas-persona.</div>
+          <div class="body" style="max-width:100%;margin-top:.6em;color:var(--accent)">Y si no cuadra el número, te lo decimos nosotros primero.</div>
+        </div>
+        <div>
+          <div class="stat-big" style="font-size:clamp(24px,8cqw,72px)">3–4</div>
+          <div class="stat-label">meses de payback<br>promedio Discovery Sprint</div>
+        </div>
+      </div>`
+  },
+  {
+    id:'differentiators', bg:'bg-dark',
+    html:`
+      <div class="tag">Por qué SMC</div>
+      <div class="cols" style="flex:1">
+        <div>
+          <div class="h2" style="font-size:clamp(12px,2.5cqw,22px);margin-bottom:.8em">Lo que hacemos diferente</div>
+          <ul class="deck-list">
+            <li>SAP + IA + Next.js en el mismo equipo</li>
+            <li>Código tuyo desde el día 1</li>
+            <li>Hitos, no entrega final</li>
+            <li>Precio fijo, no por hora</li>
+          </ul>
+        </div>
+        <div>
+          <div class="h2" style="font-size:clamp(12px,2.5cqw,22px);margin-bottom:.8em">Lo que no hacemos</div>
+          <ul class="deck-list">
+            <li style="color:rgba(255,255,255,.4)">Promesas sin entregables</li>
+            <li style="color:rgba(255,255,255,.4)">SAP puro sin IA</li>
+            <li style="color:rgba(255,255,255,.4)">Desarrollo sin mantenimiento</li>
+            <li style="color:rgba(255,255,255,.4)">Demos que no van a producción</li>
+          </ul>
+        </div>
+      </div>`
+  },
+  {
+    id:'next-step', bg:'bg-green',
+    html:`
+      <div class="tag">Próximo paso</div>
+      <div class="h1" style="max-width:75%">20 minutos.<br>Tus datos. Tu <em>ROI</em>.</div>
+      <div class="body" style="margin-top:.8em;max-width:60%">Agenda una demo y calculamos juntos cuánto están gastando en el proceso que más les cuesta. Si no cuadra el número, te lo decimos primero.</div>
+      <div style="margin-top:1.2em;font-size:clamp(10px,2cqw,18px);font-weight:700;color:var(--accent)">→ smconnection.cl</div>`
+  },
+  {
+    id:'appendix', bg:'bg-dark',
+    html:`
+      <div class="tag">Contacto</div>
+      <div class="h2">Smart Connection</div>
+      <div class="body" style="margin-top:.6em;max-width:100%">
+        <div>Guillermo González León</div>
+        <div style="margin-top:.3em;color:var(--accent)">smconnection.cl</div>
+        <div style="margin-top:.8em;font-size:.9em">7 años construyendo con SAP + IA en Chile y Latam.</div>
+      </div>`
+  }
+];
+
+let current = 0;
+let presenting = false;
+
+function render(idx) {
+  const s = DECK[idx];
+  const pct = ((idx+1)/DECK.length*100).toFixed(0);
+  document.getElementById('slide-frame').innerHTML = `
+    <div class="slide ${s.bg}" style="container-type:inline-size">
+      ${s.html}
+      <div class="slide-footer">
+        <span class="footer-brand">Smart Connection</span>
+        <span class="footer-pg">${idx+1} / ${DECK.length}</span>
+      </div>
+      <div class="progress" style="width:${pct}%"></div>
+    </div>`;
+  document.getElementById('counter').textContent = `${idx+1} / ${DECK.length}`;
+  document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));
+}
+
+function buildThumbs() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = DECK.map((s,i)=>`
+    <div class="thumb ${i===0?'active':''}" onclick="gotoSlide(${i})">
+      <div class="thumb-num">${i+1}</div>
+      <div class="thumb-mini ${s.bg}" style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:7px;padding:6px">
+        ${s.html.replace(/<[^>]+>/g,' ').trim().slice(0,60)}...
+      </div>
+    </div>`).join('');
+}
+
+function gotoSlide(i) { current=i; render(i); }
+function prevSlide() { if(current>0){current--;render(current);} }
+function nextSlide() { if(current<DECK.length-1){current++;render(current);} }
+
+function togglePresent() {
+  presenting = !presenting;
+  document.getElementById('btn-present').textContent = presenting ? 'Salir' : 'Presentar';
+  document.querySelector('.sidebar').style.display = presenting ? 'none' : '';
+  document.querySelector('.toolbar').style.display = presenting ? 'none' : '';
+  document.body.style.background = presenting ? '#000' : 'var(--bg-base)';
+  document.querySelector('.canvas-wrap').style.padding = presenting ? '0' : '24px';
+  document.querySelector('.canvas-wrap').style.alignItems = presenting ? 'center' : 'center';
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') nextSlide();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') prevSlide();
+  if(e.key==='Escape' && presenting) togglePresent();
+  if(e.key==='f'||e.key==='F') togglePresent();
+});
+
+buildThumbs();
+render(0);
+</script>
+</body>
+</html>

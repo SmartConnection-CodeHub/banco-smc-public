@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carousel Instagram — Smart Connection</title>
+<style>
+  :root {
+    --bg-base: #060912;
+    --bg-surface: #0a0d14;
+    --bg-elevated: #0f1520;
+    --bg-glass: rgba(15,22,35,0.85);
+    --border-subtle: rgba(255,255,255,0.06);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #00e5b0;
+    --accent-dim: rgba(0,229,176,0.12);
+    --gold: #f97316;
+    --blue: #00b4d8;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+
+  /* EDITOR */
+  .editor-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  @media (max-width: 700px) { .editor-layout { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .panel-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .field { margin-bottom: 14px; }
+  label { font-size: 12px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 5px; }
+  input[type="text"], textarea, select {
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+  }
+  select option { background: var(--bg-elevated); }
+
+  /* SLIDE NAV */
+  .slide-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .slide-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    transition: all 0.2s;
+  }
+  .slide-btn.active {
+    background: var(--accent-dim);
+    border-color: rgba(0,229,176,0.3);
+    color: var(--accent);
+  }
+  .slide-btn:hover:not(.active) { border-color: rgba(255,255,255,0.15); }
+
+  /* PREVIEW AREA */
+  .preview-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* INSTAGRAM SLIDE — 1080x1080 scaled */
+  .slide-preview {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* SLIDE THEMES */
+  .slide-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 8%;
+    position: relative;
+    overflow: hidden;
+  }
+  .theme-dark {
+    background: linear-gradient(135deg, #060912 0%, #0f1520 100%);
+  }
+  .theme-green {
+    background: linear-gradient(135deg, #001a12 0%, #003a26 100%);
+  }
+  .theme-blue {
+    background: linear-gradient(135deg, #00080f 0%, #001a2e 100%);
+  }
+  .theme-gold {
+    background: linear-gradient(135deg, #120600 0%, #2a1100 100%);
+  }
+
+  /* Decorative elements */
+  .slide-inner::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -20%;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,176,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .theme-blue .slide-inner::before { background: radial-gradient(circle, rgba(0,180,216,0.1) 0%, transparent 70%); }
+  .theme-gold .slide-inner::before { background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 70%); }
+
+  /* Slide number indicator */
+  .slide-number {
+    position: absolute;
+    top: 7%;
+    right: 7%;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+  }
+
+  /* Badge / tag */
+  .slide-tag {
+    display: inline-block;
+    background: rgba(0,229,176,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,176,0.2);
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    margin-bottom: 12px;
+  }
+  .theme-blue .slide-tag { background: rgba(0,180,216,0.15); color: #00b4d8; border-color: rgba(0,180,216,0.2); }
+  .theme-gold .slide-tag { background: rgba(249,115,22,0.15); color: var(--gold); border-color: rgba(249,115,22,0.2); }
+
+  /* Headline */
+  .slide-headline {
+    font-size: clamp(14px, 5.5cqw, 26px);
+    font-weight: 800;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: 10px;
+    flex: 0 0 auto;
+  }
+  .slide-headline em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .theme-gold .slide-headline em { background: linear-gradient(135deg, var(--gold), #fbbf24); -webkit-background-clip: text; background-clip: text; }
+
+  /* Body text */
+  .slide-body {
+    font-size: clamp(10px, 3.2cqw, 14px);
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  /* Big number stat */
+  .slide-stat {
+    font-size: clamp(38px, 16cqw, 72px);
+    font-weight: 900;
+    font-family: var(--font-mono);
+    line-height: 1;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .theme-gold .slide-stat { background: linear-gradient(135deg, var(--gold), #fbbf24); -webkit-background-clip: text; background-clip: text; }
+
+  .slide-stat-label {
+    font-size: clamp(9px, 3cqw, 13px);
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  /* CTA at bottom */
+  .slide-cta {
+    position: absolute;
+    bottom: 7%;
+    left: 8%;
+    right: 8%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .slide-brand {
+    font-size: clamp(9px, 2.5cqw, 12px);
+    font-weight: 700;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .slide-arrow {
+    width: clamp(24px, 8cqw, 36px);
+    height: clamp(24px, 8cqw, 36px);
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(10px, 3.5cqw, 16px);
+    color: #000;
+  }
+
+  /* Lists in slides */
+  .slide-list {
+    list-style: none;
+    margin-top: 8px;
+  }
+  .slide-list li {
+    font-size: clamp(9px, 3cqw, 13px);
+    color: rgba(255,255,255,0.7);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .slide-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 10px;
+  }
+  .theme-gold .slide-list li::before { color: var(--gold); }
+
+  /* Swipe hint */
+  .swipe-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  .ctrl-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 16px;
+    transition: all 0.2s;
+  }
+  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.primary {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+  .ctrl-btn.primary:hover { opacity: 0.9; }
+
+  /* Tips */
+  .tip {
+    background: var(--accent-dim);
+    border: 1px solid rgba(0,229,176,0.15);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-top: 12px;
+  }
+  .tip strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div style="max-width:1100px;margin:0 auto;padding-bottom:48px">
+  <h1>Carousel Instagram — Smart Connection</h1>
+  <p class="subtitle">Editor de carruseles 1:1 (1080×1080) para LinkedIn e Instagram. Edita el contenido y exporta cada slide.</p>
+
+  <div class="editor-layout">
+    <!-- LEFT PANEL: Editor -->
+    <div>
+      <div class="panel">
+        <div class="panel-title">Editar slide</div>
+
+        <div class="slide-nav" id="slide-nav">
+          <button class="slide-btn active" onclick="setSlide(0)">1</button>
+          <button class="slide-btn" onclick="setSlide(1)">2</button>
+          <button class="slide-btn" onclick="setSlide(2)">3</button>
+          <button class="slide-btn" onclick="setSlide(3)">4</button>
+          <button class="slide-btn" onclick="setSlide(4)">5</button>
+          <button class="slide-btn" onclick="setSlide(5)">6 →</button>
+        </div>
+
+        <div class="field">
+          <label>Tema de color</label>
+          <select id="theme" onchange="updateSlide()">
+            <option value="dark">Dark (default)</option>
+            <option value="green">Verde (accent)</option>
+            <option value="blue">Azul</option>
+            <option value="gold">Naranja/Gold</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Tipo de slide</label>
+          <select id="slide-type" onchange="updateSlide()">
+            <option value="headline">Titular + texto</option>
+            <option value="stat">Stat / número grande</option>
+            <option value="list">Lista de puntos</option>
+            <option value="cta">CTA final</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Etiqueta / tag</label>
+          <input type="text" id="tag-text" value="Smart Connection" oninput="updateSlide()">
+        </div>
+
+        <div class="field">
+          <label>Titular principal</label>
+          <textarea id="headline-text" oninput="updateSlide()">¿Cuánto te cuesta el proceso manual?</textarea>
+        </div>
+
+        <div id="body-field" class="field">
+          <label>Texto de apoyo</label>
+          <textarea id="body-text" oninput="updateSlide()">Cada hora que tu equipo dedica a conciliar datos manualmente es tiempo que no está en el negocio.</textarea>
+        </div>
+
+        <div id="stat-field" class="field" style="display:none">
+          <label>Número grande</label>
+          <input type="text" id="stat-value" value="60%" oninput="updateSlide()">
+        </div>
+
+        <div id="stat-label-field" class="field" style="display:none">
+          <label>Label del stat</label>
+          <input type="text" id="stat-label" value="menos tiempo en cierre mensual" oninput="updateSlide()">
+        </div>
+
+        <div id="list-field" class="field" style="display:none">
+          <label>Puntos (uno por línea)</label>
+          <textarea id="list-items" oninput="updateSlide()">SAP conectado con tu e-commerce
+Cierre mensual automático
+0 errores de conciliación
+Tu equipo en el negocio, no en planillas</textarea>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>Tip de exportación:</strong> Presiona <kbd style="background:var(--bg-elevated);padding:1px 5px;border-radius:4px;font-size:11px">Print / Guardar PDF</kbd> en tu navegador y selecciona "Guardar como PDF" para obtener el slide en alta calidad. Después lo importas en Canva o sube directo.
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Preview -->
+    <div class="preview-wrap">
+      <div class="slide-preview" id="slide-preview" style="container-type:inline-size">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="swipe-hint">← Desliza o usa los botones para navegar →</div>
+
+      <div class="controls">
+        <button class="ctrl-btn" onclick="prevSlide()">← Anterior</button>
+        <button class="ctrl-btn" onclick="nextSlide()">Siguiente →</button>
+        <button class="ctrl-btn primary" onclick="printSlide()">Exportar slide</button>
+      </div>
+
+      <!-- Slide counter pills -->
+      <div style="display:flex;gap:6px;justify-content:center;margin-top:4px">
+        <span id="dot-0" style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span>
+        <span id="dot-1" style="width:8px;height:8px;border-radius:50%;background:var(--border-subtle);display:inline-block"></span>
+        <span id="dot-2" style="width:8px;height:8px;border-radius:50%;background:var(--border-subtle);display:inline-block"></span>
+        <span id="dot-3" style="width:8px;height:8px;border-radius:50%;background:var(--border-subtle);display:inline-block"></span>
+        <span id="dot-4" style="width:8px;height:8px;border-radius:50%;background:var(--border-subtle);display:inline-block"></span>
+        <span id="dot-5" style="width:8px;height:8px;border-radius:50%;background:var(--border-subtle);display:inline-block"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEFAULT CONTENT LIBRARY -->
+  <div class="panel" style="max-width:1100px;margin:24px auto 0">
+    <div class="panel-title">Biblioteca de contenido — 3 carruseles listos para usar</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+
+      <div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:12px;padding:16px">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Framework ROI</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">6 slides: El cálculo que hacemos antes de proponer cualquier proyecto</div>
+        <button class="ctrl-btn" onclick="loadTemplate('roi')" style="width:100%">Cargar template →</button>
+      </div>
+
+      <div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:12px;padding:16px">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">SAP vs ChatGPT</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">5 slides: La diferencia entre IA genérica y un agente que conoce tu SAP</div>
+        <button class="ctrl-btn" onclick="loadTemplate('sap-ai')" style="width:100%">Cargar template →</button>
+      </div>
+
+      <div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:12px;padding:16px">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Caso Retail</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">6 slides: De 3 días a 4 horas — caso real de cierre mensual automatizado</div>
+        <button class="ctrl-btn" onclick="loadTemplate('case')" style="width:100%">Cargar template →</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let currentSlide = 0;
+const TOTAL_SLIDES = 6;
+
+// DEFAULT SLIDES DATA
+let slides = [
+  { theme:'dark', type:'headline', tag:'Smart Connection', headline:'¿Cuánto cuesta <em>no</em> automatizar?', body:'Cada hora manual en SAP es tiempo que no está en el negocio.', stat:'', statLabel:'', list:'' },
+  { theme:'green', type:'stat', tag:'Resultado real', headline:'Cierre mensual<br><em>automatizado</em>', body:'', stat:'60%', statLabel:'menos tiempo, empresa retail Chile', list:'' },
+  { theme:'dark', type:'list', tag:'Lo que hacemos', headline:'SAP + IA en <em>producción</em>', body:'No demos. Resultados reales.', stat:'', statLabel:'', list:'SAP conectado con tu e-commerce\nCierre mensual automático\n0 errores de conciliación\nTu equipo en el negocio' },
+  { theme:'blue', type:'stat', tag:'Discovery Sprint', headline:'<em>2 semanas</em> para saber exactamente qué construir', body:'', stat:'40 UF', statLabel:'inversión que evita 200 UF mal gastadas', list:'' },
+  { theme:'dark', type:'headline', tag:'Por qué SMC', headline:'Ingeniería real.<br><em>No demos.</em>', body:'SAP + IA + Next.js. En producción, no en presentaciones.', stat:'', statLabel:'', list:'' },
+  { theme:'green', type:'cta', tag:'Próximo paso', headline:'Agenda 20 minutos.<br><em>Sin compromiso.</em>', body:'Te mostramos exactamente qué automatizaríamos en tu empresa.', stat:'', statLabel:'', list:'' },
+];
+
+function setSlide(i) {
+  currentSlide = i;
+  loadSlideToEditor(slides[i]);
+  renderPreview();
+  updateDots();
+  document.querySelectorAll('.slide-btn').forEach((b,idx) => b.classList.toggle('active', idx === i));
+}
+
+function loadSlideToEditor(s) {
+  document.getElementById('theme').value = s.theme;
+  document.getElementById('slide-type').value = s.type;
+  document.getElementById('tag-text').value = s.tag;
+  document.getElementById('headline-text').value = s.headline.replace(/<br>/g,'\n').replace(/<em>/g,'').replace(/<\/em>/g,'');
+  document.getElementById('body-text').value = s.body;
+  document.getElementById('stat-value').value = s.stat;
+  document.getElementById('stat-label').value = s.statLabel;
+  document.getElementById('list-items').value = s.list;
+  toggleTypeFields(s.type);
+}
+
+function toggleTypeFields(type) {
+  document.getElementById('body-field').style.display = (type === 'stat' || type === 'list') ? 'none' : '';
+  document.getElementById('stat-field').style.display = type === 'stat' ? '' : 'none';
+  document.getElementById('stat-label-field').style.display = type === 'stat' ? '' : 'none';
+  document.getElementById('list-field').style.display = type === 'list' ? '' : 'none';
+}
+
+function updateSlide() {
+  const type = document.getElementById('slide-type').value;
+  toggleTypeFields(type);
+  let hl = document.getElementById('headline-text').value;
+  // Auto-wrap last word with em for accent
+  slides[currentSlide] = {
+    theme: document.getElementById('theme').value,
+    type,
+    tag: document.getElementById('tag-text').value,
+    headline: hl,
+    body: document.getElementById('body-text').value,
+    stat: document.getElementById('stat-value').value,
+    statLabel: document.getElementById('stat-label').value,
+    list: document.getElementById('list-items').value,
+  };
+  renderPreview();
+}
+
+function renderPreview() {
+  const s = slides[currentSlide];
+  const slideNum = `${currentSlide + 1}/${TOTAL_SLIDES}`;
+  const isLast = currentSlide === TOTAL_SLIDES - 1;
+
+  let content = '';
+  if (s.type === 'stat') {
+    content = `
+      <div class="slide-tag">${s.tag}</div>
+      <div class="slide-headline" style="margin-bottom:auto">${s.headline}</div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+        <div class="slide-stat">${s.stat}</div>
+        <div class="slide-stat-label">${s.statLabel}</div>
+      </div>`;
+  } else if (s.type === 'list') {
+    const items = s.list.split('\n').filter(l => l.trim());
+    const liHTML = items.map(i => `<li>${i}</li>`).join('');
+    content = `
+      <div class="slide-tag">${s.tag}</div>
+      <div class="slide-headline">${s.headline}</div>
+      <ul class="slide-list">${liHTML}</ul>`;
+  } else {
+    content = `
+      <div class="slide-tag">${s.tag}</div>
+      <div class="slide-headline">${s.headline.replace(/\n/g,'<br>')}</div>
+      <div class="slide-body">${s.body}</div>`;
+  }
+
+  const cta = `
+    <div class="slide-cta">
+      <div class="slide-brand">smconnection.cl</div>
+      ${isLast ? '<div class="slide-arrow">→</div>' : `<div style="font-size:clamp(9px,2.5cqw,11px);color:rgba(255,255,255,0.25)">${slideNum}</div>`}
+    </div>`;
+
+  document.getElementById('slide-preview').innerHTML = `
+    <div class="slide-inner theme-${s.theme}">
+      <div class="slide-number">${slideNum}</div>
+      ${content}
+      ${cta}
+    </div>`;
+}
+
+function updateDots() {
+  for (let i = 0; i < TOTAL_SLIDES; i++) {
+    document.getElementById('dot-'+i).style.background = i === currentSlide ? 'var(--accent)' : 'var(--border-subtle)';
+  }
+}
+
+function prevSlide() { setSlide(Math.max(0, currentSlide - 1)); }
+function nextSlide() { setSlide(Math.min(TOTAL_SLIDES - 1, currentSlide + 1)); }
+
+function printSlide() {
+  const preview = document.getElementById('slide-preview').innerHTML;
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+    :root { --accent:#00e5b0; --blue:#00b4d8; --gold:#f97316; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{width:1080px;height:1080px;overflow:hidden}
+    .slide-inner{width:1080px;height:1080px;display:flex;flex-direction:column;padding:86px;position:relative;overflow:hidden}
+    .theme-dark{background:linear-gradient(135deg,#060912 0%,#0f1520 100%)}
+    .theme-green{background:linear-gradient(135deg,#001a12 0%,#003a26 100%)}
+    .theme-blue{background:linear-gradient(135deg,#00080f 0%,#001a2e 100%)}
+    .theme-gold{background:linear-gradient(135deg,#120600 0%,#2a1100 100%)}
+    .slide-inner::before{content:'';position:absolute;top:-30%;right:-20%;width:60%;height:60%;border-radius:50%;background:radial-gradient(circle,rgba(0,229,176,.08) 0%,transparent 70%);pointer-events:none}
+    .slide-number{position:absolute;top:75px;right:75px;font-size:18px;font-weight:700;color:rgba(255,255,255,.3);font-family:monospace;letter-spacing:.08em}
+    .slide-tag{display:inline-block;background:rgba(0,229,176,.15);color:#00e5b0;border:1px solid rgba(0,229,176,.2);border-radius:100px;font-size:20px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:8px 22px;margin-bottom:36px;font-family:sans-serif}
+    .theme-blue .slide-tag{background:rgba(0,180,216,.15);color:#00b4d8;border-color:rgba(0,180,216,.2)}
+    .theme-gold .slide-tag{background:rgba(249,115,22,.15);color:#f97316;border-color:rgba(249,115,22,.2)}
+    .slide-headline{font-size:72px;font-weight:800;line-height:1.15;color:#fff;margin-bottom:28px;font-family:sans-serif}
+    .slide-headline em{font-style:normal;background:linear-gradient(135deg,#00e5b0,#00b4d8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .theme-gold .slide-headline em{background:linear-gradient(135deg,#f97316,#fbbf24);-webkit-background-clip:text;background-clip:text}
+    .slide-body{font-size:32px;color:rgba(255,255,255,.65);line-height:1.6;font-family:sans-serif;flex:1}
+    .slide-stat{font-size:160px;font-weight:900;font-family:monospace;line-height:1;margin-bottom:16px;background:linear-gradient(135deg,#00e5b0,#00b4d8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .theme-gold .slide-stat{background:linear-gradient(135deg,#f97316,#fbbf24);-webkit-background-clip:text;background-clip:text}
+    .slide-stat-label{font-size:28px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600;font-family:sans-serif}
+    .slide-list{list-style:none;margin-top:20px}
+    .slide-list li{font-size:30px;color:rgba(255,255,255,.7);padding:10px 0;padding-left:40px;position:relative;line-height:1.4;font-family:sans-serif}
+    .slide-list li::before{content:'→';position:absolute;left:0;color:#00e5b0;font-size:24px}
+    .theme-gold .slide-list li::before{color:#f97316}
+    .slide-cta{position:absolute;bottom:75px;left:86px;right:86px;display:flex;align-items:center;justify-content:space-between}
+    .slide-brand{font-size:22px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.06em;text-transform:uppercase;font-family:sans-serif}
+    .slide-arrow{width:64px;height:64px;border-radius:50%;background:#00e5b0;display:flex;align-items:center;justify-content:center;font-size:28px;color:#000}
+  </style></head><body>${preview}</body></html>`);
+  win.document.close();
+  setTimeout(() => { win.print(); }, 500);
+}
+
+// Templates
+const templates = {
+  roi: [
+    { theme:'dark', type:'headline', tag:'Smart Connection', headline:'El cálculo que hacemos antes de proponer cualquier proyecto', body:'Primero los números. Después la propuesta.', stat:'', statLabel:'', list:'' },
+    { theme:'dark', type:'list', tag:'Paso 1', headline:'¿Cuánto cuesta el proceso HOY?', body:'', stat:'', statLabel:'', list:'Personas × horas × sueldo/hora\nMás: costo de los errores manuales\nMás: costo de los retrasos\n= Costo mensual real del proceso' },
+    { theme:'blue', type:'stat', tag:'El número que cambia todo', headline:'Costo mensual típico en procesos manuales SAP', body:'', stat:'45 UF', statLabel:'promedio en PYMES chilenas con 3+ personas', list:'' },
+    { theme:'dark', type:'list', tag:'El cálculo ROI', headline:'¿Cuándo se paga solo?', body:'', stat:'', statLabel:'', list:'Inversión ÷ ahorro mensual = payback\nIf payback <12 meses → verde\nIf payback 12-24 meses → evaluar\nIf payback >24 meses → no lo recomendamos' },
+    { theme:'green', type:'stat', tag:'Resultado real', headline:'Empresa retail, SAP ECC, 2025', body:'', stat:'4 meses', statLabel:'payback de un proyecto de 80 UF', list:'' },
+    { theme:'green', type:'cta', tag:'¿Cuadran tus números?', headline:'Agenda 20 minutos. Hacemos el cálculo con tus datos.', body:'smconnection.cl → agenda demo gratuita', stat:'', statLabel:'', list:'' },
+  ],
+  'sap-ai': [
+    { theme:'dark', type:'headline', tag:'La diferencia que importa', headline:'ChatGPT no conoce tu SAP. Nuestros agentes sí.', body:'¿Cuánto stock hay de [producto] en bodega 3?', stat:'', statLabel:'', list:'' },
+    { theme:'dark', type:'list', tag:'ChatGPT', headline:'Lo que ChatGPT NO puede hacer', body:'', stat:'', statLabel:'', list:'Acceder a tu SAP en tiempo real\nEjecutar acciones en tus sistemas\nResponder con TUS datos\nActualizar inventario, facturar, reportar' },
+    { theme:'green', type:'list', tag:'Agente SMC', headline:'Lo que un agente SMC SÍ hace', body:'', stat:'', statLabel:'', list:'Conectado a tu SAP y tus datos\nResponde con información real y actualizada\nEjecuta tareas: sincronizar, reportar, alertar\nAprende de tus procesos específicos' },
+    { theme:'blue', type:'stat', tag:'La diferencia en números', headline:'Reducción de consultas manuales al equipo TI', body:'', stat:'80%', statLabel:'con un agente SAP entrenado en tu empresa', list:'' },
+    { theme:'dark', type:'cta', tag:'Siguiente paso', headline:'Te mostramos exactamente cómo en 20 minutos.', body:'Sin demo genérica. Con TU SAP como ejemplo.', stat:'', statLabel:'', list:'' },
+  ],
+  case: [
+    { theme:'dark', type:'headline', tag:'Caso real — Retail Chile', headline:'De 3 días a 4 horas: el cierre mensual automatizado', body:'Empresa manufactura, SAP ECC, 80 empleados.', stat:'', statLabel:'', list:'' },
+    { theme:'dark', type:'list', tag:'El dolor original', headline:'¿Cómo era antes?', body:'', stat:'', statLabel:'', list:'3 días de cierre manual por 2 personas\n4 fuentes de datos sin conexión entre sí\nErrores de conciliación mensuales\nGerente TI apagando incendios cada mes' },
+    { theme:'dark', type:'list', tag:'El diagnóstico', headline:'¿Qué encontramos?', body:'', stat:'', statLabel:'', list:'SAP ECC con datos correctos pero sin exportar\nExcel como "pegamento" entre sistemas\nFalta un pipeline automático SAP → reportes\nQuick win implementable en 6 semanas' },
+    { theme:'green', type:'stat', tag:'El resultado', headline:'4 horas de cierre mensual automático', body:'', stat:'60%', statLabel:'reducción de tiempo — sin intervención manual', list:'' },
+    { theme:'blue', type:'stat', tag:'El ROI', headline:'La inversión se pagó sola', body:'', stat:'3 meses', statLabel:'payback del proyecto de 80 UF', list:'' },
+    { theme:'green', type:'cta', tag:'¿Tienes un proceso similar?', headline:'Cuéntanos. Hacemos el mismo análisis para tu empresa.', body:'smconnection.cl → 20 minutos gratuitos', stat:'', statLabel:'', list:'' },
+  ]
+};
+
+function loadTemplate(name) {
+  slides = [...templates[name]];
+  // Pad to 6 slides if needed
+  while(slides.length < TOTAL_SLIDES) slides.push({...slides[slides.length-1]});
+  setSlide(0);
+}
+
+// Init
+setSlide(0);
+</script>
+</body>
+</html>

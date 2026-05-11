@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV - Camila Patricia Bianchi Salinas</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.4;
+      color: #333;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 8.5in;
+      background: white;
+      margin: 0 auto;
+      padding: 0;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+    }
+    
+    .left-column {
+      background-color: #e8e8e8;
+      width: 35%;
+      padding: 30px 20px;
+      font-size: 11px;
+    }
+    
+    .right-column {
+      width: 65%;
+      padding: 30px 20px;
+    }
+    
+    .header {
+      grid-column: 1 / -1;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      border-bottom: 3px solid #8B3A3A;
+    }
+    
+    h1 {
+      font-size: 24px;
+      color: #8B3A3A;
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
+    
+    .subtitle {
+      font-size: 13px;
+      color: #333;
+      font-weight: bold;
+    }
+    
+    h2 {
+      font-size: 11px;
+      font-weight: bold;
+      color: #333;
+      margin-top: 15px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .left-column h2 {
+      margin-top: 12px;
+    }
+    
+    .right-column h2 {
+      color: #8B3A3A;
+    }
+    
+    .section {
+      margin-bottom: 10px;
+    }
+    
+    .info-row {
+      font-size: 10px;
+      margin-bottom: 3px;
+      display: block;
+    }
+    
+    .label {
+      font-weight: bold;
+    }
+    
+    .job-entry {
+      margin-bottom: 8px;
+      font-size: 10px;
+    }
+    
+    .job-title {
+      font-weight: bold;
+      color: #8B3A3A;
+      margin-bottom: 2px;
+    }
+    
+    .right-column .job-title {
+      color: #8B3A3A;
+    }
+    
+    .left-column .job-title {
+      color: #333;
+    }
+    
+    .job-dates {
+      font-weight: bold;
+      color: #333;
+      font-size: 10px;
+    }
+    
+    .institution {
+      font-size: 9px;
+      color: #666;
+      margin-bottom: 2px;
+    }
+    
+    .left-column .institution {
+      color: #333;
+    }
+    
+    .course-item {
+      font-size: 10px;
+      margin-bottom: 6px;
+    }
+    
+    .course-title {
+      font-weight: bold;
+      color: #8B3A3A;
+    }
+    
+    .left-column .course-title {
+      color: #333;
+    }
+    
+    .course-details {
+      font-size: 9px;
+      color: #666;
+    }
+    
+    .left-column .course-details {
+      color: #333;
+    }
+    
+    ul {
+      margin-left: 18px;
+      font-size: 10px;
+      margin-bottom: 2px;
+    }
+    
+    li {
+      margin-bottom: 2px;
+    }
+    
+    .btn-container {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 20px;
+      grid-column: 1 / -1;
+      border-top: 1px solid #ddd;
+    }
+    
+    .btn-print {
+      background-color: #8B3A3A;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .btn-print:hover {
+      background-color: #6B2A2A;
+    }
+    
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        margin: 0;
+        max-width: 100%;
+      }
+      .btn-container {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="left-column">
+    <!-- INFORMACIÓN PERSONAL -->
+    <h2>Información Personal</h2>
+    <div class="section">
+      <div class="info-row">
+        <span class="label">Fecha de Nacimiento:</span>
+        <span>11 de julio de 1987</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Nacionalidad:</span>
+        <span>Chilena</span>
+      </div>
+    </div>
+
+    <!-- CONTACTO -->
+    <h2>Contacto</h2>
+    <div class="section">
+      <div class="info-row">
+        <span class="label">Teléfono:</span>
+        <span>+56 9 8628 6249</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Email:</span>
+        <span>camilabianchi.tm@gmail.com</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Dirección:</span>
+        <span>Lapislázuli #1630, Viña del Mar</span>
+      </div>
+    </div>
+
+    <!-- ESTUDIOS -->
+    <h2>Estudios</h2>
+    <div class="section">
+      <div class="job-entry">
+        <div class="job-title">Educación Media</div>
+        <div class="institution">Colegio Capellán Pascal, Viña del Mar</div>
+        <div class="job-dates">2002 – 2005</div>
+      </div>
+    </div>
+
+    <!-- CAPACIDADES -->
+    <h2>Capacidades</h2>
+    <div class="section">
+      <div class="info-row">
+        <span class="label">Idiomas:</span>
+        <span>Inglés, nivel medio</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Herramientas:</span>
+        <span>Excel, nivel avanzado / SAP, nivel usuario</span>
+      </div>
+    </div>
+
+    <!-- REFERENCIAS LABORALES -->
+    <h2>Referencias Laborales</h2>
+    <div class="section">
+      <div class="job-entry">
+        <div class="job-title">Dra. Isabel Briceño Lizana</div>
+        <div class="institution">Médico con especialidad en Laboratorio Clínico y Microbiología</div>
+        <div class="institution">+56 9 9887 0790</div>
+      </div>
+      <div class="job-entry">
+        <div class="job-title">TM Bernardita González Zamora</div>
+        <div class="institution">Encargada de Calidad Laboratorio Omesa Viña del Mar</div>
+        <div class="institution">+56 9 5370 8174</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-column">
+    <div class="header">
+      <h1>Camila Patricia Bianchi Salinas</h1>
+      <div class="subtitle">Tecnólogo Médico en Bioanálisis Clínico, Inmunohematología y Banco de Sangre</div>
+    </div>
+
+    <!-- EXPERIENCIA LABORAL -->
+    <h2>Experiencia Laboral</h2>
+    <div class="section">
+      <div class="job-entry">
+        <div class="job-title">Director Técnico – Laboratorio Clínico Omesa Viña del Mar, en Clínica Ciudad del Mar</div>
+        <div class="job-dates">2022 – Actualidad</div>
+      </div>
+      <div class="job-entry">
+        <div class="job-title">Jefe Técnico – Laboratorio Clínico Vidaintegra</div>
+        <div class="job-dates">2020 – 2022</div>
+      </div>
+      <div class="job-entry">
+        <div class="job-title">Unidad de Calidad – Laboratorio Clínico Vidaintegra</div>
+        <div class="job-dates">2017 – 2019</div>
+      </div>
+      <div class="job-entry">
+        <div class="job-title">Docente – Universidad Santo Tomás</div>
+        <div class="job-dates">2017 – 2018</div>
+      </div>
+      <div class="job-entry">
+        <div class="job-title">Laboratorio Clínico Vidaintegra</div>
+        <div class="job-dates">2014 – 2017</div>
+      </div>
+      <div class="job-entry">
+        <div class="job-title">Laboratorio Clínico Centromed</div>
+        <div class="job-dates">2013</div>
+      </div>
+      <div class="job-entry">
+        <div class="job-title">Internados Clínicos</div>
+        <div class="job-dates">2012</div>
+        <ul>
+          <li>Hospital Naval Almirante Nef: Laboratorio Clínico</li>
+          <li>Hospital Carlos Van Buren: Unidad de Medicina Transfusional</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CURSOS Y DIPLOMADOS -->
+    <h2>Cursos y Diplomados</h2>
+    <div class="section">
+      <div class="course-item">
+        <div class="course-title">Postítulo en Gestión de Calidad Orientado a Laboratorios Clínicos</div>
+        <div class="course-details">Universidad de Santiago de Chile | 2019 – 2020</div>
+      </div>
+      <div class="course-item">
+        <div class="course-title">Curso e-learning: Estándar General de Acreditación para Laboratorios Clínicos</div>
+        <div class="course-details">Instituto de Salud Pública | Diciembre 2018</div>
+      </div>
+      <div class="course-item">
+        <div class="course-title">Gestión de Calidad y Aseguramiento de la Calidad en Laboratorios Clínicos y Banco de Sangre</div>
+        <div class="course-details">Universidad Diego Portales | Julio – Octubre 2015</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="btn-container">
+  <button class="btn-print" onclick="window.print()">Descargar como PDF</button>
+</div>
+
+</body>
+</html>

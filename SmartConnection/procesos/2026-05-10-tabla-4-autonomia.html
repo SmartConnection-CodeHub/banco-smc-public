@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>SMC · Tabla #4 · Autonomía</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.5;position:relative;overflow-x:hidden}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%),radial-gradient(ellipse 800px 600px at 90% 100%,rgba(0,180,216,.06),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1}
+.container{max-width:1600px;margin:0 auto}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px;letter-spacing:-.02em}
+h2{font-size:22px;font-weight:700;color:#f1f5f9;margin:40px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px}
+p{color:#94a3b8;margin-bottom:12px;font-size:14px}
+.meta{display:flex;gap:24px;font-size:12px;color:#6b7b8e;margin-bottom:32px}
+.meta span{padding:4px 12px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:30px;color:#00e5b0}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:13px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;font-weight:600;padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08);font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:top}
+.level-0{color:#00e5b0;font-weight:600}.level-1{color:#7dd3fc;font-weight:600}.level-2{color:#fbbf24;font-weight:600}.level-3{color:#ef4444;font-weight:600}
+.radar{background:linear-gradient(135deg,rgba(0,229,176,.05),rgba(0,180,216,.05));border:1px solid rgba(0,229,176,.2);border-radius:12px;padding:24px;margin-top:24px}
+.radar-section{margin-bottom:20px}
+.radar-label{font-size:11px;font-weight:700;color:#00e5b0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.radar-content{font-size:13px;color:#cbd5e1}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+
+<h1>SMC · Tabla #4 · Niveles de autonomía</h1>
+<p>4 niveles · regla 3 confirmaciones · auto-ok 30s · token budget alerts · sentinela mode AFK</p>
+<div class="meta"><span>v1 · 2026-05-10</span><span>4 niveles</span><span>5 reglas activas</span></div>
+
+<h2>🎚️ Los 4 niveles</h2>
+<table>
+<thead><tr><th>Nivel</th><th>Tipo</th><th>Acción ejemplo</th><th>Comportamiento</th><th>Práctica mercado</th></tr></thead>
+<tbody>
+<tr><td class="level-0">🟢 0</td><td>AUTO SIEMPRE</td><td>Read · grep · curl · crear memoria · sync repos</td><td>Sin avisar · cero riesgo</td><td>Cursor: auto · Cline: auto · Devin: auto</td></tr>
+<tr><td class="level-1">🟢 1</td><td>AUTO + NOTIFY</td><td>Edit en plan acordado · push commits · renames consistentes</td><td>Ejecuta · avisa 1 línea · sin esperar respuesta</td><td>Cursor Composer · Aider --yes-always</td></tr>
+<tr><td class="level-2">🟡 2</td><td>PREGUNTA 1×SESIÓN</td><td>Crear agente nuevo · repo nuevo · crear infra cloud (S3/CF/RDS)</td><td>Pregunta primera vez · después auto en sesión</td><td>Cursor: pregunta inicial · luego auto</td></tr>
+<tr><td class="level-3">🔴 3</td><td>PREGUNTA SIEMPRE</td><td>Push a prod · delete repo · rm -rf · email cliente · cambios legales</td><td>SIEMPRE pregunta · sin importar confirmaciones previas</td><td>Cursor, Cline, Devin: SIEMPRE preguntan</td></tr>
+</tbody></table>
+
+<h2>🔄 Reglas activas (CLAUDE.md 18-27)</h2>
+<table>
+<thead><tr><th>Regla</th><th>Nombre</th><th>Qué hace</th><th>Trigger</th></tr></thead>
+<tbody>
+<tr><td>18</td><td>3-confirmaciones</td><td>2 OK en misma categoría → 3ra y siguientes auto</td><td>Renames · creación archivos en plan</td></tr>
+<tr><td>19</td><td>RADAR alertas mensuales</td><td>Scan 7 plataformas cross-cloud</td><td>1er lunes del mes</td></tr>
+<tr><td>20</td><td>Formato RADAR en tablas</td><td>Toda tabla con 7 sub-campos</td><td>Crear/actualizar tabla</td></tr>
+<tr><td>21</td><td>Enseñanza visual</td><td>Tabla + analogía antes que texto</td><td>Cualquier explicación</td></tr>
+<tr><td>22</td><td>Streaming en vivo</td><td>Stream bar mientras hay tareas</td><td>Acciones &gt;1 min</td></tr>
+<tr><td>23</td><td>Cerebro Orquestador</td><td>5 capacidades auto</td><td>Continuo</td></tr>
+<tr><td>24</td><td>Auto-OK 30s</td><td>Asume OK si timeout en repetitiva</td><td>Preguntas estándar</td></tr>
+<tr><td>25</td><td>Email fin sesión</td><td>Reporte RADAR por email</td><td>SessionEnd hook</td></tr>
+<tr><td>26</td><td>Auto-detecta patrones</td><td>Sugiere modo según comportamiento</td><td>"OK fatigue" · "AFK"</td></tr>
+<tr><td>27</td><td>Token budget alert</td><td>10% subtarea · 70% defensivo</td><td>Consumo real</td></tr>
+</tbody></table>
+
+<h2>💰 Token Budget Alerts</h2>
+<table>
+<thead><tr><th>Umbral</th><th>%</th><th>Acción Cerebro</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>10% sub-tarea</td><td>"🟡 Esta sub-tarea consumió 10% · ¿seguimos?"</td></tr>
+<tr><td>2</td><td>50% sesión</td><td>"🟠 Sesión al 50% · queda Y% disponible"</td></tr>
+<tr><td>3</td><td>70% sesión</td><td>"🔴 Modo defensivo · solo esencial"</td></tr>
+<tr><td>4</td><td>85% sesión</td><td>"❌ Crítico · ejecutando /session-end-report"</td></tr>
+</tbody></table>
+
+<div class="radar">
+<div class="radar-section"><div class="radar-label">🌐 PRÁCTICA DE MERCADO</div>
+<div class="radar-content"><b>Cursor:</b> auto-edit toggle · ask on destructive · YOLO mode<br><b>Cline:</b> Plan/Act mode · --auto-approve flag<br><b>Aider:</b> --yes-always · --no-auto-commits<br><b>Devin:</b> plan visible · auto-execute · siempre pregunta destructivas<br>→ SMC converge con consenso · regla 3-confirmaciones es invención</div></div>
+<div class="radar-section"><div class="radar-label">🎯 ANALOGÍA</div>
+<div class="radar-content"><b>Rápida:</b> Como conducir auto · Nivel 0 mirar · 1 cambiar carril · 2 doblar · 3 adelantar en curva ciega.<br><b>Profunda:</b> Es la diferencia entre asistente · empleado · gerente · CEO. Nivel 0 = asistente que reporta · Nivel 3 = CEO que firma cheques. SMC sube de nivel solo cuando se confía con datos.</div></div>
+<div class="radar-section"><div class="radar-label">📊 ASSESSMENT</div>
+<div class="radar-content">✅ 4 niveles formalizados · 10 reglas activas (18-27) · hooks y settings que enforzan<br>🔴 Falta: dashboard real de # interrupciones por nivel · ajuste fino basado en data</div></div>
+<div class="radar-section"><div class="radar-label">📈 KPI</div>
+<div class="radar-content"><b>Outcome:</b> # re-preguntas innecesarias por sesión &lt;2 (target)<br><b>Activity:</b> % acciones Nivel 0-1 sobre total &gt;80% (es lo que querés)</div></div>
+<div class="radar-section"><div class="radar-label">🧪 OWNER AUTOMÁTICO</div>
+<div class="radar-content">Cerebro monitorea umbrales · sugiere cambio de modo (Shift+Tab) · activa sentinela ante señales AFK</div></div>
+<div class="radar-section"><div class="radar-label">📡 STREAMING</div>
+<div class="radar-content">Stream bar visible cuando hay acciones &gt;1 min · siempre al final del mensaje</div></div>
+<div class="radar-section"><div class="radar-label">🛣️ ROADMAP</div>
+<div class="radar-content"><b>Hoy:</b> 4 niveles + 10 reglas documentadas<br><b>Próxima:</b> Hook que cuente confirms reales por sesión<br><b>Mes:</b> Dashboard visual de patrones de autonomía<br><b>Trimestre:</b> Ajuste de umbrales basado en data real</div></div>
+</div>
+
+<footer>SMC OS · Tabla #4 · 2026-05-10 · generado por Cerebro modo sentinela</footer>
+</div></body></html>

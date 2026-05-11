@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🧠 SMC OS · banco completo</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;position:relative;overflow-x:hidden;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%),radial-gradient(ellipse 1000px 700px at 90% 100%,rgba(0,180,216,.05),transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px;letter-spacing:-.02em}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}.crumb a:hover{color:#00e5b0}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.section{display:none}.section.active{display:block}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:24px}
+.section-title{font-size:16px;font-weight:700;color:#f1f5f9}
+.section-count{font-size:10px;color:#475569;padding:3px 9px;background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.04);border-radius:30px;font-family:'JetBrains Mono',monospace}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-left:auto}
+.stage-live{background:rgba(0,229,176,.15);color:#00e5b0}.stage-pending{background:rgba(251,191,36,.12);color:#fbbf24}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}.info-meta b{color:#f1f5f9}
+
+/* Tablas embebidas ricas */
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+
+/* Organigrama 6 deptos */
+.org-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.dept{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px}
+.dept-name{font-size:11px;font-weight:700;color:#00e5b0;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.dept-agents{display:flex;flex-wrap:wrap;gap:4px;font-size:11px}
+.ag{padding:3px 7px;background:rgba(0,229,176,.06);border:1px solid rgba(0,229,176,.15);border-radius:30px;color:#cbd5e1}
+
+/* 23 agentes tabla */
+.ag-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.ag-table th{background:rgba(0,229,176,.08);color:#00e5b0;text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid rgba(0,229,176,.2)}
+.ag-table td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:middle}
+.ag-table tr:hover{background:rgba(0,229,176,.03)}
+.ag-icon{font-size:15px;margin-right:6px}
+.model-opus{color:#a855f7;font-weight:600;font-size:10.5px}
+.model-sonnet{color:#7dd3fc;font-weight:600;font-size:10.5px}
+.model-haiku{color:#fbbf24;font-weight:600;font-size:10.5px}
+.loop-tag{font-size:9.5px;padding:2px 6px;background:rgba(15,22,35,.8);border:1px solid rgba(255,255,255,.06);border-radius:4px;color:#94a3b8}
+
+/* Orquestación 5 capacidades */
+.cap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.cap{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px;display:flex;gap:10px}
+.cap-num{font-size:24px;font-weight:800;color:#00e5b0;line-height:1;min-width:28px}
+.cap-body{flex:1}
+.cap-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:3px}
+.cap-when{font-size:10.5px;color:#7dd3fc;margin-bottom:4px}
+.cap-what{font-size:11px;color:#94a3b8;line-height:1.5}
+
+/* Autonomía 4 niveles */
+.lvl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.lvl{background:rgba(15,22,35,.7);border:2px solid rgba(255,255,255,.06);border-radius:8px;padding:12px}
+.lvl-0{border-color:rgba(0,229,176,.4)}.lvl-1{border-color:rgba(125,211,252,.4)}
+.lvl-2{border-color:rgba(251,191,36,.4)}.lvl-3{border-color:rgba(239,68,68,.4)}
+.lvl-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.lvl-badge{font-size:11px;font-weight:800;letter-spacing:.05em}
+.lvl-0 .lvl-badge{color:#00e5b0}.lvl-1 .lvl-badge{color:#7dd3fc}
+.lvl-2 .lvl-badge{color:#fbbf24}.lvl-3 .lvl-badge{color:#ef4444}
+.lvl-title{font-size:12px;font-weight:700;color:#f1f5f9}
+.lvl-desc{font-size:11px;color:#94a3b8;line-height:1.5;margin-bottom:8px}
+.lvl-ex{font-size:10.5px;color:#cbd5e1;padding:6px 8px;background:rgba(15,22,35,.6);border-radius:4px;font-family:'JetBrains Mono',monospace}
+
+/* Multi-cloud 7 plataformas */
+.cloud-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.cloud{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px;text-align:center}
+.cloud-icon{font-size:24px;margin-bottom:6px}
+.cloud-name{font-size:12px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.cloud-use{font-size:10.5px;color:#94a3b8}
+
+/* Skills auto */
+.skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.skill{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px}
+.skill-trigger{font-size:10px;color:#fbbf24;font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.skill-name{font-size:12px;font-weight:700;color:#00e5b0;margin-bottom:4px}
+.skill-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+.full-link{display:inline-block;margin-top:12px;font-size:11px;color:#7dd3fc;text-decoration:none;padding:5px 10px;background:rgba(15,22,35,.6);border:1px solid rgba(125,211,252,.2);border-radius:6px}
+.full-link:hover{background:rgba(125,211,252,.1);color:#00e5b0}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / SMC OS</div>
+<h1>🧠 SMC OS · sistema operativo</h1>
+<p class="subtitle">Live · v17 · 23 agentes · 7 loops · el cerebro que orquesta TODOS los proyectos</p>
+<div class="rfp"><b>📋 RFP:</b> Ordenar al equipo SMC sin contratar 23 personas · armamos 23 agentes Claude Code con loops formalizados (Orchestrator · Conversacional · ReAct · Pipeline · Reflexion · Background · Híbrido). <b>Resultado:</b> SO personal que escala con Sebas y mantiene contexto entre sesiones.</div>
+
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="amb">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">💻</span><span class="info-name">Guillermo Mac</span><span class="info-stage stage-live">Activo</span></div><div class="info-meta"><b>Ruta:</b> <code>~/.claude/</code><br><b>Files:</b> agents/*.md · CLAUDE.md · settings.json<br><b>Sync:</b> SmartConnection-CodeHub/claude-config</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🪟</span><span class="info-name">Sebas Windows</span><span class="info-stage stage-pending">Pending</span></div><div class="info-meta"><b>Setup:</b> install.ps1 + Task Scheduler 3x día<br><b>Falta:</b> user GitHub Sebas</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">☁️</span><span class="info-name">GitHub backup</span><span class="info-stage stage-live">Live</span></div><div class="info-meta"><b>Repo:</b> <code>SmartConnection-CodeHub/claude-config</code><br><b>Niveles:</b> 0 privado · 1 restricted · 2 compartido</div></div>
+</div>
+</div>
+
+<div class="section" id="inf">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🤖</span><span class="info-name">Agentes (23)</span></div><div class="info-meta"><b>Files:</b> <code>~/.claude/agents/*.md</code><br>Opus 4.7: 7 · Sonnet 4.6: 9 · Haiku: 1 · otros (Compliance · Innovation · etc): 6</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🧪</span><span class="info-name">Skills</span></div><div class="info-meta"><b>Files:</b> <code>~/.claude/skills/*/index.md</code><br>Auto-load por keywords/proyecto/agente</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🪝</span><span class="info-name">Hooks</span></div><div class="info-meta"><b>Active:</b> SessionStart · PreToolUse · Stop · session_end_report</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">💾</span><span class="info-name">Memorias</span></div><div class="info-meta"><b>Index:</b> MEMORY.md · ~80 archivos · project · feedback · reference</div></div>
+</div>
+</div>
+
+<div class="section" id="cnx">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📚</span><span class="info-name">Context7 MCP</span><span class="info-stage stage-live">Live</span></div><div class="info-meta">Docs actualizadas de librerías</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🐙</span><span class="info-name">GitHub MCP</span><span class="info-stage stage-live">Live</span></div><div class="info-meta">Repos · issues · PRs · code search</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🔥</span><span class="info-name">Firecrawl MCP</span><span class="info-stage stage-live">Live</span></div><div class="info-meta">Web crawling + extracción</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🎭</span><span class="info-name">Puppeteer MCP</span><span class="info-stage stage-live">Live</span></div><div class="info-meta">Browser automation · screenshots</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🟣</span><span class="info-name">Claude API</span><span class="info-stage stage-live">Live</span></div><div class="info-meta">Opus 4.7 + Sonnet 4.6 + Haiku 4.5</div></div>
+</div>
+</div>
+
+<div class="section" id="doc">
+<div class="info-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-smc-os.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📖</span><span class="info-name">CLAUDE.md global</span></div><div class="info-meta"><b>Path:</b> <code>~/.claude/CLAUDE.md</code><br>23 agentes + Prompt 2.0</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">CLAUDE.md proyecto</span></div><div class="info-meta"><b>Path:</b> <code>~/CLAUDE.md</code><br>28 reglas + estándares Next.js + tokens</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🧩</span><span class="info-name">smc-registry.json</span></div><div class="info-meta"><b>Path:</b> <code>~/.claude/smc-registry.json</code><br>17 connectors (LLM + MCP)</div></div>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<!-- TABLA #1 ORGANIGRAMA -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">🗂️ Organigrama 6 departamentos</span></div>
+<div class="tbl-desc">Cómo se estructura el equipo SMC en departamentos al estilo empresa real · cada uno con sus agentes.</div>
+<div class="org-grid">
+<div class="dept"><div class="dept-name">⚡ Strategy</div><div class="dept-agents"><span class="ag">👔 PM</span><span class="ag">🐕 Business-Analyst</span><span class="ag">🔍 Architect</span><span class="ag">📡 RADAR</span><span class="ag">🧠 Cerebro</span><span class="ag">⚖️ Compliance</span></div></div>
+<div class="dept"><div class="dept-name">🛠️ Operations</div><div class="dept-agents"><span class="ag">🔧 Backend</span><span class="ag">🎨 Frontend</span><span class="ag">🐾 Hoku</span><span class="ag">👩 User-QAS</span><span class="ag">🛠️ Pipeline</span><span class="ag">🌐 Infra-Ops</span><span class="ag">🧪 Innovation-Lab</span></div></div>
+<div class="dept"><div class="dept-name">💰 Sales</div><div class="dept-agents"><span class="ag">💰 Business-Dev</span><span class="ag">🛒 Procurement</span><span class="ag">🚚 Supply-Chain</span></div></div>
+<div class="dept"><div class="dept-name">📢 Marketing</div><div class="dept-agents"><span class="ag">🎙️ Portavoz</span><span class="ag">🎬 Video&Img</span></div></div>
+<div class="dept"><div class="dept-name">🧮 Finance</div><div class="dept-agents"><span class="ag">🧮 Controller</span><span class="ag">⊡ DATA-BW</span><span class="ag">⛨ Security</span></div></div>
+<div class="dept"><div class="dept-name">👥 People</div><div class="dept-agents"><span class="ag">👥 HR</span><span class="ag">🔬 AI/ML</span></div></div>
+</div>
+<a class="full-link" href="../SmartConnection/organigrama/2026-05-10-organigrama-smc-v1.html" target="_blank">→ Abrir tabla completa</a>
+</div>
+
+<!-- TABLA #2 23 AGENTES -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">🤖 23 agentes · modelos y loops</span></div>
+<div class="tbl-desc">Detalle técnico de cada agente · qué modelo Claude usa · qué loop ejecuta · su scope principal.</div>
+<table class="ag-table">
+<thead><tr><th>Agente</th><th>Modelo</th><th>Loop</th><th>Scope</th></tr></thead>
+<tbody>
+<tr><td><span class="ag-icon">👔</span>PM</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Orchestrator</span></td><td>Coordinación · RICE · sprint planning</td></tr>
+<tr><td><span class="ag-icon">🐕</span>Business-Analyst</td><td><span class="model-opus">Opus 4.7</span></td><td><span class="loop-tag">Conversacional</span></td><td>BPMN · UX · maquetas HTML</td></tr>
+<tr><td><span class="ag-icon">🔍</span>Architect</td><td><span class="model-opus">Opus 4.7</span></td><td><span class="loop-tag">Conversacional</span></td><td>ADRs · estándares · providers IA</td></tr>
+<tr><td><span class="ag-icon">🐾</span>Hoku</td><td><span class="model-opus">Opus 4.7</span></td><td><span class="loop-tag">ReAct</span></td><td>AI Developer · prompts · RAG · skills</td></tr>
+<tr><td><span class="ag-icon">🔧</span>Backend</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">ReAct</span></td><td>APIs · DB · auth · negocio</td></tr>
+<tr><td><span class="ag-icon">🎨</span>Frontend</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">ReAct</span></td><td>UI · @smc/ui · responsive</td></tr>
+<tr><td><span class="ag-icon">👩</span>User-QAS</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>QA humano + automatización Playwright</td></tr>
+<tr><td><span class="ag-icon">💰</span>Business-Development</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>Venta · onboarding · retención</td></tr>
+<tr><td><span class="ag-icon">🛠️</span>Pipeline</td><td><span class="model-haiku">Haiku 4.5</span></td><td><span class="loop-tag">Pipeline</span></td><td>DevOps · CI/CD · deploys</td></tr>
+<tr><td><span class="ag-icon">🧠</span>Cerebro</td><td><span class="model-opus">Opus 4.7</span></td><td><span class="loop-tag">Reflexion</span></td><td>Orquestador · mentor · meta-prompting</td></tr>
+<tr><td><span class="ag-icon">🎙️</span>Portavoz</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>LinkedIn · contenido · brand voice</td></tr>
+<tr><td><span class="ag-icon">🎬</span>Video&Img</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>Assets visuales · Gemini · Canva</td></tr>
+<tr><td><span class="ag-icon">🔬</span>AI/ML</td><td><span class="model-opus">Opus 4.7</span></td><td><span class="loop-tag">Pipeline</span></td><td>Research modelos · benchmarks</td></tr>
+<tr><td><span class="ag-icon">📡</span>RADAR</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>Intel externa · brief semanal</td></tr>
+<tr><td><span class="ag-icon">🧮</span>Controller</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>F29 · F22 · holding · Gladys</td></tr>
+<tr><td><span class="ag-icon">⊡</span>DATA-BW</td><td><span class="model-opus">Opus 4.7</span></td><td><span class="loop-tag">Pipeline</span></td><td>BW · ETL · análisis cuantitativo</td></tr>
+<tr><td><span class="ag-icon">⛨</span>SECURITY</td><td><span class="model-opus">Opus 4.7</span></td><td><span class="loop-tag">Bg + Pipeline</span></td><td>Centinela hooks + OWASP/RBAC</td></tr>
+<tr><td><span class="ag-icon">⚖️</span>Compliance</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>Legal · contratos · IP · regulatorio</td></tr>
+<tr><td><span class="ag-icon">🧪</span>Innovation-Lab</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>POC · feasibility · spike research</td></tr>
+<tr><td><span class="ag-icon">🛒</span>Procurement</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>Compras · SaaS · vendor management</td></tr>
+<tr><td><span class="ag-icon">🚚</span>Supply-Chain</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>Logística · stock · despachos</td></tr>
+<tr><td><span class="ag-icon">👥</span>HR</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>Onboarding Sebas · performance · cultura</td></tr>
+<tr><td><span class="ag-icon">🌐</span>Infra-Ops</td><td><span class="model-sonnet">Sonnet 4.6</span></td><td><span class="loop-tag">Pipeline</span></td><td>SRE · DB ops · uptime 24/7</td></tr>
+</tbody>
+</table>
+<a class="full-link" href="../SmartConnection/agentes/2026-05-10-tabla-23-agentes-v1.html" target="_blank">→ Abrir tabla completa</a>
+</div>
+
+<!-- TABLA #3 ORQUESTACIÓN -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">🔄 Orquestación · 5 capacidades automáticas Cerebro</span></div>
+<div class="tbl-desc">Cómo Cerebro decide solo cuándo invocar agentes · sin pedir OK a Guillermo.</div>
+<div class="cap-grid">
+<div class="cap"><span class="cap-num">1</span><div class="cap-body"><div class="cap-name">Handoff</div><div class="cap-when">Agente A detecta necesidad de B</div><div class="cap-what">Cerebro mueve la conversación a B sin preguntar. Visible: "🐕 BA entra · valida flujo"</div></div></div>
+<div class="cap"><span class="cap-num">2</span><div class="cap-body"><div class="cap-name">Paralelismo</div><div class="cap-when">Tareas independientes detectadas</div><div class="cap-what">Activa Backend + Frontend simultáneamente · no espera secuencial</div></div></div>
+<div class="cap"><span class="cap-num">3</span><div class="cap-body"><div class="cap-name">Anti-loop</div><div class="cap-when">Detecta A→B→C→A</div><div class="cap-what">Intercepta · resume · pide dirección. Max 3 handoffs sin OK del usuario</div></div></div>
+<div class="cap"><span class="cap-num">4</span><div class="cap-body"><div class="cap-name">Streaming vivo</div><div class="cap-when">Tareas en cola con AFK usuario</div><div class="cap-what">Ejecuta mientras usuario piensa. Próxima respuesta muestra progreso real</div></div></div>
+<div class="cap"><span class="cap-num">5</span><div class="cap-body"><div class="cap-name">Selección agente</div><div class="cap-when">Usuario habla sin invocar agente</div><div class="cap-what">Elige el más adecuado al contexto sin preguntar (salvo ambigüedad)</div></div></div>
+</div>
+<a class="full-link" href="../SmartConnection/procesos/2026-05-10-tabla-3-orquestacion.html" target="_blank">→ Abrir tabla completa</a>
+</div>
+
+<!-- TABLA #4 AUTONOMÍA -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #4</span><span class="tbl-title">🎚️ 4 niveles de autonomía</span></div>
+<div class="tbl-desc">Cuándo Cerebro ejecuta solo · cuándo pregunta · regla de las 3 confirmaciones.</div>
+<div class="lvl-grid">
+<div class="lvl lvl-0"><div class="lvl-head"><span class="lvl-badge">🟢 NIVEL 0</span></div><div class="lvl-title">Auto siempre</div><div class="lvl-desc">Cero riesgo · sin avisar</div><div class="lvl-ex">Read · grep · curl · crear memoria · sync repos</div></div>
+<div class="lvl lvl-1"><div class="lvl-head"><span class="lvl-badge">🟢 NIVEL 1</span></div><div class="lvl-title">Auto + notify</div><div class="lvl-desc">Ejecuta · avisa 1 línea</div><div class="lvl-ex">Edit en plan acordado · push commits · renames consistentes</div></div>
+<div class="lvl lvl-2"><div class="lvl-head"><span class="lvl-badge">🟡 NIVEL 2</span></div><div class="lvl-title">Pregunta 1ª vez</div><div class="lvl-desc">Después auto en sesión</div><div class="lvl-ex">Crear agente · repo nuevo · infra cloud (S3/CF/RDS)</div></div>
+<div class="lvl lvl-3"><div class="lvl-head"><span class="lvl-badge">🔴 NIVEL 3</span></div><div class="lvl-title">Pregunta siempre</div><div class="lvl-desc">Sin importar confirmaciones previas</div><div class="lvl-ex">Push a prod · delete repo · rm -rf · email cliente · cambios legales</div></div>
+</div>
+<a class="full-link" href="../SmartConnection/procesos/2026-05-10-tabla-4-autonomia.html" target="_blank">→ Abrir tabla completa</a>
+</div>
+
+<!-- TABLA #5 MULTI-CLOUD -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #5</span><span class="tbl-title">☁️ Multi-cloud RADAR mensual</span></div>
+<div class="tbl-desc">RADAR escanea mensualmente 7 plataformas referente y alerta si un cambio rompe lo que SMC hace.</div>
+<div class="cloud-grid">
+<div class="cloud"><div class="cloud-icon">🟦</div><div class="cloud-name">SAP</div><div class="cloud-use">CPI · PI · BTP · S/4HANA</div></div>
+<div class="cloud"><div class="cloud-icon">🟧</div><div class="cloud-name">AWS</div><div class="cloud-use">Amplify · S3 · CF · Lambda</div></div>
+<div class="cloud"><div class="cloud-icon">🟦</div><div class="cloud-name">Azure</div><div class="cloud-use">OpenAI · Functions</div></div>
+<div class="cloud"><div class="cloud-icon">🟥</div><div class="cloud-name">GCP</div><div class="cloud-use">Gemini · BigQuery</div></div>
+<div class="cloud"><div class="cloud-icon">☁️</div><div class="cloud-name">Salesforce</div><div class="cloud-use">CEM · CRM · Lightning</div></div>
+<div class="cloud"><div class="cloud-icon">🛎️</div><div class="cloud-name">ServiceNow</div><div class="cloud-use">ITSM · workflows</div></div>
+<div class="cloud"><div class="cloud-icon">📊</div><div class="cloud-name">Workday</div><div class="cloud-use">HR · Finance</div></div>
+</div>
+<a class="full-link" href="../SmartConnection/agentes/2026-05-10-tabla-5-multicloud.html" target="_blank">→ Abrir tabla completa</a>
+</div>
+
+<!-- TABLA #6 SKILLS AUTO -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #6</span><span class="tbl-title">⚡ Skills Auto-Activation</span></div>
+<div class="tbl-desc">Cómo los skills se cargan automáticamente según contexto · keyword · proyecto · agente.</div>
+<div class="skill-grid">
+<div class="skill"><div class="skill-trigger">trigger: sap cpi · iflow</div><div class="skill-name">/sap-integration</div><div class="skill-desc">Carga al hablar de SAP · CPI · iFlows · proyectos Cencosud/Parque/MeLi/DUOC</div></div>
+<div class="skill"><div class="skill-trigger">trigger: café · vuelvo · AFK</div><div class="skill-name">/sentinela</div><div class="skill-desc">Modo autonomía total · ejecuta cola sin pedir OK · solo pausa Nivel 3</div></div>
+<div class="skill"><div class="skill-trigger">trigger: c-level · board</div><div class="skill-name">/executive</div><div class="skill-desc">Modo presentación ejecutiva · resumen 30 seg · números arriba</div></div>
+<div class="skill"><div class="skill-trigger">trigger: calificar lead</div><div class="skill-name">/bant</div><div class="skill-desc">Cualifica deal: Budget · Authority · Need · Timeline</div></div>
+<div class="skill"><div class="skill-trigger">trigger: discovery cliente</div><div class="skill-name">/spin</div><div class="skill-desc">Pregunta SPIN: Situación · Problema · Implicación · Necesidad</div></div>
+<div class="skill"><div class="skill-trigger">trigger: glassmorphism · efecto</div><div class="skill-name">/premium-effects</div><div class="skill-desc">Recetas CSS/JS validadas: glassmorphism · gradient mesh · parallax</div></div>
+</div>
+<a class="full-link" href="../SmartConnection/procesos/2026-05-10-tabla-6-skills-auto.html" target="_blank">→ Abrir tabla completa</a>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · SMC OS · 5 tabs con contenido visual rico · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← maestro</a></footer>
+</div>
+<script>function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}</script>
+</body></html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🔍 Discovery Cliente · banco</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;min-height:100vh;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%);pointer-events:none;z-index:0}.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.section{display:none}.section.active{display:block}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;font-weight:600;margin-left:auto;background:rgba(0,229,176,.15);color:#00e5b0}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}.info-meta b{color:#f1f5f9}
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.spin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.spin{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}
+.spin-letter{font-size:32px;font-weight:800;color:#00e5b0;line-height:1;float:left;margin-right:10px}
+.spin-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.spin-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+.bant-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.bant{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center}
+.bant-letter{font-size:36px;font-weight:800;color:#00e5b0;line-height:1;margin-bottom:6px}
+.bant-name{font-size:12px;font-weight:700;color:#f1f5f9;margin-bottom:3px}
+.bant-q{font-size:10.5px;color:#94a3b8}
+.phase{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start}
+.phase-num{font-size:22px;font-weight:800;color:#00e5b0;line-height:1;min-width:30px}
+.phase-body{flex:1}
+.phase-name{font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.phase-desc{font-size:11.5px;color:#94a3b8;line-height:1.5}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.doc{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px;text-decoration:none;color:#cbd5e1;display:block;transition:all .15s}
+.doc:hover{border-color:rgba(0,229,176,.3);transform:translateY(-2px)}
+.doc-icon{font-size:16px;margin-bottom:4px}
+.doc-name{font-size:12px;font-weight:700;color:#f1f5f9;margin-bottom:3px}
+.doc-date{font-size:10px;color:#7dd3fc;font-family:'JetBrains Mono',monospace}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / Discovery Cliente</div>
+<h1>🔍 Discovery Cliente</h1>
+<p class="subtitle">Proceso transversal · transcript → SPIN/BANT → propuesta · 3 fases</p>
+<div class="rfp"><b>📋 RFP:</b> Cada reunión con prospecto deja transcript suelto que se pierde. SMC arma pipeline: transcript → análisis SPIN/BANT → infografía visual + reporte estructurado + propuesta cotizable. <b>Fase 1:</b> manual con plantillas. <b>Fase 2:</b> script bash. <b>Fase 3:</b> app web.</div>
+
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="amb">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">💻</span><span class="info-name">Fase 1 · Manual</span><span class="info-stage">Activo</span></div><div class="info-meta"><b>Stack:</b> plantillas HTML local<br><b>Owner:</b> Business-Dev</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🛠️</span><span class="info-name">Fase 2 · Script</span><span class="info-stage">WIP</span></div><div class="info-meta"><b>Stack:</b> bash + Claude API<br><b>Estado:</b> diseño</div></div>
+</div>
+</div>
+
+<div class="section" id="inf">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">Plantillas HTML</span></div><div class="info-meta">Templates para infografía + reporte + propuesta</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🤖</span><span class="info-name">Claude API</span></div><div class="info-meta">Análisis transcript con prompt versionado</div></div>
+</div>
+</div>
+
+<div class="section" id="cnx">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📝</span><span class="info-name">Transcript input</span></div><div class="info-meta">Reuniones grabadas · transcript Otter/Zoom</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📤</span><span class="info-name">Email output</span></div><div class="info-meta">Propuesta enviada al cliente con PDF adjunto</div></div>
+</div>
+</div>
+
+<div class="section" id="doc">
+<div class="doc-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-discovery.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<a class="doc" href="2026-04-28_142000-discovery-v3.html"><div class="doc-icon">🎨</div><div class="doc-name">Discovery v3</div><div class="doc-date">2026-04-28</div></a>
+<a class="doc" href="2026-04-28_140500-discovery-v2.html"><div class="doc-icon">🎨</div><div class="doc-name">Discovery v2</div><div class="doc-date">2026-04-28</div></a>
+<a class="doc" href="2026-04-28_134500-discovery-selfservice.html"><div class="doc-icon">🤖</div><div class="doc-name">Self-service</div><div class="doc-date">2026-04-28</div></a>
+<a class="doc" href="2026-04-15_150000-habla-con-nosotros.html"><div class="doc-icon">💬</div><div class="doc-name">Habla con nosotros</div><div class="doc-date">2026-04-15</div></a>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">🎯 SPIN Selling · 4 tipos de preguntas</span></div>
+<div class="tbl-desc">Framework para descubrir el problema real del cliente · NO el síntoma.</div>
+<div class="spin-grid">
+<div class="spin"><span class="spin-letter">S</span><div class="spin-name">Situación</div><div class="spin-desc">¿Cómo está hoy? Stack actual · equipo · procesos</div></div>
+<div class="spin"><span class="spin-letter">P</span><div class="spin-name">Problema</div><div class="spin-desc">¿Qué le frustra? Dolores · gaps · ineficiencias</div></div>
+<div class="spin"><span class="spin-letter">I</span><div class="spin-name">Implicación</div><div class="spin-desc">¿Qué le cuesta no resolverlo? Tiempo · dinero · oportunidad</div></div>
+<div class="spin"><span class="spin-letter">N</span><div class="spin-name">Necesidad-beneficio</div><div class="spin-desc">¿Cómo sería si lo resolviera? Visualizar el "después"</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">📊 BANT · calificación del deal</span></div>
+<div class="tbl-desc">Los 4 criterios para saber si el prospecto avanza · si no pasa BANT no se gasta tiempo.</div>
+<div class="bant-grid">
+<div class="bant"><div class="bant-letter">B</div><div class="bant-name">Budget</div><div class="bant-q">¿Tiene presupuesto?</div></div>
+<div class="bant"><div class="bant-letter">A</div><div class="bant-name">Authority</div><div class="bant-q">¿Es quien decide?</div></div>
+<div class="bant"><div class="bant-letter">N</div><div class="bant-name">Need</div><div class="bant-q">¿Tiene necesidad real?</div></div>
+<div class="bant"><div class="bant-letter">T</div><div class="bant-name">Timeline</div><div class="bant-q">¿Cuándo decide?</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">🛣️ Pipeline 3 fases</span></div>
+<div class="tbl-desc">Roadmap del Discovery · de manual a app web · cada fase reduce tiempo del operario.</div>
+<div class="phase"><span class="phase-num">1</span><div class="phase-body"><div class="phase-name">FASE 1 · Manual con plantillas</div><div class="phase-desc">Plantillas HTML editables · Business-Dev copia transcript y pega · genera infografía + reporte. <b>Tiempo:</b> 30 min por discovery.</div></div></div>
+<div class="phase"><span class="phase-num">2</span><div class="phase-body"><div class="phase-name">FASE 2 · Script bash + Claude</div><div class="phase-desc">Script lee transcript .txt · llama Claude API con prompt SPIN/BANT · genera HTMLs automáticos. <b>Tiempo:</b> 5 min por discovery.</div></div></div>
+<div class="phase"><span class="phase-num">3</span><div class="phase-body"><div class="phase-name">FASE 3 · App web self-service</div><div class="phase-desc">Cliente sube transcript desde intranet.smconnection.cl · genera todo solo · descarga PDF + envío email. <b>Tiempo:</b> 1 min cliente · cero operario.</div></div></div>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · Discovery · 5 tabs · 3 tablas · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← maestro</a></footer>
+</div>
+<script>function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}</script>
+</body></html>

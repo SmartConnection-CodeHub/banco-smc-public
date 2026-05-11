@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>SMC · Tabla #6 · Skills Auto-Activation</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.5;position:relative;overflow-x:hidden}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%),radial-gradient(ellipse 800px 600px at 90% 100%,rgba(0,180,216,.06),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1}
+.container{max-width:1600px;margin:0 auto}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px;letter-spacing:-.02em}
+h2{font-size:22px;font-weight:700;color:#f1f5f9;margin:40px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px}
+p{color:#94a3b8;margin-bottom:12px;font-size:14px}
+.meta{display:flex;gap:24px;font-size:12px;color:#6b7b8e;margin-bottom:32px}
+.meta span{padding:4px 12px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:30px;color:#00e5b0}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:13px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;font-weight:600;padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08);font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:top}
+.flow{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:24px;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:#cbd5e1;white-space:pre;overflow-x:auto;line-height:1.6}
+.radar{background:linear-gradient(135deg,rgba(0,229,176,.05),rgba(0,180,216,.05));border:1px solid rgba(0,229,176,.2);border-radius:12px;padding:24px;margin-top:24px}
+.radar-section{margin-bottom:20px}
+.radar-label{font-size:11px;font-weight:700;color:#00e5b0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.radar-content{font-size:13px;color:#cbd5e1}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+
+<h1>SMC · Tabla #6 · Skills Auto-Activation</h1>
+<p>Cómo los skills se cargan automáticamente según contexto · keywords · proyecto · agente activo</p>
+<div class="meta"><span>v1 · 2026-05-10</span><span>Cerebro decide</span><span>silent · notify · confirm</span></div>
+
+<h2>🎯 Mecánica</h2>
+<div class="flow">TURNO INICIA
+    ↓
+🧠 CEREBRO escanea contexto:
+    1. Último mensaje del usuario  → busca keywords
+    2. CWD actual (proyecto)        → match project
+    3. Agente activo                → match agentes destino
+    4. Archivos abiertos/citados    → match files
+    ↓
+Por cada skill con match:
+    → carga skill como contexto extra
+    → muestra micro-badge: "⚡ /sap-integration cargado"
+    ↓
+Agente responde CON skills ya disponibles</div>
+
+<h2>📋 Frontmatter de skill con triggers</h2>
+<div class="flow">---
+name: sap-integration
+description: SAP CPI · iFlows · mapeos
+auto_load: true
+triggers:
+  keywords: [sap cpi, cpi, iflow, integration suite, sap pi]
+  projects: [duoc, cencosud, meli-valmer, parque-arauco]
+  agents: [architect, hoku-dev, backend]
+  files: ["*.iflow", "*.groovy", "*.xsd"]
+priority: high
+---</div>
+
+<h2>🔄 Niveles de carga</h2>
+<table>
+<thead><tr><th>Nivel</th><th>Comportamiento</th><th>Cuándo usar</th></tr></thead>
+<tbody>
+<tr><td>SILENT</td><td>Carga sin mostrar nada</td><td>Skills triviales · de uso constante</td></tr>
+<tr><td>NOTIFY</td><td>Muestra "⚡ skill cargado" en respuesta</td><td>Default · usuario sabe pero no decide</td></tr>
+<tr><td>CONFIRM</td><td>Pregunta antes de cargar</td><td>Skills caros · que cargan mucho contexto</td></tr>
+</tbody></table>
+
+<h2>📡 Ejemplo · sesión típica con auto-activation</h2>
+<div class="flow">Tú:    cd ~/Claude/Proyectos/duoc-uc/
+Tú:    "Architect, hay problema con el iflow de matrículas"
+
+🔍 Architect detecta:
+  ✓ CWD = duoc-uc       → match project "duoc"
+  ✓ keyword "iflow"      → match en sap-integration
+  ✓ agente activo        → architect
+
+Auto-carga silenciosa:
+  ⚡ /sap-integration cargado
+  ⚡ /sap-pi-mac-launch cargado
+  ⚡ /troubleshoot-cpi cargado
+
+🔍 Architect — Veo el problema. Voy a revisar el iflow.
+   [responde con esos skills en contexto · sin que vos preguntes]</div>
+
+<h2>⚡ Skills auto-load por contexto típico</h2>
+<table>
+<thead><tr><th>Contexto</th><th>Skills que se cargan</th></tr></thead>
+<tbody>
+<tr><td>Proyecto Kanki</td><td>/premium-effects · /maquetas-mobile · /supabase-rls</td></tr>
+<tr><td>Proyecto Cencosud</td><td>/sap-integration · /sap-pi-mac · /sap-refx-cem · /sf-sap-mapping</td></tr>
+<tr><td>Hablando con BUSINESS-DEV</td><td>/bant · /spin · /value-pricing · /pricing-uf</td></tr>
+<tr><td>Hablando con CEREBRO</td><td>/executive · /mentor · /diverge · /aarrr · /sentinela</td></tr>
+<tr><td>Hablando con HOKU</td><td>/edd · /guardrails · /retrieval-engineering · /prompt-versioning</td></tr>
+<tr><td>Hablando con CONTROLLER</td><td>/f29 · /finops · /tco · /sap-fi-co</td></tr>
+</tbody></table>
+
+<div class="radar">
+<div class="radar-section"><div class="radar-label">🌐 PRÁCTICA DE MERCADO</div>
+<div class="radar-content"><b>Cursor:</b> auto-loads context from open files · @mentions para forzar<br><b>Cline:</b> rules en .clinerules cargan según proyecto<br><b>Continue.dev:</b> context providers configurables<br><b>Claude Code (nosotros):</b> hooks + slash commands · falta auto-load por triggers (pendiente)</div></div>
+<div class="radar-section"><div class="radar-label">🎯 ANALOGÍA</div>
+<div class="radar-content"><b>Rápida:</b> Como Spotify Autoplay · entra a tu mood sin que pidas<br><b>Profunda:</b> Es la diferencia entre buscar un libro en biblioteca vs el bibliotecario que ya sabe lo que necesitás. El skill no espera invocación · "sabe" por el contexto.</div></div>
+<div class="radar-section"><div class="radar-label">📊 ASSESSMENT</div>
+<div class="radar-content">✅ Mecánica diseñada · triggers documentados · 6 contextos típicos mapeados<br>🔴 Falta: implementación real · refactor de skills existentes · hook que escanee</div></div>
+<div class="radar-section"><div class="radar-label">📈 KPI</div>
+<div class="radar-content"><b>Outcome:</b> % skills relevantes que se cargan automático &gt;80%<br><b>Activity:</b> # skills cargados por sesión · # invocaciones manuales (debe bajar)</div></div>
+<div class="radar-section"><div class="radar-label">🧪 OWNER AUTOMÁTICO</div>
+<div class="radar-content">CEREBRO escanea contexto cada turno · INNOVATION-LAB prueba refactor de skills</div></div>
+<div class="radar-section"><div class="radar-label">📡 STREAMING</div>
+<div class="radar-content">Cada skill cargado visible en respuesta: "⚡ /sap-integration cargado"</div></div>
+<div class="radar-section"><div class="radar-label">🛣️ ROADMAP</div>
+<div class="radar-content"><b>Hoy:</b> mecánica documentada<br><b>Próxima:</b> refactor 5 skills más usados con frontmatter triggers<br><b>Mes:</b> hook que active auto-load en SessionStart<br><b>Trimestre:</b> métricas reales · ajuste de keywords basado en data</div></div>
+</div>
+
+<footer>SMC OS · Tabla #6 · 2026-05-10 · generado por Cerebro modo sentinela</footer>
+</div></body></html>

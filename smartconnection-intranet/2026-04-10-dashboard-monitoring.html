@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMC — Operations Center</title>
+<style>
+:root {
+  --bg: #07090f;
+  --surface: #0c0f19;
+  --elevated: #111827;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.13);
+  --text: #e2e8f0;
+  --text-2: #64748b;
+  --text-3: #334155;
+  --accent: #00e5b0;
+  --green: #22c55e;
+  --yellow: #f59e0b;
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --mono: 'JetBrains Mono','Fira Code',monospace;
+  --sans: 'Inter',system-ui,sans-serif;
+  --sidebar: 200px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--sans); background:var(--bg); color:var(--text); font-size:13px; display:flex; min-height:100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width:var(--sidebar); background:var(--surface); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; position:fixed; height:100vh; top:0; left:0; z-index:100;
+}
+.logo {
+  padding:16px 14px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:9px;
+}
+.logo-mark {
+  width:26px; height:26px; border-radius:6px;
+  background:var(--accent); display:flex; align-items:center; justify-content:center;
+  font-size:12px; flex-shrink:0; color:#000;
+}
+.logo-text { font-size:12px; font-weight:600; line-height:1.2; }
+.logo-sub { font-size:10px; color:var(--text-2); }
+
+nav { padding:10px 8px; flex:1; overflow-y:auto; }
+.nav-group { font-size:9px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.1em; padding:10px 8px 4px; }
+.nav-item {
+  display:flex; align-items:center; gap:7px; padding:7px 8px; border-radius:5px;
+  color:var(--text-2); cursor:pointer; transition:all .12s; margin-bottom:1px; font-size:12px;
+}
+.nav-item:hover { background:var(--elevated); color:var(--text); }
+.nav-item.active { background:rgba(0,229,176,.08); color:var(--accent); }
+.nav-item .ico { font-size:13px; width:16px; text-align:center; }
+.nav-badge {
+  margin-left:auto; background:rgba(239,68,68,.15); color:var(--red);
+  font-size:9px; font-weight:700; padding:1px 5px; border-radius:8px;
+}
+.sidebar-foot { padding:10px 8px; border-top:1px solid var(--border); }
+
+/* MAIN */
+.main { margin-left:var(--sidebar); flex:1; display:flex; flex-direction:column; }
+
+/* TOPBAR */
+.topbar {
+  background:var(--surface); border-bottom:1px solid var(--border);
+  height:46px; padding:0 20px; display:flex; align-items:center;
+  justify-content:space-between; position:sticky; top:0; z-index:50;
+}
+.breadcrumb { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text-2); }
+.breadcrumb .cur { color:var(--text); font-weight:500; }
+.breadcrumb .sep { color:var(--text-3); }
+.topbar-right { display:flex; align-items:center; gap:8px; }
+.clock { font-family:var(--mono); font-size:10px; color:var(--text-2); background:var(--elevated); padding:3px 9px; border-radius:4px; border:1px solid var(--border); }
+
+.btn { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:5px; font-size:11px; font-weight:500; cursor:pointer; border:none; font-family:var(--sans); transition:all .12s; }
+.btn-ghost { background:transparent; color:var(--text-2); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--elevated); color:var(--text); border-color:var(--border-hover); }
+.btn-accent { background:var(--accent); color:#000; }
+.btn-accent:hover { opacity:.9; }
+
+/* CONTENT */
+.content { padding:20px; flex:1; }
+.page { display:none; }
+.page.active { display:block; }
+
+.page-head { margin-bottom:20px; }
+.page-title { font-size:16px; font-weight:600; margin-bottom:3px; }
+.page-sub { font-size:11px; color:var(--text-2); }
+
+/* KPI GRID */
+.kpi-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-bottom:20px; }
+.kpi {
+  background:var(--surface); border:1px solid var(--border); border-radius:8px;
+  padding:14px; border-top:2px solid transparent;
+}
+.kpi.g { border-top-color:var(--green); }
+.kpi.a { border-top-color:var(--accent); }
+.kpi.b { border-top-color:var(--blue); }
+.kpi.y { border-top-color:var(--yellow); }
+.kpi.r { border-top-color:var(--red); }
+.kpi.p { border-top-color:#a855f7; }
+.kpi-label { font-size:9px; color:var(--text-2); text-transform:uppercase; letter-spacing:.07em; margin-bottom:6px; }
+.kpi-val { font-size:22px; font-weight:700; font-family:var(--mono); margin-bottom:3px; }
+.kpi.g .kpi-val { color:var(--green); }
+.kpi.a .kpi-val { color:var(--accent); }
+.kpi.b .kpi-val { color:var(--blue); }
+.kpi.y .kpi-val { color:var(--yellow); }
+.kpi.r .kpi-val { color:var(--red); }
+.kpi.p .kpi-val { color:#a855f7; }
+.kpi-sub { font-size:10px; color:var(--text-2); }
+
+/* SECTION */
+.sec { margin-bottom:20px; }
+.sec-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.sec-title { font-size:12px; font-weight:600; display:flex; align-items:center; gap:7px; }
+.count-chip { font-size:10px; color:var(--text-2); background:var(--elevated); padding:1px 6px; border-radius:8px; border:1px solid var(--border); }
+
+/* TABLE */
+.table-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.table-bar { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--border); background:var(--elevated); }
+.tabs { display:flex; gap:1px; }
+.tab { padding:4px 10px; border-radius:4px; font-size:11px; color:var(--text-2); cursor:pointer; transition:all .12s; }
+.tab.on { background:var(--surface); color:var(--text); }
+.tab:hover:not(.on) { color:var(--text); }
+
+table { width:100%; border-collapse:collapse; }
+thead tr { background:var(--elevated); }
+th { text-align:left; padding:7px 14px; font-size:9px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:.07em; white-space:nowrap; border-bottom:1px solid var(--border); }
+tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:var(--elevated); }
+td { padding:9px 14px; font-size:12px; color:var(--text-2); vertical-align:middle; }
+td.nm { color:var(--text); font-weight:500; }
+
+/* STATUS */
+.dot { width:6px; height:6px; border-radius:50%; display:inline-block; flex-shrink:0; }
+.dot.g { background:var(--green); }
+.dot.y { background:var(--yellow); }
+.dot.r { background:var(--red); }
+.dot.b { background:var(--blue); }
+.status-cell { display:flex; align-items:center; gap:5px; }
+
+/* BADGE */
+.badge { font-size:9px; font-weight:600; padding:2px 6px; border-radius:3px; white-space:nowrap; }
+.bg { background:rgba(34,197,94,.1); color:var(--green); }
+.by { background:rgba(245,158,11,.1); color:var(--yellow); }
+.br { background:rgba(239,68,68,.1); color:var(--red); }
+.bb { background:rgba(59,130,246,.1); color:var(--blue); }
+.ba { background:rgba(0,229,176,.1); color:var(--accent); }
+.bm { background:var(--elevated); color:var(--text-2); }
+.bp { background:rgba(168,85,247,.1); color:#a855f7; }
+
+/* MONO */
+.mono { font-family:var(--mono); font-size:10px; }
+.ver { font-family:var(--mono); font-size:10px; color:var(--accent); background:rgba(0,229,176,.07); padding:2px 6px; border-radius:3px; }
+
+/* ACTION BTNS */
+.acts { display:flex; gap:3px; }
+.act { background:transparent; border:1px solid var(--border); border-radius:4px; padding:3px 7px; font-size:10px; color:var(--text-2); cursor:pointer; transition:all .12s; font-family:var(--sans); }
+.act:hover { background:var(--elevated); color:var(--text); border-color:var(--border-hover); }
+.act.red:hover { background:rgba(239,68,68,.08); color:var(--red); }
+.act.green:hover { background:rgba(34,197,94,.08); color:var(--green); }
+.act.accent:hover { background:rgba(0,229,176,.08); color:var(--accent); }
+
+/* GRID 2 COL */
+.grid2 { display:grid; grid-template-columns:1fr 300px; gap:12px; margin-bottom:20px; }
+
+/* ALERTS */
+.alerts-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.alerts-head { padding:10px 14px; border-bottom:1px solid var(--border); font-size:12px; font-weight:600; display:flex; align-items:center; gap:7px; background:var(--elevated); }
+.alert-item { padding:11px 14px; border-bottom:1px solid var(--border); display:flex; gap:10px; cursor:pointer; transition:background .1s; }
+.alert-item:last-child { border-bottom:none; }
+.alert-item:hover { background:var(--elevated); }
+.alert-bar { width:3px; border-radius:2px; flex-shrink:0; align-self:stretch; min-height:32px; }
+.alert-bar.r { background:var(--red); }
+.alert-bar.y { background:var(--yellow); }
+.alert-bar.b { background:var(--blue); }
+.alert-text {}
+.alert-title { font-size:11px; font-weight:500; color:var(--text); margin-bottom:2px; }
+.alert-desc { font-size:10px; color:var(--text-2); margin-bottom:2px; }
+.alert-time { font-size:9px; color:var(--text-3); font-family:var(--mono); }
+
+/* PIPELINE */
+.pipeline-row { display:flex; align-items:center; padding:9px 14px; border-bottom:1px solid var(--border); }
+.pipeline-row:last-child { border-bottom:none; }
+.pipeline-row:hover { background:var(--elevated); }
+.p-proj { width:110px; font-size:12px; font-weight:500; color:var(--text); }
+.p-stages { display:flex; align-items:center; gap:0; flex:1; }
+.p-step { display:flex; flex-direction:column; align-items:center; gap:2px; padding:3px 8px; min-width:58px; }
+.p-step-ico { font-size:12px; }
+.p-step-lbl { font-size:9px; color:var(--text-3); }
+.p-step.done .p-step-ico { color:var(--green); }
+.p-step.skip .p-step-ico { color:var(--text-3); }
+.p-step.fail .p-step-ico { color:var(--red); }
+.p-step.warn .p-step-ico { color:var(--yellow); }
+.p-arr { color:var(--text-3); font-size:10px; }
+.p-time { font-size:10px; font-family:var(--mono); color:var(--text-2); margin-left:10px; white-space:nowrap; }
+
+/* INFRA CHECKLIST */
+.checklist-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.checklist-section { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.cl-head { padding:10px 14px; border-bottom:1px solid var(--border); font-size:11px; font-weight:600; background:var(--elevated); display:flex; align-items:center; justify-content:space-between; }
+.cl-progress { font-size:10px; font-family:var(--mono); color:var(--text-2); }
+.cl-item { display:flex; align-items:center; gap:8px; padding:8px 14px; border-bottom:1px solid var(--border); font-size:11px; }
+.cl-item:last-child { border-bottom:none; }
+.cl-item .num { font-size:9px; color:var(--text-3); font-family:var(--mono); width:18px; }
+.cl-item .label { flex:1; color:var(--text-2); }
+.cl-item .p-chip { font-size:9px; padding:1px 5px; border-radius:3px; font-weight:600; margin-right:4px; }
+.p1 { background:rgba(239,68,68,.1); color:var(--red); }
+.p2 { background:rgba(245,158,11,.1); color:var(--yellow); }
+.p3 { background:rgba(59,130,246,.1); color:var(--blue); }
+
+/* COST */
+.cost-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px; }
+.cost-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; }
+.cost-label { font-size:10px; color:var(--text-2); margin-bottom:4px; }
+.cost-val { font-size:18px; font-weight:700; font-family:var(--mono); color:var(--text); margin-bottom:2px; }
+.cost-sub { font-size:10px; color:var(--text-2); }
+
+/* QAS */
+.env-matrix { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+
+/* ROLLBACK */
+.rollback-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-bottom:1px solid var(--border); }
+.rollback-item:last-child { border-bottom:none; }
+.rollback-item:hover { background:var(--elevated); }
+.rb-left { flex:1; }
+.rb-project { font-size:12px; font-weight:500; color:var(--text); margin-bottom:2px; }
+.rb-meta { font-size:10px; color:var(--text-2); font-family:var(--mono); }
+.rb-right { display:flex; gap:4px; align-items:center; }
+
+/* SECURITY */
+.sec-check { display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px solid var(--border); font-size:12px; }
+.sec-check:last-child { border-bottom:none; }
+.sec-check:hover { background:var(--elevated); }
+.sec-ico { font-size:14px; width:20px; text-align:center; }
+.sec-label { flex:1; color:var(--text); }
+.sec-status { font-size:10px; font-weight:600; }
+.sec-status.ok { color:var(--green); }
+.sec-status.warn { color:var(--yellow); }
+.sec-status.fail { color:var(--red); }
+
+/* SEARCH */
+.search-wrap { position:relative; }
+.search-ico { position:absolute; left:8px; top:50%; transform:translateY(-50%); color:var(--text-3); font-size:11px; pointer-events:none; }
+.search-input { background:var(--elevated); border:1px solid var(--border); border-radius:5px; padding:5px 10px 5px 24px; font-size:11px; color:var(--text); width:160px; outline:none; font-family:var(--sans); }
+.search-input:focus { border-color:var(--border-hover); }
+.search-input::placeholder { color:var(--text-3); }
+
+::-webkit-scrollbar { width:3px; }
+::-webkit-scrollbar-thumb { background:var(--elevated); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">⚙</div>
+    <div>
+      <div class="logo-text">Operations</div>
+      <div class="logo-sub">SMC Platform</div>
+    </div>
+  </div>
+
+  <nav>
+    <div class="nav-group">Monitor</div>
+    <div class="nav-item active" data-page="dashboard"><span class="ico">◈</span> Dashboard</div>
+    <div class="nav-item" data-page="deploys"><span class="ico">↑</span> Deploy Log</div>
+    <div class="nav-item" data-page="integraciones"><span class="ico">⇄</span> Integraciones</div>
+    <div class="nav-item" data-page="bases"><span class="ico">▣</span> Bases de datos</div>
+
+    <div class="nav-group">Pipeline</div>
+    <div class="nav-item" data-page="cicd"><span class="ico">⚙</span> CI/CD Status</div>
+    <div class="nav-item" data-page="qas"><span class="ico">◎</span> QAS</div>
+    <div class="nav-item" data-page="rollbacks"><span class="ico">↺</span> Rollbacks</div>
+
+    <div class="nav-group">Sistema</div>
+    <div class="nav-item" data-page="alertas"><span class="ico">◉</span> Alertas <span class="nav-badge">3</span></div>
+    <div class="nav-item" data-page="costos"><span class="ico">$</span> Costos AWS</div>
+    <div class="nav-item" data-page="seguridad"><span class="ico">◬</span> Seguridad</div>
+    <div class="nav-item" data-page="infra"><span class="ico">≡</span> Infraestructura</div>
+  </nav>
+
+  <div class="sidebar-foot">
+    <div class="nav-item"><span class="ico">⊙</span> Configuración</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <div class="breadcrumb">
+      <span>Intranet SMC</span><span class="sep">›</span>
+      <span>Operations</span><span class="sep">›</span>
+      <span class="cur" id="bread">Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <div class="clock" id="clk">—</div>
+      <button class="btn btn-ghost">↻ Actualizar</button>
+      <button class="btn btn-accent">↑ Deploy</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="page active" id="p-dashboard">
+      <div class="page-head">
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">Estado general de la plataforma SMC</div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi g"><div class="kpi-label">Proyectos</div><div class="kpi-val">6/6</div><div class="kpi-sub">todos operativos</div></div>
+        <div class="kpi a"><div class="kpi-label">Uptime promedio</div><div class="kpi-val">99.7%</div><div class="kpi-sub">últimos 30 días</div></div>
+        <div class="kpi b"><div class="kpi-label">Deploys hoy</div><div class="kpi-val">3</div><div class="kpi-sub">2 ok · 1 rollback</div></div>
+        <div class="kpi y"><div class="kpi-label">Alertas</div><div class="kpi-val">3</div><div class="kpi-sub">1 crítica · 2 warnings</div></div>
+        <div class="kpi p"><div class="kpi-label">Integraciones</div><div class="kpi-val">8/10</div><div class="kpi-sub">2 sin QAS</div></div>
+        <div class="kpi r"><div class="kpi-label">QAS</div><div class="kpi-val">0/6</div><div class="kpi-sub">ningún proyecto</div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="sec" style="margin:0">
+          <div class="sec-head"><div class="sec-title">Proyectos <span class="count-chip">6</span></div></div>
+          <div class="table-box">
+            <table>
+              <thead><tr><th>Proyecto</th><th>URL</th><th>Plataforma</th><th>Último deploy</th><th>Versión</th><th>PROD</th><th>QAS</th><th>Uptime</th></tr></thead>
+              <tbody>
+                <tr><td class="nm">🌐 Marketing</td><td class="mono">smconnection.cl</td><td>S3 + CloudFront</td><td class="mono">hoy 11:42</td><td><span class="ver">v2026.04.10-001</span></td><td><span class="badge bg">✓</span></td><td><span class="badge br">✗</span></td><td class="mono" style="color:var(--green)">99.9%</td></tr>
+                <tr><td class="nm">🏢 Intranet</td><td class="mono">intranet.smc.cl</td><td>AWS Amplify</td><td class="mono">ayer 18:05</td><td><span class="ver">v2026.04.09-003</span></td><td><span class="badge bg">✓</span></td><td><span class="badge br">✗</span></td><td class="mono" style="color:var(--green)">99.8%</td></tr>
+                <tr><td class="nm">🐾 InfoPet</td><td class="mono">infopet.smc.cl</td><td>AWS Amplify</td><td class="mono">09 Abr 09:20</td><td><span class="ver">v2026.04.09-002</span></td><td><span class="badge bg">✓</span></td><td><span class="badge br">✗</span></td><td class="mono" style="color:var(--green)">99.5%</td></tr>
+                <tr><td class="nm">🛒 Marketplace</td><td class="mono">marketplace.smc.cl</td><td>AWS Amplify</td><td class="mono">08 Abr 16:30</td><td><span class="ver">v2026.04.08-001</span></td><td><span class="badge bg">✓</span></td><td><span class="badge br">✗</span></td><td class="mono" style="color:var(--green)">100%</td></tr>
+                <tr><td class="nm">🚗 VOY</td><td class="mono">voy-app-3.vercel.app</td><td>Vercel</td><td class="mono">07 Abr 14:00</td><td><span class="ver">v2026.04.07-001</span></td><td><span class="badge by">⚠</span></td><td><span class="badge ba">preview</span></td><td class="mono" style="color:var(--yellow)">99.2%</td></tr>
+                <tr><td class="nm">👗 Kanki</td><td class="mono">kanki.smc.cl</td><td>AWS Amplify</td><td class="mono">06 Abr 11:15</td><td><span class="ver">v2026.04.06-001</span></td><td><span class="badge bg">✓</span></td><td><span class="badge br">✗</span></td><td class="mono" style="color:var(--green)">100%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <div class="sec-head"><div class="sec-title">Alertas activas <span class="count-chip">3</span></div></div>
+          <div class="alerts-box">
+            <div class="alert-item">
+              <div class="alert-bar r"></div>
+              <div class="alert-text">
+                <div class="alert-title">AWS Secrets sin configurar</div>
+                <div class="alert-desc">Marketing usa deploy manual. GitHub Actions falla silenciosamente.</div>
+                <div class="alert-time">2026-04-10 09:00</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-bar y"></div>
+              <div class="alert-text">
+                <div class="alert-title">Token Airtable expuesto — VOY</div>
+                <div class="alert-desc">API key visible en client-side JS.</div>
+                <div class="alert-time">2026-03-12</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-bar y"></div>
+              <div class="alert-text">
+                <div class="alert-title">QAS no configurado (0/6)</div>
+                <div class="alert-desc">Todos los proyectos van directo a producción.</div>
+                <div class="alert-time">2026-04-10 14:00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DEPLOY LOG ── -->
+    <div class="page" id="p-deploys">
+      <div class="page-head"><div class="page-title">Deploy Log</div><div class="page-sub">Historial versionado de deploys por proyecto</div></div>
+      <div class="table-box">
+        <div class="table-bar">
+          <div class="tabs">
+            <div class="tab on">Todos</div><div class="tab">Exitosos</div><div class="tab">Fallidos</div><div class="tab">Rollbacks</div>
+          </div>
+          <div class="search-wrap"><span class="search-ico">⌕</span><input class="search-input" placeholder="Buscar..."></div>
+        </div>
+        <table>
+          <thead><tr><th>Timestamp</th><th>Proyecto</th><th>Versión</th><th>Branch</th><th>Commit</th><th>Estado</th><th>Duración</th><th>Actor</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">2026-04-10 11:42</td><td class="nm">🌐 Marketing</td><td><span class="ver">v2026.04.10-001</span></td><td class="mono">main</td><td class="mono">a3f9c2d</td><td><span class="badge bg">✓ Exitoso</span></td><td class="mono">2m 14s</td><td>Guillermo</td><td><div class="acts"><button class="act">Log</button><button class="act red">Rollback</button></div></td></tr>
+            <tr><td class="mono">2026-04-10 10:15</td><td class="nm">🌐 Marketing</td><td><span class="ver">v2026.04.10-000</span></td><td class="mono">main</td><td class="mono">b7e1a4f</td><td><span class="badge br">↺ Rollback</span></td><td class="mono">1m 58s</td><td>Guillermo</td><td><div class="acts"><button class="act">Log</button></div></td></tr>
+            <tr><td class="mono">2026-04-09 18:05</td><td class="nm">🏢 Intranet</td><td><span class="ver">v2026.04.09-003</span></td><td class="mono">main</td><td class="mono">c2d8e91</td><td><span class="badge bg">✓ Exitoso</span></td><td class="mono">4m 38s</td><td>Amplify</td><td><div class="acts"><button class="act">Log</button><button class="act red">Rollback</button></div></td></tr>
+            <tr><td class="mono">2026-04-09 09:20</td><td class="nm">🐾 InfoPet</td><td><span class="ver">v2026.04.09-002</span></td><td class="mono">main</td><td class="mono">d4f1b37</td><td><span class="badge bg">✓ Exitoso</span></td><td class="mono">3m 52s</td><td>Amplify</td><td><div class="acts"><button class="act">Log</button><button class="act red">Rollback</button></div></td></tr>
+            <tr><td class="mono">2026-04-08 16:30</td><td class="nm">🛒 Marketplace</td><td><span class="ver">v2026.04.08-001</span></td><td class="mono">main</td><td class="mono">e8a2c14</td><td><span class="badge bg">✓ Exitoso</span></td><td class="mono">5m 01s</td><td>Amplify</td><td><div class="acts"><button class="act">Log</button><button class="act red">Rollback</button></div></td></tr>
+            <tr><td class="mono">2026-04-07 14:00</td><td class="nm">🚗 VOY</td><td><span class="ver">v2026.04.07-001</span></td><td class="mono">main</td><td class="mono">f1e3d28</td><td><span class="badge bg">✓ Exitoso</span></td><td class="mono">1m 22s</td><td>Vercel</td><td><div class="acts"><button class="act">Log</button><button class="act red">Rollback</button></div></td></tr>
+            <tr><td class="mono">2026-04-06 11:15</td><td class="nm">👗 Kanki</td><td><span class="ver">v2026.04.06-001</span></td><td class="mono">main</td><td class="mono">g9b2a45</td><td><span class="badge bg">✓ Exitoso</span></td><td class="mono">3m 44s</td><td>Amplify</td><td><div class="acts"><button class="act">Log</button><button class="act red">Rollback</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── INTEGRACIONES ── -->
+    <div class="page" id="p-integraciones">
+      <div class="page-head"><div class="page-title">Integraciones</div><div class="page-sub">Estado de APIs y servicios externos por ambiente</div></div>
+      <div class="table-box">
+        <div class="table-bar">
+          <div class="tabs"><div class="tab on">Todas</div><div class="tab">APIs</div><div class="tab">IA/LLM</div><div class="tab">Infra</div></div>
+          <div class="search-wrap"><span class="search-ico">⌕</span><input class="search-input" placeholder="Buscar..."></div>
+        </div>
+        <table>
+          <thead><tr><th>Integración</th><th>Tipo</th><th>Proyecto(s)</th><th>PROD</th><th>QAS</th><th>Latencia</th><th>Errores 24h</th><th>Último ping</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr><td class="nm">Bsale</td><td><span class="badge bm">API</span></td><td>InfoPet</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge br">Sin sandbox</span></td><td class="mono" style="color:var(--green)">182ms</td><td class="mono">0</td><td class="mono">2 min</td><td><div class="acts"><button class="act">Ping</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">Jumpseller</td><td><span class="badge bm">API</span></td><td>InfoPet</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge br">Sin sandbox</span></td><td class="mono" style="color:var(--yellow)">340ms</td><td class="mono">0</td><td class="mono">5 min</td><td><div class="acts"><button class="act">Ping</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">Airtable</td><td><span class="badge bm">API</span></td><td>VOY</td><td><div class="status-cell"><div class="dot y"></div> ⚠ Token expuesto</div></td><td><span class="badge br">Sin base QAS</span></td><td class="mono" style="color:var(--green)">95ms</td><td class="mono">0</td><td class="mono">1 min</td><td><div class="acts"><button class="act red">Fix</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">Groq</td><td><span class="badge bb">LLM</span></td><td>InfoPet · Intranet</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge by">Sin key QAS</span></td><td class="mono" style="color:var(--green)">280ms</td><td class="mono">2</td><td class="mono">8 min</td><td><div class="acts"><button class="act">Ping</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">Anthropic Claude</td><td><span class="badge bb">LLM</span></td><td>Intranet</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge by">Sin key QAS</span></td><td class="mono" style="color:var(--green)">420ms</td><td class="mono">0</td><td class="mono">3 min</td><td><div class="acts"><button class="act">Ping</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">MercadoLibre</td><td><span class="badge bm">API</span></td><td>Marketplace</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge br">Sin sandbox</span></td><td class="mono" style="color:var(--yellow)">510ms</td><td class="mono">0</td><td class="mono">12 min</td><td><div class="acts"><button class="act">Ping</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">Supabase — Intranet</td><td><span class="badge bm">DB</span></td><td>Intranet</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge br">Sin DB QAS</span></td><td class="mono" style="color:var(--green)">24ms</td><td class="mono">0</td><td class="mono">30 seg</td><td><div class="acts"><button class="act green">+ QAS</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">Supabase — Marketing</td><td><span class="badge bm">DB</span></td><td>Marketing</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge br">Sin DB QAS</span></td><td class="mono" style="color:var(--green)">31ms</td><td class="mono">0</td><td class="mono">45 seg</td><td><div class="acts"><button class="act green">+ QAS</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">Google Calendar</td><td><span class="badge bm">API</span></td><td>Intranet</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge bm">N/A</span></td><td class="mono" style="color:var(--green)">210ms</td><td class="mono">0</td><td class="mono">4 min</td><td><div class="acts"><button class="act">Ping</button><button class="act">Log</button></div></td></tr>
+            <tr><td class="nm">AWS CloudFront</td><td><span class="badge bm">Infra</span></td><td>Marketing</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge br">Sin distribución</span></td><td class="mono" style="color:var(--green)">18ms</td><td class="mono">0</td><td class="mono">1 min</td><td><div class="acts"><button class="act">Invalidar CF</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── BASES DE DATOS ── -->
+    <div class="page" id="p-bases">
+      <div class="page-head"><div class="page-title">Bases de datos</div><div class="page-sub">Instancias Supabase por proyecto y ambiente</div></div>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Proyecto</th><th>ID Supabase</th><th>Región</th><th>Estado</th><th>RLS</th><th>Backup</th><th>Tamaño</th><th>QAS DB</th><th>Migraciones</th></tr></thead>
+          <tbody>
+            <tr><td class="nm">🏢 Intranet</td><td class="mono">yjjtbwfgtoepsevvkzta</td><td>sa-east-1</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge bg">✓ activo</span></td><td><span class="badge bg">diario</span></td><td class="mono">142 MB</td><td><span class="badge br">Sin configurar</span></td><td class="mono">v14 (actual)</td></tr>
+            <tr><td class="nm">🌐 Marketing</td><td class="mono">xbvdwarnzavcfvxahnjo</td><td>sa-east-1</td><td><div class="status-cell"><div class="dot g"></div> OK</div></td><td><span class="badge bg">✓ activo</span></td><td><span class="badge bg">diario</span></td><td class="mono">28 MB</td><td><span class="badge br">Sin configurar</span></td><td class="mono">v6 (actual)</td></tr>
+            <tr><td class="nm">🐾 InfoPet</td><td class="mono">—</td><td>—</td><td><div class="status-cell"><div class="dot b"></div> Bsale/Jumpseller</div></td><td><span class="badge bm">N/A</span></td><td><span class="badge bm">proveedor</span></td><td class="mono">—</td><td><span class="badge bm">N/A</span></td><td class="mono">—</td></tr>
+            <tr><td class="nm">🛒 Marketplace</td><td class="mono">—</td><td>—</td><td><div class="status-cell"><div class="dot b"></div> MeLi API</div></td><td><span class="badge bm">N/A</span></td><td><span class="badge bm">proveedor</span></td><td class="mono">—</td><td><span class="badge bm">N/A</span></td><td class="mono">—</td></tr>
+            <tr><td class="nm">🚗 VOY</td><td class="mono">—</td><td>—</td><td><div class="status-cell"><div class="dot y"></div> Airtable</div></td><td><span class="badge bm">N/A</span></td><td><span class="badge bm">proveedor</span></td><td class="mono">—</td><td><span class="badge br">Sin base QAS</span></td><td class="mono">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── CI/CD STATUS ── -->
+    <div class="page" id="p-cicd">
+      <div class="page-head"><div class="page-title">CI/CD Status</div><div class="page-sub">Estado del pipeline por proyecto — último deploy</div></div>
+      <div class="table-box">
+        <div style="padding:8px 14px; border-bottom:1px solid var(--border); font-size:10px; color:var(--text-2); display:flex; gap:16px; background:var(--elevated);">
+          <span style="color:var(--green)">✓ done</span>
+          <span style="color:var(--accent)">⟳ running</span>
+          <span style="color:var(--red)">✗ fail</span>
+          <span style="color:var(--text-3)">— skip</span>
+        </div>
+        <div class="pipeline-row">
+          <div class="p-proj">🌐 Marketing</div>
+          <div class="p-stages">
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Lint</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">TypeCheck</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Build</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Deploy</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Smoke</div></div>
+          </div>
+          <div class="p-time">2m 14s</div>
+        </div>
+        <div class="pipeline-row">
+          <div class="p-proj">🏢 Intranet</div>
+          <div class="p-stages">
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Lint</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">TypeCheck</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Build</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Deploy</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Smoke</div></div>
+          </div>
+          <div class="p-time">4m 38s</div>
+        </div>
+        <div class="pipeline-row">
+          <div class="p-proj">🐾 InfoPet</div>
+          <div class="p-stages">
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Lint</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">TypeCheck</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Build</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Deploy</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Smoke</div></div>
+          </div>
+          <div class="p-time">3m 52s</div>
+        </div>
+        <div class="pipeline-row">
+          <div class="p-proj">🛒 Marketplace</div>
+          <div class="p-stages">
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Lint</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">TypeCheck</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Build</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Deploy</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Smoke</div></div>
+          </div>
+          <div class="p-time">5m 01s</div>
+        </div>
+        <div class="pipeline-row">
+          <div class="p-proj">🚗 VOY</div>
+          <div class="p-stages">
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Lint</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">TypeCheck</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Build</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Deploy</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Smoke</div></div>
+          </div>
+          <div class="p-time">1m 22s</div>
+        </div>
+        <div class="pipeline-row">
+          <div class="p-proj">👗 Kanki</div>
+          <div class="p-stages">
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Lint</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">TypeCheck</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Build</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step done"><div class="p-step-ico">✓</div><div class="p-step-lbl">Deploy</div></div>
+            <div class="p-arr">›</div>
+            <div class="p-step skip"><div class="p-step-ico">—</div><div class="p-step-lbl">Smoke</div></div>
+          </div>
+          <div class="p-time">3m 44s</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── QAS ── -->
+    <div class="page" id="p-qas">
+      <div class="page-head"><div class="page-title">QAS — Quality Assurance System</div><div class="page-sub">Estado de ambientes de QAS por proyecto y componente</div></div>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Proyecto</th><th>Frontend QAS</th><th>DB QAS</th><th>APIs QAS</th><th>Secrets QAS</th><th>Smoke test QAS</th><th>Estado global</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr><td class="nm">🌐 Marketing</td><td><span class="badge br">Sin branch</span></td><td><span class="badge bm">N/A</span></td><td><span class="badge bm">N/A</span></td><td><span class="badge br">Sin secrets</span></td><td><span class="badge br">Sin configurar</span></td><td><span class="badge br">✗ P1</span></td><td><div class="acts"><button class="act accent">Configurar</button></div></td></tr>
+            <tr><td class="nm">🏢 Intranet</td><td><span class="badge br">Sin branch</span></td><td><span class="badge br">Sin Supabase QAS</span></td><td><span class="badge by">Parcial</span></td><td><span class="badge br">Sin env QAS</span></td><td><span class="badge br">Sin configurar</span></td><td><span class="badge br">✗ P1</span></td><td><div class="acts"><button class="act accent">Configurar</button></div></td></tr>
+            <tr><td class="nm">🐾 InfoPet</td><td><span class="badge br">Sin branch</span></td><td><span class="badge bm">N/A</span></td><td><span class="badge br">Sin sandbox</span></td><td><span class="badge br">Sin env QAS</span></td><td><span class="badge br">Sin configurar</span></td><td><span class="badge br">✗ P1</span></td><td><div class="acts"><button class="act accent">Configurar</button></div></td></tr>
+            <tr><td class="nm">🛒 Marketplace</td><td><span class="badge br">Sin branch</span></td><td><span class="badge bm">N/A</span></td><td><span class="badge br">Sin sandbox</span></td><td><span class="badge br">Sin env QAS</span></td><td><span class="badge br">Sin configurar</span></td><td><span class="badge br">✗ P1</span></td><td><div class="acts"><button class="act accent">Configurar</button></div></td></tr>
+            <tr><td class="nm">🚗 VOY</td><td><span class="badge ba">Preview URL ✓</span></td><td><span class="badge br">Sin base QAS</span></td><td><span class="badge br">Sin base QAS</span></td><td><span class="badge by">Parcial</span></td><td><span class="badge br">Sin configurar</span></td><td><span class="badge by">⚠ Parcial</span></td><td><div class="acts"><button class="act accent">Completar</button></div></td></tr>
+            <tr><td class="nm">👗 Kanki</td><td><span class="badge br">Sin branch</span></td><td><span class="badge bm">N/A</span></td><td><span class="badge bm">N/A</span></td><td><span class="badge br">Sin env QAS</span></td><td><span class="badge br">Sin configurar</span></td><td><span class="badge br">✗ P1</span></td><td><div class="acts"><button class="act accent">Configurar</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── ROLLBACKS ── -->
+    <div class="page" id="p-rollbacks">
+      <div class="page-head"><div class="page-title">Rollbacks</div><div class="page-sub">Versiones disponibles para restaurar por proyecto</div></div>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Proyecto</th><th>Versión actual</th><th>Versión anterior</th><th>Plataforma</th><th>Método</th><th>Tiempo estimado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr><td class="nm">🌐 Marketing</td><td><span class="ver">v2026.04.10-001</span></td><td><span class="ver">v2026.04.09-003</span></td><td>S3 + CF</td><td class="mono">git revert + deploy</td><td class="mono">~10 min</td><td><div class="acts"><button class="act red">Rollback</button><button class="act">Historial</button></div></td></tr>
+            <tr><td class="nm">🏢 Intranet</td><td><span class="ver">v2026.04.09-003</span></td><td><span class="ver">v2026.04.09-002</span></td><td>Amplify</td><td class="mono">Amplify Console</td><td class="mono">~3 min</td><td><div class="acts"><button class="act red">Rollback</button><button class="act">Historial</button></div></td></tr>
+            <tr><td class="nm">🐾 InfoPet</td><td><span class="ver">v2026.04.09-002</span></td><td><span class="ver">v2026.04.08-001</span></td><td>Amplify</td><td class="mono">Amplify Console</td><td class="mono">~3 min</td><td><div class="acts"><button class="act red">Rollback</button><button class="act">Historial</button></div></td></tr>
+            <tr><td class="nm">🛒 Marketplace</td><td><span class="ver">v2026.04.08-001</span></td><td><span class="ver">v2026.04.05-002</span></td><td>Amplify</td><td class="mono">Amplify Console</td><td class="mono">~3 min</td><td><div class="acts"><button class="act red">Rollback</button><button class="act">Historial</button></div></td></tr>
+            <tr><td class="nm">🚗 VOY</td><td><span class="ver">v2026.04.07-001</span></td><td><span class="ver">v2026.04.01-001</span></td><td>Vercel</td><td class="mono">Promote deployment</td><td class="mono">~2 min</td><td><div class="acts"><button class="act red">Rollback</button><button class="act">Historial</button></div></td></tr>
+            <tr><td class="nm">👗 Kanki</td><td><span class="ver">v2026.04.06-001</span></td><td><span class="ver">v2026.03.31-001</span></td><td>Amplify</td><td class="mono">Amplify Console</td><td class="mono">~3 min</td><td><div class="acts"><button class="act red">Rollback</button><button class="act">Historial</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── ALERTAS ── -->
+    <div class="page" id="p-alertas">
+      <div class="page-head"><div class="page-title">Alertas</div><div class="page-sub">Incidentes y warnings activos del sistema</div></div>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Severidad</th><th>Proyecto</th><th>Título</th><th>Descripción</th><th>Detectado</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge br">Crítica</span></td><td class="nm">Marketing</td><td>AWS Secrets sin configurar</td><td style="color:var(--text-2);font-size:11px">GitHub Actions falla silenciosamente. Deploy es manual.</td><td class="mono">2026-04-10 09:00</td><td><span class="badge by">Abierta</span></td><td><div class="acts"><button class="act accent">Resolver</button></div></td></tr>
+            <tr><td><span class="badge by">Warning</span></td><td class="nm">VOY</td><td>Token Airtable expuesto</td><td style="color:var(--text-2);font-size:11px">API key visible en client-side JS. Riesgo de seguridad.</td><td class="mono">2026-03-12</td><td><span class="badge by">Abierta</span></td><td><div class="acts"><button class="act red">Fix urgente</button></div></td></tr>
+            <tr><td><span class="badge by">Warning</span></td><td class="nm">Todos</td><td>QAS no configurado (0/6)</td><td style="color:var(--text-2);font-size:11px">Todos los proyectos deployán directo a producción sin QAS.</td><td class="mono">2026-04-10 14:00</td><td><span class="badge by">Abierta</span></td><td><div class="acts"><button class="act accent">Planificar</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── COSTOS AWS ── -->
+    <div class="page" id="p-costos">
+      <div class="page-head"><div class="page-title">Costos AWS</div><div class="page-sub">Desglose mensual estimado — Abril 2026</div></div>
+      <div class="cost-grid">
+        <div class="cost-card"><div class="cost-label">AWS Total</div><div class="cost-val">$47</div><div class="cost-sub">USD/mes</div></div>
+        <div class="cost-card"><div class="cost-label">Amplify</div><div class="cost-val">$28</div><div class="cost-sub">5 proyectos</div></div>
+        <div class="cost-card"><div class="cost-label">S3 + CloudFront</div><div class="cost-val">$12</div><div class="cost-sub">Marketing</div></div>
+        <div class="cost-card"><div class="cost-label">Route53 + Misc</div><div class="cost-val">$7</div><div class="cost-sub">DNS + logs</div></div>
+      </div>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Servicio</th><th>Proyecto</th><th>Costo/mes</th><th>vs mes anterior</th><th>Optimización posible</th></tr></thead>
+          <tbody>
+            <tr><td class="nm">AWS Amplify</td><td>Intranet</td><td class="mono">$12</td><td class="mono" style="color:var(--green)">= igual</td><td style="color:var(--text-2);font-size:11px">—</td></tr>
+            <tr><td class="nm">AWS Amplify</td><td>InfoPet</td><td class="mono">$8</td><td class="mono" style="color:var(--green)">= igual</td><td style="color:var(--text-2);font-size:11px">—</td></tr>
+            <tr><td class="nm">AWS Amplify</td><td>Marketplace + Kanki</td><td class="mono">$8</td><td class="mono" style="color:var(--green)">= igual</td><td style="color:var(--text-2);font-size:11px">—</td></tr>
+            <tr><td class="nm">S3</td><td>Marketing</td><td class="mono">$3</td><td class="mono" style="color:var(--green)">↓ 10%</td><td style="color:var(--text-2);font-size:11px">Comprimir assets → -$1</td></tr>
+            <tr><td class="nm">CloudFront</td><td>Marketing</td><td class="mono">$9</td><td class="mono" style="color:var(--yellow)">↑ 5%</td><td style="color:var(--text-2);font-size:11px">Cache-Control más largo → -$2</td></tr>
+            <tr><td class="nm">Route 53</td><td>smconnection.cl</td><td class="mono">$7</td><td class="mono" style="color:var(--green)">= igual</td><td style="color:var(--text-2);font-size:11px">—</td></tr>
+            <tr><td class="nm">Vercel</td><td>VOY</td><td class="mono">$0</td><td class="mono">Free tier</td><td style="color:var(--text-2);font-size:11px">—</td></tr>
+            <tr><td class="nm">Supabase</td><td>Intranet + Marketing</td><td class="mono">$25</td><td class="mono" style="color:var(--green)">= igual</td><td style="color:var(--text-2);font-size:11px">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SEGURIDAD ── -->
+    <div class="page" id="p-seguridad">
+      <div class="page-head"><div class="page-title">Seguridad</div><div class="page-sub">Checklist de seguridad de infraestructura</div></div>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Control</th><th>Área</th><th>Estado</th><th>Prioridad</th><th>Acción requerida</th></tr></thead>
+          <tbody>
+            <tr><td class="nm">HTTPS / SSL</td><td>Todos</td><td><span class="badge bg">✓ Activo</span></td><td>—</td><td style="color:var(--text-2)">—</td></tr>
+            <tr><td class="nm">RLS Supabase</td><td>Intranet · Marketing</td><td><span class="badge bg">✓ Activo</span></td><td>—</td><td style="color:var(--text-2)">—</td></tr>
+            <tr><td class="nm">S3 versionado</td><td>Marketing</td><td><span class="badge bg">✓ Activo</span></td><td>—</td><td style="color:var(--text-2)">—</td></tr>
+            <tr><td class="nm">OAC CloudFront</td><td>Marketing</td><td><span class="badge br">✗ Sin configurar</span></td><td><span class="badge br p2">P2</span></td><td style="color:var(--text-2);font-size:11px">S3 bucket debe ser privado. Solo CF con acceso.</td></tr>
+            <tr><td class="nm">Headers CSP · HSTS</td><td>Todos</td><td><span class="badge br">✗ Sin configurar</span></td><td><span class="badge br p2">P2</span></td><td style="color:var(--text-2);font-size:11px">Agregar en CloudFront response headers policy.</td></tr>
+            <tr><td class="nm">WAF CloudFront</td><td>Marketing</td><td><span class="badge br">✗ Sin configurar</span></td><td><span class="badge bb p3">P3</span></td><td style="color:var(--text-2);font-size:11px">AWS WAF WebACL en distribución CF.</td></tr>
+            <tr><td class="nm">Token Airtable server-side</td><td>VOY</td><td><span class="badge br">✗ Expuesto</span></td><td><span class="badge br p1">P1 urgente</span></td><td style="color:var(--text-2);font-size:11px">Mover a Vercel env var, llamar desde API route.</td></tr>
+            <tr><td class="nm">Secrets en GitHub</td><td>Marketing</td><td><span class="badge br">✗ Sin configurar</span></td><td><span class="badge br p1">P1</span></td><td style="color:var(--text-2);font-size:11px">4 secrets: AWS_ACCESS_KEY_ID, SECRET, S3_BUCKET, CF_ID.</td></tr>
+            <tr><td class="nm">Rotación de secrets</td><td>Todos</td><td><span class="badge br">✗ Sin proceso</span></td><td><span class="badge bb p3">P3</span></td><td style="color:var(--text-2);font-size:11px">Definir ciclo de rotación trimestral.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── INFRAESTRUCTURA ── -->
+    <div class="page" id="p-infra">
+      <div class="page-head">
+        <div class="page-title">Infraestructura</div>
+        <div class="page-sub">Checklist escalable SMC — baseline 2026-04-10 — 12/48 completos (25%)</div>
+      </div>
+      <div class="checklist-grid">
+
+        <div class="checklist-section">
+          <div class="cl-head">Hosting <div class="cl-progress">1/4</div></div>
+          <div class="cl-item"><span class="num">01</span><span class="dot g" style="flex-shrink:0"></span><span class="label">Servidor frontend (prod)</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">02</span><span class="dot y" style="flex-shrink:0"></span><span class="label">Servidor backend/API</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">03</span><span class="dot g" style="flex-shrink:0"></span><span class="label">CDN (CloudFront)</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">04</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Separación QAS/prod</span><span class="p-chip p1">P1</span></div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="cl-head">Base de datos <div class="cl-progress">2/6</div></div>
+          <div class="cl-item"><span class="num">05</span><span class="dot g" style="flex-shrink:0"></span><span class="label">DB producción (Supabase)</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">06</span><span class="dot r" style="flex-shrink:0"></span><span class="label">DB QAS (Supabase separado)</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">07</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Migraciones en QAS primero</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">08</span><span class="dot g" style="flex-shrink:0"></span><span class="label">Backups automáticos</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">09</span><span class="dot r" style="flex-shrink:0"></span><span class="label">RLS replicado en QAS</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">10</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Seed data QAS sanitizado</span><span class="p-chip p2">P2</span></div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="cl-head">APIs externas <div class="cl-progress">0/5</div></div>
+          <div class="cl-item"><span class="num">11</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Bsale sandbox</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">12</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Jumpseller sandbox</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">13</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Airtable QAS (base separada)</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">14</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Groq/IA key con límites QAS</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">15</span><span class="dot r" style="flex-shrink:0"></span><span class="label">MeLi sandbox</span><span class="p-chip p2">P2</span></div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="cl-head">GitHub / Branches <div class="cl-progress">1/5</div></div>
+          <div class="cl-item"><span class="num">16</span><span class="dot g" style="flex-shrink:0"></span><span class="label">Branch main (prod)</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">17</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Branch develop (QAS)</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">18</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Branch feature/*</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">19</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Branch protection rules</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">20</span><span class="dot r" style="flex-shrink:0"></span><span class="label">PR obligatorio a main</span><span class="p-chip p2">P2</span></div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="cl-head">CI/CD <div class="cl-progress">2/9</div></div>
+          <div class="cl-item"><span class="num">21</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Auto-deploy QAS</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">22</span><span class="dot y" style="flex-shrink:0"></span><span class="label">Auto-deploy producción</span><span class="p-chip p1">P1 parcial</span></div>
+          <div class="cl-item"><span class="num">23</span><span class="dot r" style="flex-shrink:0"></span><span class="label">AWS Secrets en GitHub</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">24</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Lint en pipeline</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">25</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Type-check en pipeline</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">26</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Build verification</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">27</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Smoke test automatizado</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">28</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Git tags por deploy</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">29</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Deploy log versionado</span><span class="p-chip p2">P2</span></div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="cl-head">Secrets / Env vars <div class="cl-progress">0/4</div></div>
+          <div class="cl-item"><span class="num">30</span><span class="dot r" style="flex-shrink:0"></span><span class="label">.env separado por ambiente</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">31</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Secrets en GitHub</span><span class="p-chip p1">P1</span></div>
+          <div class="cl-item"><span class="num">32</span><span class="dot y" style="flex-shrink:0"></span><span class="label">Secrets Amplify por ambiente</span><span class="p-chip p1">P1 parcial</span></div>
+          <div class="cl-item"><span class="num">33</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Rotación periódica secrets</span><span class="p-chip p3">P3</span></div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="cl-head">Monitoreo <div class="cl-progress">0/4</div></div>
+          <div class="cl-item"><span class="num">34</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Uptime monitoring (ping 5 min)</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">35</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Alertas de error</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">36</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Logs centralizados</span><span class="p-chip p3">P3</span></div>
+          <div class="cl-item"><span class="num">37</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Métricas de performance</span><span class="p-chip p3">P3</span></div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="cl-head">Seguridad · Rollback · DNS <div class="cl-progress">6/11</div></div>
+          <div class="cl-item"><span class="num">38</span><span class="dot r" style="flex-shrink:0"></span><span class="label">OAC en CloudFront</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">39</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Headers CSP · HSTS</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">40</span><span class="dot r" style="flex-shrink:0"></span><span class="label">WAF en CloudFront</span><span class="p-chip p3">P3</span></div>
+          <div class="cl-item"><span class="num">41</span><span class="dot g" style="flex-shrink:0"></span><span class="label">S3 versionado</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">42</span><span class="dot g" style="flex-shrink:0"></span><span class="label">Rollback Amplify (1 clic)</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">43</span><span class="dot g" style="flex-shrink:0"></span><span class="label">Rollback Vercel (promote)</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">44</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Rollback versionado git tags</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">45</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Rollback migraciones DB</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">46</span><span class="dot g" style="flex-shrink:0"></span><span class="label">Dominio producción</span><span class="badge bm">ok</span></div>
+          <div class="cl-item"><span class="num">47</span><span class="dot r" style="flex-shrink:0"></span><span class="label">Subdominio QAS</span><span class="p-chip p2">P2</span></div>
+          <div class="cl-item"><span class="num">48</span><span class="dot g" style="flex-shrink:0"></span><span class="label">SSL automático</span><span class="badge bm">ok</span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+// Clock
+function tick() {
+  const n = new Date();
+  const m = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  document.getElementById('clk').textContent =
+    `${n.getDate()} ${m[n.getMonth()]} ${n.getFullYear()} ${n.toTimeString().slice(0,8)}`;
+}
+tick(); setInterval(tick, 1000);
+
+// Navigation
+const pages = { dashboard:'Dashboard', deploys:'Deploy Log', integraciones:'Integraciones', bases:'Bases de datos', cicd:'CI/CD Status', qas:'QAS', rollbacks:'Rollbacks', alertas:'Alertas', costos:'Costos AWS', seguridad:'Seguridad', infra:'Infraestructura' };
+
+document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+  item.addEventListener('click', () => {
+    const id = item.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('p-' + id).classList.add('active');
+    document.getElementById('bread').textContent = pages[id] || id;
+  });
+});
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    tab.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+    tab.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Propuesta Económica · InfoPet SpA</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#FAFAF8;
+  --ink:#0D0D0B;
+  --mid:#888078;
+  --dim:#C4BFB5;
+  --surface:#FFFFFF;
+  --border:#EDEAE3;
+  --green:#1A5C38;
+  --green-l:#E4F1EB;
+  --green-m:#2D7D4F;
+  --red:#8B1A12;
+  --red-l:#F5E8E7;
+  --amber:#7A4A08;
+  --amber-l:#FAF0E0;
+  --blue:#0D3A6E;
+  --blue-l:#E8F0FA;
+}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);color:var(--ink);
+  font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* SLIDE SYSTEM */
+.slide{
+  min-height:100vh;padding:80px 8vw;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;
+}
+.slide-dark{background:var(--ink);color:#FAFAF8}
+.slide-green{background:var(--green);color:#fff}
+.slide-alt{background:#F2EFE8}
+
+/* PROGRESS NAV */
+.progress-nav{
+  position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  z-index:100;display:flex;flex-direction:column;gap:8px;
+}
+.pn-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(0,0,0,.2);cursor:pointer;
+  transition:all .25s;border:none;
+}
+.pn-dot.active{background:var(--ink);height:20px;border-radius:3px}
+.slide-dark .pn-dot,.slide-green .pn-dot{background:rgba(255,255,255,.3)}
+.slide-dark .pn-dot.active,.slide-green .pn-dot.active{background:#fff}
+
+/* TYPOGRAPHY */
+.eyebrow{
+  font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mid);
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.eyebrow::before{content:'';width:24px;height:1px;background:currentColor}
+.slide-dark .eyebrow,.slide-green .eyebrow{color:rgba(255,255,255,.4)}
+.slide-dark .eyebrow::before,.slide-green .eyebrow::before{background:rgba(255,255,255,.4)}
+
+h1{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(44px,6vw,80px);font-weight:400;
+  line-height:1.0;letter-spacing:-.02em;margin-bottom:20px;
+}
+h2{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(32px,4vw,54px);font-weight:400;
+  line-height:1.05;letter-spacing:-.02em;margin-bottom:14px;
+}
+h2 i{font-style:italic;opacity:.5}
+.lead{font-size:17px;color:var(--mid);max-width:480px;line-height:1.65}
+.slide-dark .lead,.slide-green .lead{color:rgba(255,255,255,.5)}
+.mono{font-family:'DM Mono',monospace}
+
+/* GRID HELPERS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+/* CARDS */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:28px;
+}
+.card-dark{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:24px;
+}
+.card-green{background:var(--green-l);border:1px solid rgba(26,92,56,.15);border-radius:14px;padding:24px}
+.card-red{background:var(--red-l);border:1px solid rgba(139,26,18,.12);border-radius:14px;padding:20px}
+
+/* METRIC CARDS */
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center}
+.metric-dark{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:22px;text-align:center}
+.m-val{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:40px;font-weight:400;line-height:1;margin-bottom:6px;
+}
+.m-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mid)}
+.metric-dark .m-label{color:rgba(255,255,255,.4)}
+.m-delta{font-size:12px;font-weight:500;margin-top:6px}
+
+/* BADGES */
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;padding:4px 10px;
+  border-radius:100px;letter-spacing:.03em;
+}
+.bg{background:var(--green-l);color:var(--green)}
+.ba{background:var(--amber-l);color:var(--amber)}
+.br{background:var(--red-l);color:var(--red)}
+.bb{background:var(--blue-l);color:var(--blue)}
+
+/* STAT ROWS */
+.stat-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid var(--border);font-size:14px;
+}
+.stat-row:last-child{border-bottom:none}
+.stat-label{color:var(--mid)}
+.stat-val{font-weight:500}
+.stat-row-dark{border-color:rgba(255,255,255,.08)}
+.stat-row-dark .stat-label{color:rgba(255,255,255,.4)}
+.stat-row-dark .stat-val{color:#fff}
+
+/* INVESTMENT TABLE */
+.inv-table{width:100%;border-collapse:collapse}
+.inv-table th{
+  padding:10px 16px;text-align:left;
+  font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--mid);
+  background:#F5F2EB;border-bottom:1px solid var(--border);
+}
+.inv-table td{
+  padding:14px 16px;font-size:14px;
+  border-bottom:1px solid var(--border);
+}
+.inv-table tr:last-child td{border-bottom:none}
+.inv-table tr.total td{
+  font-weight:600;background:#F5F2EB;
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:16px;
+}
+.inv-table tr:hover td{background:#FAFAF8}
+
+/* PHASE CARDS */
+.phase{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:22px;
+  border-top:3px solid var(--dim);
+}
+.phase-num{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--mid);margin-bottom:8px;
+}
+.phase-name{font-size:15px;font-weight:600;margin-bottom:4px}
+.phase-weeks{font-size:12px;color:var(--mid);margin-bottom:14px}
+.phase-price{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:26px;font-weight:400;
+}
+.phase-items{display:flex;flex-direction:column;gap:5px;margin-top:12px}
+.phase-item{font-size:12px;color:var(--mid);display:flex;gap:6px}
+.phase-item::before{content:'→';color:var(--green-m);font-weight:700;flex-shrink:0}
+
+/* CHART CONTAINERS */
+.chart-wrap{position:relative;width:100%}
+
+/* HIGHLIGHT BOX */
+.highlight{
+  background:var(--ink);color:#fff;
+  border-radius:16px;padding:40px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:32px;flex-wrap:wrap;
+}
+.hl-text{}
+.hl-q{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(20px,3vw,28px);font-weight:400;
+  line-height:1.3;margin-bottom:8px;max-width:520px;
+}
+.hl-q i{font-style:italic;opacity:.5}
+.hl-sub{font-size:13px;color:rgba(255,255,255,.4)}
+.hl-number{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(52px,7vw,80px);font-weight:400;
+  color:#fff;line-height:1;text-align:right;flex-shrink:0;
+}
+.hl-number span{display:block;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:rgba(255,255,255,.35);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;text-align:right}
+
+/* STICKER */
+.sticker{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--green-l);color:var(--green);
+  border:1px solid rgba(26,92,56,.2);
+  border-radius:100px;padding:6px 14px;
+  font-size:12px;font-weight:600;
+}
+.sticker-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* CLOSE SLIDE */
+.close-content{text-align:center;max-width:700px;margin:0 auto}
+
+/* FOOTER */
+.slide-footer{
+  position:absolute;bottom:32px;left:8vw;right:8vw;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;color:var(--dim);
+}
+
+/* ANIMATIONS */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fade-up.in{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  .slide{padding:72px 6vw 60px}
+  .two-col,.three-col,.four-col{grid-template-columns:1fr}
+  .highlight{flex-direction:column;text-align:center}
+  .hl-number{text-align:center}
+  .progress-nav{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS DOTS -->
+<div class="progress-nav" id="pnav"></div>
+
+<!-- ══════════════════════════════════
+  SLIDE 1 — PORTADA
+══════════════════════════════════ -->
+<div class="slide slide-dark" id="s1">
+  <div style="max-width:900px">
+    <div class="eyebrow fade-up">Propuesta económica · Confidencial · Marzo 2026</div>
+    <h1 class="fade-up" style="animation-delay:.1s;color:#FAFAF8">
+      Transformación<br>digital para<br><i style="opacity:.35">InfoPet SpA</i>
+    </h1>
+    <p class="lead fade-up" style="animation-delay:.2s;margin-bottom:40px">
+      Propuesta de inversión elaborada por el equipo de consultoría tecnológica. Implementación completa en 8 semanas con retorno medible desde la semana 3.
+    </p>
+    <div class="four-col fade-up" style="animation-delay:.3s;max-width:720px">
+      <div class="metric-dark">
+        <div class="m-val" style="color:#4ADE80">$6,5M</div>
+        <div class="m-label">Inversión total</div>
+      </div>
+      <div class="metric-dark">
+        <div class="m-val" style="color:#fff">8</div>
+        <div class="m-label">Semanas</div>
+      </div>
+      <div class="metric-dark">
+        <div class="m-val" style="color:#FACC15">+138%</div>
+        <div class="m-label">ROI año 1</div>
+      </div>
+      <div class="metric-dark">
+        <div class="m-val" style="color:#fff">8,2</div>
+        <div class="m-label">Meses payback</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer" style="color:rgba(255,255,255,.2)">
+    <span>Preparado por: Consultoría TI · 17 de marzo 2026</span>
+    <span>InfoPet SpA · Reñaca, V Región</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 2 — SITUACIÓN ACTUAL
+══════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="eyebrow">01 · Diagnóstico</div>
+  <h2>El costo oculto<br><i>de operar así</i></h2>
+  <p class="lead" style="margin-bottom:48px">InfoPet genera $211M al año pero pierde $13,2M anuales en ineficiencia operacional. Eso es el 6,2% de las ventas evaporándose en trabajo manual.</p>
+
+  <div class="two-col">
+    <div>
+      <!-- Chart: costo mensual -->
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mid);margin-bottom:12px">Costo mensual de ineficiencias detectadas</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="chart-costos"></canvas></div>
+    </div>
+    <div>
+      <div class="card-red" style="margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--red);margin-bottom:12px">5 problemas críticos</div>
+        <div class="stat-row"><span class="stat-label">Triple ingreso de productos</span><span class="stat-val" style="color:var(--red)">20 min/prod</span></div>
+        <div class="stat-row"><span class="stat-label">Facturas físicas sin digitalizar</span><span class="stat-val" style="color:var(--red)">25 min/fact</span></div>
+        <div class="stat-row"><span class="stat-label">Stock físico ≠ stock web</span><span class="stat-val" style="color:var(--red)">Riesgo diario</span></div>
+        <div class="stat-row"><span class="stat-label">Reportes manuales Excel/Drive</span><span class="stat-val" style="color:var(--red)">3h/semana</span></div>
+        <div class="stat-row"><span class="stat-label">Sin visibilidad de compras</span><span class="stat-val" style="color:var(--red)">Sin sistema</span></div>
+      </div>
+      <div class="highlight" style="padding:24px 28px">
+        <div>
+          <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:4px">El gerente pierde mensualmente</div>
+          <div style="font-family:'Instrument Serif',Georgia,serif;font-size:28px;color:#fff">$1.098.000</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px">en trabajo que puede automatizarse</div>
+        </div>
+        <div style="font-family:'Instrument Serif',Georgia,serif;font-size:48px;color:#FACC15;line-height:1">50%<br><span style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.06em">de su jornada</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>InfoPet SpA · Propuesta económica 2026</span><span>01 / 05</span></div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 3 — LA INVERSIÓN
+══════════════════════════════════ -->
+<div class="slide slide-alt" id="s3">
+  <div class="eyebrow">02 · Inversión</div>
+  <h2>Detalle de la<br><i>propuesta económica</i></h2>
+  <p class="lead" style="margin-bottom:40px">Implementación en 4 fases con entregables concretos al finalizar cada una. Pago contra avance.</p>
+
+  <div class="two-col" style="gap:32px">
+    <!-- FASES -->
+    <div>
+      <div class="three-col" style="gap:10px;margin-bottom:12px">
+        <div class="phase" style="border-top-color:#7A4A08">
+          <div class="phase-num">FASE 01</div>
+          <div class="phase-name">Fundaciones</div>
+          <div class="phase-weeks">Semanas 1–2</div>
+          <div class="phase-price" style="color:#7A4A08">$2.500.000</div>
+          <div class="phase-items">
+            <div class="phase-item">GitHub + Vercel</div>
+            <div class="phase-item">Bsale API proxy</div>
+            <div class="phase-item">Dashboard principal</div>
+            <div class="phase-item">Stock semáforo</div>
+          </div>
+          <span class="badge bg" style="margin-top:14px">✓ Entregada</span>
+        </div>
+        <div class="phase" style="border-top-color:var(--red)">
+          <div class="phase-num">FASE 02</div>
+          <div class="phase-name">Carga única</div>
+          <div class="phase-weeks">Semanas 3–4</div>
+          <div class="phase-price" style="color:var(--red)">$1.800.000</div>
+          <div class="phase-items">
+            <div class="phase-item">Formulario 3 sistemas</div>
+            <div class="phase-item">Carga masiva CSV</div>
+            <div class="phase-item">Jumpseller API</div>
+            <div class="phase-item">Capacitación</div>
+          </div>
+          <span class="badge ba" style="margin-top:14px">Pendiente</span>
+        </div>
+        <div class="phase" style="border-top-color:var(--mid)">
+          <div class="phase-num">FASE 03</div>
+          <div class="phase-name">Facturas OCR</div>
+          <div class="phase-weeks">Semanas 5–6</div>
+          <div class="phase-price" style="color:var(--mid)">$1.500.000</div>
+          <div class="phase-items">
+            <div class="phase-item">Claude Vision IA</div>
+            <div class="phase-item">Flujo digital Bsale</div>
+            <div class="phase-item">Archivo Drive</div>
+            <div class="phase-item">Orden de compra</div>
+          </div>
+          <span class="badge ba" style="margin-top:14px">Pendiente</span>
+        </div>
+      </div>
+
+      <div class="phase" style="border-top-color:var(--green-m);border-radius:12px;padding:18px 22px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="phase-num">FASE 04</div>
+            <div class="phase-name">Sync + Gmail automático</div>
+            <div class="phase-weeks">Semanas 7–8 · Bsale ↔ Jumpseller en tiempo real · Alertas email</div>
+          </div>
+          <div>
+            <div class="phase-price" style="color:var(--green-m);text-align:right">$1.200.000</div>
+            <span class="badge ba" style="float:right;margin-top:6px">Pendiente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLA RESUMEN -->
+    <div>
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mid);margin-bottom:16px">Resumen de inversión</div>
+        <table class="inv-table">
+          <thead>
+            <tr><th>Ítem</th><th>Valor</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Fase 1 · Fundaciones</td><td class="mono">$2.500.000</td><td><span class="badge bg">✓</span></td></tr>
+            <tr><td>Fase 2 · Carga única</td><td class="mono">$1.800.000</td><td><span class="badge ba">Pte.</span></td></tr>
+            <tr><td>Fase 3 · OCR facturas</td><td class="mono">$1.500.000</td><td><span class="badge ba">Pte.</span></td></tr>
+            <tr><td>Fase 4 · Sync + Gmail</td><td class="mono">$1.200.000</td><td><span class="badge ba">Pte.</span></td></tr>
+            <tr class="total"><td>TOTAL PROYECTO</td><td class="mono">$7.000.000</td><td><span class="badge bb">Opción A</span></td></tr>
+            <tr class="total" style="background:var(--green-l)"><td style="color:var(--green)">Precio cierre total</td><td class="mono" style="color:var(--green)">$6.500.000</td><td><span class="badge bg">⭐ Opción B</span></td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:16px;padding:14px;background:var(--border);border-radius:8px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mid);margin-bottom:6px">Soporte post-entrega (opcional)</div>
+          <div style="display:flex;justify-content:space-between;font-size:14px">
+            <span style="color:var(--mid)">Mantenimiento mensual</span>
+            <span class="mono" style="font-weight:500">$350.000 / mes</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding:14px;background:var(--green-l);border-radius:8px;border:1px solid rgba(26,92,56,.12)">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--green);margin-bottom:6px">Infraestructura mensual</div>
+          <div style="display:flex;justify-content:space-between;font-size:14px">
+            <span style="color:var(--mid)">Vercel · GitHub · APIs</span>
+            <span class="mono" style="font-weight:700;color:var(--green)">$0 / mes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>InfoPet SpA · Propuesta económica 2026</span><span>02 / 05</span></div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 4 — ROI Y RETORNO
+══════════════════════════════════ -->
+<div class="slide slide-dark" id="s4">
+  <div class="eyebrow">03 · Retorno de inversión</div>
+  <h2 style="color:#FAFAF8">Cuándo y cómo<br><i>se recupera</i></h2>
+  <p class="lead" style="margin-bottom:40px">La inversión se recupera en menos de 9 meses. Solo el tiempo liberado del gerente justifica el proyecto.</p>
+
+  <div class="two-col" style="gap:40px">
+    <div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.35);margin-bottom:14px">Flujo acumulado: inversión vs ahorro (CLP millones)</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chart-roi"></canvas></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card-dark">
+        <div style="font-size:11px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Ahorros directos mensuales</div>
+        <div class="stat-row stat-row-dark"><span class="stat-label">Tiempo gerente recuperado</span><span class="stat-val" style="color:#4ADE80">+$411.741</span></div>
+        <div class="stat-row stat-row-dark"><span class="stat-label">Reducción errores ingreso</span><span class="stat-val" style="color:#4ADE80">+$120.000</span></div>
+        <div class="stat-row stat-row-dark"><span class="stat-label">Riesgo sobreventa eliminado</span><span class="stat-val" style="color:#4ADE80">+$80.000</span></div>
+        <div style="padding-top:12px;margin-top:4px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;font-family:'Instrument Serif',Georgia,serif;font-size:22px;color:#4ADE80">
+          <span>Total ahorro mensual</span><span>+$611.741</span>
+        </div>
+      </div>
+      <div class="card-dark">
+        <div style="font-size:11px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Potencial de crecimiento (conservador)</div>
+        <div class="stat-row stat-row-dark"><span class="stat-label">Peluquería +30% capacidad</span><span class="stat-val" style="color:#FACC15">+$330.304</span></div>
+        <div class="stat-row stat-row-dark"><span class="stat-label">Veterinaria +3 consultas/día</span><span class="stat-val" style="color:#FACC15">+$908.962</span></div>
+        <div style="padding-top:12px;margin-top:4px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;font-family:'Instrument Serif',Georgia,serif;font-size:22px;color:#FACC15">
+          <span>Potencial adicional/mes</span><span>+$1.239.266</span>
+        </div>
+      </div>
+      <div style="background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:rgba(255,255,255,.5)">Payback con solo ahorros directos</span>
+        <span style="font-family:'Instrument Serif',Georgia,serif;font-size:28px;color:#4ADE80">8,2 meses</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer" style="color:rgba(255,255,255,.2)"><span>InfoPet SpA · Propuesta económica 2026</span><span>03 / 05</span></div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 5 — COMPARATIVO
+══════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="eyebrow">04 · Comparativo</div>
+  <h2>Hacer vs<br><i>no hacer</i></h2>
+  <p class="lead" style="margin-bottom:40px">El verdadero costo no es invertir $6,5M. Es seguir perdiendo $1,1M al mes.</p>
+
+  <div class="two-col" style="gap:32px;margin-bottom:32px">
+    <div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mid);margin-bottom:12px">Distribución de inversión por fase</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-fases"></canvas></div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mid);margin-bottom:12px">Ahorro acumulado vs inversión (año 1)</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-año"></canvas></div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <div class="hl-text">
+      <div class="hl-q">Sin este proyecto, InfoPet pierde <i>$13,2 millones al año</i> en tiempo del gerente en tareas manuales. Eso es 2 veces el costo total del proyecto.</div>
+      <div class="hl-sub">Calculado sobre el costo real de la jornada: $2.196.000 × 50% × 12 meses</div>
+    </div>
+    <div class="hl-number">2×<span>el costo del proyecto</span></div>
+  </div>
+  <div class="slide-footer"><span>InfoPet SpA · Propuesta económica 2026</span><span>04 / 05</span></div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 6 — CIERRE
+══════════════════════════════════ -->
+<div class="slide slide-green" id="s6">
+  <div class="close-content">
+    <div class="eyebrow" style="justify-content:center">05 · Propuesta final</div>
+    <h1 style="color:#fff;text-align:center;margin-bottom:16px">
+      La decisión<br><i>es simple.</i>
+    </h1>
+    <p class="lead" style="text-align:center;margin:0 auto 48px;max-width:540px">
+      Invertir $6.500.000 una vez o seguir perdiendo $1.098.000 cada mes. El proyecto se paga solo en 8 meses y genera retornos de +138% en el primer año.
+    </p>
+
+    <div class="four-col" style="margin-bottom:48px;max-width:800px;margin-left:auto;margin-right:auto">
+      <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:20px;text-align:center">
+        <div style="font-family:'Instrument Serif',Georgia,serif;font-size:32px;color:#fff;line-height:1;margin-bottom:6px">$6,5M</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">Inversión total</div>
+      </div>
+      <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:20px;text-align:center">
+        <div style="font-family:'Instrument Serif',Georgia,serif;font-size:32px;color:#FACC15;line-height:1;margin-bottom:6px">+138%</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">ROI año 1</div>
+      </div>
+      <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:20px;text-align:center">
+        <div style="font-family:'Instrument Serif',Georgia,serif;font-size:32px;color:#fff;line-height:1;margin-bottom:6px">8,2</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">Meses payback</div>
+      </div>
+      <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:20px;text-align:center">
+        <div style="font-family:'Instrument Serif',Georgia,serif;font-size:32px;color:#fff;line-height:1;margin-bottom:6px">$0</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">Infra mensual</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="mailto:contacto@consultoria.cl" style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--green);padding:14px 28px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:opacity .2s">Aceptar propuesta →</a>
+      <a href="infopet-gerente.html" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);padding:14px 28px;border-radius:10px;font-size:14px;font-weight:500;text-decoration:none">Ver resumen ejecutivo</a>
+    </div>
+  </div>
+  <div class="slide-footer" style="color:rgba(255,255,255,.3)">
+    <span>Consultoría TI · Guillermo González · contacto@consultoria.cl</span>
+    <span>InfoPet SpA · Marzo 2026</span>
+  </div>
+</div>
+
+<script>
+/* ── PROGRESS NAV ── */
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('pnav');
+slides.forEach((_,i) => {
+  const b = document.createElement('button');
+  b.className = 'pn-dot' + (i===0?' active':'');
+  b.onclick = () => slides[i].scrollIntoView({behavior:'smooth'});
+  nav.appendChild(b);
+});
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const i = [...slides].indexOf(e.target);
+      document.querySelectorAll('.pn-dot').forEach((d,j) => d.classList.toggle('active',j===i));
+    }
+  });
+},{threshold:.5});
+slides.forEach(s => io.observe(s));
+
+/* ── FADE UP OBSERVER ── */
+const fu = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+},{threshold:.1});
+document.querySelectorAll('.fade-up').forEach(el => fu.observe(el));
+
+/* ── CHART: COSTOS ACTUALES ── */
+new Chart(document.getElementById('chart-costos'),{
+  type:'bar',
+  data:{
+    labels:['Triple ingreso\nproductos','Facturas\nfísicas','Reportes\nmanuales','Sin visib.\ncompras','Otros\nprocesos'],
+    datasets:[{
+      label:'Costo mensual estimado (CLP)',
+      data:[480000,180000,90000,240000,108000],
+      backgroundColor:['#8B1A12','#A0291F','#B5382C','#7A1A12','#C04030'],
+      borderRadius:6,borderSkipped:false,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:ctx=>' $'+Math.round(ctx.parsed.y).toLocaleString('es-CL')}}
+    },
+    scales:{
+      x:{grid:{display:false},ticks:{font:{size:10},color:'#888',maxRotation:0}},
+      y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>'$'+Math.round(v/1000)+'K',font:{size:10},color:'#888'}}
+    }
+  }
+});
+
+/* ── CHART: ROI ACUMULADO ── */
+const months = ['Mes 1','Mes 2','Mes 3','Mes 4','Mes 5','Mes 6','Mes 7','Mes 8','Mes 9','Mes 10','Mes 11','Mes 12'];
+const inv = [-6500000,-6500000,-6500000,-6500000,-6500000,-6500000,-6500000,-6500000,-6500000,-6500000,-6500000,-6500000];
+const ahorro = [611741,1223482,1835223,2446964,3058705,3670446,4282187,4893928,5505669,6117410,6729151,7340892];
+new Chart(document.getElementById('chart-roi'),{
+  type:'line',
+  data:{
+    labels:months,
+    datasets:[
+      {label:'Inversión acumulada',data:inv.map(v=>v/1000000),borderColor:'#E07070',backgroundColor:'rgba(224,112,112,.06)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#E07070',tension:.3,fill:true,borderDash:[5,4]},
+      {label:'Ahorro acumulado',data:ahorro.map(v=>v/1000000),borderColor:'#4ADE80',backgroundColor:'rgba(74,222,128,.08)',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#4ADE80',tension:.3,fill:true}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{
+        display:true,position:'top',
+        labels:{font:{size:11},color:'rgba(255,255,255,.5)',boxWidth:10,boxHeight:10,usePointStyle:true,pointStyleWidth:10}
+      },
+      tooltip:{callbacks:{label:ctx=>' $'+ctx.parsed.y.toFixed(1)+'M'}}
+    },
+    scales:{
+      x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{font:{size:10},color:'rgba(255,255,255,.3)',maxRotation:45}},
+      y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>'$'+v.toFixed(0)+'M',font:{size:10},color:'rgba(255,255,255,.3)'}}
+    }
+  }
+});
+
+/* ── CHART: DISTRIBUCIÓN FASES ── */
+new Chart(document.getElementById('chart-fases'),{
+  type:'doughnut',
+  data:{
+    labels:['Fase 1 · Fundaciones','Fase 2 · Carga única','Fase 3 · OCR facturas','Fase 4 · Sync + Gmail'],
+    datasets:[{
+      data:[2500000,1800000,1500000,1200000],
+      backgroundColor:['#7A4A08','#8B1A12','#888078','#1A5C38'],
+      borderWidth:0,hoverOffset:8,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    cutout:'64%',
+    plugins:{
+      legend:{
+        position:'bottom',
+        labels:{font:{size:11},color:'#888078',padding:10,usePointStyle:true,pointStyleWidth:10,
+          generateLabels:chart=>chart.data.labels.map((l,i)=>({
+            text:l+' — $'+Math.round(chart.data.datasets[0].data[i]/1000)+'K',
+            fillStyle:chart.data.datasets[0].backgroundColor[i],
+            hidden:false,index:i,pointStyle:'rectRounded'
+          }))
+        }
+      },
+      tooltip:{callbacks:{label:ctx=>' $'+ctx.parsed.toLocaleString('es-CL')}}
+    }
+  }
+});
+
+/* ── CHART: AÑO COMPLETO ── */
+const labelsAño = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const ahorroMes = [611741,611741,611741,611741,611741,611741,611741,611741,611741,611741,611741,611741];
+const potencialMes = [0,0,0,1239266,1239266,1239266,1239266,1239266,1239266,1239266,1239266,1239266];
+new Chart(document.getElementById('chart-año'),{
+  type:'bar',
+  data:{
+    labels:labelsAño,
+    datasets:[
+      {label:'Ahorro directo',data:ahorroMes.map(v=>Math.round(v/1000)),backgroundColor:'#1A5C38',borderRadius:4,borderSkipped:false},
+      {label:'Potencial crecimiento',data:potencialMes.map(v=>Math.round(v/1000)),backgroundColor:'rgba(26,92,56,.3)',borderRadius:4,borderSkipped:false}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{
+        display:true,position:'top',
+        labels:{font:{size:11},color:'#888',boxWidth:10,boxHeight:10,usePointStyle:true}
+      },
+      tooltip:{callbacks:{label:ctx=>' $'+Math.round(ctx.parsed.y).toLocaleString('es-CL')+'K'}}
+    },
+    scales:{
+      x:{stacked:true,grid:{display:false},ticks:{font:{size:10},color:'#888'}},
+      y:{stacked:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>'$'+v+'K',font:{size:10},color:'#888'}}
+    }
+  }
+});
+</script>
+</body>
+</html>

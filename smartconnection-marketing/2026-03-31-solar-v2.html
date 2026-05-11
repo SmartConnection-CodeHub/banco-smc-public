@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack Tecnológico — SmartConnection</title>
+<style>
+  :root {
+    --bg: #060912;
+    --surface: #0a0d14;
+    --accent: #00b4d8;
+    --gold: #f97316;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --glass: rgba(15,22,35,0.85);
+    --ia: #a855f7;
+    --dev: #00e5b0;
+    --sap: #60a5fa;
+    --cloud: #fbbf24;
+    --integ: #f472b6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ───── SECTION HEADER ───── */
+  .section-header {
+    text-align: center;
+    padding: 60px 24px 0;
+    position: relative;
+    z-index: 10;
+  }
+  .section-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(0,180,216,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: clamp(22px, 4vw, 38px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  .section-title span {
+    background: linear-gradient(135deg, var(--accent), #00e5b0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ───── CANVAS STARFIELD ───── */
+  #starfield {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ═══════════════════════════════════════
+     DESKTOP: SOLAR SYSTEM
+  ═══════════════════════════════════════ */
+  #solar-wrapper {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0 60px;
+  }
+
+  #solar-container {
+    position: relative;
+    width: 900px;
+    height: 900px;
+    flex-shrink: 0;
+  }
+
+  /* Orbital rings via SVG overlay */
+  #rings-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  /* Sun / Center */
+  #sun {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #1a3a6b, #060c1f);
+    border: 2px solid rgba(0,180,216,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    transform: translate(-50%, -50%);
+    animation: sunGlow 3s ease-in-out infinite;
+    z-index: 20;
+  }
+  @keyframes sunGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,180,216,0.3), 0 0 40px rgba(0,180,216,0.15), 0 0 80px rgba(0,180,216,0.08); }
+    50% { box-shadow: 0 0 30px rgba(0,180,216,0.5), 0 0 60px rgba(0,180,216,0.25), 0 0 100px rgba(0,180,216,0.12); }
+  }
+  #sun .sun-logo {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-align: center;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+  #sun .sun-count {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  #sun .sun-sub {
+    font-size: 8px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  /* Planet elements */
+  .planet {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition: box-shadow 0.2s, filter 0.3s, opacity 0.3s;
+    z-index: 15;
+  }
+  .planet::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text2);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: 0.03em;
+  }
+  .planet:hover {
+    z-index: 30;
+  }
+  .planet.dimmed {
+    opacity: 0.15;
+    filter: grayscale(0.8);
+  }
+  .planet.highlighted {
+    opacity: 1;
+    filter: none;
+  }
+
+  /* Tooltip */
+  #tooltip {
+    position: fixed;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    max-width: 220px;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.15s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  }
+  #tooltip.visible { opacity: 1; }
+  #tooltip .tt-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  #tooltip .tt-desc {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+  #tooltip .tt-cat {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    opacity: 0.7;
+  }
+
+  /* Legend */
+  #legend {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .legend-item:hover { opacity: 0.8; }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-label {
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 500;
+  }
+
+  /* ═══════════════════════════════════════
+     MOBILE: TABS + CARDS
+  ═══════════════════════════════════════ */
+  #mobile-view {
+    display: none;
+    padding: 24px 16px 60px;
+    position: relative;
+    z-index: 5;
+  }
+
+  /* Mobile canvas bg */
+  #mobile-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .mobile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,180,216,0.12);
+    border: 1px solid rgba(0,180,216,0.3);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .badge-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  /* Tabs */
+  .tabs-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-bottom: 20px;
+  }
+  .tabs-scroll::-webkit-scrollbar { display: none; }
+  .tabs-row {
+    display: flex;
+    gap: 8px;
+    width: max-content;
+    padding-bottom: 4px;
+  }
+  .tab-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tab-btn.active {
+    color: #fff;
+    border-color: currentColor;
+  }
+  .tab-btn[data-cat="ia"] { --tc: var(--ia); }
+  .tab-btn[data-cat="dev"] { --tc: var(--dev); }
+  .tab-btn[data-cat="sap"] { --tc: var(--sap); }
+  .tab-btn[data-cat="cloud"] { --tc: var(--cloud); }
+  .tab-btn[data-cat="integ"] { --tc: var(--integ); }
+  .tab-btn.active {
+    background: rgba(var(--tc-rgb, 0,180,216), 0.15);
+    border-color: var(--tc);
+    color: var(--tc);
+    box-shadow: 0 0 12px rgba(var(--tc-rgb, 0,180,216), 0.2);
+  }
+
+  /* Chips grid */
+  .chips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .chip {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 12px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: transform 0.15s, box-shadow 0.15s;
+    animation: fadeInUp 0.4s ease both;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip:active { transform: scale(0.95); }
+  /* ── Timeline mobile ── */
+  .mtech-wrap { position: relative; padding: 0 16px 32px 48px; }
+  .mtech-vline {
+    position: absolute; left: 20px; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom, #a855f7 0%, #00e5b0 32%, #60a5fa 56%, #fbbf24 76%, #f472b6 100%);
+    border-radius: 2px;
+  }
+  .mtech-vline::before {
+    content: ''; position: absolute; inset: 0; width: 6px; left: -2px;
+    background: inherit; filter: blur(5px); opacity: 0.4; border-radius: 3px;
+  }
+  .mtech-traveler {
+    position: absolute; left: -4px; width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle, #fff 30%, var(--tc, #a855f7) 100%);
+    box-shadow: 0 0 8px 2px var(--tc, #a855f7);
+    animation: mtvTravel 4s linear infinite;
+  }
+  .mtech-traveler.t2 { animation-delay: -2s; }
+  @keyframes mtvTravel {
+    0%   { top: 0%;   opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 0.8; }
+    100% { top: 100%; opacity: 0; }
+  }
+  .mtech-cat { margin-bottom: 28px; position: relative; }
+  .mtech-node {
+    position: absolute; left: -36px; top: 4px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--nc); box-shadow: 0 0 10px var(--nc);
+    animation: mtnPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes mtnPulse {
+    0%,100% { box-shadow: 0 0 4px var(--nc); }
+    50%     { box-shadow: 0 0 14px var(--nc), 0 0 24px color-mix(in srgb, var(--nc) 30%, transparent); }
+  }
+  .mtech-node::after {
+    content: ''; position: absolute; top: 6px; left: 16px;
+    width: 20px; height: 1px; background: linear-gradient(to right, var(--nc), transparent);
+    box-shadow: 0 0 4px var(--nc);
+  }
+  .mtech-label {
+    font-size: 10px; font-weight: 800; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--nc);
+    margin-bottom: 10px; padding-left: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mtech-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(to right, var(--nc), transparent);
+    opacity: 0.5;
+  }
+  .mtech-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .mtech-chip {
+    padding: 5px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+    border: 1px solid var(--nc); color: var(--nc);
+    background: color-mix(in srgb, var(--nc) 10%, rgba(10,13,20,0.8));
+    backdrop-filter: blur(8px);
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    cursor: default;
+  }
+  .mtech-chip:active { transform: scale(0.94); }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ───── RESPONSIVE ───── */
+  @media (max-width: 768px) {
+    #solar-wrapper { display: none; }
+    #mobile-view { display: block; }
+    #starfield { display: none; }
+    .section-header { padding-top: 40px; }
+    .section-title { font-size: 22px; }
+  }
+  @media (min-width: 769px) {
+    #mobile-view { display: none; }
+    #solar-wrapper { display: flex; }
+  }
+
+  /* Highlight pulse ring on selected planet */
+  .planet.highlighted::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    animation: ringPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes ringPulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.25); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Star field canvas (desktop) -->
+<canvas id="starfield"></canvas>
+
+<!-- Section Header -->
+<div class="section-header">
+  <div class="section-label">Stack Tecnológico</div>
+  <h2 class="section-title">Las herramientas detrás de<br><span>SmartConnection</span></h2>
+</div>
+
+<!-- ══════════ DESKTOP: SOLAR ══════════ -->
+<div id="solar-wrapper">
+  <div id="solar-container">
+    <!-- Orbital rings SVG -->
+    <svg id="rings-svg" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="450" cy="450" r="110" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <circle cx="450" cy="450" r="185" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <circle cx="450" cy="450" r="255" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <circle cx="450" cy="450" r="320" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <circle cx="450" cy="450" r="385" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    </svg>
+
+    <!-- Sun -->
+    <div id="sun" style="left:450px;top:450px;">
+      <div class="sun-logo">+SMART<br>CONNECTION</div>
+      <div class="sun-count" id="tech-count">29</div>
+      <div class="sun-sub">tecnologías</div>
+    </div>
+
+    <!-- Legend -->
+    <div id="legend">
+      <div class="legend-item" data-cat="ia">
+        <div class="legend-dot" style="background:#a855f7;box-shadow:0 0 6px #a855f7;"></div>
+        <span class="legend-label">IA</span>
+      </div>
+      <div class="legend-item" data-cat="dev">
+        <div class="legend-dot" style="background:#00e5b0;box-shadow:0 0 6px #00e5b0;"></div>
+        <span class="legend-label">Dev</span>
+      </div>
+      <div class="legend-item" data-cat="sap">
+        <div class="legend-dot" style="background:#60a5fa;box-shadow:0 0 6px #60a5fa;"></div>
+        <span class="legend-label">SAP</span>
+      </div>
+      <div class="legend-item" data-cat="cloud">
+        <div class="legend-dot" style="background:#fbbf24;box-shadow:0 0 6px #fbbf24;"></div>
+        <span class="legend-label">Cloud</span>
+      </div>
+      <div class="legend-item" data-cat="integ">
+        <div class="legend-dot" style="background:#f472b6;box-shadow:0 0 6px #f472b6;"></div>
+        <span class="legend-label">Integración</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div id="tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-desc" id="tt-desc"></div>
+  <div class="tt-cat" id="tt-cat"></div>
+</div>
+
+<!-- ══════════ MOBILE: TIMELINE ══════════ -->
+<div id="mobile-view">
+  <canvas id="mobile-canvas"></canvas>
+
+  <div class="mobile-badge">
+    <div class="badge-dot"></div>
+    29 tecnologías
+  </div>
+
+  <!-- Timeline vertical + horizontal -->
+  <div class="mtech-wrap">
+    <div class="mtech-vline">
+      <div class="mtech-traveler t1"></div>
+      <div class="mtech-traveler t2"></div>
+    </div>
+    <div id="mobile-timeline"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const CATS = {
+  ia:    { label: 'IA',          color: '#a855f7' },
+  dev:   { label: 'Dev',         color: '#00e5b0' },
+  sap:   { label: 'SAP',         color: '#60a5fa' },
+  cloud: { label: 'Cloud',       color: '#fbbf24' },
+  integ: { label: 'Integración', color: '#f472b6' },
+};
+
+const PLANET_CONFIG = [
+  // Ring 0 — r=110, period=38s — IA (7 planetas, spacing 2π/7)
+  { name:'Claude',      cat:'ia',    ring:0, startAngle:0,                    icon:'CL',  desc:'LLM principal de agentes SC' },
+  { name:'OpenAI',      cat:'ia',    ring:0, startAngle:Math.PI*2/7,          icon:'OAI', desc:'GPT-4o para tareas complejas' },
+  { name:'Gemini',      cat:'ia',    ring:0, startAngle:Math.PI*4/7,          icon:'GEM', desc:'Multimodal y documentos' },
+  { name:'DeepSeek',    cat:'ia',    ring:0, startAngle:Math.PI*6/7,          icon:'DS',  desc:'Open source costo-eficiente' },
+  { name:'OpenRouter',  cat:'ia',    ring:0, startAngle:Math.PI*8/7,          icon:'OR',  desc:'Gateway unificado para LLMs' },
+  { name:'Ollama',      cat:'ia',    ring:0, startAngle:Math.PI*10/7,         icon:'OLL', desc:'LLMs locales sin dependencia cloud' },
+  { name:'Aider',       cat:'ia',    ring:0, startAngle:Math.PI*12/7,         icon:'AID', desc:'AI pair programming en terminal' },
+  // Ring 1 — r=185, period=55s — Dev (7 planetas, spacing 2π/7)
+  { name:'Next.js',     cat:'dev',   ring:1, startAngle:0,                    icon:'NXT', desc:'Framework full-stack principal' },
+  { name:'React',       cat:'dev',   ring:1, startAngle:Math.PI*2/7,          icon:'RCT', desc:'UI components y estado' },
+  { name:'TypeScript',  cat:'dev',   ring:1, startAngle:Math.PI*4/7,          icon:'TS',  desc:'Tipado estricto en todo el stack' },
+  { name:'Tailwind',    cat:'dev',   ring:1, startAngle:Math.PI*6/7,          icon:'TW',  desc:'Utility CSS con design system' },
+  { name:'Astro',       cat:'dev',   ring:1, startAngle:Math.PI*8/7,          icon:'AST', desc:'Sites de marketing ultra rápidos' },
+  { name:'Radix UI',    cat:'dev',   ring:1, startAngle:Math.PI*10/7,         icon:'RDX', desc:'Primitivas accesibles WAI-ARIA' },
+  { name:'Python',      cat:'dev',   ring:1, startAngle:Math.PI*12/7,         icon:'PY',  desc:'Scripts, automatización y IA backend' },
+  // Ring 2 — r=255, period=72s — SAP (5 planetas, spacing 2π/5)
+  { name:'SAP BTP',     cat:'sap',   ring:2, startAngle:0,                    icon:'BTP', desc:'Plataforma cloud SAP' },
+  { name:'S/4HANA',     cat:'sap',   ring:2, startAngle:Math.PI*2/5,          icon:'S/4', desc:'ERP core de clientes enterprise' },
+  { name:'ABAP',        cat:'sap',   ring:2, startAngle:Math.PI*4/5,          icon:'ABP', desc:'Lógica de negocio SAP' },
+  { name:'SAP Fiori',   cat:'sap',   ring:2, startAngle:Math.PI*6/5,          icon:'FIO', desc:'UX premium para SAP' },
+  { name:'Integ Suite', cat:'sap',   ring:2, startAngle:Math.PI*8/5,          icon:'CPI', desc:'Conectores SAP↔mundo' },
+  // Ring 3 — r=320, period=90s — Cloud (6 planetas, spacing π/3)
+  { name:'AWS',         cat:'cloud', ring:3, startAngle:0,                    icon:'AWS', desc:'Infra principal: EC2, S3, CloudFront' },
+  { name:'Supabase',    cat:'cloud', ring:3, startAngle:Math.PI/3,            icon:'SUP', desc:'DB PostgreSQL + Auth + Realtime' },
+  { name:'Vercel',      cat:'cloud', ring:3, startAngle:Math.PI*2/3,          icon:'VCL', desc:'Deploy frontend en segundos' },
+  { name:'GitHub',      cat:'cloud', ring:3, startAngle:Math.PI,              icon:'GH',  desc:'Control de versiones y CI/CD' },
+  { name:'CloudFront',  cat:'cloud', ring:3, startAngle:Math.PI*4/3,          icon:'CDN', desc:'CDN global de contenido' },
+  { name:'GCloud',      cat:'cloud', ring:3, startAngle:Math.PI*5/3,          icon:'GCP', desc:'IA APIs y servicios Google' },
+  // Ring 4 — r=385, period=110s — Integ (4 planetas)
+  { name:'WhatsApp',    cat:'integ', ring:4, startAngle:0,                    icon:'WA',  desc:'Canal principal con clientes' },
+  { name:'Bsale',       cat:'integ', ring:4, startAngle:Math.PI/2,            icon:'BSL', desc:'ERP punto de venta chileno' },
+  { name:'Jumpseller',  cat:'integ', ring:4, startAngle:Math.PI,              icon:'JMP', desc:'E-commerce chileno' },
+  { name:'Resend',      cat:'integ', ring:4, startAngle:Math.PI*3/2,          icon:'RSN', desc:'Email transaccional moderno' },
+];
+
+const RING_RADII   = [110, 185, 255, 320, 385];
+const RING_PERIODS = [38,  55,  72,  90,  110];
+
+const CX = 450, CY = 450;
+
+// ══════════════════════════════════════════
+// STARFIELD CANVAS
+// ══════════════════════════════════════════
+(function initStars() {
+  const canvas = document.getElementById('starfield');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    // Regenerate on resize
+    stars = [];
+    for (let i = 0; i < 80; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: 0.5 + Math.random() * 1.0,
+        a: 0.2 + Math.random() * 0.6,
+        da: (Math.random() - 0.5) * 0.004,
+      });
+    }
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.a += s.da;
+      if (s.a > 0.8 || s.a < 0.1) s.da *= -1;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  drawStars();
+})();
+
+// ══════════════════════════════════════════
+// SOLAR SYSTEM
+// ══════════════════════════════════════════
+const container = document.getElementById('solar-container');
+let activeCat = null;
+let planets = [];
+
+function initSolar() {
+  if (window.innerWidth <= 768) return;
+
+  // Create planet elements
+  PLANET_CONFIG.forEach((cfg, i) => {
+    const el = document.createElement('div');
+    el.className = 'planet';
+    el.setAttribute('data-name', cfg.name);
+    el.setAttribute('data-cat', cfg.cat);
+    el.setAttribute('data-i', i);
+
+    const color = CATS[cfg.cat].color;
+    el.style.cssText = `
+      background: radial-gradient(circle at 35% 35%, ${color}22, ${color}08);
+      border: 1.5px solid ${color}66;
+      box-shadow: 0 0 10px ${color}33;
+      color: ${color};
+    `;
+    el.innerHTML = `<span style="font-size:9px;font-weight:800;letter-spacing:0.5px;pointer-events:none;user-select:none;font-family:'JetBrains Mono',monospace">${cfg.icon}</span>`;
+
+    container.appendChild(el);
+
+    cfg.el = el;
+    cfg.period = RING_PERIODS[cfg.ring];
+    cfg.radius = RING_RADII[cfg.ring];
+    planets.push(cfg);
+
+    // Hover
+    el.addEventListener('mouseenter', (e) => showTooltip(e, cfg));
+    el.addEventListener('mouseleave', hideTooltip);
+    el.addEventListener('mousemove', moveTooltip);
+    el.addEventListener('click', () => toggleCat(cfg.cat));
+  });
+
+  // Legend clicks
+  document.querySelectorAll('#legend .legend-item').forEach(item => {
+    item.addEventListener('click', () => toggleCat(item.dataset.cat));
+  });
+
+  animateSolar();
+}
+
+function animateSolar() {
+  const t = performance.now() / 1000;
+  planets.forEach(p => {
+    const angle = p.startAngle + (t / p.period) * Math.PI * 2;
+    const x = CX + Math.cos(angle) * p.radius;
+    const y = CY + Math.sin(angle) * p.radius;
+    p.el.style.left = x + 'px';
+    p.el.style.top  = y + 'px';
+  });
+  requestAnimationFrame(animateSolar);
+}
+
+// ── Tooltip ──
+const tooltip = document.getElementById('tooltip');
+const ttName  = document.getElementById('tt-name');
+const ttDesc  = document.getElementById('tt-desc');
+const ttCat   = document.getElementById('tt-cat');
+
+function showTooltip(e, cfg) {
+  ttName.textContent = cfg.name;
+  ttDesc.textContent = cfg.desc;
+  ttCat.textContent  = CATS[cfg.cat].label;
+  ttName.style.color = CATS[cfg.cat].color;
+  ttCat.style.color  = CATS[cfg.cat].color;
+  tooltip.classList.add('visible');
+  moveTooltipTo(e.clientX, e.clientY);
+}
+function hideTooltip() { tooltip.classList.remove('visible'); }
+function moveTooltip(e) { moveTooltipTo(e.clientX, e.clientY); }
+function moveTooltipTo(x, y) {
+  const tw = 220, th = 80;
+  let lx = x + 16, ly = y + 16;
+  if (lx + tw > window.innerWidth  - 8) lx = x - tw - 12;
+  if (ly + th > window.innerHeight - 8) ly = y - th - 12;
+  tooltip.style.left = lx + 'px';
+  tooltip.style.top  = ly + 'px';
+}
+
+// ── Category highlight ──
+function toggleCat(cat) {
+  if (activeCat === cat) {
+    activeCat = null;
+    planets.forEach(p => {
+      p.el.classList.remove('dimmed', 'highlighted');
+    });
+  } else {
+    activeCat = cat;
+    planets.forEach(p => {
+      if (p.cat === cat) {
+        p.el.classList.add('highlighted');
+        p.el.classList.remove('dimmed');
+      } else {
+        p.el.classList.add('dimmed');
+        p.el.classList.remove('highlighted');
+      }
+    });
+  }
+}
+
+// ══════════════════════════════════════════
+// MOBILE TIMELINE
+// ══════════════════════════════════════════
+function initMobile() {
+  if (window.innerWidth > 768) return;
+
+  // Particles canvas
+  const canvas = document.getElementById('mobile-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const pts = Array.from({length: 25}, () => ({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+      vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25,
+      r: 0.5 + Math.random(), a: 0.08 + Math.random()*0.2,
+    }));
+    (function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${p.a})`; ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    })();
+  }
+
+  // Build timeline
+  const container = document.getElementById('mobile-timeline');
+  if (!container) return;
+
+  const CAT_ORDER = ['ia','dev','sap','cloud','integ'];
+  CAT_ORDER.forEach((cat, ci) => {
+    const cfg   = CATS[cat];
+    const items = PLANET_CONFIG.filter(p => p.cat === cat);
+
+    const div = document.createElement('div');
+    div.className = 'mtech-cat';
+    div.style.setProperty('--nc', cfg.color);
+
+    const node = document.createElement('div');
+    node.className = 'mtech-node';
+    node.style.setProperty('--nc', cfg.color);
+
+    const label = document.createElement('div');
+    label.className = 'mtech-label';
+    label.style.setProperty('--nc', cfg.color);
+    label.textContent = cfg.label;
+
+    const chips = document.createElement('div');
+    chips.className = 'mtech-chips';
+    items.forEach((item, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'mtech-chip';
+      chip.style.cssText = `--nc:${cfg.color};animation:fadeInUp 0.35s ease ${i*0.05}s both`;
+      chip.textContent = item.name;
+      chips.appendChild(chip);
+    });
+
+    div.appendChild(node);
+    div.appendChild(label);
+    div.appendChild(chips);
+    container.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  initSolar();
+  initMobile();
+});
+
+// Also init if DOM already loaded
+if (document.readyState !== 'loading') {
+  initSolar();
+  initMobile();
+}
+</script>
+</body>
+</html>

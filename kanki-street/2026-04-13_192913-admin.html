@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kanki Street — Admin</title>
+<style>
+:root{
+  --bg:#0a0c12;
+  --surface:#111420;
+  --elevated:#181d2e;
+  --border:rgba(255,255,255,0.07);
+  --border-mid:rgba(255,255,255,0.12);
+  --text:#f1f5f9;
+  --muted:#64748b;
+  --subtle:#94a3b8;
+  --accent:#00e5b0;
+  --accent2:#0ea5e9;
+  --warn:#f59e0b;
+  --danger:#ef4444;
+  --success:#22c55e;
+  --fog:#7c3aed;
+  --grizzly:#f97316;
+  --navy:#1b2f4e;
+  --font:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --r:10px;
+  --r-sm:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo .brand{font-size:16px;font-weight:800;letter-spacing:0.08em;color:var(--text)}
+.sidebar-logo .brand span{color:var(--accent)}
+.sidebar-logo .sub{font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-top:2px}
+.nav-section{padding:16px 12px 8px;font-size:9px;font-weight:700;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-sm);margin:1px 8px;cursor:pointer;color:var(--subtle);transition:all 0.15s;font-size:13px;font-weight:500}
+.nav-item:hover{background:var(--elevated);color:var(--text)}
+.nav-item.active{background:rgba(0,229,176,0.1);color:var(--accent)}
+.nav-item .dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.nav-item .icon{font-size:15px;flex-shrink:0}
+.sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
+.sidebar-footer .store-link{color:var(--accent);text-decoration:none;font-weight:600}
+
+/* ── MAIN ── */
+.main{margin-left:220px;min-height:100vh;padding:28px 32px}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.topbar-left h1{font-size:20px;font-weight:700;letter-spacing:-0.02em}
+.topbar-left p{font-size:12px;color:var(--muted);margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.btn{padding:8px 16px;border-radius:var(--r-sm);font-size:12px;font-weight:700;letter-spacing:0.04em;cursor:pointer;border:none;transition:all 0.15s}
+.btn-accent{background:var(--accent);color:#0a0c12}
+.btn-accent:hover{opacity:0.9}
+.btn-ghost{background:transparent;color:var(--subtle);border:1px solid var(--border-mid)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border-mid)}
+
+/* ── KPI CARDS ── */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-color,var(--accent))}
+.kpi .label{font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.kpi .value{font-size:26px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
+.kpi .sub{font-size:11px;color:var(--muted);margin-top:4px}
+.kpi .badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:6px}
+.badge-up{background:rgba(34,197,94,0.15);color:var(--success)}
+.badge-warn{background:rgba(245,158,11,0.15);color:var(--warn)}
+.badge-danger{background:rgba(239,68,68,0.15);color:var(--danger)}
+
+/* ── SECTION HEADER ── */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:13px;font-weight:700;letter-spacing:0.04em;color:var(--text)}
+.section-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.filter-tabs{display:flex;gap:6px}
+.tab{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent;transition:all 0.15s}
+.tab.active,.tab:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,229,176,0.08)}
+
+/* ── INVENTORY TABLE ── */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px}
+table{width:100%;border-collapse:collapse}
+thead th{padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;text-align:left;border-bottom:1px solid var(--border);background:var(--elevated)}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--elevated)}
+td{padding:12px 16px;vertical-align:middle}
+.product-name{font-weight:600;font-size:13px;color:var(--text)}
+.product-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.brand-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;letter-spacing:0.1em;padding:2px 8px;border-radius:20px;text-transform:uppercase}
+.brand-fog{background:rgba(124,58,237,0.15);color:#a78bfa}
+.brand-grizzly{background:rgba(249,115,22,0.15);color:#fb923c}
+.price{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text)}
+
+/* ── SIZE STOCK GRID ── */
+.size-grid{display:flex;gap:5px;flex-wrap:wrap}
+.size-cell{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:36px}
+.size-label{font-size:8px;font-weight:700;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase}
+.size-input{width:36px;height:28px;background:var(--elevated);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-family:var(--mono);font-size:12px;font-weight:700;text-align:center;outline:none;transition:all 0.15s;-moz-appearance:textfield}
+.size-input::-webkit-outer-spin-button,.size-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.size-input:focus{border-color:var(--accent);background:rgba(0,229,176,0.05)}
+.size-input.zero{color:var(--muted);border-color:var(--border)}
+.size-input.low{border-color:var(--warn);color:var(--warn)}
+.size-input.ok{border-color:rgba(34,197,94,0.4);color:var(--success)}
+
+/* ── TOTAL UNITS ── */
+.total-units{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);white-space:nowrap}
+.total-value{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── STATUS BADGE ── */
+.status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px}
+.status-active{background:rgba(34,197,94,0.15);color:var(--success)}
+.status-low{background:rgba(245,158,11,0.15);color:var(--warn)}
+.status-out{background:rgba(239,68,68,0.12);color:var(--danger)}
+.status .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* ── ACTIONS ── */
+.action-btn{padding:4px 10px;border-radius:var(--r-sm);font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--subtle);transition:all 0.15s}
+.action-btn:hover{color:var(--text);border-color:var(--border-mid)}
+
+/* ── SUMMARY CARDS ── */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.summary-card h3{font-size:11px;font-weight:700;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+.stock-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.stock-bar-label{font-size:11px;color:var(--subtle);width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stock-bar-bg{flex:1;height:5px;background:var(--elevated);border-radius:3px;overflow:hidden}
+.stock-bar-fill{height:100%;border-radius:3px;transition:width 0.4s}
+.stock-bar-count{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--subtle);width:24px;text-align:right}
+
+/* ── ORDERS PANEL ── */
+.orders-empty{padding:40px;text-align:center;color:var(--muted)}
+.orders-empty .icon{font-size:32px;margin-bottom:10px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--accent);border-radius:var(--r-sm);padding:12px 20px;font-size:12px;font-weight:600;color:var(--accent);display:none;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{width:100%;height:auto;position:relative;flex-direction:row;flex-wrap:wrap}
+  .main{margin-left:0;padding:16px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .summary-grid{grid-template-columns:1fr}
+  table{font-size:12px}
+  .size-input{width:30px;height:24px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">KANKI <span>STREET</span></div>
+    <div class="sub">PANEL ADMINISTRADOR</div>
+  </div>
+
+  <div class="nav-section">Principal</div>
+  <div class="nav-item active"><span class="icon">📦</span> Inventario</div>
+  <div class="nav-item"><span class="icon">🛒</span> Órdenes <span style="margin-left:auto;background:rgba(0,229,176,0.15);color:var(--accent);font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px">0</span></div>
+  <div class="nav-item"><span class="icon">📊</span> Resumen</div>
+
+  <div class="nav-section">Catálogo</div>
+  <div class="nav-item"><span class="dot" style="background:var(--fog)"></span> FOG Essentials</div>
+  <div class="nav-item"><span class="dot" style="background:var(--grizzly)"></span> Grizzly Griptape</div>
+
+  <div class="sidebar-footer">
+    <a class="store-link" href="2026-04-13_163455-storefront.html" target="_blank">→ Ver tienda</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Inventario</h1>
+      <p>Stock sincronizado con el storefront · Última actualización hoy</p>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" onclick="resetStock()">↺ Reset</button>
+      <button class="btn btn-accent" onclick="saveStock()">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi" style="--accent-color:var(--accent)">
+      <div class="label">Unidades totales</div>
+      <div class="value" id="kpi-units">—</div>
+      <div class="sub">en stock activo</div>
+    </div>
+    <div class="kpi" style="--accent-color:var(--fog)">
+      <div class="label">Valor inventario</div>
+      <div class="value" id="kpi-value">—</div>
+      <div class="sub">a precio de venta</div>
+    </div>
+    <div class="kpi" style="--accent-color:var(--warn)">
+      <div class="label">Stock bajo</div>
+      <div class="value" id="kpi-low">—</div>
+      <div class="sub">referencias ≤ 1 ud</div>
+    </div>
+    <div class="kpi" style="--accent-color:var(--grizzly)">
+      <div class="label">SKUs activos</div>
+      <div class="value" id="kpi-skus">—</div>
+      <div class="sub">en catálogo visible</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="section-header">
+    <div>
+      <div class="section-title">Productos activos</div>
+      <div class="section-sub">Edita las cantidades por talla directamente</div>
+    </div>
+    <div class="filter-tabs">
+      <button class="tab active" onclick="filterTable('all',this)">Todos</button>
+      <button class="tab" onclick="filterTable('fog',this)">FOG Essentials</button>
+      <button class="tab" onclick="filterTable('grizzly',this)">Grizzly</button>
+    </div>
+  </div>
+
+  <!-- INVENTORY TABLE -->
+  <div class="table-wrap">
+    <table id="inv-table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Marca</th>
+          <th>Precio</th>
+          <th>Stock por talla</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="inv-body"></tbody>
+    </table>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <h3>Stock por producto</h3>
+      <div id="stock-bars"></div>
+    </div>
+    <div class="summary-card">
+      <h3>Valor por marca</h3>
+      <div id="brand-summary"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── INVENTARIO ESPEJO DEL STOREFRONT ──
+const INVENTORY = [
+  {
+    id:'fog-black', brand:'fog', name:'FLEECE HOODIE FW24 — BLACK',
+    price:109990, category:'polerones',
+    sizes:{S:0,M:0,L:1,XL:1,XXL:0}
+  },
+  {
+    id:'fog-grey', brand:'fog', name:'FLEECE HOODIE FW24 — HEATHER GREY',
+    price:109990, category:'polerones',
+    sizes:{S:0,M:0,L:1,XL:1,XXL:0}
+  },
+  {
+    id:'fog-dark-oatmeal', brand:'fog', name:'DARK OATMEAL HOODIE',
+    price:99990, category:'polerones',
+    sizes:{S:0,M:0,L:1,XL:1,XXL:0}
+  },
+  {
+    id:'fog-light-oatmeal', brand:'fog', name:'LIGHT OATMEAL HOODIE',
+    price:99990, category:'polerones',
+    sizes:{S:0,M:0,L:1,XL:1,XXL:0}
+  },
+  {
+    id:'fog-stretch-limo', brand:'fog', name:'STRETCH LIMO HOODIE',
+    price:99990, category:'polerones',
+    sizes:{S:0,M:0,L:1,XL:1,XXL:0}
+  },
+  {
+    id:'grizzly-og-black', brand:'grizzly', name:'OG BEAR BASIC HOODIE — NEGRO',
+    price:48990, category:'polerones',
+    sizes:{S:1,M:2,L:3,XL:2,XXL:1}
+  },
+  {
+    id:'grizzly-tee-negro', brand:'grizzly', name:'OG BEAR BASIC TEE — NEGRO',
+    price:24990, category:'poleras',
+    sizes:{S:1,M:2,L:2,XL:2,XXL:1}
+  },
+  {
+    id:'grizzly-tee-beige', brand:'grizzly', name:'OG BEAR BASIC TEE — BEIGE',
+    price:24990, category:'poleras',
+    sizes:{S:1,M:2,L:2,XL:1,XXL:1}
+  }
+];
+
+const BRAND_NAMES = { fog:'FEAR OF GOD ESSENTIALS', grizzly:'GRIZZLY GRIPTAPE' };
+let currentFilter = 'all';
+
+function totalUnits(sizes){ return Object.values(sizes).reduce((a,b)=>a+b,0); }
+
+function statusBadge(total){
+  if(total===0) return `<span class="status status-out"><span class="dot"></span>AGOTADO</span>`;
+  if(total<=2)  return `<span class="status status-low"><span class="dot"></span>BAJO</span>`;
+  return `<span class="status status-active"><span class="dot"></span>ACTIVO</span>`;
+}
+
+function formatPrice(p){ return '$'+p.toLocaleString('es-CL'); }
+
+function renderTable(){
+  const body = document.getElementById('inv-body');
+  body.innerHTML = '';
+
+  const filtered = INVENTORY.filter(p => currentFilter==='all' || p.brand===currentFilter);
+
+  filtered.forEach(p => {
+    const total = totalUnits(p.sizes);
+    const sizeKeys = Object.keys(p.sizes);
+
+    const sizeCells = sizeKeys.map(sz => {
+      const qty = p.sizes[sz];
+      const cls = qty===0?'zero':qty===1?'low':'ok';
+      return `<div class="size-cell">
+        <div class="size-label">${sz}</div>
+        <input type="number" class="size-input ${cls}"
+          value="${qty}" min="0" max="99"
+          data-id="${p.id}" data-size="${sz}"
+          oninput="updateSize(this)">
+      </div>`;
+    }).join('');
+
+    const brandClass = p.brand==='fog'?'brand-fog':'brand-grizzly';
+    const brandName = BRAND_NAMES[p.brand];
+
+    const row = document.createElement('tr');
+    row.dataset.brand = p.brand;
+    row.innerHTML = `
+      <td>
+        <div class="product-name">${p.name}</div>
+        <div class="product-sub">${p.category}</div>
+      </td>
+      <td><span class="brand-badge ${brandClass}">${brandName}</span></td>
+      <td><div class="price">${formatPrice(p.price)}</div></td>
+      <td><div class="size-grid">${sizeCells}</div></td>
+      <td>
+        <div class="total-units" id="total-${p.id}">${total} ud</div>
+        <div class="total-value">${formatPrice(total*p.price)}</div>
+      </td>
+      <td id="status-${p.id}">${statusBadge(total)}</td>
+      <td><button class="action-btn" onclick="zeroRow('${p.id}')">Vaciar</button></td>
+    `;
+    body.appendChild(row);
+  });
+
+  updateKPIs();
+  updateCharts();
+}
+
+function updateSize(input){
+  const {id, size} = input.dataset;
+  const val = Math.max(0, parseInt(input.value)||0);
+  const prod = INVENTORY.find(p=>p.id===id);
+  if(!prod) return;
+  prod.sizes[size] = val;
+  input.value = val;
+
+  // Update color class
+  input.classList.remove('zero','low','ok');
+  input.classList.add(val===0?'zero':val===1?'low':'ok');
+
+  // Update row total
+  const total = totalUnits(prod.sizes);
+  const totalEl = document.getElementById('total-'+id);
+  if(totalEl){
+    totalEl.textContent = total+' ud';
+    totalEl.nextElementSibling.textContent = formatPrice(total*prod.price);
+  }
+  document.getElementById('status-'+id).innerHTML = statusBadge(total);
+
+  updateKPIs();
+  updateCharts();
+}
+
+function zeroRow(id){
+  const prod = INVENTORY.find(p=>p.id===id);
+  if(!prod) return;
+  Object.keys(prod.sizes).forEach(sz=>prod.sizes[sz]=0);
+  renderTable();
+  showToast('Stock vaciado: '+prod.name.split('—')[0].trim());
+}
+
+function filterTable(brand, btn){
+  currentFilter = brand;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function updateKPIs(){
+  const allUnits = INVENTORY.reduce((s,p)=>s+totalUnits(p.sizes),0);
+  const allValue = INVENTORY.reduce((s,p)=>s+totalUnits(p.sizes)*p.price,0);
+  const lowCount = INVENTORY.filter(p=>totalUnits(p.sizes)<=1&&totalUnits(p.sizes)>0).length;
+  const activeSkus = INVENTORY.filter(p=>totalUnits(p.sizes)>0).length;
+
+  document.getElementById('kpi-units').textContent = allUnits;
+  document.getElementById('kpi-value').textContent = '$'+Math.round(allValue/1000)+'K';
+  document.getElementById('kpi-low').textContent = lowCount;
+  document.getElementById('kpi-skus').textContent = activeSkus+'/'+INVENTORY.length;
+}
+
+function updateCharts(){
+  // Stock bars
+  const barsEl = document.getElementById('stock-bars');
+  const maxQty = Math.max(...INVENTORY.map(p=>totalUnits(p.sizes)),1);
+  barsEl.innerHTML = INVENTORY.map(p=>{
+    const total = totalUnits(p.sizes);
+    const pct = Math.round(total/maxQty*100);
+    const color = p.brand==='fog'?'var(--fog)':'var(--grizzly)';
+    const shortName = p.name.split('—').pop().trim();
+    return `<div class="stock-bar-row">
+      <div class="stock-bar-label">${shortName}</div>
+      <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div class="stock-bar-count">${total}</div>
+    </div>`;
+  }).join('');
+
+  // Brand summary
+  const brandEl = document.getElementById('brand-summary');
+  const fogUnits = INVENTORY.filter(p=>p.brand==='fog').reduce((s,p)=>s+totalUnits(p.sizes),0);
+  const grizzlyUnits = INVENTORY.filter(p=>p.brand==='grizzly').reduce((s,p)=>s+totalUnits(p.sizes),0);
+  const fogValue = INVENTORY.filter(p=>p.brand==='fog').reduce((s,p)=>s+totalUnits(p.sizes)*p.price,0);
+  const grizzlyValue = INVENTORY.filter(p=>p.brand==='grizzly').reduce((s,p)=>s+totalUnits(p.sizes)*p.price,0);
+  const totalValue = fogValue+grizzlyValue||1;
+
+  brandEl.innerHTML = `
+    <div class="stock-bar-row">
+      <div class="stock-bar-label" style="color:#a78bfa">FOG Essentials</div>
+      <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:${Math.round(fogValue/totalValue*100)}%;background:var(--fog)"></div></div>
+      <div class="stock-bar-count">${fogUnits}</div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-bottom:12px;padding-left:0">${formatPrice(fogValue)}</div>
+    <div class="stock-bar-row">
+      <div class="stock-bar-label" style="color:#fb923c">Grizzly Griptape</div>
+      <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:${Math.round(grizzlyValue/totalValue*100)}%;background:var(--grizzly)"></div></div>
+      <div class="stock-bar-count">${grizzlyUnits}</div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-bottom:12px;padding-left:0">${formatPrice(grizzlyValue)}</div>
+    <div style="padding-top:10px;border-top:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text)">
+      Total: ${formatPrice(fogValue+grizzlyValue)} · ${fogUnits+grizzlyUnits} ud
+    </div>
+  `;
+}
+
+function saveStock(){
+  showToast('✓ Cambios guardados correctamente');
+}
+
+function resetStock(){
+  // Reset to original values
+  INVENTORY[0].sizes={S:0,M:0,L:1,XL:1,XXL:0};
+  INVENTORY[1].sizes={S:0,M:0,L:1,XL:1,XXL:0};
+  INVENTORY[2].sizes={S:0,M:0,L:1,XL:1,XXL:0};
+  INVENTORY[3].sizes={S:0,M:0,L:1,XL:1,XXL:0};
+  INVENTORY[4].sizes={S:0,M:0,L:1,XL:1,XXL:0};
+  INVENTORY[5].sizes={S:1,M:2,L:3,XL:2,XXL:1};
+  INVENTORY[6].sizes={S:1,M:2,L:2,XL:2,XXL:1};
+  INVENTORY[7].sizes={S:1,M:2,L:2,XL:1,XXL:1};
+  renderTable();
+  showToast('Stock reseteado al inventario original');
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.style.display='none', 2500);
+}
+
+// Init
+renderTable();
+</script>
+</body>
+</html>

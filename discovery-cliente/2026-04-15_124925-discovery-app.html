@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discovery de Cliente — Smart Connection</title>
+<style>
+  :root {
+    --bg-base: #060912;
+    --bg-surface: #0a0d14;
+    --bg-elevated: #0f1520;
+    --bg-glass: rgba(15,22,35,0.85);
+    --border: rgba(255,255,255,0.06);
+    --border-accent: rgba(0,229,176,0.25);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #00e5b0;
+    --accent-dim: rgba(0,229,176,0.1);
+    --accent-glow: rgba(0,229,176,0.15);
+    --blue: #00b4d8;
+    --orange: #f97316;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --font: 'Inter', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .sidebar-header {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #000;
+  }
+
+  .logo-text { font-size: 13px; font-weight: 600; }
+  .logo-sub  { font-size: 10px; color: var(--text-muted); }
+
+  .search-box {
+    position: relative;
+  }
+
+  .search-box input {
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px 8px 32px;
+    color: var(--text-primary);
+    font-size: 12px;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  .search-box input:focus { border-color: var(--border-accent); }
+  .search-box input::placeholder { color: var(--text-muted); }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .sidebar-section {
+    padding: 12px 16px 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text-muted);
+  }
+
+  .client-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 8px;
+  }
+
+  .client-item {
+    padding: 10px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s;
+    margin-bottom: 2px;
+  }
+
+  .client-item:hover { background: var(--bg-elevated); }
+  .client-item.active { background: var(--accent-dim); border: 1px solid var(--border-accent); }
+
+  .client-name {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .client-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 8px;
+  }
+
+  .client-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .badge-green  { background: rgba(0,229,176,.15); color: var(--accent); }
+  .badge-blue   { background: rgba(0,180,216,.15); color: var(--blue); }
+  .badge-orange { background: rgba(249,115,22,.15); color: var(--orange); }
+
+  .new-client-btn {
+    margin: 8px;
+    padding: 10px;
+    background: var(--accent-dim);
+    border: 1px dashed var(--border-accent);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background .15s;
+  }
+
+  .new-client-btn:hover { background: rgba(0,229,176,.15); }
+
+  /* ─── MAIN ─── */
+  .main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ─── INPUT PANEL ─── */
+  .input-panel {
+    width: 380px;
+    min-width: 380px;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .panel-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .panel-sub { font-size: 12px; color: var(--text-secondary); }
+
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 6px;
+  }
+
+  .field-label span {
+    color: var(--text-muted);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .client-selector {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text-primary);
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .client-selector:focus { border-color: var(--border-accent); }
+
+  .client-info-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .client-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .client-info-name { font-size: 14px; font-weight: 600; }
+  .client-info-industry { font-size: 12px; color: var(--text-secondary); }
+
+  .client-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .stat-box {
+    background: var(--bg-glass);
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .stat-value { font-size: 16px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 10px; color: var(--text-muted); }
+
+  .branding-toggle {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    padding: 7px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+  }
+
+  .toggle-btn.active {
+    background: var(--accent-dim);
+    border-color: var(--border-accent);
+    color: var(--accent);
+  }
+
+  .brand-input {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    font-size: 12px;
+    width: 100%;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  .brand-input:focus { border-color: var(--border-accent); }
+  .brand-input::placeholder { color: var(--text-muted); }
+
+  .transcript-area {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--text-primary);
+    font-size: 12px;
+    line-height: 1.7;
+    width: 100%;
+    height: 200px;
+    resize: none;
+    outline: none;
+    font-family: var(--font);
+    transition: border-color .2s;
+  }
+
+  .transcript-area:focus { border-color: var(--border-accent); }
+  .transcript-area::placeholder { color: var(--text-muted); }
+
+  .transcript-tools {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .tool-chip {
+    padding: 4px 10px;
+    border-radius: 5px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .tool-chip:hover { color: var(--text-secondary); border-color: rgba(255,255,255,.12); }
+
+  .reports-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .report-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .15s;
+    font-size: 12px;
+  }
+
+  .report-check.checked {
+    background: var(--accent-dim);
+    border-color: var(--border-accent);
+  }
+
+  .check-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+  }
+
+  .report-check.checked .check-icon {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  .panel-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .analyze-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s, transform .1s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .analyze-btn:hover { opacity: .9; transform: translateY(-1px); }
+  .analyze-btn:active { transform: translateY(0); }
+
+  .analyze-btn .btn-sub {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    opacity: .7;
+    margin-top: 2px;
+  }
+
+  /* ─── OUTPUT PANEL ─── */
+  .output-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .output-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-surface);
+  }
+
+  .output-client {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .output-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #6366f1, var(--blue));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .output-client-name { font-size: 14px; font-weight: 600; }
+  .output-client-meta { font-size: 11px; color: var(--text-muted); }
+
+  .output-actions { display: flex; gap: 8px; }
+
+  .action-btn {
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .action-btn:hover { background: var(--bg-elevated); color: var(--text-primary); }
+  .action-btn.primary { background: var(--accent-dim); border-color: var(--border-accent); color: var(--accent); }
+
+  /* ─── TABS ─── */
+  .tabs-bar {
+    display: flex;
+    gap: 2px;
+    padding: 10px 16px 0;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tab {
+    padding: 8px 14px;
+    border-radius: 7px 7px 0 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tab:hover { color: var(--text-secondary); background: var(--bg-elevated); }
+
+  .tab.active {
+    color: var(--text-primary);
+    background: var(--bg-base);
+    border-color: var(--border);
+    border-bottom-color: var(--bg-base);
+  }
+
+  .tab-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .dot-green  { background: var(--accent); }
+  .dot-blue   { background: var(--blue); }
+  .dot-orange { background: var(--orange); }
+  .dot-purple { background: var(--purple); }
+  .dot-red    { background: var(--red); }
+
+  /* ─── TAB CONTENT ─── */
+  .tab-content {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: var(--bg-base);
+  }
+
+  .tab-content.active { display: block; }
+
+  /* ─── ANALYSIS CARDS ─── */
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-accent { color: var(--accent); }
+  .card-blue   { color: var(--blue); }
+  .card-orange { color: var(--orange); }
+  .card-purple { color: var(--purple); }
+
+  .spin-item {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .spin-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .spin-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 4px;
+  }
+
+  .spin-s { color: var(--accent); }
+  .spin-p { color: var(--blue); }
+  .spin-i { color: var(--orange); }
+  .spin-n { color: var(--purple); }
+
+  .spin-text { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+
+  .bant-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .bant-item {
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .bant-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .bant-value { font-size: 12px; color: var(--text-primary); line-height: 1.5; }
+
+  .bant-flag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+
+  .flag-ok     { background: rgba(0,229,176,.15); color: var(--accent); }
+  .flag-warn   { background: rgba(249,115,22,.15); color: var(--orange); }
+  .flag-danger { background: rgba(239,68,68,.15);  color: var(--red); }
+
+  .pain-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .pain-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    background: var(--bg-elevated);
+    border-radius: 8px;
+  }
+
+  .pain-rank {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .rank-1 { background: rgba(249,115,22,.25); color: var(--orange); }
+  .rank-2 { background: rgba(0,180,216,.15);  color: var(--blue); }
+  .rank-3 { background: rgba(148,163,184,.12); color: var(--text-secondary); }
+
+  .pain-text { font-size: 12px; line-height: 1.5; color: var(--text-secondary); }
+  .pain-count { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  .quotes-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .quote-item {
+    padding: 12px;
+    background: var(--bg-elevated);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .quote-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+
+  .quote-attr { font-size: 11px; color: var(--text-muted); }
+
+  /* ─── REPORT CONTENT ─── */
+  .report-doc {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .doc-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .doc-title-block .doc-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .doc-title-block .doc-sub   { font-size: 12px; color: var(--text-secondary); }
+
+  .doc-logo {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: right;
+  }
+
+  .doc-logo .doc-logo-sub { color: var(--text-muted); font-weight: 400; }
+
+  .doc-body { padding: 24px; }
+
+  .doc-section {
+    margin-bottom: 24px;
+  }
+
+  .doc-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  .doc-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
+  .doc-highlight {
+    background: var(--accent-dim);
+    border: 1px solid var(--border-accent);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-primary);
+    margin: 12px 0;
+  }
+
+  .impact-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  .impact-table th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  .impact-table td {
+    padding: 10px 12px;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+
+  .impact-table .clp { color: var(--orange); font-weight: 600; }
+
+  /* ─── PPT SLIDES ─── */
+  .slides-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .slide {
+    aspect-ratio: 16/9;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .15s, transform .15s;
+    position: relative;
+  }
+
+  .slide:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+  .slide.active { border-color: var(--accent); }
+
+  .slide-preview {
+    padding: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .slide-num {
+    font-size: 9px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .slide-title-preview { font-size: 11px; font-weight: 700; line-height: 1.3; }
+  .slide-sub-preview   { font-size: 9px; color: var(--text-secondary); }
+
+  .slide-accent-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--blue));
+    border-radius: 0 0 8px 8px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  /* ─── PROPOSAL MODELS ─── */
+  .model-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .model-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: border-color .15s;
+  }
+
+  .model-card.recommended {
+    border-color: var(--border-accent);
+    background: linear-gradient(135deg, var(--bg-surface), rgba(0,229,176,.04));
+  }
+
+  .model-recommended-badge {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+
+  .model-name   { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .model-price  { font-size: 20px; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+  .model-price span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
+  .model-desc   { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+
+  .model-features { list-style: none; font-size: 11px; color: var(--text-secondary); }
+  .model-features li { padding: 3px 0; }
+  .model-features li::before { content: "✓ "; color: var(--accent); font-weight: 700; }
+
+  /* ─── NEXT STEPS ─── */
+  .steps-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .step-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--accent-dim);
+    border: 1px solid var(--border-accent);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .step-desc  { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ─── LOADING STATE ─── */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(6,9,18,.85);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .loading-overlay.show { display: flex; }
+
+  .loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text  { font-size: 15px; font-weight: 600; }
+  .loading-steps { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+
+  .loading-step {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .loading-step.done   { color: var(--accent); }
+  .loading-step.active { color: var(--text-primary); }
+
+  .step-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .loading-step.done   .step-indicator { background: var(--accent); }
+  .loading-step.active .step-indicator { background: var(--text-primary); animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 12px;
+    color: var(--text-muted);
+    padding: 40px;
+    text-align: center;
+  }
+
+  .empty-icon { font-size: 40px; opacity: .4; }
+  .empty-title { font-size: 15px; font-weight: 600; color: var(--text-secondary); }
+  .empty-sub   { font-size: 13px; line-height: 1.6; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ─── TECH REPORT ─── */
+  .phase-timeline { display: flex; flex-direction: column; gap: 0; }
+
+  .phase-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+  }
+
+  .phase-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 36px;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .phase-dot-col { display: flex; flex-direction: column; align-items: center; }
+
+  .phase-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-bottom: 4px;
+  }
+
+  .phase-body {
+    padding: 0 0 24px;
+    flex: 1;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .phase-title    { font-size: 14px; font-weight: 700; }
+  .phase-duration { font-size: 11px; color: var(--text-muted); }
+
+  .phase-tasks {
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+
+  .phase-tasks li { padding-left: 14px; position: relative; }
+  .phase-tasks li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+
+  .stack-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+  .stack-pill {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  /* ─── EMAIL TEMPLATE ─── */
+  .email-preview {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .email-meta {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .email-field { display: flex; gap: 8px; }
+  .email-field-label { color: var(--text-muted); min-width: 40px; }
+  .email-field-value { color: var(--text-primary); }
+
+  .email-body { padding: 24px; font-size: 13px; line-height: 1.8; color: var(--text-secondary); }
+  .email-body p { margin-bottom: 12px; }
+  .email-body strong { color: var(--text-primary); }
+
+  .doc-full { grid-column: 1 / -1; }
+
+  /* ─── PDF EXPORT VIEW ─── */
+  .pdf-preview {
+    background: #fff;
+    color: #1a1a2e;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .pdf-header {
+    background: #060912;
+    padding: 20px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pdf-logo { color: #00e5b0; font-size: 16px; font-weight: 800; }
+  .pdf-date { color: #94a3b8; font-size: 12px; }
+
+  .pdf-body { padding: 28px; }
+
+  .pdf-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f1520;
+    margin-bottom: 4px;
+  }
+
+  .pdf-subtitle { font-size: 14px; color: #475569; margin-bottom: 24px; }
+
+  .pdf-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #00b4d8;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .pdf-text { font-size: 13px; line-height: 1.8; color: #334155; margin-bottom: 8px; }
+
+  .pdf-highlight {
+    background: #f0fdf4;
+    border-left: 3px solid #00e5b0;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: #166534;
+    margin: 10px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Analizando transcripción…</div>
+  <div class="loading-steps">
+    <div class="loading-step done" id="ls1"><div class="step-indicator"></div>Extrayendo SPIN del cliente</div>
+    <div class="loading-step active" id="ls2"><div class="step-indicator"></div>Calculando impacto BANT</div>
+    <div class="loading-step" id="ls3"><div class="step-indicator"></div>Rankeando pain points</div>
+    <div class="loading-step" id="ls4"><div class="step-indicator"></div>Generando reporte comercial</div>
+    <div class="loading-step" id="ls5"><div class="step-indicator"></div>Redactando reporte técnico</div>
+    <div class="loading-step" id="ls6"><div class="step-indicator"></div>Armando presentación</div>
+    <div class="loading-step" id="ls7"><div class="step-indicator"></div>Calculando propuesta y pricing</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-icon">SC</div>
+      <div>
+        <div class="logo-text">Smart Connection</div>
+        <div class="logo-sub">Discovery de Cliente</div>
+      </div>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Buscar cliente...">
+    </div>
+  </div>
+
+  <div class="sidebar-section">Clientes activos</div>
+
+  <div class="client-list">
+    <div class="client-item active" onclick="selectClient(this, 'Constructora Vial Sur')">
+      <div class="client-name">Constructora Vial Sur</div>
+      <div class="client-meta">
+        <span>Construcción</span>
+        <span class="client-badge badge-orange">En propuesta</span>
+      </div>
+    </div>
+    <div class="client-item" onclick="selectClient(this, 'Clínica Los Andes')">
+      <div class="client-name">Clínica Los Andes</div>
+      <div class="client-meta">
+        <span>Salud</span>
+        <span class="client-badge badge-green">Cerrado</span>
+      </div>
+    </div>
+    <div class="client-item" onclick="selectClient(this, 'Distribuidora Pacífico')">
+      <div class="client-name">Distribuidora Pacífico</div>
+      <div class="client-meta">
+        <span>Logística</span>
+        <span class="client-badge badge-blue">Discovery</span>
+      </div>
+    </div>
+    <div class="client-item" onclick="selectClient(this, 'Agrícola Del Valle')">
+      <div class="client-name">Agrícola Del Valle</div>
+      <div class="client-meta">
+        <span>Agro</span>
+        <span class="client-badge badge-blue">Discovery</span>
+      </div>
+    </div>
+    <div class="client-item" onclick="selectClient(this, 'Retail Mundo')">
+      <div class="client-name">Retail Mundo</div>
+      <div class="client-meta">
+        <span>Retail</span>
+        <span class="client-badge badge-orange">En propuesta</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="new-client-btn" onclick="newClient()">+ Nuevo cliente</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- INPUT PANEL -->
+  <div class="input-panel">
+    <div class="panel-header">
+      <div class="panel-title">Configurar análisis</div>
+      <div class="panel-sub">Selecciona cliente y pega la transcripción</div>
+    </div>
+
+    <div class="panel-body">
+
+      <!-- Cliente -->
+      <div>
+        <div class="field-label">Cliente</div>
+        <select class="client-selector" id="clientSelect">
+          <option>Constructora Vial Sur</option>
+          <option>Clínica Los Andes</option>
+          <option>Distribuidora Pacífico</option>
+          <option>Agrícola Del Valle</option>
+          <option>Retail Mundo</option>
+          <option>+ Nuevo cliente</option>
+        </select>
+      </div>
+
+      <!-- Info card -->
+      <div class="client-info-card">
+        <div class="client-info-row">
+          <div>
+            <div class="client-info-name">Constructora Vial Sur</div>
+            <div class="client-info-industry">Construcción · Santiago</div>
+          </div>
+          <span class="client-badge badge-orange">En propuesta</span>
+        </div>
+        <div class="client-stats">
+          <div class="stat-box">
+            <div class="stat-value">2</div>
+            <div class="stat-label">Reuniones</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">1</div>
+            <div class="stat-label">Reportes</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">40 UF</div>
+            <div class="stat-label">Potencial</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Branding -->
+      <div>
+        <div class="field-label">Branding del documento</div>
+        <div class="branding-toggle">
+          <div class="toggle-btn active" onclick="setBrand(this,'smc')">Smart Connection</div>
+          <div class="toggle-btn" onclick="setBrand(this,'client')">Cliente</div>
+        </div>
+        <div id="clientBrandFields" style="margin-top:10px; display:none; gap:6px; flex-direction:column;">
+          <input class="brand-input" placeholder="Nombre de la empresa cliente" style="margin-bottom:6px;">
+          <input class="brand-input" placeholder="Color primario (#HEX)">
+          <input class="brand-input" placeholder="URL logo (opcional)">
+        </div>
+      </div>
+
+      <!-- Transcripción -->
+      <div>
+        <div class="field-label">Transcripción <span>— desde Wizer / Meet / Otter</span></div>
+        <textarea class="transcript-area" id="transcriptInput"
+          placeholder="Pega aquí la transcripción de la reunión…
+
+Ejemplo:
+Cliente: el problema que tenemos es que cada vez que entra una obra nueva, tenemos que coordinar a 4 personas por WhatsApp, se pierden los mensajes, hay errores en los pedidos y eso nos ha costado plata…
+
+Consultor: ¿cuánto estiman que les cuesta ese proceso al mes?
+
+Cliente: fácil unos 2 millones en errores y tiempo perdido, sin contar lo que dejamos de hacer…"></textarea>
+        <div class="transcript-tools">
+          <div class="tool-chip">📋 Pegar</div>
+          <div class="tool-chip">📁 Importar .txt</div>
+          <div class="tool-chip">🔗 Wizer</div>
+          <div class="tool-chip">🗑️ Limpiar</div>
+        </div>
+      </div>
+
+      <!-- Reportes a generar -->
+      <div>
+        <div class="field-label">Reportes a generar</div>
+        <div class="reports-toggle">
+          <div class="report-check checked"><div class="check-icon">✓</div>📊 Análisis SPIN</div>
+          <div class="report-check checked"><div class="check-icon">✓</div>💼 Reporte Comercial</div>
+          <div class="report-check checked"><div class="check-icon">✓</div>🔧 Reporte Técnico</div>
+          <div class="report-check checked"><div class="check-icon">✓</div>📧 Email Follow-up</div>
+          <div class="report-check checked"><div class="check-icon">✓</div>📑 Presentación PPT</div>
+          <div class="report-check checked"><div class="check-icon">✓</div>📋 Propuesta + Pricing</div>
+          <div class="report-check checked"><div class="check-icon">✓</div>📄 PDF Ejecutivo</div>
+          <div class="report-check" onclick="this.classList.toggle('checked'); this.querySelector('.check-icon').textContent=this.classList.contains('checked')?'✓':''">🗺️ Mapa Stakeholders</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="panel-footer">
+      <button class="analyze-btn" onclick="runAnalysis()">
+        ⚡ Analizar con IA
+        <span class="btn-sub">Hoku → Comercial → Panchita → Portavoz</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel">
+
+    <!-- Output header -->
+    <div class="output-header">
+      <div class="output-client">
+        <div class="output-avatar">CV</div>
+        <div>
+          <div class="output-client-name">Constructora Vial Sur</div>
+          <div class="output-client-meta">Reunión 15 abr 2026 · 7 reportes generados</div>
+        </div>
+      </div>
+      <div class="output-actions">
+        <button class="action-btn">📥 Exportar todo</button>
+        <button class="action-btn">📄 PDF</button>
+        <button class="action-btn primary">📤 Enviar al cliente</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar">
+      <div class="tab active" onclick="showTab('analysis',this)"><div class="tab-dot dot-green"></div>Análisis</div>
+      <div class="tab" onclick="showTab('commercial',this)"><div class="tab-dot dot-blue"></div>Comercial</div>
+      <div class="tab" onclick="showTab('technical',this)"><div class="tab-dot dot-orange"></div>Técnico</div>
+      <div class="tab" onclick="showTab('email',this)"><div class="tab-dot dot-purple"></div>Email</div>
+      <div class="tab" onclick="showTab('slides',this)"><div class="tab-dot dot-green"></div>PPT</div>
+      <div class="tab" onclick="showTab('proposal',this)"><div class="tab-dot dot-blue"></div>Propuesta</div>
+      <div class="tab" onclick="showTab('pdf',this)"><div class="tab-dot dot-orange"></div>PDF</div>
+    </div>
+
+    <!-- ── TAB: ANÁLISIS ── -->
+    <div class="tab-content active" id="tab-analysis">
+      <div class="analysis-grid">
+
+        <!-- SPIN -->
+        <div class="card" style="grid-column: 1">
+          <div class="card-title card-accent">📋 SPIN del cliente</div>
+          <div class="spin-item">
+            <div class="spin-label spin-s">S — Situación</div>
+            <div class="spin-text">Empresa constructora con 45 empleados. Gestionan 8-12 obras simultáneas. Coordinan pedidos de materiales por WhatsApp entre jefes de obra, bodeguero y gerente de operaciones. Usan Excel para control de inventario actualizado manualmente.</div>
+          </div>
+          <div class="spin-item">
+            <div class="spin-label spin-p">P — Problema</div>
+            <div class="spin-text">Pérdida de mensajes críticos en WhatsApp. Pedidos duplicados o incompletos. Jefe de bodega pasa 3h/día consolidando información de múltiples chats. Gerencia no tiene visibilidad en tiempo real del estado de obras.</div>
+          </div>
+          <div class="spin-item">
+            <div class="spin-label spin-i">I — Implicación</div>
+            <div class="spin-text">Estimaron ~$2M CLP/mes en errores de pedidos. 2 obras con retraso este trimestre por falta de materiales a tiempo. Han perdido 1 licitación por no poder demostrar capacidad de gestión digitalizada.</div>
+          </div>
+          <div class="spin-item">
+            <div class="spin-label spin-n">N — Necesidad</div>
+            <div class="spin-text">Visibilidad en tiempo real de todas las obras. Flujo de aprobación de pedidos con trazabilidad. Reducir tiempo administrativo del bodeguero a <30 min/día. Informe ejecutivo semanal automático para gerencia.</div>
+          </div>
+        </div>
+
+        <!-- BANT -->
+        <div class="card" style="grid-column: 2">
+          <div class="card-title card-blue">🎯 BANT</div>
+          <div class="bant-grid">
+            <div class="bant-item">
+              <div class="bant-label">Budget</div>
+              <div class="bant-value">Mencionó "algo razonable", entre 30 y 60 UF. Gerente mencionó que perdían $2M/mes.</div>
+              <div class="bant-flag flag-ok">Presupuesto confirmado</div>
+            </div>
+            <div class="bant-item">
+              <div class="bant-label">Authority</div>
+              <div class="bant-value">Carlos Muñoz (Gerente General) es el decisor. Estaba en la reunión. Paula Soto (Ops) influye.</div>
+              <div class="bant-flag flag-ok">Decisor presente ✓</div>
+            </div>
+            <div class="bant-item">
+              <div class="bant-label">Need</div>
+              <div class="bant-value">Urgencia REAL. Ya tuvieron incidente grave en Obra Norte en febrero.</div>
+              <div class="bant-flag flag-ok">Urgencia confirmada</div>
+            </div>
+            <div class="bant-item">
+              <div class="bant-label">Timeline</div>
+              <div class="bant-value">Quieren solución antes de temporada alta (julio). Tienen margen de 10-12 semanas.</div>
+              <div class="bant-flag flag-warn">Timeline ajustado</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pain Points -->
+        <div class="card">
+          <div class="card-title card-orange">🔥 Top 3 Dolores</div>
+          <div class="pain-list">
+            <div class="pain-item">
+              <div class="pain-rank rank-1">1</div>
+              <div>
+                <div class="pain-text">Coordinación de pedidos por WhatsApp — pérdida de mensajes y pedidos duplicados</div>
+                <div class="pain-count">Mencionado 7 veces · Impacto: $2M CLP/mes</div>
+              </div>
+            </div>
+            <div class="pain-item">
+              <div class="pain-rank rank-2">2</div>
+              <div>
+                <div class="pain-text">Sin visibilidad en tiempo real del estado de obras y materiales disponibles</div>
+                <div class="pain-count">Mencionado 5 veces · 2 obras retrasadas este trimestre</div>
+              </div>
+            </div>
+            <div class="pain-item">
+              <div class="pain-rank rank-3">3</div>
+              <div>
+                <div class="pain-text">Bodeguero consume 3h/día consolidando información manualmente en Excel</div>
+                <div class="pain-count">Mencionado 4 veces · ~$450K CLP/mes en tiempo perdido</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quotes -->
+        <div class="card">
+          <div class="card-title card-purple">💬 Frases textuales</div>
+          <div class="quotes-list">
+            <div class="quote-item">
+              <div class="quote-text">"Perdemos fácil 2 palos al mes en errores de pedidos, y eso que no contamos el tiempo del equipo."</div>
+              <div class="quote-attr">Carlos Muñoz, Gerente General</div>
+            </div>
+            <div class="quote-item">
+              <div class="quote-text">"El problema es que yo me entero que faltaron materiales cuando ya se paró la obra."</div>
+              <div class="quote-attr">Carlos Muñoz</div>
+            </div>
+            <div class="quote-item">
+              <div class="quote-text">"Mi bodeguero pasa todo el día mirando WhatsApp para no perderse nada — eso no puede ser."</div>
+              <div class="quote-attr">Paula Soto, Jefa de Operaciones</div>
+            </div>
+            <div class="quote-item">
+              <div class="quote-text">"Si en julio no tenemos algo funcionando, vamos a tener problemas con los contratos nuevos."</div>
+              <div class="quote-attr">Carlos Muñoz</div>
+            </div>
+            <div class="quote-item">
+              <div class="quote-text">"No necesito algo complicado, necesito que el equipo lo use. Si es difícil no lo van a usar."</div>
+              <div class="quote-attr">Paula Soto</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Próximos pasos -->
+        <div class="card doc-full">
+          <div class="card-title card-accent">✅ Próximos pasos acordados</div>
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div><div class="step-title">SMC envía propuesta formal esta semana</div><div class="step-desc">Con opciones Discovery Sprint (15-25 UF) y Build Premium (80-120 UF)</div></div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div><div class="step-title">Reunión de validación propuesta — Miércoles 22 abr</div><div class="step-desc">Con Carlos y Paula. Confirmar scope del Discovery Sprint primero.</div></div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div><div class="step-title">Carlos comparte acceso a su Excel de control actual</div><div class="step-desc">Para que SMC entienda la estructura de datos antes del Sprint</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB: COMERCIAL ── -->
+    <div class="tab-content" id="tab-commercial">
+      <div class="report-doc">
+        <div class="doc-header">
+          <div class="doc-title-block">
+            <div class="doc-title">Reporte Comercial — Constructora Vial Sur</div>
+            <div class="doc-sub">Diagnóstico post-reunión de discovery · 15 de abril, 2026</div>
+          </div>
+          <div class="doc-logo">
+            Smart Connection<br>
+            <span class="doc-logo-sub">smconnection.cl</span>
+          </div>
+        </div>
+        <div class="doc-body">
+          <div class="doc-section">
+            <div class="doc-section-title">Resumen ejecutivo</div>
+            <div class="doc-text">Constructora Vial Sur opera 8-12 obras simultáneas y gestiona todos sus pedidos de materiales por WhatsApp, generando pérdidas estimadas de <strong>$2 millones CLP mensuales</strong> en errores y tiempo administrativo. El equipo identificó 3 cuellos de botella críticos con impacto directo en su capacidad de escalar y ganar nuevas licitaciones.</div>
+            <div class="doc-highlight">💡 Oportunidad: el problema ya está cuantificado por el cliente. La inversión en solución se recupera en menos de 2 meses.</div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">Diagnóstico de dolores (rankeado por impacto)</div>
+            <table class="impact-table">
+              <tr>
+                <th>#</th>
+                <th>Problema</th>
+                <th>Impacto estimado</th>
+                <th>Frecuencia</th>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Pedidos perdidos / duplicados por WhatsApp</td>
+                <td class="clp">~$2.000.000/mes</td>
+                <td>Diario</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Cero visibilidad en tiempo real de obras y stock</td>
+                <td class="clp">2 obras retrasadas = licitación perdida</td>
+                <td>Semanal</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Bodeguero 3h/día en consolidación manual</td>
+                <td class="clp">~$450.000/mes en horas</td>
+                <td>Diario</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">Señales de cierre</div>
+            <div class="doc-text">🟢 <strong>Decisor presente en la reunión</strong> (Carlos Muñoz, Gerente General)<br>
+            🟢 <strong>Urgencia real</strong> — deadline julio por temporada alta<br>
+            🟢 <strong>Dolor cuantificado</strong> — ellos calcularon el $2M/mes<br>
+            🟡 <strong>Presupuesto implícito</strong> — mencionaron "30-60 UF" sin que se les preguntara<br>
+            🟡 <strong>Próxima reunión agendada</strong> — miércoles 22 de abril</div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">Recomendación comercial</div>
+            <div class="doc-text">Proponer <strong>Discovery Sprint (20 UF)</strong> como primer paso. El cliente mencionó explícitamente que necesita algo que "el equipo vaya a usar" — eso es una señal de que no conoce exactamente qué construir. El Sprint reduce el riesgo de ambas partes y abre la puerta natural al Build Premium (80-120 UF) una vez validado el diagnóstico.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: TÉCNICO ── -->
+    <div class="tab-content" id="tab-technical">
+      <div class="report-doc">
+        <div class="doc-header">
+          <div class="doc-title-block">
+            <div class="doc-title">Reporte Técnico — Constructora Vial Sur</div>
+            <div class="doc-sub">Arquitectura de solución propuesta · Uso interno SMC</div>
+          </div>
+          <div class="doc-logo">🔍 TechLead<br><span class="doc-logo-sub">Uso interno</span></div>
+        </div>
+        <div class="doc-body">
+          <div class="doc-section">
+            <div class="doc-section-title">Stack recomendado</div>
+            <div class="stack-pills">
+              <div class="stack-pill">Next.js 16</div>
+              <div class="stack-pill">TypeScript</div>
+              <div class="stack-pill">Supabase</div>
+              <div class="stack-pill">Tailwind v4</div>
+              <div class="stack-pill">AWS Amplify</div>
+              <div class="stack-pill">Supabase Realtime</div>
+              <div class="stack-pill">WhatsApp Business API</div>
+            </div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">Fases del proyecto</div>
+            <div class="phase-timeline">
+              <div class="phase-item">
+                <div class="phase-dot-col"><div class="phase-dot">1</div></div>
+                <div class="phase-body">
+                  <div class="phase-header">
+                    <div class="phase-title">Discovery Sprint</div>
+                    <div class="phase-duration">1 semana · 20 UF</div>
+                  </div>
+                  <div class="phase-tasks">
+                    <ul>
+                      <li>Mapeo BPMN de flujo actual (pedidos, obras, stock)</li>
+                      <li>Entrevistas con bodeguero y 2 jefes de obra</li>
+                      <li>Revisión del Excel actual de control</li>
+                      <li>Diagnóstico de 3 cuellos de botella con impacto CLP</li>
+                      <li>Entregable: Plan de solución + presupuesto real + decisión SaaS/Build</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-dot-col"><div class="phase-dot">2</div></div>
+                <div class="phase-body">
+                  <div class="phase-header">
+                    <div class="phase-title">MVP — Gestión de pedidos</div>
+                    <div class="phase-duration">4 semanas · 60-80 UF</div>
+                  </div>
+                  <div class="phase-tasks">
+                    <ul>
+                      <li>Dashboard de obras en tiempo real (Supabase Realtime)</li>
+                      <li>Flujo de solicitud y aprobación de pedidos (reemplaza WhatsApp)</li>
+                      <li>Panel de bodega con stock actualizado</li>
+                      <li>Notificaciones push al equipo de obras</li>
+                      <li>Roles: Gerencia / Jefe de obra / Bodega</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-dot-col"><div class="phase-dot">3</div></div>
+                <div class="phase-body">
+                  <div class="phase-header">
+                    <div class="phase-title">Automatización e Informes</div>
+                    <div class="phase-duration">2 semanas · 20-30 UF</div>
+                  </div>
+                  <div class="phase-tasks">
+                    <ul>
+                      <li>Reporte ejecutivo semanal automático por email</li>
+                      <li>Alertas de stock bajo por obra</li>
+                      <li>Integración WhatsApp Business API (notificaciones salientes)</li>
+                      <li>Dashboard de KPIs para gerencia</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">Riesgos técnicos identificados</div>
+            <div class="doc-text">🟡 <strong>Adopción del equipo</strong> — cliente mencionó que si es difícil no lo van a usar → UX mobile-first crítica<br>
+            🟡 <strong>Migración de Excel</strong> — hay datos históricos que deben migrarse antes del go-live<br>
+            🟢 <strong>Stack sin riesgo</strong> — Next.js + Supabase es el stack estándar SMC, equipo experto</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: EMAIL ── -->
+    <div class="tab-content" id="tab-email">
+      <div class="email-preview">
+        <div class="email-meta">
+          <div class="email-field"><span class="email-field-label">De:</span><span class="email-field-value">Guillermo González León · guillermo@smconnection.cl</span></div>
+          <div class="email-field"><span class="email-field-label">Para:</span><span class="email-field-value">Carlos Muñoz · carlos.munoz@vialsurconstrucciones.cl</span></div>
+          <div class="email-field"><span class="email-field-label">CC:</span><span class="email-field-value">Paula Soto · paula@vialsurconstrucciones.cl</span></div>
+          <div class="email-field"><span class="email-field-label">Asunto:</span><span class="email-field-value">Resumen reunión + próximos pasos — Smart Connection</span></div>
+        </div>
+        <div class="email-body">
+          <p>Hola Carlos,</p>
+          <p>Muchas gracias por el tiempo de hoy. Fue muy útil entender cómo opera Vial Sur y los desafíos concretos que enfrenta el equipo.</p>
+          <p><strong>Resumen de lo que conversamos:</strong></p>
+          <p>Identificamos 3 puntos críticos en su operación actual:</p>
+          <p>1. La coordinación de pedidos por WhatsApp genera <strong>pérdidas estimadas de $2 millones CLP mensuales</strong> entre errores y tiempo administrativo.<br>
+          2. La gerencia no tiene visibilidad del estado de obras en tiempo real, lo que causó retrasos en 2 proyectos este trimestre.<br>
+          3. El bodeguero destina 3 horas diarias a consolidar información manualmente — tiempo que podría eliminarse completamente.</p>
+          <p><strong>Próximo paso recomendado:</strong></p>
+          <p>Proponemos iniciar con un <strong>Discovery Sprint de 1 semana (20 UF)</strong>. Al final de esa semana tendrán el mapa completo de sus procesos, el diagnóstico con impacto en CLP y el plan de solución con alternativas y presupuesto real — sin ningún compromiso de desarrollo.</p>
+          <p>Les envío la propuesta formal esta semana para que la revisen antes de nuestra reunión del <strong>miércoles 22 de abril</strong>.</p>
+          <p>Quedo atento a cualquier pregunta.</p>
+          <p>Saludos,<br><strong>Guillermo González León</strong><br>Smart Connection · smconnection.cl<br>+56 9 XXXX XXXX</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: PPT ── -->
+    <div class="tab-content" id="tab-slides">
+      <div style="margin-bottom:16px; display:flex; gap:8px;">
+        <button class="action-btn primary">▶ Vista completa</button>
+        <button class="action-btn">📥 Exportar PPT</button>
+        <button class="action-btn">🖨️ Imprimir</button>
+      </div>
+      <div class="slides-grid">
+        <div class="slide active">
+          <div class="slide-preview">
+            <div class="slide-num">01</div>
+            <div>
+              <div class="slide-title-preview">Diagnóstico Operacional</div>
+              <div class="slide-sub-preview">Constructora Vial Sur · 2026</div>
+            </div>
+          </div>
+          <div class="slide-accent-bar"></div>
+        </div>
+        <div class="slide">
+          <div class="slide-preview">
+            <div class="slide-num">02</div>
+            <div>
+              <div class="slide-title-preview">Cómo operan hoy</div>
+              <div class="slide-sub-preview">Flujo actual de pedidos y obras</div>
+            </div>
+          </div>
+          <div class="slide-accent-bar"></div>
+        </div>
+        <div class="slide">
+          <div class="slide-preview">
+            <div class="slide-num">03</div>
+            <div>
+              <div class="slide-title-preview">3 Cuellos de Botella</div>
+              <div class="slide-sub-preview">Con impacto estimado en CLP</div>
+            </div>
+          </div>
+          <div class="slide-accent-bar"></div>
+        </div>
+        <div class="slide">
+          <div class="slide-preview">
+            <div class="slide-num">04</div>
+            <div>
+              <div class="slide-title-preview">Impacto Económico</div>
+              <div class="slide-sub-preview">$2.450.000 CLP/mes en pérdidas</div>
+            </div>
+          </div>
+          <div class="slide-accent-bar"></div>
+        </div>
+        <div class="slide">
+          <div class="slide-preview">
+            <div class="slide-num">05</div>
+            <div>
+              <div class="slide-title-preview">Alternativas de Solución</div>
+              <div class="slide-sub-preview">SaaS vs Build vs Híbrido</div>
+            </div>
+          </div>
+          <div class="slide-accent-bar"></div>
+        </div>
+        <div class="slide">
+          <div class="slide-preview">
+            <div class="slide-num">06</div>
+            <div>
+              <div class="slide-title-preview">Plan de Trabajo</div>
+              <div class="slide-sub-preview">3 fases · Discovery → MVP → Auto</div>
+            </div>
+          </div>
+          <div class="slide-accent-bar"></div>
+        </div>
+        <div class="slide">
+          <div class="slide-preview">
+            <div class="slide-num">07</div>
+            <div>
+              <div class="slide-title-preview">Inversión y ROI</div>
+              <div class="slide-sub-preview">Recuperación en &lt;2 meses</div>
+            </div>
+          </div>
+          <div class="slide-accent-bar"></div>
+        </div>
+        <div class="slide">
+          <div class="slide-preview">
+            <div class="slide-num">08</div>
+            <div>
+              <div class="slide-title-preview">Próximos Pasos</div>
+              <div class="slide-sub-preview">Discovery Sprint · 1 semana</div>
+            </div>
+          </div>
+          <div class="slide-accent-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: PROPUESTA ── -->
+    <div class="tab-content" id="tab-proposal">
+      <div class="model-cards">
+        <div class="model-card">
+          <div class="model-name">Discovery Sprint</div>
+          <div class="model-price">20 UF <span>fijo</span></div>
+          <div class="model-desc">1 semana para saber exactamente qué construir y cuánto invertir. Sin compromiso de build.</div>
+          <ul class="model-features">
+            <li>Mapa de procesos actuales</li>
+            <li>3 cuellos de botella con CLP</li>
+            <li>Plan con alternativas SaaS/Build</li>
+            <li>Presupuesto real</li>
+          </ul>
+        </div>
+        <div class="model-card recommended">
+          <div class="model-recommended-badge">★ Recomendado para Vial Sur</div>
+          <div class="model-name">Discovery + Build MVP</div>
+          <div class="model-price">100 UF <span>en hitos</span></div>
+          <div class="model-desc">Sprint de diagnóstico + desarrollo del sistema de gestión de obras y pedidos. Listo antes de julio.</div>
+          <ul class="model-features">
+            <li>Todo el Discovery Sprint</li>
+            <li>Dashboard obras en tiempo real</li>
+            <li>Flujo de pedidos (reemplaza WA)</li>
+            <li>Panel de bodega</li>
+            <li>Roles: Gerencia / Obra / Bodega</li>
+            <li>Deploy + capacitación</li>
+          </ul>
+        </div>
+        <div class="model-card">
+          <div class="model-name">Project + Care</div>
+          <div class="model-price">100 UF <span>+ 15 UF/mes</span></div>
+          <div class="model-desc">Build Premium + soporte continuo. SMC opera y mejora el sistema. Ideal si no tienen equipo técnico.</div>
+          <ul class="model-features">
+            <li>Todo el Build MVP</li>
+            <li>Soporte L-V 9-18h</li>
+            <li>Mejoras mensuales priorizadas</li>
+            <li>SLA: bugs críticos &lt;4h</li>
+            <li>Reportes de uso mensuales</li>
+          </ul>
+        </div>
+      </div>
+      <div class="report-doc">
+        <div class="doc-body">
+          <div class="doc-section">
+            <div class="doc-section-title">¿Por qué el Discovery + Build MVP?</div>
+            <div class="doc-text">La inversión de <strong>100 UF (~$3.400.000 CLP)</strong> se recupera en <strong>menos de 2 meses</strong> considerando solo el ahorro en errores de pedidos ($2M/mes) y el tiempo del bodeguero ($450K/mes). A partir del mes 3, el sistema genera retorno neto.</div>
+            <div class="doc-highlight">ROI estimado: 100 UF invertidas → $2.450.000 CLP/mes en ahorro → payback: 1.4 meses</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: PDF ── -->
+    <div class="tab-content" id="tab-pdf">
+      <div style="margin-bottom:16px; display:flex; gap:8px;">
+        <button class="action-btn primary">🖨️ Generar PDF</button>
+        <button class="action-btn">📧 Adjuntar a email</button>
+      </div>
+      <div class="pdf-preview">
+        <div class="pdf-header">
+          <div class="pdf-logo">Smart Connection</div>
+          <div class="pdf-date">15 de abril, 2026 — Confidencial</div>
+        </div>
+        <div class="pdf-body">
+          <div class="pdf-title">Diagnóstico Comercial</div>
+          <div class="pdf-subtitle">Constructora Vial Sur — Reunión de Discovery</div>
+
+          <div class="pdf-section-title">Resumen ejecutivo</div>
+          <div class="pdf-text">Constructora Vial Sur enfrenta pérdidas estimadas de <strong>$2.450.000 CLP mensuales</strong> producto de una coordinación operacional fragmentada. El diagnóstico identifica 3 cuellos de botella con solución técnica viable en un plazo de 6-8 semanas.</div>
+          <div class="pdf-highlight">Oportunidad: inversión de 100 UF con retorno en &lt;2 meses</div>
+
+          <div class="pdf-section-title">Diagnóstico de dolores</div>
+          <div class="pdf-text"><strong>1. Coordinación por WhatsApp</strong> — $2.000.000 CLP/mes en errores de pedidos y materiales faltantes.<br>
+          <strong>2. Sin visibilidad en tiempo real</strong> — 2 obras retrasadas este trimestre por falta de información centralizada.<br>
+          <strong>3. Consolidación manual del bodeguero</strong> — 3 horas diarias = $450.000 CLP/mes en tiempo improductivo.</div>
+
+          <div class="pdf-section-title">Próximo paso recomendado</div>
+          <div class="pdf-text">Discovery Sprint · 1 semana · 20 UF · Sin compromiso de desarrollo</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function showTab(id, el) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    el.classList.add('active');
+  }
+
+  function setBrand(el, mode) {
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('clientBrandFields').style.display = mode === 'client' ? 'flex' : 'none';
+  }
+
+  function selectClient(el, name) {
+    document.querySelectorAll('.client-item').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function newClient() {
+    alert('Nuevo cliente: ingresa nombre, industria y datos de contacto');
+  }
+
+  function runAnalysis() {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.add('show');
+
+    const steps = ['ls1','ls2','ls3','ls4','ls5','ls6','ls7'];
+    steps.forEach(id => {
+      document.getElementById(id).className = 'loading-step';
+    });
+
+    let current = 0;
+    document.getElementById(steps[0]).className = 'loading-step active';
+
+    const interval = setInterval(() => {
+      if (current < steps.length - 1) {
+        document.getElementById(steps[current]).className = 'loading-step done';
+        document.getElementById(steps[current]).querySelector('.step-indicator').innerHTML = '';
+        current++;
+        document.getElementById(steps[current]).className = 'loading-step active';
+      } else {
+        clearInterval(interval);
+        document.getElementById(steps[current]).className = 'loading-step done';
+        setTimeout(() => {
+          overlay.classList.remove('show');
+        }, 600);
+      }
+    }, 700);
+  }
+</script>
+</body>
+</html>

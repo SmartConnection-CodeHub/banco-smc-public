@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmConnection — Architecture Stack 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --ink:    #0e0e12;
+  --paper:  #f5f2eb;
+  --cream:  #ede9df;
+  --warm:   #e8e0d0;
+  --border: rgba(14,14,18,0.1);
+  --muted:  #7a7165;
+  --strong: #1a1814;
+
+  --claude:   #c0522a;
+  --deep:     #2a5fc0;
+  --green:    #1a8c5a;
+  --amber:    #c08a20;
+  --violet:   #6b3ec0;
+  --coral:    #c03e5f;
+  --groq-c:   #d97706;
+  --gemini-c: #1a73e8;
+
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans:  'IBM Plex Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9999; opacity:0.4;
+}
+
+/* ─── NAV ─── */
+nav {
+  position:sticky; top:0; z-index:200;
+  background: rgba(245,242,235,0.94);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  display:flex; align-items:center;
+  height:52px; padding:0 2rem;
+  overflow-x:auto; gap:0;
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-weight:900; font-style:italic;
+  font-size:1rem; color:var(--claude);
+  letter-spacing:-0.02em;
+  margin-right:2rem; flex-shrink:0;
+}
+nav a {
+  color:var(--muted);
+  text-decoration:none;
+  font-family:var(--mono);
+  font-size:0.62rem;
+  letter-spacing:0.07em;
+  text-transform:uppercase;
+  padding:0 1rem;
+  height:52px;
+  display:flex; align-items:center;
+  border-right:1px solid var(--border);
+  white-space:nowrap;
+  transition:color .15s, background .15s;
+}
+nav a:first-of-type { border-left:1px solid var(--border); }
+nav a:hover { color:var(--strong); background:var(--cream); }
+
+/* ─── HERO ─── */
+.hero {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:100vh;
+  border-bottom:2px solid var(--ink);
+}
+.hero-left {
+  padding:7rem 4rem 5rem;
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column; justify-content:flex-end;
+  position:relative;
+}
+.hero-left::before {
+  content:'SmConnection · 2026';
+  position:absolute; top:3rem; left:4rem;
+  font-family:var(--mono); font-size:0.6rem;
+  letter-spacing:0.2em; color:var(--muted);
+}
+.eyebrow {
+  font-family:var(--mono); font-size:0.62rem;
+  letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--claude); margin-bottom:1.5rem;
+}
+.hero h1 {
+  font-family:var(--serif); font-weight:900;
+  font-size:clamp(2.8rem,5vw,4.5rem);
+  line-height:1.0; letter-spacing:-0.02em;
+  margin-bottom:2rem; color:var(--strong);
+}
+.hero h1 em { font-style:italic; color:var(--claude); }
+.hero-desc {
+  font-size:1rem; line-height:1.75;
+  color:var(--muted); max-width:420px; margin-bottom:3rem;
+}
+.hero-pills { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.pill {
+  border:1px solid var(--border);
+  padding:0.3rem 0.8rem;
+  font-family:var(--mono); font-size:0.62rem;
+  letter-spacing:0.06em; color:var(--muted); border-radius:2px;
+}
+
+.hero-right {
+  background:var(--ink); color:var(--paper);
+  padding:5rem 3.5rem;
+  display:flex; flex-direction:column; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.hero-right::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 30%, rgba(192,82,42,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(42,95,192,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(26,115,232,0.08) 0%, transparent 60%);
+}
+.hoku-badge {
+  position:relative;
+  display:inline-flex; align-items:center; gap:0.75rem;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:6px; padding:1rem 1.5rem;
+  margin-bottom:2.5rem;
+}
+.hoku-badge .hoku-name {
+  font-family:var(--serif); font-weight:900; font-style:italic;
+  font-size:1.8rem; color:var(--paper);
+}
+.hoku-tag {
+  background:var(--violet); color:white;
+  font-family:var(--mono); font-size:0.65rem;
+  letter-spacing:0.08em; padding:3px 8px; border-radius:3px;
+}
+.agents-grid {
+  position:relative;
+  display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;
+}
+.agent-chip {
+  display:flex; align-items:center; gap:0.6rem;
+  padding:0.55rem 0.85rem;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:4px;
+  transition:background .15s;
+}
+.agent-chip:hover { background:rgba(255,255,255,0.08); }
+.agent-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.agent-info strong {
+  display:block; font-family:var(--mono);
+  font-size:0.7rem; font-weight:500;
+  color:rgba(245,242,235,0.9); letter-spacing:0.03em;
+}
+.agent-info span {
+  font-family:var(--mono); font-size:0.58rem;
+  color:rgba(245,242,235,0.38); letter-spacing:0.02em;
+}
+
+/* ─── SECTION ─── */
+.section { max-width:1280px; margin:0 auto; padding:6rem 3rem; }
+.section-header {
+  display:grid; grid-template-columns:auto 1fr;
+  gap:2.5rem; align-items:start;
+  margin-bottom:4rem; padding-bottom:2rem;
+  border-bottom:1px solid var(--border);
+}
+.section-num {
+  font-family:var(--mono); font-size:0.62rem;
+  letter-spacing:0.16em; color:var(--muted); padding-top:0.25rem;
+}
+.section-title {
+  font-family:var(--serif); font-weight:900;
+  font-size:clamp(1.6rem,3vw,2.4rem);
+  letter-spacing:-0.02em; line-height:1.15;
+  color:var(--strong); margin-bottom:0.75rem;
+}
+.section-sub { font-size:0.9rem; color:var(--muted); line-height:1.7; }
+.divider { border:none; border-top:1px solid var(--border); }
+
+/* ─── FULL STACK GRID ─── */
+.tools-mega {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px,1fr));
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:6px; overflow:hidden;
+}
+.tool-card {
+  background:var(--paper);
+  padding:1.75rem;
+  position:relative;
+  transition:background .15s;
+}
+.tool-card:hover { background:var(--cream); }
+.tool-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:2px;
+}
+.tool-top {
+  display:flex; align-items:flex-start;
+  justify-content:space-between; margin-bottom:0.9rem;
+}
+.tool-name-block {}
+.tool-name {
+  font-family:var(--serif); font-weight:700;
+  font-size:1rem; color:var(--strong); letter-spacing:-0.01em;
+}
+.tool-category {
+  font-family:var(--mono); font-size:0.58rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--muted); margin-top:0.1rem;
+}
+.tool-status {
+  font-family:var(--mono); font-size:0.58rem;
+  letter-spacing:0.06em; text-transform:uppercase;
+  padding:2px 7px; border-radius:2px; flex-shrink:0;
+}
+.status-active {
+  background:rgba(26,140,90,0.12);
+  color:var(--green);
+  border:1px solid rgba(26,140,90,0.25);
+}
+.status-new {
+  background:rgba(192,138,32,0.12);
+  color:var(--amber);
+  border:1px solid rgba(192,138,32,0.25);
+}
+.tool-desc {
+  font-size:0.8rem; line-height:1.6;
+  color:var(--muted); margin-bottom:1rem;
+}
+.tool-tags { display:flex; gap:0.35rem; flex-wrap:wrap; }
+.ttag {
+  background:var(--cream);
+  border:1px solid var(--border);
+  border-radius:2px; padding:2px 7px;
+  font-family:var(--mono); font-size:0.58rem;
+  letter-spacing:0.05em; color:var(--muted);
+}
+
+/* ─── VS TABLE ─── */
+.vs-wrap { border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+.vs-thead {
+  display:grid; grid-template-columns:2fr 1fr 1fr 1fr 80px;
+  background:var(--ink); color:var(--paper);
+}
+.vs-th {
+  padding:0.9rem 1.1rem;
+  font-family:var(--mono); font-size:0.62rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+  border-right:1px solid rgba(255,255,255,0.07);
+  display:flex; align-items:center; gap:0.4rem;
+}
+.vs-th:last-child { border-right:none; }
+.dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.vs-row {
+  display:grid; grid-template-columns:2fr 1fr 1fr 1fr 80px;
+  border-bottom:1px solid var(--border);
+  transition:background .12s;
+}
+.vs-row:last-child { border-bottom:none; }
+.vs-row:hover { background:var(--cream); }
+.vs-td {
+  padding:0.85rem 1.1rem;
+  font-size:0.82rem; line-height:1.5;
+  border-right:1px solid var(--border); color:var(--ink);
+}
+.vs-td:last-child { border-right:none; }
+.vs-td.cat {
+  font-family:var(--mono); font-size:0.68rem;
+  color:var(--muted); display:flex; align-items:center; gap:0.5rem;
+}
+.wb { display:inline-block; padding:2px 6px; border-radius:2px;
+  font-family:var(--mono); font-size:0.55rem; letter-spacing:0.06em; }
+.wc { background:rgba(192,82,42,0.1); color:var(--claude); border:1px solid rgba(192,82,42,0.2); }
+.wd { background:rgba(42,95,192,0.1); color:var(--deep); border:1px solid rgba(42,95,192,0.2); }
+.wt { background:rgba(192,138,32,0.1); color:var(--amber); border:1px solid rgba(192,138,32,0.2); }
+.wg { background:rgba(26,115,232,0.1); color:var(--gemini-c); border:1px solid rgba(26,115,232,0.2); }
+
+/* ─── CHART GRID ─── */
+.chart-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--border);
+  border:1px solid var(--border); border-radius:4px; overflow:hidden;
+}
+.chart-full { grid-column:1/-1; }
+.chart-card { background:var(--paper); padding:2rem; }
+.chart-card h4 {
+  font-family:var(--serif); font-weight:700;
+  font-size:1rem; margin-bottom:0.2rem; color:var(--strong);
+}
+.chart-note {
+  font-family:var(--mono); font-size:0.6rem;
+  letter-spacing:0.06em; color:var(--muted); margin-bottom:1.25rem;
+}
+
+/* ─── DISCOVERY CENTER ─── */
+.discovery-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+  gap:1px; background:var(--border);
+  border:1px solid var(--border); border-radius:6px; overflow:hidden;
+}
+.disc-card {
+  background:var(--paper); padding:2rem;
+  transition:background .15s;
+}
+.disc-card:hover { background:var(--cream); }
+.disc-header {
+  display:flex; align-items:flex-start;
+  justify-content:space-between; margin-bottom:1rem;
+}
+.disc-title {
+  font-family:var(--serif); font-weight:700;
+  font-size:1rem; color:var(--strong);
+  letter-spacing:-0.01em; line-height:1.3;
+}
+.disc-level {
+  font-family:var(--mono); font-size:0.58rem;
+  letter-spacing:0.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:2px; flex-shrink:0;
+}
+.lvl-p { background:rgba(26,140,90,0.1); color:var(--green); border:1px solid rgba(26,140,90,0.2); }
+.lvl-i { background:rgba(192,138,32,0.1); color:var(--amber); border:1px solid rgba(192,138,32,0.2); }
+.lvl-a { background:rgba(192,82,42,0.1); color:var(--claude); border:1px solid rgba(192,82,42,0.2); }
+.disc-desc { font-size:0.78rem; color:var(--muted); line-height:1.6; margin-bottom:1rem; }
+.disc-links { display:flex; flex-direction:column; gap:0.35rem; }
+.disc-link {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0.45rem 0.7rem;
+  background:var(--cream); border:1px solid var(--border); border-radius:3px;
+  font-size:0.78rem; color:var(--ink);
+  text-decoration:none; transition:background .12s;
+}
+.disc-link:hover { background:var(--warm); }
+.disc-link-type {
+  font-family:var(--mono); font-size:0.58rem;
+  letter-spacing:0.06em; text-transform:uppercase;
+  padding:1px 6px; border-radius:2px;
+}
+.lt-docs  { background:rgba(42,95,192,0.1); color:var(--deep); }
+.lt-play  { background:rgba(26,140,90,0.1); color:var(--green); }
+.lt-tut   { background:rgba(192,138,32,0.1); color:var(--amber); }
+
+/* ─── MISSIONS ─── */
+.missions-timeline { position:relative; }
+.missions-timeline::before {
+  content:'';
+  position:absolute;
+  left:24px; top:0; bottom:0; width:1px;
+  background:var(--border);
+}
+.mission {
+  display:grid; grid-template-columns:52px 1fr;
+  gap:1.5rem; margin-bottom:1px;
+  position:relative;
+}
+.mission-num {
+  display:flex; align-items:flex-start; justify-content:center;
+  padding-top:1.5rem;
+}
+.num-circle {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:0.65rem; font-weight:500;
+  border:1px solid var(--border);
+  background:var(--paper); color:var(--muted);
+  position:relative; z-index:1;
+  flex-shrink:0;
+}
+.mission-body {
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:4px; padding:1.75rem;
+  transition:border-color .15s;
+}
+.mission-body:hover { border-color:rgba(192,82,42,0.3); }
+.mission-phase {
+  font-family:var(--mono); font-size:0.58rem;
+  letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:0.5rem;
+}
+.mission-title {
+  font-family:var(--serif); font-weight:700;
+  font-size:1.1rem; color:var(--strong);
+  letter-spacing:-0.01em; margin-bottom:0.5rem;
+}
+.mission-desc {
+  font-size:0.82rem; color:var(--muted);
+  line-height:1.65; margin-bottom:1.1rem;
+}
+.mission-steps { list-style:none; margin-bottom:1.1rem; }
+.mission-steps li {
+  display:flex; gap:0.65rem; align-items:flex-start;
+  padding:0.45rem 0; border-bottom:1px solid var(--border);
+  font-size:0.8rem; line-height:1.5;
+}
+.mission-steps li:last-child { border-bottom:none; }
+.step-n {
+  font-family:var(--mono); font-size:0.62rem;
+  color:var(--claude); flex-shrink:0; margin-top:1px;
+}
+.mission-tools { display:flex; gap:0.4rem; flex-wrap:wrap; }
+.mt {
+  font-family:var(--mono); font-size:0.6rem;
+  letter-spacing:0.04em;
+  padding:2px 8px; border-radius:2px;
+  background:var(--cream); border:1px solid var(--border);
+  color:var(--muted);
+}
+
+/* ─── DECISION MATRIX ─── */
+.matrix-wrap { border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+.matrix-wrap table { width:100%; border-collapse:collapse; }
+.matrix-wrap th {
+  background:var(--ink); color:rgba(245,242,235,0.55);
+  font-family:var(--mono); font-size:0.6rem;
+  letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.85rem 1.1rem; text-align:left;
+  border-right:1px solid rgba(255,255,255,0.06); font-weight:400;
+}
+.matrix-wrap th:last-child { border-right:none; }
+.matrix-wrap td {
+  padding:0.85rem 1.1rem; font-size:0.81rem;
+  border-bottom:1px solid var(--border);
+  border-right:1px solid var(--border);
+  vertical-align:middle; line-height:1.5;
+}
+.matrix-wrap td:last-child { border-right:none; }
+.matrix-wrap tr:last-child td { border-bottom:none; }
+.matrix-wrap tr:hover td { background:var(--cream); }
+.choice {
+  font-family:var(--mono); font-size:0.66rem;
+  letter-spacing:0.04em; padding:2px 7px; border-radius:2px;
+}
+.ch-c { color:var(--claude); background:rgba(192,82,42,0.07); border:1px solid rgba(192,82,42,0.18); }
+.ch-d { color:var(--deep); background:rgba(42,95,192,0.07); border:1px solid rgba(42,95,192,0.18); }
+.ch-b { color:var(--green); background:rgba(26,140,90,0.07); border:1px solid rgba(26,140,90,0.18); }
+.ch-g { color:var(--amber); background:rgba(192,138,32,0.07); border:1px solid rgba(192,138,32,0.18); }
+.ch-gem { color:var(--gemini-c); background:rgba(26,115,232,0.07); border:1px solid rgba(26,115,232,0.18); }
+
+/* ─── FOOTER ─── */
+footer {
+  background:var(--ink); color:rgba(245,242,235,0.35);
+  padding:3rem; text-align:center;
+  font-family:var(--mono); font-size:0.62rem;
+  letter-spacing:0.08em; line-height:2;
+}
+footer strong { color:rgba(245,242,235,0.65); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.hero-left > * { animation: fadeUp .6s ease both; }
+.eyebrow { animation-delay:.1s; }
+.hero h1 { animation-delay:.2s; }
+.hero-desc { animation-delay:.3s; }
+.hero-pills { animation-delay:.4s; }
+
+@media(max-width:900px) {
+  .hero { grid-template-columns:1fr; }
+  .hero-right { display:none; }
+  .hero-left { padding:5rem 1.5rem 4rem; }
+  .section { padding:4rem 1.25rem; }
+  .vs-thead, .vs-row { grid-template-columns:2fr 1fr 1fr; }
+  .chart-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <span class="nav-logo">SmConnection·26</span>
+  <a href="#stack">Stack Completo</a>
+  <a href="#hoku">Hoku Agentes</a>
+  <a href="#vs">VS Análisis</a>
+  <a href="#charts">Gráficos</a>
+  <a href="#discovery">Discovery</a>
+  <a href="#missions">Misiones</a>
+  <a href="#matrix">Guía</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="eyebrow">SmConnection · Arquitecto TI · Ecosistema IA</div>
+    <h1>Architecture<br><em>Stack</em><br>2026</h1>
+    <p class="hero-desc">Tu ecosistema completo de herramientas IA: intranet smconnection, agentes Hoku, Discovery Center y misiones de aprendizaje paso a paso.</p>
+    <div class="hero-pills">
+      <span class="pill">Hoku 4in1</span>
+      <span class="pill">Claude · Gemini · DeepSeek</span>
+      <span class="pill">Groq · Mistral · Cohere</span>
+      <span class="pill">Supabase · n8n</span>
+      <span class="pill">AWS · Vercel</span>
+      <span class="pill">InfoPet · SAP</span>
+      <span class="pill">MCP Servers</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hoku-badge">
+      <div>
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;color:rgba(245,242,235,0.4);margin-bottom:0.3rem;">AGENTE PRINCIPAL</div>
+        <div class="hoku-name">Hoku</div>
+      </div>
+      <span class="hoku-tag">10 modelos</span>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#d97706"></div>
+        <div class="agent-info"><strong>Groq</strong><span>llama-3.3-70b</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#c0522a"></div>
+        <div class="agent-info"><strong>Claude</strong><span>haiku-4.5</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#9333ea"></div>
+        <div class="agent-info"><strong>Grok</strong><span>grok-3-mini</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#2a5fc0"></div>
+        <div class="agent-info"><strong>DeepSeek</strong><span>deepseek-chat</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#ff7000"></div>
+        <div class="agent-info"><strong>Mistral</strong><span>mistral-small</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#10b981"></div>
+        <div class="agent-info"><strong>OpenAI</strong><span>gpt-4o-mini</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#3b82f6"></div>
+        <div class="agent-info"><strong>Cohere</strong><span>command-a</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#6b3ec0"></div>
+        <div class="agent-info"><strong>OpenRouter</strong><span>llama-3.3-70b</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#d97706"></div>
+        <div class="agent-info"><strong>Bedrock</strong><span>claude-3.5-haiku</span></div>
+      </div>
+      <div class="agent-chip">
+        <div class="agent-dot" style="background:#1a73e8"></div>
+        <div class="agent-info"><strong>Gemini</strong><span>2.0-flash</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STACK COMPLETO ═══ -->
+<hr class="divider">
+<section class="section" id="stack">
+  <div class="section-header">
+    <div class="section-num">01 /</div>
+    <div>
+      <h2 class="section-title">Stack completo — SmConnection 2026</h2>
+      <p class="section-sub">Todas las herramientas instaladas en tu intranet + las que complementan el ecosistema. Estado actual y rol en la arquitectura.</p>
+    </div>
+  </div>
+
+  <div class="tools-mega">
+
+    <!-- IA GENERATIVA -->
+    <div class="tool-card" style="--tc:#c0522a">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#c0522a"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Claude (Anthropic)</div>
+          <div class="tool-category">IA Generativa · API Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Code review, arquitectura y desarrollo avanzado. 200K contexto. Tool use, MCP nativo, streaming. Haiku-4.5 en Hoku para velocidad.</p>
+      <div class="tool-tags"><span class="ttag">Haiku-4.5</span><span class="ttag">Sonnet</span><span class="ttag">MCP</span><span class="ttag">Tool use</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#1a73e8"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Gemini (Google)</div>
+          <div class="tool-category">IA Generativa · API Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Google AI — SEO, analytics, multimodal. Gemini 2.0 Flash en Hoku. Excelente para análisis de competencia y Google Workspace integrado.</p>
+      <div class="tool-tags"><span class="ttag">2.0-flash</span><span class="ttag">Multimodal</span><span class="ttag">SEO</span><span class="ttag">Analytics</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#d97706"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Groq</div>
+          <div class="tool-category">IA Generativa · API Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Llama 3.3 70B — inferencia ultra-rápida vía LPU hardware. 3.4K tokens/seg. Principal para respuestas en tiempo real en Hoku.</p>
+      <div class="tool-tags"><span class="ttag">LPU</span><span class="ttag">Llama 3.3-70b</span><span class="ttag">Sub-100ms</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#2a5fc0"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">DeepSeek</div>
+          <div class="tool-category">IA Generativa · API</div>
+        </div>
+        <span class="tool-status status-active">En Hoku</span>
+      </div>
+      <p class="tool-desc">deepseek-chat en Hoku. Ideal para generación masiva de código, análisis STEM y tareas técnicas de bajo costo. Open-weights disponible.</p>
+      <div class="tool-tags"><span class="ttag">deepseek-chat</span><span class="ttag">Coding</span><span class="ttag">Open-weights</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#10b981"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">OpenAI</div>
+          <div class="tool-category">IA Generativa · API Key</div>
+        </div>
+        <span class="tool-status status-active">En Hoku</span>
+      </div>
+      <p class="tool-desc">gpt-4o-mini en Hoku. Referencia para embeddings (text-embedding-3), fine-tuning y Assistants API. Ecosistema de integraciones más amplio.</p>
+      <div class="tool-tags"><span class="ttag">gpt-4o-mini</span><span class="ttag">Embeddings</span><span class="ttag">Fine-tuning</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ff7000"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Mistral AI</div>
+          <div class="tool-category">IA Generativa · API</div>
+        </div>
+        <span class="tool-status status-active">En Hoku</span>
+      </div>
+      <p class="tool-desc">mistral-small en Hoku. Modelos europeos GDPR-friendly. Mixtral MoE para multilingüe. Ideal para clientes con requerimientos de soberanía de datos.</p>
+      <div class="tool-tags"><span class="ttag">mistral-small</span><span class="ttag">GDPR</span><span class="ttag">EU</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#3b82f6"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Cohere</div>
+          <div class="tool-category">Embed + Rerank · API</div>
+        </div>
+        <span class="tool-status status-active">En Hoku</span>
+      </div>
+      <p class="tool-desc">command-a en Hoku. Especialista en embeddings (Embed v3) y reranking para RAG de alta precisión. Referencia en búsqueda semántica enterprise.</p>
+      <div class="tool-tags"><span class="ttag">command-a</span><span class="ttag">Embed v3</span><span class="ttag">Reranker</span><span class="ttag">RAG</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#6b3ec0"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">OpenRouter</div>
+          <div class="tool-category">Gateway · Multi-LLM</div>
+        </div>
+        <span class="tool-status status-active">En Hoku</span>
+      </div>
+      <p class="tool-desc">Un endpoint, 200+ modelos. Enruta entre Claude, GPT, DeepSeek, Mistral. Fallbacks automáticos. Elimina vendor lock-in. Llama-3.3-70b en Hoku.</p>
+      <div class="tool-tags"><span class="ttag">Router</span><span class="ttag">Fallbacks</span><span class="ttag">200+ modelos</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#d97706"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">AWS Bedrock</div>
+          <div class="tool-category">IA Managed · AWS</div>
+        </div>
+        <span class="tool-status status-active">En Hoku</span>
+      </div>
+      <p class="tool-desc">claude-3.5-haiku vía Bedrock. LLMs enterprise en infraestructura AWS. Integración natural con S3, IAM y CloudFront del stack actual.</p>
+      <div class="tool-tags"><span class="ttag">claude-3.5-haiku</span><span class="ttag">Enterprise</span><span class="ttag">AWS native</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#9333ea"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Grok (xAI)</div>
+          <div class="tool-category">IA Generativa · API</div>
+        </div>
+        <span class="tool-status status-active">En Hoku</span>
+      </div>
+      <p class="tool-desc">grok-3-mini en Hoku. Integración con datos de X/Twitter en tiempo real. Útil para análisis de tendencias y monitoreo de competencia.</p>
+      <div class="tool-tags"><span class="ttag">grok-3-mini</span><span class="ttag">Real-time data</span><span class="ttag">xAI</span></div>
+    </div>
+
+    <!-- BACKEND -->
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#3ecf8e"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Supabase</div>
+          <div class="tool-category">Base de Datos · Service Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">PostgreSQL — Auth, Storage, Realtime, RLS. 7 tablas activas. pgvector para RAG. Backbone del backend de smconnection e InfoPet.</p>
+      <div class="tool-tags"><span class="ttag">pgvector</span><span class="ttag">Realtime</span><span class="ttag">Auth</span><span class="ttag">7 tablas</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ffcc02"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Airtable</div>
+          <div class="tool-category">Base de Datos · Personal Token</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Base VOY app6BzCBjniZqtXmd. 6 tablas activas. CMS visual con AI fields. Gestión de datos de negocio para equipos no técnicos.</p>
+      <div class="tool-tags"><span class="ttag">6 tablas</span><span class="ttag">AI fields</span><span class="ttag">VOY</span><span class="ttag">No-code</span></div>
+    </div>
+
+    <!-- ECOMMERCE / ERP -->
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#0066cc"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Bsale</div>
+          <div class="tool-category">ERP Chile · API Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Facturación electrónica + POS + inventario Chile. ~500 docs procesados. Integrado vía InfoPet para gestión comercial.</p>
+      <div class="tool-tags"><span class="ttag">Factura Chile</span><span class="ttag">POS</span><span class="ttag">Inventario</span><span class="ttag">500 docs</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#00b1e1"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Jumpseller</div>
+          <div class="tool-category">E-commerce · API Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">E-commerce Chile — productos, órdenes, clientes. ~200 productos activos. Integrado vía InfoPet para ventas online.</p>
+      <div class="tool-tags"><span class="ttag">E-commerce CL</span><span class="ttag">200 productos</span><span class="ttag">InfoPet</span></div>
+    </div>
+
+    <!-- CLOUD / DEPLOY -->
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ff9900"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">AWS Amplify</div>
+          <div class="tool-category">Deploy · IAM Keys</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Next.js SSR — intranet.smconnection.cl. Auto-deploy en cada push. 1 app activa. CI/CD integrado con GitHub Actions.</p>
+      <div class="tool-tags"><span class="ttag">Next.js SSR</span><span class="ttag">Auto-deploy</span><span class="ttag">CI/CD</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ff9900"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">AWS S3</div>
+          <div class="tool-category">Cloud Storage · IAM Keys</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Bucket smartconnetion25 — static hosting. +50 archivos activos. Cada deploy sube assets. CDN via CloudFront.</p>
+      <div class="tool-tags"><span class="ttag">Static hosting</span><span class="ttag">50+ archivos</span><span class="ttag">SmConnection</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ff9900"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">AWS CloudFront</div>
+          <div class="tool-category">CDN · IAM Keys</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">CDN global — smconnection.cl. 2 aliases activos. Cada invalidación actualiza el cache. Velocidad global para usuarios de smconnection.</p>
+      <div class="tool-tags"><span class="ttag">CDN Global</span><span class="ttag">2 aliases</span><span class="ttag">Cache</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ff9900"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">AWS Route 53</div>
+          <div class="tool-category">DNS · IAM Keys</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">DNS smconnection.cl — 4 zonas configuradas. Gestión de dominios y subdominios del ecosistema completo.</p>
+      <div class="tool-tags"><span class="ttag">DNS</span><span class="ttag">4 zonas</span><span class="ttag">smconnection.cl</span></div>
+    </div>
+
+    <!-- DEVOPS -->
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#333"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">GitHub</div>
+          <div class="tool-category">DevOps · Personal Token</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Repositorios, Actions, CI/CD, PRs. 2 repos activos. Cada push dispara auto-deploy en AWS Amplify. GitHub Actions para pipelines.</p>
+      <div class="tool-tags"><span class="ttag">Actions</span><span class="ttag">CI/CD</span><span class="ttag">2 repos</span></div>
+    </div>
+
+    <!-- PRODUCTIVIDAD -->
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#4285f4"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Google Workspace</div>
+          <div class="tool-category">Productividad · Service Account</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Gmail, Calendar, Drive APIs. Base de comunicación y gestión de documentos del equipo smconnection. Integrado con n8n para automatizaciones.</p>
+      <div class="tool-tags"><span class="ttag">Gmail API</span><span class="ttag">Calendar</span><span class="ttag">Drive</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#4285f4"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Google Calendar</div>
+          <div class="tool-category">Productividad · Service Account</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Crear reuniones con Meet automático. Integración IA para scheduling inteligente y recordatorios automatizados.</p>
+      <div class="tool-tags"><span class="ttag">Meet</span><span class="ttag">Scheduling</span><span class="ttag">Auto-reuniones</span></div>
+    </div>
+
+    <!-- IA APPS -->
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#c0522a"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Generador de Propuestas IA</div>
+          <div class="tool-category">Business App · API Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Genera propuestas de consultoría SAP con IA (Groq) — scoping, estimaciones, entregables. On demand. ~15 propuestas generadas.</p>
+      <div class="tool-tags"><span class="ttag">SAP Consulting</span><span class="ttag">Groq</span><span class="ttag">On-demand</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#c0522a"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Generador de Reportes</div>
+          <div class="tool-category">Business App · Service Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Reportes automáticos de clientes desde Supabase — estado proyectos, KPIs, hitos. 12 reportes generados. Frecuencia: hace 1 hora.</p>
+      <div class="tool-tags"><span class="ttag">Supabase</span><span class="ttag">KPIs</span><span class="ttag">12 reportes</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#1a73e8"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Análisis de Competencia</div>
+          <div class="tool-category">Business App · API Key</div>
+        </div>
+        <span class="tool-status status-active">Instalado</span>
+      </div>
+      <p class="tool-desc">Research de mercado con IA — tendencias SAP, posicionamiento, oportunidades. Semanal. 8 análisis generados.</p>
+      <div class="tool-tags"><span class="ttag">Gemini</span><span class="ttag">SAP Market</span><span class="ttag">Semanal</span></div>
+    </div>
+
+    <!-- NUEVO A AGREGAR -->
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#c08a20"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Vercel AI SDK</div>
+          <div class="tool-category">Framework · Deploy</div>
+        </div>
+        <span class="tool-status status-new">Agregar</span>
+      </div>
+      <p class="tool-desc">Streaming de LLMs en Next.js con hooks listos (useChat, useCompletion). Tool calls, structured outputs, RSC. Complementa AWS Amplify.</p>
+      <div class="tool-tags"><span class="ttag">Streaming</span><span class="ttag">useChat</span><span class="ttag">Next.js</span><span class="ttag">Edge</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#c08a20"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">n8n (self-hosted)</div>
+          <div class="tool-category">Orquestación · Workflows</div>
+        </div>
+        <span class="tool-status status-new">Agregar</span>
+      </div>
+      <p class="tool-desc">Orquestación técnica self-hosted. Conecta todos los servicios del stack sin código. 400+ integraciones. Complementa GitHub Actions para pipelines IA.</p>
+      <div class="tool-tags"><span class="ttag">Self-host</span><span class="ttag">400+ integ.</span><span class="ttag">Agents</span><span class="ttag">Cron</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#c08a20"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Langfuse / LangSmith</div>
+          <div class="tool-category">Observabilidad IA</div>
+        </div>
+        <span class="tool-status status-new">Agregar</span>
+      </div>
+      <p class="tool-desc">Trazas de agentes, latencia por modelo, costo por llamada. Esencial para observar Hoku en producción y optimizar qué modelo usar en cada caso.</p>
+      <div class="tool-tags"><span class="ttag">Tracing</span><span class="ttag">LLM Ops</span><span class="ttag">Hoku debug</span></div>
+    </div>
+
+    <div class="tool-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#c08a20"></div>
+      <div class="tool-top">
+        <div class="tool-name-block">
+          <div class="tool-name">Resend</div>
+          <div class="tool-category">Email API · Transaccional</div>
+        </div>
+        <span class="tool-status status-new">Agregar</span>
+      </div>
+      <p class="tool-desc">Email API moderna. Notificaciones generadas por IA, reportes automáticos, alertas. React Email compatible. Para InfoPet: recordatorios vacunas.</p>
+      <div class="tool-tags"><span class="ttag">React Email</span><span class="ttag">Webhooks</span><span class="ttag">InfoPet</span></div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ HOKU AGENTS ═══ -->
+<section class="section" id="hoku">
+  <div class="section-header">
+    <div class="section-num">02 /</div>
+    <div>
+      <h2 class="section-title">Hoku — Arquitectura de 10 agentes</h2>
+      <p class="section-sub">Cómo usar cada modelo en Hoku según el tipo de tarea. Guía de decisión para maximizar calidad y minimizar costo por llamada.</p>
+    </div>
+  </div>
+
+  <div class="vs-wrap">
+    <div class="vs-thead" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-th">Modelo en Hoku</div>
+      <div class="vs-th">Velocidad</div>
+      <div class="vs-th">Costo</div>
+      <div class="vs-th">Fortaleza</div>
+      <div class="vs-th">Mejor para en SmConnection</div>
+    </div>
+
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#d97706"></span>Groq · llama-3.3-70b</div>
+      <div class="vs-td">⚡ Ultra-rápido</div>
+      <div class="vs-td">$ Muy bajo</div>
+      <div class="vs-td">Velocidad LPU</div>
+      <div class="vs-td"><span class="wb wg">Respuestas RT · Chatbots</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#c0522a"></span>Claude · haiku-4.5</div>
+      <div class="vs-td">🟢 Rápido</div>
+      <div class="vs-td">$$ Bajo</div>
+      <div class="vs-td">Razonamiento + safety</div>
+      <div class="vs-td"><span class="wb wc">Propuestas SAP · InfoPet</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#1a73e8"></span>Gemini · 2.0-flash</div>
+      <div class="vs-td">🟢 Rápido</div>
+      <div class="vs-td">$$ Bajo</div>
+      <div class="vs-td">Multimodal + Google</div>
+      <div class="vs-td"><span class="wb wg">Análisis competencia · SEO</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#2a5fc0"></span>DeepSeek · chat</div>
+      <div class="vs-td">🟡 Medio</div>
+      <div class="vs-td">$ Muy bajo</div>
+      <div class="vs-td">Código masivo</div>
+      <div class="vs-td"><span class="wb wd">Code review · Scripts</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#10b981"></span>OpenAI · gpt-4o-mini</div>
+      <div class="vs-td">🟢 Rápido</div>
+      <div class="vs-td">$$ Bajo</div>
+      <div class="vs-td">Ecosistema estándar</div>
+      <div class="vs-td"><span class="wb wg">Embeddings · Clasificación</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#ff7000"></span>Mistral · small</div>
+      <div class="vs-td">🟢 Rápido</div>
+      <div class="vs-td">$$ Bajo</div>
+      <div class="vs-td">EU · Multilingüe</div>
+      <div class="vs-td"><span class="wb wg">Clientes europeos</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#3b82f6"></span>Cohere · command-a</div>
+      <div class="vs-td">🟡 Medio</div>
+      <div class="vs-td">$$ Medio</div>
+      <div class="vs-td">RAG + reranking</div>
+      <div class="vs-td"><span class="wb wg">Base conocimiento RAG</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#6b3ec0"></span>OpenRouter · llama</div>
+      <div class="vs-td">🟡 Variable</div>
+      <div class="vs-td">$ Mín. markup</div>
+      <div class="vs-td">Fallback + routing</div>
+      <div class="vs-td"><span class="wb wg">Resiliencia · Anti lock-in</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#d97706"></span>Bedrock · haiku-3.5</div>
+      <div class="vs-td">🟢 Rápido</div>
+      <div class="vs-td">$$ Bajo</div>
+      <div class="vs-td">AWS native</div>
+      <div class="vs-td"><span class="wb wg">Integración AWS stack</span></div>
+    </div>
+    <div class="vs-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr">
+      <div class="vs-td cat"><span class="dot" style="background:#9333ea"></span>Grok · 3-mini</div>
+      <div class="vs-td">🟢 Rápido</div>
+      <div class="vs-td">$$ Bajo</div>
+      <div class="vs-td">Real-time X data</div>
+      <div class="vs-td"><span class="wb wg">Tendencias · Social monitor</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ VS ANALYSIS ═══ -->
+<section class="section" id="vs">
+  <div class="section-header">
+    <div class="section-num">03 /</div>
+    <div>
+      <h2 class="section-title">Claude vs DeepSeek vs Gemini — Head to head</h2>
+      <p class="section-sub">Los 3 modelos principales del stack. Análisis por dimensión para saber cuándo usar cuál en tu arquitectura smconnection.</p>
+    </div>
+  </div>
+
+  <div class="vs-wrap">
+    <div class="vs-thead">
+      <div class="vs-th">Dimensión</div>
+      <div class="vs-th"><span class="dot" style="background:#c0522a"></span>Claude</div>
+      <div class="vs-th"><span class="dot" style="background:#2a5fc0"></span>DeepSeek</div>
+      <div class="vs-th"><span class="dot" style="background:#1a73e8"></span>Gemini</div>
+      <div class="vs-th">Ganador</div>
+    </div>
+
+    <div class="vs-row">
+      <div class="vs-td cat">💡 Razonamiento</div>
+      <div class="vs-td">Excepcional. Chain-of-thought, contexto 200K, lógica compleja.</div>
+      <div class="vs-td">Fuerte STEM. R1 competitivo en matemáticas.</div>
+      <div class="vs-td">Muy bueno en análisis multi-step con datos Google.</div>
+      <div class="vs-td"><span class="wb wc">CLAUDE</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">⚙️ Código</div>
+      <div class="vs-td">Python sólido, tool use confiable, MCP nativo.</div>
+      <div class="vs-td">Top HumanEval. Generación masiva. Open-weights.</div>
+      <div class="vs-td">Bueno pero no especializado en código puro.</div>
+      <div class="vs-td"><span class="wb wd">DEEPSEEK</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🌐 Multimodal</div>
+      <div class="vs-td">Visión + texto. Sin audio nativo aún.</div>
+      <div class="vs-td">Texto y código principalmente.</div>
+      <div class="vs-td">Texto + imágenes + video + audio. Gemini native.</div>
+      <div class="vs-td"><span class="wb wg">GEMINI</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🔍 SEO & Analytics</div>
+      <div class="vs-td">Análisis de contenido pero sin datos Google directo.</div>
+      <div class="vs-td">Sin integración nativa con herramientas SEO.</div>
+      <div class="vs-td">Integración nativa Google Search, Analytics, Workspace.</div>
+      <div class="vs-td"><span class="wb wg">GEMINI</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🛡️ Safety</div>
+      <div class="vs-td">Líder industria. Ethics-first. Ideal para InfoPet.</div>
+      <div class="vs-td">Filtros moderados, más permisivo.</div>
+      <div class="vs-td">Bueno pero politics-filtered.</div>
+      <div class="vs-td"><span class="wb wc">CLAUDE</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">💰 Costo</div>
+      <div class="vs-td">$$$ Premium (Sonnet). Haiku es económico.</div>
+      <div class="vs-td">$ Muy bajo API. Free self-hosted.</div>
+      <div class="vs-td">$$ Medio. Flash es muy económico.</div>
+      <div class="vs-td"><span class="wb wd">DEEPSEEK</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🤝 API / Integración</div>
+      <div class="vs-td">API robusta, MCP, Bedrock support, excelentes docs.</div>
+      <div class="vs-td">API menos confiable fuera de China. Open-weights.</div>
+      <div class="vs-td">Google AI Studio, Vertex AI, integrado en Workspace.</div>
+      <div class="vs-td"><span class="wb wc">CLAUDE</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🏆 Score SmConnection</div>
+      <div class="vs-td" style="color:var(--claude);font-family:var(--mono)">27/30</div>
+      <div class="vs-td" style="color:var(--deep);font-family:var(--mono)">25/30</div>
+      <div class="vs-td" style="color:var(--gemini-c);font-family:var(--mono)">26/30</div>
+      <div class="vs-td"><span class="wb wt">COMBINADOS</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ CHARTS ═══ -->
+<section class="section" id="charts">
+  <div class="section-header">
+    <div class="section-num">04 /</div>
+    <div>
+      <h2 class="section-title">Análisis visual del ecosistema</h2>
+      <p class="section-sub">Gráficos interactivos del stack smconnection: capacidades, costos y distribución de uso en Hoku.</p>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h4>Radar — Claude vs DeepSeek vs Gemini</h4>
+      <p class="chart-note">Capacidades técnicas comparadas · escala 0–5</p>
+      <div style="height:320px;position:relative"><canvas id="radarChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h4>Distribución de uso — Agentes Hoku</h4>
+      <p class="chart-note">% de consultas recomendadas por modelo</p>
+      <div style="height:320px;position:relative"><canvas id="donutChart"></canvas></div>
+    </div>
+    <div class="chart-card chart-full">
+      <h4>Stack smconnection — Costo vs Capacidad</h4>
+      <p class="chart-note">Burbuja = herramienta · Tamaño = uso en tu stack · Eje X = costo relativo · Eje Y = capacidad</p>
+      <div style="height:300px;position:relative"><canvas id="bubbleChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h4>Ahorro mensual — Stack optimizado</h4>
+      <p class="chart-note">SaaS tradicional vs AI-optimized smconnection</p>
+      <div style="height:260px;position:relative"><canvas id="costChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h4>Capacidades por dimensión</h4>
+      <p class="chart-note">Comparativa de barras — los 3 modelos principales</p>
+      <div style="height:260px;position:relative"><canvas id="barChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ DISCOVERY CENTER ═══ -->
+<section class="section" id="discovery">
+  <div class="section-header">
+    <div class="section-num">05 /</div>
+    <div>
+      <h2 class="section-title">Discovery Center — 14 cursos</h2>
+      <p class="section-sub">Mapa de aprendizaje organizado del Discovery Center de tu intranet. Links directos a docs, playgrounds y tutoriales por tecnología.</p>
+    </div>
+  </div>
+
+  <div class="discovery-grid">
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">Claude API & Anthropic SDK</div>
+        <span class="disc-level lvl-i">Intermedio</span>
+      </div>
+      <p class="disc-desc">Integrar Claude en aplicaciones — streaming, tool use, agentes. El SDK más completo para el modelo que más usas en smconnection.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://docs.anthropic.com" target="_blank">Anthropic API Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank">Prompt Engineering Guide <span class="disc-link-type lt-tut">Tutorial</span></a>
+        <a class="disc-link" href="https://docs.anthropic.com/en/docs/tool-use" target="_blank">Tool Use (Function Calling) <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://console.anthropic.com" target="_blank">Console + Playground <span class="disc-link-type lt-play">Playground</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">Groq — Inferencia ultra-rápida</div>
+        <span class="disc-level lvl-p">Principiante</span>
+      </div>
+      <p class="disc-desc">LPU para modelos Llama a velocidad récord. Ya lo tienes en Hoku — aprende a maximizar su uso para casos de alta frecuencia.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://console.groq.com" target="_blank">Groq Console <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://console.groq.com/docs/openai" target="_blank">Groq API Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://console.groq.com/docs/models" target="_blank">Modelos disponibles <span class="disc-link-type lt-docs">Docs</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">OpenAI — GPT-4o & Assistants</div>
+        <span class="disc-level lvl-i">Intermedio</span>
+      </div>
+      <p class="disc-desc">APIs de OpenAI, assistants, embeddings, fine-tuning. Clave para el modelo gpt-4o-mini en Hoku y para embeddings en Supabase.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://platform.openai.com/docs" target="_blank">OpenAI Platform Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://platform.openai.com/playground" target="_blank">Playground <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://cookbook.openai.com" target="_blank">Cookbook — Ejemplos <span class="disc-link-type lt-tut">Tutorial</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">Hugging Face — Open Source</div>
+        <span class="disc-level lvl-p">Principiante</span>
+      </div>
+      <p class="disc-desc">Hub de modelos, Spaces, Transformers. Para explorar open-source alternatives a tus modelos pagados y hacer fine-tuning local.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://huggingface.co/models" target="_blank">HF Hub — 500K+ modelos <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://huggingface.co/spaces" target="_blank">Spaces — Demos <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://huggingface.co/learn/nlp-course" target="_blank">NLP Course (gratis) <span class="disc-link-type lt-tut">Tutorial</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">Next.js 16 — Framework React</div>
+        <span class="disc-level lvl-i">Intermedio</span>
+      </div>
+      <p class="disc-desc">App Router, Server Components, Streaming. El framework de tu intranet smconnection desplegada en AWS Amplify.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://nextjs.org/docs" target="_blank">Next.js Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://nextjs.org/learn" target="_blank">Learn Next.js — Oficial <span class="disc-link-type lt-tut">Tutorial</span></a>
+        <a class="disc-link" href="https://nextjs.org/docs/app" target="_blank">App Router Guide <span class="disc-link-type lt-docs">Docs</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">TypeScript — JS tipado</div>
+        <span class="disc-level lvl-p">Principiante</span>
+      </div>
+      <p class="disc-desc">Types, interfaces, generics, utility types. Esencial para escribir código mantenible con los SDKs de Claude, OpenAI y Supabase.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://www.typescriptlang.org/docs/" target="_blank">TS Handbook <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://www.typescriptlang.org/play" target="_blank">Playground online <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://www.totaltypescript.com" target="_blank">Matt Pocock — Total TS <span class="disc-link-type lt-tut">Tutorial</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">Tailwind CSS v4</div>
+        <span class="disc-level lvl-p">Principiante</span>
+      </div>
+      <p class="disc-desc">Utility-first CSS framework. Para el diseño de la intranet y los componentes de Hoku. Dark mode y responsive ya incluidos.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://tailwindcss.com/docs" target="_blank">Tailwind Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://play.tailwindcss.com" target="_blank">Tailwind Play <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://ui.shadcn.com" target="_blank">shadcn/ui componentes <span class="disc-link-type lt-tut">Tutorial</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">Figma — Diseño de interfaces</div>
+        <span class="disc-level lvl-p">Principiante</span>
+      </div>
+      <p class="disc-desc">Prototipos, design systems, auto-layout. Para diseñar antes de desarrollar los nuevos módulos de smconnection e InfoPet.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://www.figma.com/learn" target="_blank">Figma Learn — Tutoriales <span class="disc-link-type lt-tut">Tutorial</span></a>
+        <a class="disc-link" href="https://www.figma.com/community" target="_blank">Community — Templates <span class="disc-link-type lt-play">Playground</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">AWS Amplify — Deploy Next.js</div>
+        <span class="disc-level lvl-i">Intermedio</span>
+      </div>
+      <p class="disc-desc">Hosting, CI/CD, SSR en AWS. Tu stack actual de deploy para intranet.smconnection.cl. Aprende a optimizar los pipelines.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://docs.amplify.aws" target="_blank">Amplify Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://us-east-1.console.aws.amazon.com/amplify" target="_blank">Amplify Console <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://docs.amplify.aws/nextjs/" target="_blank">Next.js en Amplify <span class="disc-link-type lt-tut">Tutorial</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">Supabase — PostgreSQL moderno</div>
+        <span class="disc-level lvl-p">Principiante</span>
+      </div>
+      <p class="disc-desc">Auth, Storage, Realtime, Edge Functions. Ya instalado con 7 tablas. Aprende pgvector para RAG con los docs de smconnection.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://supabase.com/docs" target="_blank">Supabase Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://supabase.com/dashboard" target="_blank">Dashboard — SQL Editor <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://supabase.com/docs/guides/getting-started/quickstarts/nextjs" target="_blank">Next.js + Supabase <span class="disc-link-type lt-tut">Tutorial</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">Vercel — Deploy en segundos</div>
+        <span class="disc-level lvl-p">Principiante</span>
+      </div>
+      <p class="disc-desc">Edge Network, Serverless, Analytics. Alternativa a AWS Amplify para proyectos pequeños y AI apps con Vercel AI SDK.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://vercel.com/docs" target="_blank">Vercel Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://vercel.com/dashboard" target="_blank">Dashboard — Proyectos <span class="disc-link-type lt-play">Playground</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">MCP Servers — Conectores IA</div>
+        <span class="disc-level lvl-a">Avanzado</span>
+      </div>
+      <p class="disc-desc">Model Context Protocol para integrar herramientas en Claude y Hoku. Crea MCPs custom para smconnection, Bsale y Jumpseller.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://modelcontextprotocol.io/docs" target="_blank">MCP Docs — Protocolo <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://mcp.so" target="_blank">MCP Servers Registry <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://modelcontextprotocol.io/quickstart" target="_blank">Crear un MCP Server <span class="disc-link-type lt-tut">Tutorial</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">GitHub Actions — CI/CD</div>
+        <span class="disc-level lvl-i">Intermedio</span>
+      </div>
+      <p class="disc-desc">Workflows, automación, deploy automático. Ya conectado a AWS Amplify. Aprende a crear pipelines de code review con DeepSeek.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://docs.github.com/en/actions" target="_blank">Actions Docs <span class="disc-link-type lt-docs">Docs</span></a>
+        <a class="disc-link" href="https://github.com/marketplace?type=actions" target="_blank">Marketplace — Actions <span class="disc-link-type lt-play">Playground</span></a>
+        <a class="disc-link" href="https://docs.github.com/en/actions/writing-workflows/quickstart" target="_blank">Starter Workflows <span class="disc-link-type lt-tut">Tutorial</span></a>
+      </div>
+    </div>
+
+    <div class="disc-card">
+      <div class="disc-header">
+        <div class="disc-title">SAP BTP — Business Technology Platform</div>
+        <span class="disc-level lvl-a">Avanzado</span>
+      </div>
+      <p class="disc-desc">Integration Suite, Build Apps, Datasphere. Core del negocio smconnection como consultora SAP. Conectar BTP con IA es tu ventaja diferencial.</p>
+      <div class="disc-links">
+        <a class="disc-link" href="https://discovery-center.cloud.sap" target="_blank">SAP Discovery Center <span class="disc-link-type lt-tut">Tutorial</span></a>
+        <a class="disc-link" href="https://learning.sap.com" target="_blank">SAP Learning — Cursos <span class="disc-link-type lt-tut">Tutorial</span></a>
+        <a class="disc-link" href="https://cockpit.btp.cloud.sap" target="_blank">BTP Cockpit <span class="disc-link-type lt-play">Playground</span></a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ MISSIONS ═══ -->
+<section class="section" id="missions">
+  <div class="section-header">
+    <div class="section-num">06 /</div>
+    <div>
+      <h2 class="section-title">Misiones — Learning path desde cero</h2>
+      <p class="section-sub">8 misiones ordenadas de principiante a avanzado. Cada misión usa las herramientas de tu stack smconnection con objetivos concretos y pasos claros.</p>
+    </div>
+  </div>
+
+  <div class="missions-timeline">
+
+    <div class="mission">
+      <div class="mission-num"><div class="num-circle" style="border-color:var(--green);color:var(--green)">01</div></div>
+      <div class="mission-body">
+        <div class="mission-phase">MISIÓN 01 · PRINCIPIANTE · Semana 1</div>
+        <h3 class="mission-title">Dominar el prompting con Claude y Groq</h3>
+        <p class="mission-desc">Aprender a escribir prompts que obtengan resultados consistentes. La base de todo lo que construirás después en smconnection.</p>
+        <ul class="mission-steps">
+          <li><span class="step-n">01.</span>Leer el Prompt Engineering Guide de Anthropic (2h). Aprender system prompts, few-shot, chain-of-thought.</li>
+          <li><span class="step-n">02.</span>En el console.anthropic.com, reescribir los prompts del Generador de Propuestas SAP actual. Compara resultados.</li>
+          <li><span class="step-n">03.</span>Repetir en Groq Console con llama-3.3-70b. Observar diferencias de velocidad y calidad.</li>
+          <li><span class="step-n">04.</span>Crear una librería de prompts reutilizables en Airtable con su resultado esperado.</li>
+        </ul>
+        <div class="mission-tools">
+          <span class="mt">Claude Console</span><span class="mt">Groq Console</span><span class="mt">Airtable</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission">
+      <div class="mission-num"><div class="num-circle" style="border-color:var(--green);color:var(--green)">02</div></div>
+      <div class="mission-body">
+        <div class="mission-phase">MISIÓN 02 · PRINCIPIANTE · Semana 2</div>
+        <h3 class="mission-title">Tu primera app Next.js con IA integrada</h3>
+        <p class="mission-desc">Construir un mini-chat usando Next.js + Vercel AI SDK conectado a Claude. La base del patrón que usarás en smconnection.</p>
+        <ul class="mission-steps">
+          <li><span class="step-n">01.</span>Crear proyecto Next.js: <code style="font-family:var(--mono);font-size:0.78rem;background:var(--cream);padding:1px 6px;border-radius:2px">npx create-next-app@latest --typescript --tailwind</code></li>
+          <li><span class="step-n">02.</span>Instalar Vercel AI SDK: <code style="font-family:var(--mono);font-size:0.78rem;background:var(--cream);padding:1px 6px;border-radius:2px">npm install ai @anthropic-ai/sdk</code></li>
+          <li><span class="step-n">03.</span>Crear una API route /api/chat con streaming usando el hook useChat.</li>
+          <li><span class="step-n">04.</span>Conectar tu API key de Claude desde la intranet smconnection.</li>
+          <li><span class="step-n">05.</span>Deploy en Vercel o AWS Amplify. Probar en producción.</li>
+        </ul>
+        <div class="mission-tools">
+          <span class="mt">Next.js</span><span class="mt">Vercel AI SDK</span><span class="mt">Claude API</span><span class="mt">TypeScript</span><span class="mt">Tailwind</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission">
+      <div class="mission-num"><div class="num-circle" style="border-color:var(--amber);color:var(--amber)">03</div></div>
+      <div class="mission-body">
+        <div class="mission-phase">MISIÓN 03 · INTERMEDIO · Semana 3</div>
+        <h3 class="mission-title">Conectar Supabase + pgvector para RAG</h3>
+        <p class="mission-desc">Crear tu primer sistema RAG sobre los documentos de smconnection. Indexar, buscar semánticamente, responder con fuentes.</p>
+        <ul class="mission-steps">
+          <li><span class="step-n">01.</span>En Supabase, habilitar la extensión pgvector con: <code style="font-family:var(--mono);font-size:0.78rem;background:var(--cream);padding:1px 6px;border-radius:2px">CREATE EXTENSION vector;</code></li>
+          <li><span class="step-n">02.</span>Crear tabla documents con columna embedding vector(1536) para OpenAI embeddings.</li>
+          <li><span class="step-n">03.</span>Script de indexado: leer PDFs de propuestas SAP → OpenAI text-embedding-3-small → guardar en Supabase.</li>
+          <li><span class="step-n">04.</span>Función de búsqueda semántica: match_documents con cosine similarity.</li>
+          <li><span class="step-n">05.</span>Conectar con Claude para que responda usando los documentos encontrados como contexto.</li>
+        </ul>
+        <div class="mission-tools">
+          <span class="mt">Supabase</span><span class="mt">pgvector</span><span class="mt">OpenAI Embeddings</span><span class="mt">Claude</span><span class="mt">Next.js</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission">
+      <div class="mission-num"><div class="num-circle" style="border-color:var(--amber);color:var(--amber)">04</div></div>
+      <div class="mission-body">
+        <div class="mission-phase">MISIÓN 04 · INTERMEDIO · Semana 4</div>
+        <h3 class="mission-title">Tool Use: Claude llama APIs externas</h3>
+        <p class="mission-desc">Hacer que Claude llame a la API de Bsale o Jumpseller para responder preguntas sobre stock, ventas o clientes en lenguaje natural.</p>
+        <ul class="mission-steps">
+          <li><span class="step-n">01.</span>Estudiar Tool Use en los docs de Anthropic (2h). Entender el patrón define_tool → call → result → response.</li>
+          <li><span class="step-n">02.</span>Definir herramientas JSON para Bsale: get_products, get_invoices, get_clients.</li>
+          <li><span class="step-n">03.</span>Implementar el handler que cuando Claude llama la herramienta, ejecuta la API de Bsale/Jumpseller real.</li>
+          <li><span class="step-n">04.</span>Probar con: "¿Cuántas facturas emitimos en marzo?" y validar que Claude obtiene el dato real.</li>
+        </ul>
+        <div class="mission-tools">
+          <span class="mt">Claude Tool Use</span><span class="mt">Bsale API</span><span class="mt">Jumpseller API</span><span class="mt">Next.js API routes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission">
+      <div class="mission-num"><div class="num-circle" style="border-color:var(--amber);color:var(--amber)">05</div></div>
+      <div class="mission-body">
+        <div class="mission-phase">MISIÓN 05 · INTERMEDIO · Semana 5</div>
+        <h3 class="mission-title">Hoku: agregar un modelo nuevo + observabilidad</h3>
+        <p class="mission-desc">Integrar un modelo adicional en Hoku (ej: DeepSeek R1 o Claude Opus) y agregar Langfuse para trazar qué modelo responde qué.</p>
+        <ul class="mission-steps">
+          <li><span class="step-n">01.</span>Registrarse en cloud.langfuse.com. Instalar el SDK: <code style="font-family:var(--mono);font-size:0.78rem;background:var(--cream);padding:1px 6px;border-radius:2px">npm install langfuse</code></li>
+          <li><span class="step-n">02.</span>Instrumentar todas las llamadas de Hoku con langfuse.trace() para registrar model, tokens, latencia, costo.</li>
+          <li><span class="step-n">03.</span>Añadir DeepSeek R1 vía OpenRouter (compatible con OpenAI SDK) como décimo primer modelo.</li>
+          <li><span class="step-n">04.</span>En el dashboard de Langfuse, analizar: ¿qué modelo es más lento? ¿cuál alucina más?</li>
+        </ul>
+        <div class="mission-tools">
+          <span class="mt">Hoku</span><span class="mt">Langfuse</span><span class="mt">OpenRouter</span><span class="mt">DeepSeek R1</span><span class="mt">TypeScript</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission">
+      <div class="mission-num"><div class="num-circle" style="border-color:var(--claude);color:var(--claude)">06</div></div>
+      <div class="mission-body">
+        <div class="mission-phase">MISIÓN 06 · AVANZADO · Semana 6</div>
+        <h3 class="mission-title">Crear un MCP Server para smconnection</h3>
+        <p class="mission-desc">Construir un MCP Server personalizado que exponga las APIs de smconnection (Supabase, Bsale, Airtable) a Claude de forma nativa.</p>
+        <ul class="mission-steps">
+          <li><span class="step-n">01.</span>Leer la spec de MCP en modelcontextprotocol.io y el quickstart de Anthropic (3h).</li>
+          <li><span class="step-n">02.</span>Crear el proyecto MCP: <code style="font-family:var(--mono);font-size:0.78rem;background:var(--cream);padding:1px 6px;border-radius:2px">npx @modelcontextprotocol/create-server smconnection-mcp</code></li>
+          <li><span class="step-n">03.</span>Implementar tools: query_supabase, get_bsale_report, list_airtable_records, send_resend_email.</li>
+          <li><span class="step-n">04.</span>Configurar el MCP en Claude Desktop y en la intranet para que Hoku lo use automáticamente.</li>
+          <li><span class="step-n">05.</span>Publicar en el MCP Registry para que el equipo lo use.</li>
+        </ul>
+        <div class="mission-tools">
+          <span class="mt">MCP SDK</span><span class="mt">Claude MCP</span><span class="mt">Supabase</span><span class="mt">Bsale API</span><span class="mt">Resend</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission">
+      <div class="mission-num"><div class="num-circle" style="border-color:var(--claude);color:var(--claude)">07</div></div>
+      <div class="mission-body">
+        <div class="mission-phase">MISIÓN 07 · AVANZADO · Semana 7</div>
+        <h3 class="mission-title">GitHub Actions + DeepSeek: DevSecOps pipeline</h3>
+        <p class="mission-desc">Automatizar code review de seguridad en cada PR usando GitHub Actions + DeepSeek-Coder. Solo alerta si hay vulnerabilidades críticas.</p>
+        <ul class="mission-steps">
+          <li><span class="step-n">01.</span>Crear .github/workflows/ai-review.yml con trigger on pull_request.</li>
+          <li><span class="step-n">02.</span>El Action extrae el diff del PR y lo envía a DeepSeek-Coder vía API para análisis de seguridad.</li>
+          <li><span class="step-n">03.</span>Si DeepSeek detecta vulnerabilidades (SQL injection, secrets expuestos, XSS), el Action falla y notifica.</li>
+          <li><span class="step-n">04.</span>Integrar Resend para enviar el reporte de seguridad al email del desarrollador.</li>
+          <li><span class="step-n">05.</span>Guardar historial de revisiones en Supabase para tracking.</li>
+        </ul>
+        <div class="mission-tools">
+          <span class="mt">GitHub Actions</span><span class="mt">DeepSeek-Coder</span><span class="mt">Resend</span><span class="mt">Supabase</span><span class="mt">YAML</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission">
+      <div class="mission-num"><div class="num-circle" style="border-color:var(--claude);color:var(--claude)">08</div></div>
+      <div class="mission-body">
+        <div class="mission-phase">MISIÓN 08 · AVANZADO · Semana 8 — PROYECTO FINAL</div>
+        <h3 class="mission-title">InfoPet: asistente veterinario completo con RAG</h3>
+        <p class="mission-desc">Construir el asistente IA de InfoPet end-to-end: literatura veterinaria indexada, diagnóstico asistido, historial de mascotas y recordatorios automáticos.</p>
+        <ul class="mission-steps">
+          <li><span class="step-n">01.</span>Indexar literatura veterinaria en Supabase pgvector usando OpenAI Embeddings o Cohere Embed v3.</li>
+          <li><span class="step-n">02.</span>Implementar el chat veterinario con Claude (safety mode) + RAG sobre los documentos indexados.</li>
+          <li><span class="step-n">03.</span>Crear tabla mascotas en Supabase: nombre, especie, fechas de vacunas, historial de consultas.</li>
+          <li><span class="step-n">04.</span>Conectar Bsale para facturar consultas y Jumpseller para vender productos desde la app.</li>
+          <li><span class="step-n">05.</span>Configurar recordatorios automáticos de vacunas via Resend + Google Calendar.</li>
+          <li><span class="step-n">06.</span>Deploy en AWS Amplify con CI/CD via GitHub Actions. Dominio custom en Route 53.</li>
+        </ul>
+        <div class="mission-tools">
+          <span class="mt">Claude + MCP</span><span class="mt">Supabase RAG</span><span class="mt">Cohere Embed</span><span class="mt">Bsale</span><span class="mt">Jumpseller</span><span class="mt">Resend</span><span class="mt">Google Calendar</span><span class="mt">AWS Amplify</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ DECISION MATRIX ═══ -->
+<section class="section" id="matrix">
+  <div class="section-header">
+    <div class="section-num">07 /</div>
+    <div>
+      <h2 class="section-title">Guía de decisión — ¿Qué usar cuándo?</h2>
+      <p class="section-sub">Referencia rápida para el arquitecto smconnection. Sin ambigüedad.</p>
+    </div>
+  </div>
+
+  <div class="matrix-wrap">
+    <table>
+      <thead>
+        <tr><th>Si necesitas…</th><th>Usa en smconnection</th><th>Razón técnica</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Razonamiento complejo, propuestas SAP</td><td><span class="choice ch-c">Claude Sonnet/Haiku</span></td><td>200K contexto, tool use confiable, safety</td></tr>
+        <tr><td>Análisis de competencia + SEO</td><td><span class="choice ch-gem">Gemini 2.0 Flash</span></td><td>Integración Google Analytics, multimodal nativo</td></tr>
+        <tr><td>Generación masiva de código / PRs</td><td><span class="choice ch-d">DeepSeek-Coder</span></td><td>Top HumanEval, costo muy bajo</td></tr>
+        <tr><td>Respuestas en tiempo real (chat)</td><td><span class="choice ch-g">Groq llama-3.3-70b</span></td><td>LPU: &lt;100ms latencia en Hoku</td></tr>
+        <tr><td>RAG sobre documentos de smconnection</td><td><span class="choice ch-b">Claude + Supabase pgvector</span></td><td>Coherencia en razonamiento + búsqueda vectorial</td></tr>
+        <tr><td>Embeddings para búsqueda semántica</td><td><span class="choice ch-b">OpenAI text-embedding-3</span></td><td>Mejor vector quality, integra con Supabase</td></tr>
+        <tr><td>Fallback si Claude cae</td><td><span class="choice ch-b">OpenRouter → Bedrock</span></td><td>Mismo modelo (haiku) en infraestructura AWS</td></tr>
+        <tr><td>Monitorear Hoku en producción</td><td><span class="choice ch-g">Langfuse / LangSmith</span></td><td>Trazas por modelo, costo, latencia, alucinaciones</td></tr>
+        <tr><td>Conectar Claude con Bsale/Supabase</td><td><span class="choice ch-c">MCP Server smconnection</span></td><td>Tool use nativo, sin wrappers adicionales</td></tr>
+        <tr><td>Automatizar workflows entre servicios</td><td><span class="choice ch-b">n8n self-hosted</span></td><td>400+ integraciones, lógica compleja, privado</td></tr>
+        <tr><td>Deploy de nuevas features</td><td><span class="choice ch-g">GitHub Actions + AWS Amplify</span></td><td>CI/CD ya configurado en smconnection</td></tr>
+        <tr><td>Notificaciones y reportes por email</td><td><span class="choice ch-g">Resend + React Email</span></td><td>Entregabilidad alta, templates HTML</td></tr>
+        <tr><td>Clientes europeos GDPR</td><td><span class="choice ch-b">Mistral (EU region)</span></td><td>Infraestructura 100% europea</td></tr>
+        <tr><td>Prototipo rápido con equipo no-técnico</td><td><span class="choice ch-g">Airtable AI fields</span></td><td>Ya instalado en smconnection, no requiere código</td></tr>
+        <tr><td>SAP BTP + IA integrado</td><td><span class="choice ch-c">Claude + MCP + BTP APIs</span></td><td>Tu ventaja diferencial como consultora SAP</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <strong>SmConnection · Architecture Stack 2026</strong><br>
+  Hoku (10 modelos) · Claude · Gemini · DeepSeek · Groq · Mistral · OpenAI · Cohere · OpenRouter · Grok · Bedrock<br>
+  Supabase · Airtable · Bsale · Jumpseller · AWS (Amplify · S3 · CloudFront · Route 53) · GitHub · Google Workspace · Google Calendar<br>
+  Generado el 23 de marzo de 2026 · intranet.smconnection.cl
+</footer>
+
+<script>
+const C='#c0522a', D='#2a5fc0', G='#1a73e8';
+const gridC='rgba(14,14,18,0.07)', tickC='#7a7165';
+Chart.defaults.color=tickC;
+Chart.defaults.font.family="'IBM Plex Mono', monospace";
+Chart.defaults.font.size=10;
+
+// RADAR — 3 modelos
+new Chart(document.getElementById('radarChart'),{
+  type:'radar',
+  data:{
+    labels:['Razonamiento','Código','Multimodal','Safety','Velocidad','API/Tools','Costo-efic.'],
+    datasets:[
+      {label:'Claude',data:[4.8,4.2,3.5,4.9,3.6,4.5,3.5],backgroundColor:'rgba(192,82,42,0.1)',borderColor:C,pointBackgroundColor:C,borderWidth:1.5,pointRadius:3},
+      {label:'DeepSeek',data:[4.7,4.8,3.0,3.0,4.6,3.4,4.8],backgroundColor:'rgba(42,95,192,0.1)',borderColor:D,pointBackgroundColor:D,borderWidth:1.5,pointRadius:3},
+      {label:'Gemini',data:[4.5,4.0,4.9,3.8,4.2,4.3,4.2],backgroundColor:'rgba(26,115,232,0.08)',borderColor:G,pointBackgroundColor:G,borderWidth:1.5,pointRadius:3}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:tickC,boxWidth:10,padding:14}}},
+    scales:{r:{min:0,max:5,ticks:{stepSize:1,color:tickC,backdropColor:'transparent'},grid:{color:gridC},angleLines:{color:gridC},pointLabels:{color:'#1a1814',font:{size:10}}}}}
+});
+
+// DONUT — distribución Hoku
+new Chart(document.getElementById('donutChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Groq (RT chat)','Claude (SAP/InfoPet)','Gemini (Análisis)','DeepSeek (Código)','OpenAI (Embed)','OpenRouter (Fallback)','Otros (4)'],
+    datasets:[{data:[30,25,15,12,8,6,4],
+      backgroundColor:['#d97706','#c0522a','#1a73e8','#2a5fc0','#10b981','#6b3ec0','#6b7280'],
+      borderColor:var(--paper)||'#f5f2eb',borderWidth:2}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
+    plugins:{legend:{position:'right',labels:{color:tickC,boxWidth:10,padding:10,font:{size:10}}}}}
+});
+
+// BUBBLE
+new Chart(document.getElementById('bubbleChart'),{
+  type:'bubble',
+  data:{datasets:[
+    {label:'Claude',  data:[{x:4.0,y:4.6,r:18}],backgroundColor:'rgba(192,82,42,0.7)'},
+    {label:'Gemini',  data:[{x:2.8,y:4.4,r:16}],backgroundColor:'rgba(26,115,232,0.7)'},
+    {label:'DeepSeek',data:[{x:1.3,y:4.3,r:15}],backgroundColor:'rgba(42,95,192,0.7)'},
+    {label:'Groq',    data:[{x:1.1,y:3.8,r:12}],backgroundColor:'rgba(217,119,6,0.7)'},
+    {label:'OpenAI',  data:[{x:3.0,y:4.5,r:14}],backgroundColor:'rgba(16,185,129,0.7)'},
+    {label:'Supabase',data:[{x:1.5,y:4.2,r:16}],backgroundColor:'rgba(62,207,142,0.7)'},
+    {label:'AWS',     data:[{x:3.5,y:4.4,r:20}],backgroundColor:'rgba(255,153,0,0.7)'},
+    {label:'GitHub',  data:[{x:0.8,y:4.0,r:11}],backgroundColor:'rgba(100,100,100,0.7)'}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:tickC,boxWidth:10,padding:12}},
+      tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label} — Costo:${ctx.parsed.x.toFixed(1)} Cap:${ctx.parsed.y.toFixed(1)}`}}},
+    scales:{
+      x:{title:{display:true,text:'Costo relativo (1=bajo)',color:tickC},min:0,max:5.5,grid:{color:gridC},ticks:{color:tickC}},
+      y:{title:{display:true,text:'Capacidad (0–5)',color:tickC},min:0,max:5.5,grid:{color:gridC},ticks:{color:tickC}}
+    }}
+});
+
+// COST BAR
+new Chart(document.getElementById('costChart'),{
+  type:'bar',
+  data:{
+    labels:['Stack tradicional','SmConnection AI stack'],
+    datasets:[{label:'USD/mes',data:[450,120],backgroundColor:['rgba(14,14,18,0.15)','rgba(192,82,42,0.75)'],borderRadius:3}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{grid:{display:false},ticks:{color:tickC}},y:{grid:{color:gridC},ticks:{color:tickC,callback:v=>'$'+v}}}}
+});
+
+// BAR comparison
+new Chart(document.getElementById('barChart'),{
+  type:'bar',
+  data:{
+    labels:['Razonamiento','Código','Multimodal','Safety','Velocidad','API'],
+    datasets:[
+      {label:'Claude',data:[4.8,4.2,3.5,4.9,3.6,4.5],backgroundColor:'rgba(192,82,42,0.75)',borderRadius:2},
+      {label:'DeepSeek',data:[4.7,4.8,3.0,3.0,4.6,3.4],backgroundColor:'rgba(42,95,192,0.75)',borderRadius:2},
+      {label:'Gemini',data:[4.5,4.0,4.9,3.8,4.2,4.3],backgroundColor:'rgba(26,115,232,0.6)',borderRadius:2}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:tickC,boxWidth:10}}},
+    scales:{x:{grid:{color:gridC},ticks:{color:tickC}},y:{min:0,max:5,grid:{color:gridC},ticks:{color:tickC}}}}
+});
+</script>
+</body>
+</html>

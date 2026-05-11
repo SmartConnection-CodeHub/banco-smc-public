@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Connection — Software con IA que trabaja por ti</title>
+<style>
+:root{--bg:#060912;--s:#0a0d14;--e:#0f1520;--g:rgba(15,22,35,0.85);--b:rgba(255,255,255,0.06);--bh:rgba(255,255,255,0.15);--t:#f1f5f9;--t2:#94a3b8;--m:#475569;--a:#00e5b0;--a2:#00c49a;--ag:rgba(0,229,176,0.12);--blue:#4a9eff;--purple:#a855f7;--orange:#f59e0b}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden;line-height:1.6}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 0;backdrop-filter:blur(20px);background:rgba(6,9,18,0.85);border-bottom:1px solid var(--b)}
+.ni{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:1.15rem;color:var(--t);text-decoration:none}.logo span{color:var(--a)}
+.nl{display:flex;gap:28px;align-items:center}.nl a{color:var(--t2);text-decoration:none;font-size:0.85rem;transition:color 0.3s}.nl a:hover{color:var(--a)}
+.nc{background:var(--a);color:var(--bg);padding:9px 22px;border-radius:8px;font-weight:700;font-size:0.82rem;text-decoration:none;transition:all 0.3s}.nc:hover{background:var(--a2)}
+
+section{padding:100px 24px}.cx{max-width:1200px;margin:0 auto}
+.sl{font-size:0.72rem;text-transform:uppercase;letter-spacing:3px;color:var(--a);margin-bottom:10px;font-weight:600}
+.st{font-size:2.4rem;font-weight:800;line-height:1.15;margin-bottom:14px}
+.sd{font-size:1.05rem;color:var(--t2);max-width:620px;line-height:1.7}
+.hl{background:linear-gradient(135deg,var(--a),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.bp{background:var(--a);color:var(--bg);padding:13px 28px;border-radius:10px;font-weight:700;font-size:0.95rem;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer}.bp:hover{background:var(--a2);transform:translateY(-2px);box-shadow:0 8px 30px var(--ag)}
+.bs{background:transparent;color:var(--t);padding:13px 28px;border-radius:10px;font-weight:600;font-size:0.95rem;text-decoration:none;border:1px solid var(--b);transition:all 0.3s}.bs:hover{border-color:var(--a);color:var(--a)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;position:relative}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 15%,rgba(0,229,176,0.07) 0%,transparent 50%),radial-gradient(ellipse at 75% 85%,rgba(74,158,255,0.05) 0%,transparent 50%)}
+.hero-c{position:relative;z-index:1;max-width:700px}
+.hero h1{font-size:3.2rem;font-weight:800;line-height:1.08;margin-bottom:20px}
+.hero p{font-size:1.15rem;color:var(--t2);margin-bottom:32px;line-height:1.7}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:40px}
+.hero-proof{display:flex;gap:32px;flex-wrap:wrap}
+.hp{display:flex;flex-direction:column}.hp .n{font-size:1.8rem;font-weight:800;color:var(--a)}.hp .l{font-size:0.78rem;color:var(--m)}
+
+/* PAIN */
+.pain{background:var(--s)}
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:40px}
+.pain-card{border-radius:16px;padding:32px}
+.pain-before{background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.12)}
+.pain-after{background:var(--ag);border:1px solid rgba(0,229,176,0.15)}
+.pain-card h3{font-size:1.1rem;font-weight:700;margin-bottom:16px}
+.pain-card ul{list-style:none;font-size:0.9rem;line-height:2.1;color:var(--t2)}
+.pain-before ul li::before{content:"✕ ";color:#ef4444;font-weight:700}
+.pain-after ul li::before{content:"✓ ";color:var(--a);font-weight:700}
+
+/* WHAT WE DO - orientado a resultados */
+.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}
+.rc{background:rgba(255,255,255,0.03);border:1px solid var(--b);border-radius:16px;padding:28px;transition:all 0.4s}
+.rc:hover{border-color:var(--bh);transform:translateY(-3px)}
+.rc .ri{font-size:2rem;margin-bottom:12px;display:block}
+.rc h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.rc p{font-size:0.82rem;color:var(--t2);line-height:1.6;margin-bottom:10px}
+.rc .rt{font-size:0.7rem;color:var(--a);font-weight:600}
+
+/* PROMESAS */
+.promise{background:var(--s)}
+.promise-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:40px}
+.pg{display:flex;gap:20px;align-items:flex-start;background:rgba(255,255,255,0.02);border:1px solid var(--b);border-radius:14px;padding:24px;transition:all 0.3s}
+.pg:hover{border-color:var(--bh)}
+.pg .pi{font-size:1.8rem;flex-shrink:0}
+.pg h4{font-size:0.95rem;font-weight:700;margin-bottom:4px}
+.pg p{font-size:0.82rem;color:var(--t2);line-height:1.5}
+
+/* TECH - solo logos, sin detalles */
+.tech-section{text-align:center}
+.tech-cloud{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:32px}
+.tc{background:rgba(255,255,255,0.03);border:1px solid var(--b);border-radius:10px;padding:10px 20px;font-size:0.82rem;color:var(--t2);transition:all 0.3s;font-weight:500}
+.tc:hover{border-color:var(--a);color:var(--a);background:var(--ag)}
+.tech-label{font-size:0.7rem;color:var(--m);margin-top:24px;text-transform:uppercase;letter-spacing:2px}
+
+/* PYMES */
+.pymes-layout{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;align-items:start}
+.pyme-list{display:flex;flex-direction:column;gap:14px}
+.pl-item{display:flex;gap:14px;align-items:flex-start}
+.pl-item .pli{font-size:1.4rem;flex-shrink:0}
+.pl-item h4{font-size:0.9rem;font-weight:700;margin-bottom:2px}
+.pl-item p{font-size:0.8rem;color:var(--t2)}
+.pricing-card{background:rgba(255,255,255,0.03);border:1px solid var(--b);border-radius:20px;padding:36px;text-align:center}
+.pricing-card h3{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.pricing-card .price{font-size:2.8rem;font-weight:800;color:var(--a);margin:14px 0}
+.pricing-card .price span{font-size:0.9rem;color:var(--t2);font-weight:400}
+.pricing-card .pdesc{color:var(--t2);font-size:0.85rem;margin-bottom:20px}
+.pricing-card ul{list-style:none;text-align:left;margin-bottom:28px}
+.pricing-card ul li{padding:7px 0;border-bottom:1px solid var(--b);font-size:0.82rem;color:var(--t2)}
+.pricing-card ul li::before{content:"✓ ";color:var(--a);font-weight:700}
+
+/* CTA */
+.cta-f{background:linear-gradient(135deg,rgba(0,229,176,0.06),rgba(74,158,255,0.06));border-top:1px solid var(--b);text-align:center}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* CONTACTO */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
+.ci{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px}
+.ci .cii{width:40px;height:40px;background:var(--ag);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.ci h4{font-size:0.85rem;font-weight:700;margin-bottom:1px}
+.ci p{font-size:0.82rem;color:var(--t2)}
+.cf{display:flex;flex-direction:column;gap:14px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:0.78rem;color:var(--t2);font-weight:500}
+.fg input,.fg select,.fg textarea{background:rgba(255,255,255,0.03);border:1px solid var(--b);border-radius:10px;padding:11px 14px;color:var(--t);font-family:inherit;font-size:0.88rem;transition:border-color 0.3s;outline:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--a)}
+.fg textarea{resize:vertical;min-height:90px}
+
+/* PROOF */
+.proof-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px}
+.pc{background:rgba(255,255,255,0.03);border:1px solid var(--b);border-radius:14px;padding:28px;text-align:center;transition:all 0.3s}
+.pc:hover{border-color:var(--bh);transform:translateY(-2px)}
+.pn{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,var(--a),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.plb{font-size:0.82rem;color:var(--t2);margin-top:4px}
+
+footer{background:var(--bg);border-top:1px solid var(--b);padding:40px 24px 20px;text-align:center;color:var(--m);font-size:0.8rem}
+footer p{margin-top:6px}
+
+/* WhatsApp */
+.wa{position:fixed;bottom:24px;right:24px;z-index:999;width:60px;height:60px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 4px 20px rgba(37,211,102,0.4);transition:transform 0.3s;text-decoration:none}
+.wa:hover{transform:scale(1.1)}
+
+@media(max-width:768px){
+  .hero h1{font-size:2rem}.st{font-size:1.7rem}section{padding:72px 24px}
+  .pain-grid,.results-grid,.promise-grid,.pymes-layout,.contact-grid{grid-template-columns:1fr}
+  .proof-row{grid-template-columns:1fr 1fr}
+  .nl{display:none}.fr{grid-template-columns:1fr}
+  .hero-proof{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="ni">
+  <a href="#" class="logo">Smart<span>Connection</span></a>
+  <div class="nl">
+    <a href="#servicios">Servicios</a>
+    <a href="#como">Cómo lo hacemos</a>
+    <a href="#pymes">PYMES</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#contacto" class="nc">Agendar Reunión</a>
+  </div>
+</div></nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="cx hero-c">
+    <div class="sl">Consultoría SAP · Desarrollo con IA · Chile</div>
+    <h1>Software inteligente que <span class="hl">resuelve tu problema</span>, no que lo complica</h1>
+    <p>Empresa chilena con +7 años en SAP y un equipo multidisciplinario potenciado con inteligencia artificial. Te entregamos la primera versión funcionando en 2 semanas.</p>
+    <div class="hero-ctas">
+      <a href="#contacto" class="bp">Agenda una reunión gratuita →</a>
+      <a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20más%20sobre%20Smart%20Connection" class="bs" target="_blank">💬 Escríbenos por WhatsApp</a>
+    </div>
+    <div class="hero-proof">
+      <div class="hp"><span class="n">+7</span><span class="l">Años experiencia SAP</span></div>
+      <div class="hp"><span class="n">99.9%</span><span class="l">Uptime garantizado</span></div>
+      <div class="hp"><span class="n">2 sem</span><span class="l">Primera entrega</span></div>
+      <div class="hp"><span class="n">24/7</span><span class="l">Monitoreo activo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- DOLOR → SOLUCIÓN -->
+<section class="pain">
+  <div class="cx">
+    <div class="sl">El problema que resolvemos</div>
+    <div class="st">¿Tu tecnología <span class="hl">trabaja para ti</span> o tú trabajas para ella?</div>
+    <div class="pain-grid">
+      <div class="pain-card pain-before">
+        <h3>Lo que vemos en empresas que nos buscan</h3>
+        <ul>
+          <li>Procesos manuales que consumen horas cada semana</li>
+          <li>Datos en planillas que nadie entiende ni confía</li>
+          <li>Software que no habla con tu SAP ni con nada</li>
+          <li>Proveedores que desaparecen después de entregar</li>
+          <li>Proyectos que se atrasan meses y cuestan el doble</li>
+          <li>IA que "suena bien" pero nadie sabe cómo aplicar</li>
+        </ul>
+      </div>
+      <div class="pain-card pain-after">
+        <h3>Lo que entregamos</h3>
+        <ul>
+          <li>Automatización inteligente que libera a tu equipo</li>
+          <li>Dashboards en tiempo real con datos que importan</li>
+          <li>Integraciones que funcionan desde el día 1</li>
+          <li>Soporte continuo incluido — no desaparecemos</li>
+          <li>Entregas cada 2 semanas con resultados medibles</li>
+          <li>IA aplicada a TU negocio con resultados reales</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="cx">
+    <div class="sl">Servicios</div>
+    <div class="st">Qué podemos hacer <span class="hl">por tu empresa</span></div>
+    <div class="sd">Un solo equipo que cubre consultoría SAP, desarrollo con IA y soluciones digitales para PYMES.</div>
+    <div class="results-grid">
+      <div class="rc"><span class="ri">🏗️</span><h3>Consultoría SAP</h3><p>BTP, S/4HANA, ABAP, FIORI, PI/PO, CPI, BW. Migraciones sin sorpresas, integraciones que funcionan, soporte continuo.</p><span class="rt">→ Tu SAP conectado y funcionando</span></div>
+      <div class="rc"><span class="ri">🤖</span><h3>Software con IA</h3><p>Chatbots, asistentes de negocio, análisis de documentos, automatización inteligente. IA que entiende tu contexto y entrega valor real.</p><span class="rt">→ Decisiones más rápidas, menos errores</span></div>
+      <div class="rc"><span class="ri">🌐</span><h3>Desarrollo Web & Apps</h3><p>Sitios de alta conversión, tiendas online, plataformas internas, apps móviles. Todo responsive, rápido y seguro.</p><span class="rt">→ Presencia digital que convierte</span></div>
+      <div class="rc"><span class="ri">📊</span><h3>Analytics & BI</h3><p>Dashboards ejecutivos que muestran lo que importa. Reportería automatizada. Métricas de negocio en tiempo real.</p><span class="rt">→ Datos que sirven para decidir</span></div>
+      <div class="rc"><span class="ri">🔌</span><h3>Integraciones</h3><p>Conectamos tus sistemas: ERP, CRM, eCommerce, facturación, inventario, pagos. Todo sincronizado automáticamente.</p><span class="rt">→ Tus sistemas hablando entre sí</span></div>
+      <div class="rc"><span class="ri">🛡️</span><h3>Soporte & Evolución</h3><p>No entregamos y desaparecemos. Monitoreo activo, mejoras continuas, soporte incluido. Tu software evoluciona contigo.</p><span class="rt">→ Tranquilidad a largo plazo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO LO HACEMOS - sin filtrar estrategia -->
+<section id="como" class="promise">
+  <div class="cx">
+    <div class="sl">Nuestro enfoque</div>
+    <div class="st">Por qué los resultados son <span class="hl">diferentes</span></div>
+    <div class="sd">No somos un freelancer ni una consultora genérica. Operamos como un equipo completo que cubre cada ángulo de tu proyecto.</div>
+    <div class="promise-grid">
+      <div class="pg">
+        <span class="pi">⚡</span>
+        <div>
+          <h4>Equipo completo, no un solo desarrollador</h4>
+          <p>Estrategia, diseño, arquitectura, desarrollo, calidad e innovación — cada área con un especialista dedicado trabajando en paralelo.</p>
+        </div>
+      </div>
+      <div class="pg">
+        <span class="pi">🧠</span>
+        <div>
+          <h4>IA de verdad, no marketing</h4>
+          <p>Usamos múltiples modelos de IA evaluados por caso de uso. Cada feature con guardrails de seguridad, evaluaciones de calidad y monitoreo en producción.</p>
+        </div>
+      </div>
+      <div class="pg">
+        <span class="pi">🔌</span>
+        <div>
+          <h4>Conectamos todo con MCP</h4>
+          <p>Model Context Protocol permite que nuestros sistemas de IA se conecten directamente con tus herramientas: bases de datos, calendario, email, CRM, facturación.</p>
+        </div>
+      </div>
+      <div class="pg">
+        <span class="pi">📐</span>
+        <div>
+          <h4>Primero entendemos, después construimos</h4>
+          <p>Antes de escribir una línea de código, mapeamos tu negocio, tus procesos y tus dolores. Ves un prototipo antes de invertir en desarrollo.</p>
+        </div>
+      </div>
+      <div class="pg">
+        <span class="pi">🎯</span>
+        <div>
+          <h4>Resultados medibles desde el día 1</h4>
+          <p>Definimos métricas de éxito contigo antes de empezar. Si no podemos medir el resultado, no lo construimos. Así de simple.</p>
+        </div>
+      </div>
+      <div class="pg">
+        <span class="pi">🛡️</span>
+        <div>
+          <h4>No desaparecemos</h4>
+          <p>Soporte continuo incluido. Monitoreo activo 24/7. Mejoras incrementales. Tu software evoluciona con tu negocio, no se queda atrás.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECNOLOGÍAS - como credibilidad, no como wiki -->
+<section class="tech-section">
+  <div class="cx">
+    <div class="sl">Tecnología</div>
+    <div class="st">Trabajamos con los <span class="hl">mejores del mercado</span></div>
+    <div class="sd" style="margin:0 auto 8px;text-align:center">Elegimos cada herramienta por resultados reales, no por moda.</div>
+
+    <div class="tech-cloud" style="margin-top:32px">
+      <div class="tc">SAP BTP</div>
+      <div class="tc">S/4HANA</div>
+      <div class="tc">ABAP</div>
+      <div class="tc">FIORI</div>
+      <div class="tc">Anthropic Claude</div>
+      <div class="tc">OpenAI</div>
+      <div class="tc">Google Gemini</div>
+      <div class="tc">Groq</div>
+      <div class="tc">AWS</div>
+      <div class="tc">Supabase</div>
+      <div class="tc">Vercel</div>
+      <div class="tc">Next.js</div>
+      <div class="tc">TypeScript</div>
+      <div class="tc">Tailwind CSS</div>
+      <div class="tc">Python</div>
+      <div class="tc">Node.js</div>
+    </div>
+    <div class="tech-label" style="margin-top:20px">Integraciones</div>
+    <div class="tech-cloud">
+      <div class="tc">Google Workspace</div>
+      <div class="tc">WhatsApp Business</div>
+      <div class="tc">MercadoLibre</div>
+      <div class="tc">Transbank</div>
+      <div class="tc">Flow.cl</div>
+      <div class="tc">Bsale</div>
+      <div class="tc">Jumpseller</div>
+      <div class="tc">Airtable</div>
+      <div class="tc">PostHog</div>
+      <div class="tc">MCP</div>
+    </div>
+    <div class="tech-label" style="margin-top:20px">IA & Protocolos</div>
+    <div class="tech-cloud">
+      <div class="tc">Model Context Protocol (MCP)</div>
+      <div class="tc">RAG</div>
+      <div class="tc">Function Calling</div>
+      <div class="tc">Agentes Autónomos</div>
+      <div class="tc">Prompt Engineering</div>
+      <div class="tc">Embeddings & Vector Search</div>
+      <div class="tc">Streaming SSE</div>
+      <div class="tc">Multi-Model Routing</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section>
+  <div class="cx">
+    <div class="proof-row">
+      <div class="pc"><div class="pn">+7</div><div class="plb">Años experiencia SAP</div></div>
+      <div class="pc"><div class="pn">99.9%</div><div class="plb">Uptime en producción</div></div>
+      <div class="pc"><div class="pn">10+</div><div class="plb">Modelos IA integrados</div></div>
+      <div class="pc"><div class="pn">24/7</div><div class="plb">Monitoreo activo</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PYMES -->
+<section id="pymes" class="pain">
+  <div class="cx">
+    <div class="sl">Para PYMES</div>
+    <div class="st">Tecnología de primer nivel, <span class="hl">accesible para tu negocio</span></div>
+    <div class="sd">No necesitas ser una gran empresa para tener software profesional con IA.</div>
+    <div class="pymes-layout">
+      <div class="pyme-list">
+        <div class="pl-item"><span class="pli">💰</span><div><h4>Sin grandes inversiones</h4><p>Planes mensuales accesibles. Pagas por lo que usas, creces cuando necesitas.</p></div></div>
+        <div class="pl-item"><span class="pli">⚡</span><div><h4>Funcionando en semanas</h4><p>No en meses. Primera entrega funcional en 2 semanas.</p></div></div>
+        <div class="pl-item"><span class="pli">🤖</span><div><h4>IA que trabaja por ti</h4><p>Automatiza cotizaciones, responde clientes, clasifica datos — tú te enfocas en vender.</p></div></div>
+        <div class="pl-item"><span class="pli">📈</span><div><h4>Crece sin límites</h4><p>Empiezas simple, agregas funcionalidades cuando las necesites. Sin rehacer nada.</p></div></div>
+        <div class="pl-item"><span class="pli">🛡️</span><div><h4>Soporte incluido siempre</h4><p>No te dejamos solo. Actualizaciones, mejoras y soporte por WhatsApp.</p></div></div>
+      </div>
+      <div class="pricing-card">
+        <h3>Plan PYME</h3>
+        <div class="pdesc">Todo lo que necesitas para digitalizar tu negocio</div>
+        <div class="price">$99.990 <span>CLP/mes</span></div>
+        <ul>
+          <li>Sitio web profesional con IA</li>
+          <li>Cotizador online integrado</li>
+          <li>CRM básico (leads y clientes)</li>
+          <li>Asistente IA para tu negocio</li>
+          <li>Reportes automáticos mensuales</li>
+          <li>Hosting y dominio incluido</li>
+          <li>Soporte por WhatsApp</li>
+          <li>Sin permanencia mínima</li>
+        </ul>
+        <a href="#contacto" class="bp" style="width:100%;justify-content:center">Quiero digitalizar mi negocio →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-f" id="agendar">
+  <div class="cx">
+    <div class="sl">¿Listo para empezar?</div>
+    <div class="st" style="text-align:center">Conversemos sobre <span class="hl">tu proyecto</span></div>
+    <p style="text-align:center;color:var(--t2);font-size:1.05rem;max-width:500px;margin:0 auto 28px">30 minutos. Sin compromiso. Te escuchamos, diagnosticamos y te decimos honestamente si podemos ayudarte.</p>
+    <div class="cta-btns">
+      <a href="#contacto" class="bp">Agendar reunión gratuita →</a>
+      <a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20más%20sobre%20Smart%20Connection" class="bs" target="_blank">💬 WhatsApp directo</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="cx">
+    <div class="sl">Contacto</div>
+    <div class="st">Cuéntanos tu desafío</div>
+    <div class="contact-grid">
+      <div>
+        <div class="ci"><div class="cii">📍</div><div><h4>Oficina</h4><p>Barros Borgoño 71, Providencia, Santiago</p></div></div>
+        <div class="ci"><div class="cii">📞</div><div><h4>Teléfono</h4><p>+56 9 5536 1419 · +56 9 7700 8176</p></div></div>
+        <div class="ci"><div class="cii">✉️</div><div><h4>Email</h4><p>contacto@smconnection.cl</p></div></div>
+        <div class="ci"><div class="cii">🕐</div><div><h4>Horario</h4><p>Lunes a Viernes · 9:00 — 18:00</p></div></div>
+        <div class="ci"><div class="cii">💬</div><div><h4>WhatsApp</h4><p><a href="https://wa.me/56955361419" style="color:var(--a);text-decoration:none;font-weight:600">Escríbenos directo →</a></p></div></div>
+      </div>
+      <form class="cf" onsubmit="event.preventDefault();alert('Mensaje enviado. Te contactaremos pronto.')">
+        <div class="fr">
+          <div class="fg"><label>Nombre *</label><input type="text" required placeholder="Tu nombre"></div>
+          <div class="fg"><label>Empresa</label><input type="text" placeholder="Tu empresa"></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Email *</label><input type="email" required placeholder="tu@email.com"></div>
+          <div class="fg"><label>Teléfono</label><input type="tel" placeholder="+56 9 ..."></div>
+        </div>
+        <div class="fg"><label>¿Qué necesitas? *</label>
+          <select required>
+            <option value="">Selecciona</option>
+            <option>Consultoría SAP</option>
+            <option>Software con IA</option>
+            <option>Desarrollo Web / App</option>
+            <option>Integración de Sistemas</option>
+            <option>Solución PYME</option>
+            <option>Soporte / AMS</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="fg"><label>Cuéntanos tu desafío *</label><textarea required placeholder="¿Qué problema quieres resolver? ¿Qué resultado esperas?"></textarea></div>
+        <button type="submit" class="bp" style="width:100%;justify-content:center">Enviar mensaje →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="cx">
+    <a href="#" class="logo" style="justify-content:center;display:flex;margin-bottom:8px">Smart<span>Connection</span></a>
+    <p>Consultoría SAP · Software con IA · Santiago, Chile</p>
+    <p>contacto@smconnection.cl · +56 9 5536 1419</p>
+    <p style="margin-top:14px">© 2026 Smart Connection. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20más" target="_blank" class="wa">💬</a>
+
+<script>
+window.addEventListener('scroll',()=>{document.querySelector('nav').style.borderBottomColor=window.scrollY>50?'rgba(255,255,255,0.06)':'transparent'})
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})})})
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.style.opacity='1';x.target.style.transform='translateY(0)'}})},{threshold:0.1})
+document.querySelectorAll('.rc,.pg,.pc,.tc,.pl-item').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(15px)';el.style.transition='all 0.5s ease';obs.observe(el)})
+</script>
+</body>
+</html>

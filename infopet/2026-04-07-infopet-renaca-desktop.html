@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoPet Reñaca — Panel Web</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --teal:   #00e5b0;
+  --green:  #00c853;
+  --red:    #ff1744;
+  --orange: #ff6d00;
+  --ocean:  #00b4d8;
+  --foam:   #90e0ef;
+
+  --glass-heavy: rgba(3,10,5,0.82);
+  --glass-mid:   rgba(3,10,5,0.62);
+  --glass-light: rgba(3,10,5,0.38);
+  --glass-b:     rgba(255,255,255,0.09);
+  --glass-b-teal:rgba(0,229,176,0.22);
+
+  --txt:   #eef4ee;
+  --txt2:  rgba(238,244,238,0.62);
+  --txt3:  rgba(238,244,238,0.32);
+
+  --r-sm: 10px; --r-md: 14px; --r-lg: 18px;
+  --panel-w: 400px;
+}
+
+html, body { width:100%; height:100%; overflow:hidden; font-family:'Inter',system-ui,sans-serif; color:var(--txt); background:#000; }
+
+/* ══ LAYOUT SPLIT ══ */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr var(--panel-w);
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ══ LADO IZQUIERDO — VIDEO + DATA ══ */
+.left {
+  position: relative;
+  overflow: hidden;
+  background: #010a04;
+}
+
+#bg-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6) saturate(0.85);
+  z-index: 0;
+}
+
+.left-overlay {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(0,20,8,0.55) 0%, transparent 35%),
+    linear-gradient(to top,    rgba(0,20,8,0.75) 0%, transparent 45%),
+    linear-gradient(to right,  rgba(0,20,8,0.50) 0%, transparent 60%);
+}
+
+/* Contenido sobre el video */
+.left-ui {
+  position: absolute; inset: 0; z-index: 10;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 36px 28px;
+}
+
+/* Top — location + live + reloj */
+.left-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+.loc-block h1 {
+  font-size: clamp(2.4rem,4vw,3.6rem);
+  font-weight: 900; letter-spacing: -1.5px; line-height: 1;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.6);
+}
+.loc-block h1 span { color: var(--foam); }
+.loc-block p { font-size:.85rem; color:var(--txt2); margin-top:5px; text-transform:uppercase; letter-spacing:.05em; }
+
+.top-right { display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
+.live-badge {
+  display:flex; align-items:center; gap:7px;
+  background:rgba(255,40,40,0.18); border:1px solid rgba(255,80,80,0.35);
+  border-radius:999px; padding:6px 16px;
+  font-size:.72rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  backdrop-filter:blur(10px);
+}
+.live-dot { width:8px;height:8px;border-radius:50%;background:#ff4444; animation:lp 1.6s ease-in-out infinite; }
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.25}}
+.clock-block { text-align:right; }
+.clock-block .time { font-size:2rem; font-weight:800; letter-spacing:.04em; text-shadow:0 2px 16px rgba(0,0,0,.5); }
+.clock-block .date { font-size:.75rem; color:var(--txt2); margin-top:2px; }
+
+/* Medio — vacío para ver el video */
+.left-mid { flex:1; display:flex; align-items:center; }
+
+/* Swell badge flotante */
+.swell-float {
+  display:inline-flex; align-items:center; gap:10px;
+  background:rgba(0,60,80,0.55); border:1px solid rgba(0,180,216,0.25);
+  backdrop-filter:blur(20px); border-radius:16px; padding:12px 20px;
+}
+.sf-item { display:flex; flex-direction:column; gap:2px; }
+.sf-lbl  { font-size:.6rem; text-transform:uppercase; letter-spacing:.09em; color:rgba(0,229,176,0.7); }
+.sf-val  { font-size:1.1rem; font-weight:800; color:#e0f7fa; }
+.sf-sep  { width:1px; height:32px; background:rgba(255,255,255,.08); flex-shrink:0; }
+
+/* Bottom — métricas en línea + forecast */
+.left-bottom { display:flex; flex-direction:column; gap:14px; }
+
+.metrics-row { display:flex; gap:12px; }
+.metric-card {
+  background:rgba(0,10,4,0.58); border:1px solid rgba(255,255,255,0.10);
+  backdrop-filter:blur(22px); border-radius:var(--r-md);
+  padding:14px 20px; min-width:120px;
+}
+.metric-card .ml { font-size:.62rem; text-transform:uppercase; letter-spacing:.1em; color:var(--txt3); margin-bottom:5px; }
+.metric-card .mv { font-size:1.6rem; font-weight:800; line-height:1; }
+.metric-card .ms { font-size:.72rem; color:var(--txt2); margin-top:3px; }
+.metric-card.c-teal .mv { color:var(--teal); }
+.metric-card.c-ocean .mv { color:var(--ocean); }
+.metric-card.c-warn  .mv { color:#f4a261; }
+
+/* Wind bar */
+.wind-bar { height:3px; background:rgba(255,255,255,.08); border-radius:2px; margin-top:6px; overflow:hidden; }
+.wind-fill { height:100%; border-radius:2px; background:linear-gradient(to right,var(--foam),var(--teal)); transition:width 1s; }
+
+/* Forecast row */
+.forecast-row { display:flex; gap:8px; }
+.fc {
+  background:rgba(0,10,4,0.48); border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(14px); border-radius:var(--r-sm);
+  padding:10px 14px; text-align:center; flex:1;
+}
+.fc.today { border-color:rgba(0,180,216,0.35); background:rgba(0,50,70,0.50); }
+.fc .fl { font-size:.6rem; text-transform:uppercase; letter-spacing:.07em; color:var(--txt3); margin-bottom:4px; }
+.fc.today .fl { color:var(--ocean); }
+.fc .fv { font-size:.82rem; font-weight:800; color:var(--txt); }
+.fc.today .fv { color:#fff; }
+
+/* Telemetry strip */
+.telem-strip {
+  display:flex; align-items:center; gap:0;
+  background:rgba(0,10,4,0.70); border-top:1px solid rgba(255,255,255,0.06);
+  backdrop-filter:blur(16px); padding:0 36px; height:40px; flex-shrink:0;
+  position:absolute; bottom:0; left:0; right:0; z-index:20;
+}
+.tl { display:flex; align-items:center; gap:6px; padding:0 18px; border-right:1px solid rgba(255,255,255,0.06); font-size:.72rem; white-space:nowrap; }
+.tl:first-child { padding-left:0; }
+.tl .tv { font-weight:700; color:var(--txt); }
+.tl .tlb{ color:var(--txt3); }
+.tl-space { flex:1; }
+.tl-src { font-size:.62rem; color:var(--txt3); }
+
+/* ══ LADO DERECHO — PANEL INFOPET ══ */
+.right {
+  background: var(--glass-heavy);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border-left: 1px solid var(--glass-b);
+  display: flex; flex-direction: column;
+  height: 100vh; overflow: hidden;
+  position: relative; z-index: 50;
+}
+
+/* Panel header */
+.panel-header {
+  height: 58px; flex-shrink: 0;
+  background:rgba(0,8,3,0.80);
+  border-bottom: 1px solid var(--glass-b);
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0 16px;
+}
+.p-logo { display:flex; align-items:center; gap:10px; }
+.p-logo-icon {
+  width:32px; height:32px; border-radius:9px;
+  background:linear-gradient(135deg,var(--teal),#009e76);
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+}
+.p-logo-text { font-size:15px; font-weight:800; letter-spacing:-.02em; }
+.p-logo-badge {
+  font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:.07em;
+  background:rgba(0,229,176,0.10); color:var(--teal);
+  border:1px solid rgba(0,229,176,0.22); border-radius:5px; padding:2px 6px; margin-left:2px;
+}
+.p-right { display:flex; align-items:center; gap:8px; }
+.p-status { width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green); animation:blink 2.4s ease-in-out infinite; }
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 7px var(--green)}50%{opacity:.5;box-shadow:0 0 13px var(--green)}}
+.p-btn { width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,0.05);border:1px solid var(--glass-b);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer; }
+
+/* Panel tabs */
+.panel-tabs {
+  display:flex; flex-shrink:0;
+  background:rgba(0,6,2,0.60);
+  border-bottom:1px solid var(--glass-b);
+}
+.ptab {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:3px; padding:10px 4px; cursor:pointer; position:relative;
+  font-size:.62rem; font-weight:600; color:var(--txt3); transition:color .15s;
+}
+.ptab .ti { font-size:18px; transition:transform .18s; }
+.ptab.active { color:var(--teal); }
+.ptab.active .ti { transform:translateY(-1px); }
+.ptab.active::after {
+  content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  width:24px; height:2px; background:var(--teal); border-radius:2px 2px 0 0;
+  box-shadow:0 0 8px var(--teal);
+}
+
+/* Panel body scroll */
+.panel-body { flex:1; overflow-y:auto; overflow-x:hidden; scrollbar-width:thin; scrollbar-color:rgba(0,229,176,0.15) transparent; }
+.panel-body::-webkit-scrollbar { width:4px; }
+.panel-body::-webkit-scrollbar-thumb { background:rgba(0,229,176,0.15); border-radius:2px; }
+
+.pscreen { display:none; }
+.pscreen.active { display:block; }
+
+/* ── Helpers ── */
+.sec-lbl { padding:16px 16px 8px; font-size:.68rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--txt3); }
+
+/* Cards genéricos */
+.g-card {
+  background:rgba(255,255,255,0.04); border:1px solid var(--glass-b);
+  border-radius:var(--r-md); backdrop-filter:blur(8px);
+}
+
+/* ── HOME ── */
+.hero {
+  padding:14px 16px 6px;
+  display:flex; justify-content:space-between; align-items:flex-start;
+}
+.hero-name { font-size:1.1rem; font-weight:900; letter-spacing:-.025em; }
+.hero-name .tag { color:var(--ocean); }
+.hero-date { font-size:.7rem; color:var(--txt2); margin-top:2px; }
+.hero-chip {
+  display:flex; align-items:center; gap:5px;
+  background:rgba(0,200,83,0.08); border:1px solid rgba(0,200,83,0.22);
+  border-radius:20px; padding:4px 10px;
+}
+.hero-chip span { font-size:.68rem; font-weight:600; color:var(--green); }
+
+.alert-box {
+  margin:8px 16px;
+  background:rgba(255,23,68,0.08); border:1px solid rgba(255,23,68,0.32);
+  border-radius:var(--r-md); padding:12px 13px;
+  display:flex; align-items:center; gap:11px;
+  animation:ap 3s ease-in-out infinite;
+}
+@keyframes ap{0%,100%{border-color:rgba(255,23,68,.32)}50%{border-color:rgba(255,23,68,.50)}}
+.ab-icon { font-size:18px; flex-shrink:0; }
+.ab-body { flex:1; }
+.ab-title { font-size:.72rem; font-weight:700; color:var(--red); }
+.ab-sub   { font-size:.65rem; color:var(--txt3); margin-top:1px; }
+.ab-num   { font-size:1.4rem; font-weight:900; color:var(--red); }
+
+.kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 16px; }
+.kpi {
+  background:rgba(255,255,255,0.04); border:1px solid var(--glass-b);
+  border-radius:var(--r-md); padding:13px 12px; position:relative; overflow:hidden;
+}
+.kpi::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.03) 0%,transparent 55%); pointer-events:none; }
+.kpi.g { border-color:rgba(0,200,83,0.25); box-shadow:0 0 16px rgba(0,200,83,0.12); }
+.kpi.r { border-color:rgba(255,23,68,0.30); box-shadow:0 0 20px rgba(255,23,68,0.12); }
+.kpi.t { border-color:rgba(0,229,176,0.20); box-shadow:0 0 16px rgba(0,229,176,0.10); }
+.kpi.o { border-color:rgba(255,109,0,0.22); box-shadow:0 0 16px rgba(255,109,0,0.10); }
+.kpi-l { font-size:.6rem; font-weight:600; color:var(--txt2); letter-spacing:.04em; margin-bottom:6px; }
+.kpi-v { font-size:1.7rem; font-weight:900; letter-spacing:-.04em; line-height:1; }
+.kpi.g .kpi-v { color:var(--green); }
+.kpi.r .kpi-v { color:var(--red); }
+.kpi.t .kpi-v { color:var(--teal); }
+.kpi.o .kpi-v { color:var(--orange); }
+.kpi-s { font-size:.62rem; color:var(--txt3); margin-top:4px; }
+.kpi-tr { position:absolute; top:8px; right:8px; font-size:.6rem; font-weight:700; padding:2px 5px; border-radius:5px; }
+.up  { background:rgba(0,200,83,0.12); color:var(--green); }
+.dn  { background:rgba(255,23,68,0.12); color:var(--red); }
+.neu { background:rgba(255,255,255,0.05); color:var(--txt2); }
+
+/* Quick actions */
+.qa-row { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:0 16px; }
+.qa {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:6px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-b);
+  border-radius:var(--r-md); padding:13px 4px; cursor:pointer; min-height:74px;
+  transition:background .13s;
+}
+.qa:hover { background:rgba(255,255,255,0.07); }
+.qa.ia { border-color:var(--glass-b-teal); background:rgba(0,229,176,0.05); }
+.qa .qi { font-size:20px; }
+.qa .ql { font-size:.6rem; font-weight:600; color:var(--txt2); text-align:center; }
+.qa.ia .ql { color:var(--teal); }
+
+/* Stock semáforo */
+.stock-c { margin:0 16px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-b); border-radius:var(--r-lg); padding:16px; }
+.sc-title { font-size:.8rem; font-weight:700; margin-bottom:14px; }
+.si { margin-bottom:13px; }
+.si:last-child { margin-bottom:0; }
+.si-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+.si-name { display:flex; align-items:center; gap:6px; font-size:.72rem; font-weight:600; }
+.sdot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.si-num { font-size:.85rem; font-weight:800; }
+.si-num.r{color:var(--red)} .si-num.o{color:var(--orange)} .si-num.g{color:var(--green)}
+.bar-t { height:5px; background:rgba(255,255,255,0.05); border-radius:99px; overflow:hidden; }
+.bar-f { height:100%; border-radius:99px; transform-origin:left; transform:scaleX(0); animation:grow .9s cubic-bezier(.34,1.56,.64,1) forwards; }
+.bar-r{background:linear-gradient(90deg,var(--red),#ff6b6b);animation-delay:.1s}
+.bar-o{background:linear-gradient(90deg,var(--orange),#ffa040);animation-delay:.25s}
+.bar-g{background:linear-gradient(90deg,var(--green),#69f0ae);animation-delay:.4s}
+@keyframes grow{to{transform:scaleX(1)}}
+
+/* Sync */
+.sync-row {
+  margin:0 16px;
+  background:rgba(255,255,255,0.03); border:1px solid var(--glass-b);
+  border-radius:var(--r-md); padding:10px 13px;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+}
+.sync-txt { font-size:.7rem; color:var(--txt2); }
+.sync-txt strong { color:var(--txt); font-weight:600; }
+.sync-cta {
+  font-size:.68rem; font-weight:700; color:var(--teal);
+  background:rgba(0,229,176,0.08); border:1px solid rgba(0,229,176,0.22);
+  border-radius:7px; padding:5px 11px; cursor:pointer; white-space:nowrap; flex-shrink:0;
+}
+.sync-cta:hover { background:rgba(0,229,176,0.14); }
+
+/* ── TSUKAI ── */
+.ia-profile {
+  display:flex; align-items:center; gap:12px;
+  padding:16px; border-bottom:1px solid var(--glass-b);
+  background:rgba(0,10,4,0.40);
+}
+.ia-av {
+  width:46px;height:46px;border-radius:14px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(0,80,40,0.7),rgba(0,30,15,0.9));
+  border:1.5px solid rgba(0,229,176,0.28);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 14px rgba(0,229,176,0.14);
+}
+.ia-av svg { width:30px;height:30px; }
+.ia-info { flex:1; }
+.ia-name { font-size:.95rem; font-weight:800; }
+.ia-nick { font-size:.68rem; color:var(--txt2); margin-top:1px; }
+.ia-online {
+  display:flex;align-items:center;gap:4px;
+  background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.20);
+  border-radius:20px;padding:3px 8px;margin-top:6px;width:fit-content;
+}
+.ia-online span { font-size:.6rem;font-weight:600;color:var(--green); }
+.chat-area { padding:14px;display:flex;flex-direction:column;gap:12px; }
+.msg { display:flex;gap:8px;align-items:flex-end; }
+.msg.u { flex-direction:row-reverse; }
+.av { width:26px;height:26px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px; }
+.msg.b .av { background:linear-gradient(135deg,rgba(0,70,35,0.8),rgba(0,25,12,0.9));border:1px solid rgba(0,229,176,0.20); }
+.msg.u .av { background:rgba(0,229,176,0.10); }
+.bubble { max-width:82%;padding:10px 13px;border-radius:15px;font-size:.75rem;line-height:1.55; }
+.msg.b .bubble { background:rgba(255,255,255,0.05);border:1px solid var(--glass-b);border-bottom-left-radius:4px; }
+.msg.u .bubble { background:rgba(0,229,176,0.11);border:1px solid rgba(0,229,176,0.22);border-bottom-right-radius:4px; }
+.mt { font-size:.6rem;color:var(--txt3);margin-top:3px; }
+.msg.b .mt { padding-left:34px; }
+.msg.u .mt { padding-right:34px;text-align:right; }
+.dc { background:rgba(0,229,176,0.05);border:1px solid rgba(0,229,176,0.14);border-radius:10px;padding:9px 11px;margin-top:8px; }
+.dcr { display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:.7rem; }
+.dcr:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.04);}
+.dcl{color:var(--txt2)} .dcv{font-weight:700}
+.dcv.r{color:var(--red)} .dcv.o{color:var(--orange)} .dcv.g{color:var(--green)}
+.typo{display:flex;gap:3px;align-items:center;padding:1px 0;}
+.typo span{width:6px;height:6px;border-radius:50%;background:var(--teal);opacity:.3;animation:td 1.4s ease-in-out infinite;}
+.typo span:nth-child(2){animation-delay:.2s}.typo span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.sugg { display:flex;gap:7px;padding:0 14px 14px;overflow-x:auto;scrollbar-width:none; }
+.sugg::-webkit-scrollbar{display:none}
+.sugg-chip {
+  white-space:nowrap;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.11);
+  border-radius:20px;padding:6px 12px;font-size:.68rem;color:var(--txt2);cursor:pointer;flex-shrink:0;
+}
+.sugg-chip:hover{background:rgba(0,229,176,0.09);color:var(--teal);border-color:rgba(0,229,176,0.28);}
+.chat-input-row {
+  padding:10px 14px;
+  background:rgba(0,8,3,0.80);border-top:1px solid var(--glass-b);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.chat-inp {
+  flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--glass-b);
+  border-radius:22px;padding:9px 14px;font-size:.75rem;color:var(--txt);outline:none;font-family:inherit;
+}
+.chat-inp::placeholder{color:var(--txt3)}
+.chat-send {
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:var(--teal);color:#000;font-size:15px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 0 12px rgba(0,229,176,0.28);
+}
+
+/* ── STOCK ── */
+.stock-filters { display:flex;gap:7px;padding:12px 16px;overflow-x:auto;scrollbar-width:none; }
+.stock-filters::-webkit-scrollbar{display:none}
+.sf-chip {
+  white-space:nowrap;font-size:.68rem;font-weight:600;
+  padding:6px 13px;border-radius:20px;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.11);color:var(--txt2);background:transparent;
+}
+.sf-chip.active{background:rgba(0,229,176,0.09);color:var(--teal);border-color:rgba(0,229,176,0.28);}
+.stock-sum { display:flex;gap:8px;padding:0 16px 10px; }
+.ss { flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--glass-b);border-radius:var(--r-md);padding:10px;text-align:center; }
+.ss-n{font-size:1.1rem;font-weight:800} .ss-l{font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--txt2);margin-top:1px}
+.ss.red .ss-n{color:var(--red)} .ss.ora .ss-n{color:var(--orange)} .ss.grn .ss-n{color:var(--green)}
+.prod-list { padding:0 16px;display:flex;flex-direction:column;gap:7px; }
+.prod {
+  background:rgba(255,255,255,0.03);border:1px solid var(--glass-b);
+  border-radius:var(--r-md);padding:11px 13px;
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+}
+.prod:hover{background:rgba(255,255,255,0.06);}
+.prod.cr{border-color:rgba(255,23,68,0.25);}
+.prod-ico{width:38px;height:38px;border-radius:9px;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid var(--glass-b);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.prod-inf{flex:1;min-width:0;}
+.prod-nm{font-size:.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prod-cat{font-size:.65rem;color:var(--txt2);margin-top:1px;}
+.prod-r{text-align:right;flex-shrink:0;}
+.prod-st{font-size:.85rem;font-weight:800;}
+.prod-st.r{color:var(--red)} .prod-st.o{color:var(--orange)} .prod-st.g{color:var(--green)}
+.prod-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-top:1px;}
+
+/* ── MÁS ── */
+.mas-acc {
+  margin:12px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--glass-b);
+  border-radius:var(--r-lg);padding:16px;display:flex;align-items:center;gap:12px;
+}
+.mas-av{width:44px;height:44px;border-radius:13px;flex-shrink:0;background:linear-gradient(135deg,var(--teal),#007a5e);display:flex;align-items:center;justify-content:center;font-size:20px;}
+.mas-ai{flex:1}
+.mas-an{font-size:.9rem;font-weight:700;}
+.mas-ar{font-size:.68rem;color:var(--txt2);margin-top:1px;}
+.logout{font-size:.65rem;font-weight:700;color:var(--red);background:rgba(255,23,68,0.09);border:1px solid rgba(255,23,68,0.22);border-radius:7px;padding:5px 10px;cursor:pointer;flex-shrink:0;}
+.mas-list{padding:0 16px;display:flex;flex-direction:column;gap:7px;}
+.mas-item{background:rgba(255,255,255,0.03);border:1px solid var(--glass-b);border-radius:var(--r-md);padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.mas-item:hover{background:rgba(255,255,255,0.06);}
+.mas-ico{font-size:22px;flex-shrink:0;width:38px;text-align:center;}
+.mas-body{flex:1}
+.mas-nm{font-size:.8rem;font-weight:700;margin-bottom:1px;}
+.mas-desc{font-size:.65rem;color:var(--txt2);line-height:1.35;}
+.mas-arr{font-size:1rem;color:var(--txt3);flex-shrink:0;}
+.mas-badge{font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0;background:rgba(255,23,68,0.12);color:var(--red);border:1px solid rgba(255,23,68,0.22);}
+
+/* ── LOADING ── */
+#loading{position:fixed;inset:0;z-index:200;background:#000c04;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .7s;}
+#loading.out{opacity:0;pointer-events:none;}
+.ring{width:42px;height:42px;border:3px solid rgba(0,229,176,0.14);border-top-color:var(--teal);border-radius:50%;animation:spin .9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{font-size:.82rem;color:var(--txt2);}
+#loading small{font-size:.65rem;color:rgba(238,244,238,0.18);}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="ring"></div>
+  <p>Conectando · InfoPet Reñaca</p>
+  <small>Cargando stream en vivo · cams.misolas.com</small>
+</div>
+
+<div class="layout">
+
+  <!-- ══════════ IZQUIERDA — VIDEO + DATOS MAR ══════════ -->
+  <div class="left">
+    <video id="bg-video" autoplay muted loop playsinline></video>
+    <div class="left-overlay"></div>
+
+    <div class="left-ui">
+      <!-- TOP -->
+      <div class="left-top">
+        <div class="loc-block">
+          <h1>Playa <span>Reñaca</span></h1>
+          <p>Viña del Mar · Chile · Mis Olas · Cámara 107690</p>
+        </div>
+        <div class="top-right">
+          <div class="live-badge"><span class="live-dot"></span>EN VIVO</div>
+          <div class="clock-block">
+            <div class="time" id="clock">--:--:--</div>
+            <div class="date" id="date-disp"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEDIO — swell flotante -->
+      <div class="left-mid">
+        <div class="swell-float">
+          <div class="sf-item">
+            <div class="sf-lbl">Swell prim.</div>
+            <div class="sf-val" id="sw-h">0.6m · 17s</div>
+          </div>
+          <div class="sf-sep"></div>
+          <div class="sf-item">
+            <div class="sf-lbl">Dirección</div>
+            <div class="sf-val">SO 228°</div>
+          </div>
+          <div class="sf-sep"></div>
+          <div class="sf-item">
+            <div class="sf-lbl">Ráfaga</div>
+            <div class="sf-val" id="sw-gust">36 kph</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM -->
+      <div class="left-bottom">
+        <!-- Métricas -->
+        <div class="metrics-row">
+          <div class="metric-card c-teal">
+            <div class="ml">Olas hoy</div>
+            <div class="mv" id="m-wave">1.4m</div>
+            <div class="ms">1.4 – 2.5m</div>
+          </div>
+          <div class="metric-card c-ocean">
+            <div class="ml">Viento</div>
+            <div class="mv" id="m-wind">21 kph</div>
+            <div class="ms">↓ SO 210°</div>
+            <div class="wind-bar"><div class="wind-fill" id="wind-fill" style="width:42%"></div></div>
+          </div>
+          <div class="metric-card c-warn">
+            <div class="ml">Marea</div>
+            <div class="mv" id="m-tide">1.0m</div>
+            <div class="ms">Alta 1.1m · 9pm</div>
+          </div>
+        </div>
+        <!-- Forecast -->
+        <div class="forecast-row" id="fc-row"></div>
+      </div>
+    </div>
+
+    <!-- Telemetría -->
+    <div class="telem-strip">
+      <div class="tl"><span class="tv" id="t-wave">1.4m</span><span class="tlb">ola</span></div>
+      <div class="tl"><span class="tv" id="t-wind">21 kph</span><span class="tlb">viento SO</span></div>
+      <div class="tl"><span class="tv" id="t-swell">0.6m · 17s</span><span class="tlb">swell SO 228°</span></div>
+      <div class="tl"><span class="tv" id="t-tide">1.0m</span><span class="tlb">marea</span></div>
+      <div class="tl-space"></div>
+      <div class="tl"><span class="tl-src">📡 misolas.com · cámara 107690 · Reñaca</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════ DERECHA — PANEL INFOPET ══════════ -->
+  <div class="right">
+
+    <!-- Header panel -->
+    <div class="panel-header">
+      <div class="p-logo">
+        <div class="p-logo-icon">🐾</div>
+        <div>
+          <span class="p-logo-text">InfoPet</span>
+          <span class="p-logo-badge">REÑACA</span>
+        </div>
+      </div>
+      <div class="p-right">
+        <div class="p-status"></div>
+        <div class="p-btn">🔔</div>
+        <div class="p-btn">⚙️</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="panel-tabs">
+      <div class="ptab active" id="tab-home" onclick="switchTab('home')">
+        <span class="ti">🏠</span><span>Inicio</span>
+      </div>
+      <div class="ptab" id="tab-ia" onclick="switchTab('ia')">
+        <span class="ti">🐾</span><span>Tsukai</span>
+      </div>
+      <div class="ptab" id="tab-stock" onclick="switchTab('stock')">
+        <span class="ti">📦</span><span>Stock</span>
+      </div>
+      <div class="ptab" id="tab-mas" onclick="switchTab('mas')">
+        <span class="ti">☰</span><span>Más</span>
+      </div>
+    </div>
+
+    <!-- Body scrollable -->
+    <div class="panel-body">
+
+      <!-- ── HOME ── -->
+      <div class="pscreen active" id="ps-home">
+        <div class="hero">
+          <div>
+            <div class="hero-name">InfoPet <span class="tag">Reñaca</span></div>
+            <div class="hero-date" id="hero-date">Cargando...</div>
+          </div>
+          <div class="hero-chip">
+            <div class="p-status" style="width:7px;height:7px;"></div>
+            <span>Conectado</span>
+          </div>
+        </div>
+
+        <div class="alert-box">
+          <div class="ab-icon">⚠️</div>
+          <div class="ab-body">
+            <div class="ab-title">Productos sin stock</div>
+            <div class="ab-sub">Requieren reposición urgente</div>
+          </div>
+          <div class="ab-num">1.409</div>
+        </div>
+
+        <div class="sec-lbl">Resumen</div>
+        <div class="kpi-grid">
+          <div class="kpi g">
+            <div class="kpi-l">CON STOCK</div>
+            <div class="kpi-v">924</div>
+            <div class="kpi-s">productos activos</div>
+            <span class="kpi-tr up">▲ 12</span>
+          </div>
+          <div class="kpi r">
+            <div class="kpi-l">SIN STOCK</div>
+            <div class="kpi-v">1.409</div>
+            <div class="kpi-s">requieren reposición</div>
+            <span class="kpi-tr dn">▼ 8</span>
+          </div>
+          <div class="kpi t">
+            <div class="kpi-l">TOTAL UNID.</div>
+            <div class="kpi-v">4.211</div>
+            <div class="kpi-s">en inventario</div>
+            <span class="kpi-tr neu">= 0</span>
+          </div>
+          <div class="kpi o">
+            <div class="kpi-l">CATEGORÍAS</div>
+            <div class="kpi-v">1.817</div>
+            <div class="kpi-s">total registradas</div>
+            <span class="kpi-tr up">▲ 3</span>
+          </div>
+        </div>
+
+        <div class="sec-lbl">Acciones</div>
+        <div class="qa-row">
+          <div class="qa" onclick="switchTab('stock')"><span class="qi">📦</span><span class="ql">Stock</span></div>
+          <div class="qa" onclick="switchTab('mas')"><span class="qi">🧾</span><span class="ql">Facturas</span></div>
+          <div class="qa"><span class="qi">🔄</span><span class="ql">Sync</span></div>
+          <div class="qa ia" onclick="switchTab('ia')"><span class="qi">🐾</span><span class="ql">Tsukai</span></div>
+        </div>
+
+        <div class="sec-lbl">Semáforo de stock</div>
+        <div class="stock-c">
+          <div class="sc-title">Productos críticos</div>
+          <div class="si">
+            <div class="si-row">
+              <div class="si-name"><span class="sdot" style="background:var(--red)"></span>Royal Canin Maxi Adult</div>
+              <div class="si-num r">0 un</div>
+            </div>
+            <div class="bar-t"><div class="bar-f bar-r" style="width:2%"></div></div>
+          </div>
+          <div class="si">
+            <div class="si-row">
+              <div class="si-name"><span class="sdot" style="background:var(--orange)"></span>Pedigree Cachorros 3kg</div>
+              <div class="si-num o">3 un</div>
+            </div>
+            <div class="bar-t"><div class="bar-f bar-o" style="width:12%"></div></div>
+          </div>
+          <div class="si">
+            <div class="si-row">
+              <div class="si-name"><span class="sdot" style="background:var(--green)"></span>Whiskas Atún 85g</div>
+              <div class="si-num g">48 un</div>
+            </div>
+            <div class="bar-t"><div class="bar-f bar-g" style="width:72%"></div></div>
+          </div>
+        </div>
+
+        <div class="sec-lbl">Sincronización</div>
+        <div class="sync-row">
+          <div>🔗</div>
+          <div class="sync-txt" style="flex:1">Bsale → Jumpseller · <strong>Hace 12 min</strong></div>
+          <div class="sync-cta">Sincronizar</div>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+
+      <!-- ── TSUKAI ── -->
+      <div class="pscreen" id="ps-ia">
+        <div class="ia-profile">
+          <div class="ia-av">
+            <svg viewBox="0 0 100 100" fill="none">
+              <polygon points="50,8 72,28 82,55 68,78 32,78 18,55 28,28" fill="rgba(0,229,176,0.12)" stroke="#00e5b0" stroke-width="2"/>
+              <circle cx="38" cy="42" r="5" fill="#00e5b0"/>
+              <circle cx="62" cy="42" r="5" fill="#00e5b0"/>
+              <path d="M38 60 Q50 70 62 60" stroke="#00e5b0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <polygon points="28,28 20,12 38,22" fill="#00e5b0" opacity="0.6"/>
+              <polygon points="72,28 80,12 62,22" fill="#00e5b0" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="ia-info">
+            <div class="ia-name">Tsukai · Pepito</div>
+            <div class="ia-nick">Akita japonés · InfoPet IA · Groq Llama 3.3</div>
+            <div class="ia-online"><div class="p-status" style="width:6px;height:6px;"></div><span>En línea</span></div>
+          </div>
+        </div>
+        <div class="chat-area">
+          <div class="msg b">
+            <div class="av">🐕</div>
+            <div>
+              <div class="bubble">
+                Hola 👋 Veo <strong>1.409 sin stock</strong> y las olas en Reñaca a 1.4m. ¿En qué te ayudo?
+                <div class="dc">
+                  <div class="dcr"><span class="dcl">Sin stock</span><span class="dcv r">1.409</span></div>
+                  <div class="dcr"><span class="dcl">Con stock</span><span class="dcv g">924</span></div>
+                  <div class="dcr"><span class="dcl">Última sync</span><span class="dcv">Hace 12 min</span></div>
+                </div>
+              </div>
+              <div class="mt">Tsukai · 20:05</div>
+            </div>
+          </div>
+          <div class="msg u">
+            <div class="av">👤</div>
+            <div>
+              <div class="bubble">¿Qué productos tienen menos de 5 unidades?</div>
+              <div class="mt">20:06</div>
+            </div>
+          </div>
+          <div class="msg b">
+            <div class="av">🐕</div>
+            <div>
+              <div class="bubble">
+                Encontré <strong>37 productos</strong> con stock crítico (&lt;5 unidades):
+                <div class="dc">
+                  <div class="dcr"><span class="dcl">Royal Canin Maxi</span><span class="dcv r">0 un</span></div>
+                  <div class="dcr"><span class="dcl">Pedigree Cachorros</span><span class="dcv o">3 un</span></div>
+                  <div class="dcr"><span class="dcl">Purina ProPlan S/M</span><span class="dcv o">4 un</span></div>
+                  <div class="dcr"><span class="dcl">Hill's Science Diet</span><span class="dcv o">2 un</span></div>
+                </div>
+              </div>
+              <div class="mt">Tsukai · 20:06</div>
+            </div>
+          </div>
+          <div class="msg b">
+            <div class="av">🐕</div>
+            <div>
+              <div class="bubble"><div class="typo"><span></span><span></span><span></span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="sugg">
+          <div class="sugg-chip">¿Qué hay que pedir hoy?</div>
+          <div class="sugg-chip">Resumen del día</div>
+          <div class="sugg-chip">Estado Bsale</div>
+          <div class="sugg-chip">Productos más vendidos</div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-inp" placeholder="Pregúntale a Tsukai..."/>
+          <div class="chat-send">↑</div>
+        </div>
+      </div>
+
+      <!-- ── STOCK ── -->
+      <div class="pscreen" id="ps-stock">
+        <div class="stock-filters">
+          <div class="sf-chip active">Todos</div>
+          <div class="sf-chip">Sin stock</div>
+          <div class="sf-chip">Stock bajo</div>
+          <div class="sf-chip">OK</div>
+          <div class="sf-chip">Alimentos</div>
+          <div class="sf-chip">Accesorios</div>
+        </div>
+        <div class="stock-sum">
+          <div class="ss red"><div class="ss-n">1.409</div><div class="ss-l">Sin stock</div></div>
+          <div class="ss ora"><div class="ss-n">234</div><div class="ss-l">Bajo</div></div>
+          <div class="ss grn"><div class="ss-n">924</div><div class="ss-l">OK</div></div>
+        </div>
+        <div class="prod-list">
+          <div class="prod cr">
+            <div class="prod-ico">🐕</div>
+            <div class="prod-inf"><div class="prod-nm">Royal Canin Maxi Adult 15kg</div><div class="prod-cat">Alimentos · Perros</div></div>
+            <div class="prod-r"><div class="prod-st r">0</div><div class="prod-lbl">sin stock</div></div>
+          </div>
+          <div class="prod cr">
+            <div class="prod-ico">🐾</div>
+            <div class="prod-inf"><div class="prod-nm">Pedigree Cachorros R. Pequeñas 3kg</div><div class="prod-cat">Alimentos · Cachorros</div></div>
+            <div class="prod-r"><div class="prod-st o">3</div><div class="prod-lbl">bajo</div></div>
+          </div>
+          <div class="prod">
+            <div class="prod-ico">🐱</div>
+            <div class="prod-inf"><div class="prod-nm">Whiskas Atún en Gelatina 85g</div><div class="prod-cat">Alimentos · Gatos</div></div>
+            <div class="prod-r"><div class="prod-st g">48</div><div class="prod-lbl">ok</div></div>
+          </div>
+          <div class="prod cr">
+            <div class="prod-ico">🦮</div>
+            <div class="prod-inf"><div class="prod-nm">Purina ProPlan S/M 3kg</div><div class="prod-cat">Alimentos · Perros</div></div>
+            <div class="prod-r"><div class="prod-st o">4</div><div class="prod-lbl">bajo</div></div>
+          </div>
+          <div class="prod">
+            <div class="prod-ico">🧸</div>
+            <div class="prod-inf"><div class="prod-nm">Juguete Cuerda Premium</div><div class="prod-cat">Accesorios</div></div>
+            <div class="prod-r"><div class="prod-st g">22</div><div class="prod-lbl">ok</div></div>
+          </div>
+          <div class="prod">
+            <div class="prod-ico">🪮</div>
+            <div class="prod-inf"><div class="prod-nm">Cepillo Furminator M</div><div class="prod-cat">Accesorios · Grooming</div></div>
+            <div class="prod-r"><div class="prod-st g">11</div><div class="prod-lbl">ok</div></div>
+          </div>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+
+      <!-- ── MÁS ── -->
+      <div class="pscreen" id="ps-mas">
+        <div class="mas-acc">
+          <div class="mas-av">🐾</div>
+          <div class="mas-ai">
+            <div class="mas-an">InfoPet Reñaca</div>
+            <div class="mas-ar">Panel administración · Plan Pro</div>
+          </div>
+          <div class="logout">Salir</div>
+        </div>
+        <div class="sec-lbl">Módulos</div>
+        <div class="mas-list">
+          <div class="mas-item">
+            <span class="mas-ico">🧾</span>
+            <div class="mas-body"><div class="mas-nm">Facturas OCR</div><div class="mas-desc">Escanea con cámara · carga automática</div></div>
+            <div class="mas-badge">Nuevo</div>
+            <span class="mas-arr">›</span>
+          </div>
+          <div class="mas-item">
+            <span class="mas-ico">📤</span>
+            <div class="mas-body"><div class="mas-nm">Salidas de stock</div><div class="mas-desc">Registrar ventas y salidas manuales</div></div>
+            <span class="mas-arr">›</span>
+          </div>
+          <div class="mas-item">
+            <span class="mas-ico">🔄</span>
+            <div class="mas-body"><div class="mas-nm">Sync Bsale → Jumpseller</div><div class="mas-desc">Sincronización de inventario</div></div>
+            <span class="mas-arr">›</span>
+          </div>
+          <div class="mas-item">
+            <span class="mas-ico">📊</span>
+            <div class="mas-body"><div class="mas-nm">Reportes</div><div class="mas-desc">Ventas, inventario y métricas</div></div>
+            <span class="mas-arr">›</span>
+          </div>
+          <div class="mas-item">
+            <span class="mas-ico">🌊</span>
+            <div class="mas-body"><div class="mas-nm">Cámara Reñaca</div><div class="mas-desc">Stream en vivo · Mis Olas · Condiciones del mar</div></div>
+            <span class="mas-arr">›</span>
+          </div>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+
+    </div><!-- /panel-body -->
+  </div><!-- /right -->
+
+</div><!-- /layout -->
+
+<script>
+// ── HLS ──
+const HLS_URL = 'https://cams.misolas.com/hls/107690/index.m3u8';
+const vid = document.getElementById('bg-video');
+const ld  = document.getElementById('loading');
+const hide = () => { ld.classList.add('out'); setTimeout(()=>ld.remove(),750); };
+
+if(Hls.isSupported()){
+  const h = new Hls({lowLatencyMode:true,enableWorker:true});
+  h.loadSource(HLS_URL); h.attachMedia(vid);
+  h.on(Hls.Events.MANIFEST_PARSED,()=>{ vid.play().catch(()=>{}); hide(); });
+  h.on(Hls.Events.ERROR,(e,d)=>{ if(d.fatal) hide(); });
+} else if(vid.canPlayType('application/vnd.apple.mpegurl')){
+  vid.src=HLS_URL;
+  vid.addEventListener('loadedmetadata',()=>{ vid.play(); hide(); });
+  vid.addEventListener('error',hide);
+} else { hide(); }
+setTimeout(hide, 4500);
+
+// ── RELOJ ──
+function tick(){
+  const n=new Date();
+  document.getElementById('clock').textContent=n.toLocaleTimeString('es-CL',{hour12:false});
+  const d=n.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('date-disp').textContent=d.charAt(0).toUpperCase()+d.slice(1);
+  const hd=document.getElementById('hero-date');
+  if(hd) hd.textContent=d.charAt(0).toUpperCase()+d.slice(1);
+}
+setInterval(tick,1000); tick();
+
+// ── FORECAST ──
+const days=[
+  {l:'Hoy',v:'1.4–2.5m',t:true},{l:'Mañana',v:'1.7–2.9m'},{l:'Jue',v:'1.6–2.6m'},
+  {l:'Vie',v:'1.4–2.6m'},{l:'Sáb',v:'1.3–2.2m'},{l:'Dom',v:'1.1–2.2m'},
+  {l:'Lun',v:'1.7–3.6m'}
+];
+const fr=document.getElementById('fc-row');
+days.forEach(d=>{
+  const el=document.createElement('div');
+  el.className='fc'+(d.t?' today':'');
+  el.innerHTML=`<div class="fl">${d.l}</div><div class="fv">${d.v}</div>`;
+  fr.appendChild(el);
+});
+
+// ── NAVEGACIÓN ──
+const tabs=['home','ia','stock','mas'];
+function switchTab(name){
+  tabs.forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===name);
+    document.getElementById('ps-'+t).classList.toggle('active',t===name);
+  });
+  document.querySelector('.panel-body').scrollTop=0;
+}
+
+// ── DATOS SURF (live con micro-variación) ──
+const surf={wave:1.4,wind:21,gust:36,tide:1.0,swellH:0.6,swellP:17};
+function refreshSurf(){
+  const j=()=>(Math.random()-.5)*.08;
+  surf.wave=Math.max(0.8,surf.wave+j());
+  surf.wind=Math.max(8,surf.wind+(Math.random()-.5)*.4);
+  document.getElementById('m-wave').textContent=surf.wave.toFixed(1)+'m';
+  document.getElementById('m-wind').textContent=Math.round(surf.wind)+' kph';
+  document.getElementById('m-tide').textContent=surf.tide.toFixed(1)+'m';
+  document.getElementById('t-wave').textContent=surf.wave.toFixed(1)+'m';
+  document.getElementById('t-wind').textContent=Math.round(surf.wind)+' kph';
+  document.getElementById('wind-fill').style.width=Math.min(100,(surf.wind/80)*100)+'%';
+}
+setInterval(refreshSurf,30000);
+</script>
+</body>
+</html>

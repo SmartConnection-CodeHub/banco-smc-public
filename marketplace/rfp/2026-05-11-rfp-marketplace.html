@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>RFP · Marketplace SMC · MeLi + Helium 10</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.6;position:relative}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%);pointer-events:none;z-index:0}
+.container{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:20px}.crumb a{color:#7dd3fc;text-decoration:none}
+.badge{display:inline-block;font-size:10px;padding:4px 10px;background:rgba(0,229,176,.12);border:1px solid rgba(0,229,176,.3);border-radius:30px;color:#00e5b0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px}
+.lead{font-size:15px;color:#cbd5e1;margin-bottom:24px}
+h2{font-size:20px;font-weight:700;color:#f1f5f9;margin:36px 0 14px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px;display:flex;align-items:center;gap:10px}
+h2 .num{font-size:11px;color:#00e5b0;font-family:'JetBrains Mono',monospace;background:rgba(0,229,176,.08);padding:3px 8px;border-radius:4px}
+p{color:#cbd5e1;margin-bottom:12px;font-size:14px}
+.section{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;margin-bottom:14px}
+.callout{background:linear-gradient(135deg,rgba(0,229,176,.06),rgba(0,180,216,.06));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin:14px 0;font-size:13.5px;color:#cbd5e1}.callout b{color:#00e5b0}
+ul{padding-left:0;list-style:none}ul li{padding:6px 0 6px 24px;position:relative;color:#cbd5e1;font-size:13.5px;border-bottom:1px solid rgba(255,255,255,.03)}ul li::before{content:"›";position:absolute;left:8px;color:#00e5b0;font-weight:700}
+table{width:100%;border-collapse:collapse;margin:14px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:12.5px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;padding:9px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:top}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;padding:2px 6px;background:rgba(15,22,35,.8);border-radius:4px;color:#7dd3fc}
+.meta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:24px}
+.meta-card{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px}
+.meta-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.meta-val{font-size:13px;color:#f1f5f9;font-weight:700}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+.canal{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px;margin-bottom:10px}
+.canal-name{font-size:14px;font-weight:700;color:#00e5b0}
+.canal-info{font-size:12px;color:#94a3b8;margin-top:4px}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../index.html">← Marketplace</a> / Docs / RFP</div>
+<span class="badge">RFP 25-mar · Panchita → Hoku handoff</span>
+<h1>📋 RFP · Marketplace SMC · MeLi + Helium 10</h1>
+<p class="lead">Marzo 2026 · Guillermo + Javier definen SpA segunda · canal multi B2C/B2G/B2B · conexión Helium 10 (Amazon intel) ↔ MercadoLibre Chile · 13 pendientes pre-MVP completo</p>
+
+<div class="meta-row">
+<div class="meta-card"><div class="meta-lbl">Cliente</div><div class="meta-val">Marketplace SMC SpA (futura)</div></div>
+<div class="meta-card"><div class="meta-lbl">Socios</div><div class="meta-val">Guillermo + Javier (equity por definir)</div></div>
+<div class="meta-card"><div class="meta-lbl">Estado</div><div class="meta-val">Live MVP · 13 pendientes</div></div>
+<div class="meta-card"><div class="meta-lbl">Owner SMC</div><div class="meta-val">🐕 Panchita BA → 🐾 Hoku impl</div></div>
+</div>
+
+<h2><span class="num">01</span>🎯 Contexto del cliente</h2>
+<div class="section">
+<p>Javier es socio de Guillermo en InfoPet (ecommerce mascotas). Marzo 2026 detectan oportunidad mayor: <b>el holding Smart Connection puede capturar margen en lugar de comisión</b> creando su propio canal Marketplace en MercadoLibre Chile · usando inteligencia de Helium 10 (datos Amazon) para curar productos ganadores antes que la competencia local.</p>
+<div class="callout">
+<b>💡 Insight clave Panchita BA:</b> El cuello de botella en e-commerce Chile no es vender · es saber QUÉ vender. Helium 10 da visibilidad de productos top-selling en Amazon USA · que con 6-12 meses de delay aparecen en MercadoLibre Chile. Marketplace SMC se anticipa.
+</div>
+</div>
+
+<h2><span class="num">02</span>🔥 Problema · qué resolvemos</h2>
+<div class="section">
+<ul>
+<li><b>Saber qué vender:</b> sin data de mercado · decisión es "intuición" · 60% productos fallan</li>
+<li><b>Competir en MeLi:</b> 16% comisión + costos publicación · margen apretado · necesita pricing dinámico</li>
+<li><b>Canales fragmentados:</b> MercadoLibre B2C · Mercado Público B2G · empresas B2B · cada uno con dinámica distinta</li>
+<li><b>Sin canal propio:</b> 100% dependencia MeLi expone al holding · riesgo concentración</li>
+<li><b>Compliance B2G:</b> Mercado Público requiere ChileProveedores + F30/F30-1 + boletas garantía</li>
+</ul>
+</div>
+
+<h2><span class="num">03</span>💡 Hipótesis de negocio</h2>
+<div class="section">
+<div class="callout">
+<b>Hipótesis principal:</b> Combinando inteligencia Helium 10 (productos ganadores Amazon) + canal MeLi Chile (16% comisión pero alto tráfico) + Mercado Público B2G (margen mayor pero plazos largos) · podemos construir un marketplace híbrido que diversifica riesgos y captura margen en lugar de comisión.
+</div>
+<table>
+<thead><tr><th>Hipótesis</th><th>Test</th><th>Métrica</th></tr></thead>
+<tbody>
+<tr><td>Helium 10 predice ganadores Chile</td><td>Comparar productos top Amazon USA vs top MeLi Chile con 6-12 meses delay</td><td>Hit rate &gt;30% productos predichos</td></tr>
+<tr><td>Canal multi B2C/B2G/B2B reduce riesgo</td><td>Lanzar simultáneo 3 canales · medir contribución</td><td>Ningún canal &gt;60% revenue</td></tr>
+<tr><td>SMC dev custom &lt; Shopify Plus</td><td>Build Premium one-time vs $300+/mes recurrente</td><td>Payback dev &lt;6 meses si revenue justifica</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">04</span>🛠️ Solución propuesta · 3 canales</h2>
+<div class="section">
+<div class="canal">
+<div class="canal-name">🛒 Canal B2C · MercadoLibre Chile</div>
+<div class="canal-info">Consumidor final · volumen alto · comisión MeLi 16% + IVA · logística MeLi Envíos integrada · pago automático MeLi. <b>Productos:</b> tech accessories · home gadgets · curated by Helium 10 data.</div>
+</div>
+<div class="canal">
+<div class="canal-name">🏛️ Canal B2G · Mercado Público</div>
+<div class="canal-info">Estado · municipalidades · servicios públicos. Requiere ChileProveedores activo · cumplimiento previsional al día · boletas garantía bancarias. Margen mayor (30-50%) pero plazos pago 30-90 días.</div>
+</div>
+<div class="canal">
+<div class="canal-name">🏢 Canal B2B · Empresas privadas</div>
+<div class="canal-info">Volumen mediano · pago 30-60 días · facturación DTE 33 · contacto directo Business-Dev. Margen intermedio (20-35%) · relación cliente largo plazo.</div>
+</div>
+
+<h3>Stack técnico</h3>
+<ul>
+<li><b>Frontend:</b> Next.js + Tailwind · Amplify hosting <code>d3avx08z099h4q</code> · prerender + cache 18.4KB</li>
+<li><b>Backend/DB:</b> Supabase · cache productos Helium · órdenes · pricing dinámico</li>
+<li><b>Helium 10:</b> API integration · ingest datos Amazon · keywords · BSR · pricing</li>
+<li><b>MercadoLibre:</b> API publicación productos · webhooks órdenes · pricing sync</li>
+<li><b>ChileCompra:</b> integración futura B2G · garantías · OC</li>
+</ul>
+</div>
+
+<h2><span class="num">05</span>📊 KPIs</h2>
+<div class="section">
+<table>
+<thead><tr><th>Métrica</th><th>Target mes 3</th><th>Target mes 6</th></tr></thead>
+<tbody>
+<tr><td>Revenue total CLP</td><td>$5M</td><td>$25M</td></tr>
+<tr><td>Productos activos MeLi</td><td>50</td><td>200</td></tr>
+<tr><td>Hit rate Helium predictions</td><td>30%</td><td>50%</td></tr>
+<tr><td>Margen bruto promedio</td><td>25%</td><td>30%</td></tr>
+<tr><td>Distribución revenue B2C/B2G/B2B</td><td>80/10/10</td><td>60/25/15</td></tr>
+<tr><td>13 pendientes MVP completados</td><td>8/13</td><td>13/13</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">06</span>⏳ 13 Pendientes pre-MVP completo</h2>
+<div class="section">
+<table>
+<thead><tr><th>#</th><th>Pendiente</th><th>Prioridad</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Auth Supabase admin</td><td>P1</td></tr>
+<tr><td>2</td><td>Importar productos Helium bulk</td><td>P1</td></tr>
+<tr><td>3</td><td>Sync MeLi inventario bidireccional</td><td>P1</td></tr>
+<tr><td>4</td><td>Cálculo costo CIF (FOB+flete+seguro+arancel)</td><td>P1</td></tr>
+<tr><td>5</td><td>Pricing dinámico (margen + ajuste competencia)</td><td>P2</td></tr>
+<tr><td>6</td><td>Dashboard ventas por canal</td><td>P2</td></tr>
+<tr><td>7</td><td>Integración ChileCompra (B2G)</td><td>P2</td></tr>
+<tr><td>8</td><td>Webhook órdenes MeLi → despacho</td><td>P2</td></tr>
+<tr><td>9</td><td>Logística Chilexpress/Starken APIs</td><td>P3</td></tr>
+<tr><td>10</td><td>Facturación B2B DTE 33 Bsale</td><td>P3</td></tr>
+<tr><td>11</td><td>Reportes Helium · top + trending</td><td>P3</td></tr>
+<tr><td>12</td><td>Alertas mora cliente B2B</td><td>P3</td></tr>
+<tr><td>13</td><td>SEO landings producto Google</td><td>P3</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">07</span>⚠️ Riesgos</h2>
+<div class="section">
+<table>
+<tbody>
+<tr><td>Helium 10 predictions no hit en Chile</td><td>Alto</td><td>Empezar con productos validados · iterar</td></tr>
+<tr><td>MeLi suspende cuenta por reglas</td><td>Alto</td><td>Cumplir T&C estrictamente · diversificar a B2G/B2B rápido</td></tr>
+<tr><td>13 pendientes consumen $10M CLP dev</td><td>Medio</td><td>Priorizar P1 · validar antes de P2-P3</td></tr>
+<tr><td>Compliance B2G complejo</td><td>Medio</td><td>Controller IA + Compliance agente · checklist ChileProveedores</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">08</span>🛣️ Roadmap</h2>
+<div class="section">
+<h3>Fase 0 · RFP (✅ 2026-03-25 · Panchita → Hoku)</h3>
+<ul>
+<li>Definición conexiones Helium 10 ↔ MeLi · scope 3 canales</li>
+<li>Handoff Panchita BA a Hoku para implementación</li>
+</ul>
+<h3>Fase 1 · MVP (✅ Live · Amplify d3avx08z099h4q)</h3>
+<ul>
+<li>Next.js sitio público con showcase</li>
+<li>Estructura para 3 canales</li>
+</ul>
+<h3>Fase 2 · 13 pendientes (🔄 EN CURSO)</h3>
+<ul>
+<li>P1 (1-4): completar arranque comercial real · 8-12 semanas</li>
+<li>P2 (5-8): dashboard + B2G · 8 semanas</li>
+<li>P3 (9-13): escalamiento · trimestre 4</li>
+</ul>
+</div>
+
+<footer>📋 RFP Marketplace · v1 (basado en RFP 25-mar 2026) · banco SMC<br>
+<a href="../index.html" style="color:#7dd3fc;text-decoration:none">← volver al banco Marketplace</a></footer>
+</div></body></html>

@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Infopet — Propuesta Comercial 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#F4F2EC;--s:#FFFFFF;--s2:#EDEAE0;--s3:#E3DFD3;
+  --b:#D8D3C4;--b2:#C2BCA9;
+  --t:#1A1916;--m:#6B6860;--d:#A8A49A;
+  --green:#1F6B40;--gl:#E3F2EA;--gb:rgba(31,107,64,.25);
+  --red:#B83232;--rl:#FDEAEA;--rb:rgba(184,50,50,.2);
+  --amber:#9B6B0A;--al:#FEF5E0;--ab:rgba(155,107,10,.2);
+  --blue:#1A4A8A;--bl2:#E3EBF8;--bb:rgba(26,74,138,.2);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t);min-height:100vh;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--s2)}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+
+/* SLIDE SYSTEM */
+.deck{width:100%;overflow:hidden}
+.slide{
+  min-height:100vh;width:100%;
+  display:flex;flex-direction:column;
+  justify-content:center;padding:80px 100px;
+  position:relative;overflow:hidden;
+}
+.slide-dark{background:var(--t);color:#F4F2EC}
+.slide-light{background:var(--bg)}
+.slide-white{background:var(--s)}
+.slide-green{background:var(--green);color:#fff}
+
+/* GRAIN */
+.slide::after{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;
+}
+.slide>*{position:relative;z-index:1}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  background:rgba(244,242,236,.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--b);
+  height:52px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;
+}
+.nav-brand{font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--t);display:flex;align-items:center;gap:10px}
+.nav-brand b{background:var(--green);color:#fff;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;letter-spacing:.04em}
+.slide-nav{display:flex;gap:4px}
+.slide-dot{width:7px;height:7px;border-radius:50%;background:var(--b2);cursor:pointer;transition:all .25s;border:none}
+.slide-dot.active{background:var(--green);width:20px;border-radius:100px}
+.nav-slide-count{font-family:'DM Mono',monospace;font-size:11px;color:var(--m)}
+
+/* TYPOGRAPHY */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--green);background:var(--gl);border:1px solid var(--gb);
+  padding:5px 14px;border-radius:100px;margin-bottom:24px;
+}
+.eyebrow-light{color:rgba(255,255,255,.7);background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+.eyebrow::before,.eyebrow-light::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+h1{font-family:'Playfair Display',serif;font-size:clamp(44px,6vw,80px);font-weight:900;line-height:1.0;letter-spacing:-.02em;margin-bottom:20px}
+h2{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,52px);font-weight:900;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px}
+h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:10px}
+.lead{font-size:18px;color:var(--m);line-height:1.7;max-width:520px;margin-bottom:32px}
+.lead-light{color:rgba(255,255,255,.65)}
+.mono{font-family:'DM Mono',monospace}
+
+/* LAYOUT HELPERS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* CARDS */
+.card{background:var(--s);border:1px solid var(--b);border-radius:16px;padding:28px;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.08)}
+.card-dark{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:28px}
+.card-green{background:var(--gl);border:1px solid var(--gb);border-radius:16px;padding:24px}
+.card-red{background:var(--rl);border:1px solid var(--rb);border-radius:14px;padding:20px}
+
+/* METRIC CARDS */
+.metric{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:22px;text-align:center}
+.metric-dark{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:22px;text-align:center}
+.metric-val{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;line-height:1;margin-bottom:6px}
+.metric-label{font-size:12px;color:var(--m);text-transform:uppercase;letter-spacing:.06em}
+.metric-delta{font-size:12px;font-weight:600;margin-top:6px}
+.delta-up{color:var(--green)}
+.delta-label-light{color:rgba(255,255,255,.5);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.metric-val-light{font-family:'Playfair Display',serif;font-size:40px;font-weight:900;line-height:1;color:#fff;margin-bottom:4px}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:.04em}
+.badge-green{background:var(--gl);color:var(--green);border:1px solid var(--gb)}
+.badge-red{background:var(--rl);color:var(--red);border:1px solid var(--rb)}
+.badge-amber{background:var(--al);color:var(--amber);border:1px solid var(--ab)}
+.badge-blue{background:var(--bl2);color:var(--blue);border:1px solid var(--bb)}
+.badge-done{background:var(--gl);color:var(--green)}
+.badge-wip{background:var(--al);color:var(--amber)}
+.badge-todo{background:var(--s2);color:var(--m)}
+
+/* PROCESS FLOW */
+.flow{display:flex;align-items:center;gap:0;margin:24px 0}
+.flow-step{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:14px 18px;text-align:center;flex:1;transition:all .2s}
+.flow-step:hover{background:var(--s);box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.flow-step.bad{background:var(--rl);border-color:var(--rb)}
+.flow-step.good{background:var(--gl);border-color:var(--gb)}
+.flow-icon{font-size:22px;margin-bottom:6px}
+.flow-name{font-size:12px;font-weight:600}
+.flow-sub{font-size:10px;color:var(--m);margin-top:2px}
+.flow-arrow{font-size:18px;color:var(--b2);padding:0 8px;flex-shrink:0}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--m);border-bottom:1px solid var(--b);background:var(--s2)}
+.data-table td{padding:12px 14px;border-bottom:1px solid var(--b)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--s2)}
+
+/* PROGRESS BAR */
+.prog-wrap{background:var(--s2);border-radius:100px;height:8px;overflow:hidden;margin:6px 0}
+.prog-fill{height:100%;border-radius:100px;transition:width 1s ease}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--d);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--b)}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:8px}
+.check-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--m);line-height:1.4}
+.check-icon{font-size:14px;flex-shrink:0;width:20px;text-align:center;margin-top:1px}
+
+/* TIMELINE */
+.tl{display:flex;flex-direction:column;gap:0;position:relative}
+.tl::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:1px;background:var(--b)}
+.tl-row{display:grid;grid-template-columns:40px 1fr;gap:16px;margin-bottom:4px}
+.tl-dot{width:14px;height:14px;border-radius:50%;margin-top:14px;flex-shrink:0;position:relative;z-index:2;margin-left:auto;margin-right:auto}
+.tl-card{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:18px 20px;margin-bottom:10px}
+.tl-phase{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.tl-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:5px}
+.tl-weeks{font-family:'DM Mono',monospace;font-size:11px;color:var(--m);margin-bottom:10px}
+.tl-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.tl-item{font-size:12px;color:var(--m);display:flex;align-items:flex-start;gap:6px}
+.tl-item::before{content:'→';color:var(--green);font-weight:700;flex-shrink:0}
+
+/* CHART WRAPPER */
+.chart-box{position:relative;width:100%}
+
+/* ROI BOX */
+.roi-highlight{
+  background:var(--green);color:#fff;
+  border-radius:20px;padding:36px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.roi-highlight::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+
+/* SLIDE COUNTER */
+.slide-label{
+  position:absolute;top:80px;right:100px;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--d);
+  letter-spacing:.06em;
+}
+.slide-label-light{color:rgba(255,255,255,.3)}
+
+/* QUOTE */
+.quote{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:22px;line-height:1.5;color:var(--t);
+  border-left:3px solid var(--green);padding-left:24px;
+  margin:24px 0;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.anim{opacity:0;animation:fadeUp .6s ease forwards}
+.anim-1{animation-delay:.1s}
+.anim-2{animation-delay:.2s}
+.anim-3{animation-delay:.3s}
+.anim-4{animation-delay:.4s}
+.anim-5{animation-delay:.5s}
+
+@media(max-width:900px){
+  .slide{padding:72px 28px 40px}
+  .two-col,.three-col,.four-col{grid-template-columns:1fr}
+  .slide-label{display:none}
+  nav{padding:0 20px}
+  .tl-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Infopet <b>Propuesta 2026</b></div>
+  <div class="slide-nav" id="slide-nav"></div>
+  <div class="nav-slide-count" id="slide-count">01 / 09</div>
+</nav>
+
+<!-- ══════════════════════════════════
+  SLIDE 1 — PORTADA
+══════════════════════════════════ -->
+<div class="slide slide-dark" id="s1">
+  <div class="slide-label slide-label-light mono">01 / 09</div>
+  <div style="max-width:760px">
+    <div class="eyebrow eyebrow-light anim anim-1">Diagnóstico · Viña del Mar · Marzo 2026</div>
+    <h1 class="anim anim-2" style="color:#F4F2EC">
+      Infopet tiene<br>
+      <span style="color:#4CAF7D;font-style:italic">6 sistemas.</span><br>
+      <span style="font-size:.55em;font-style:normal;color:rgba(244,242,236,.45)">Ninguno habla con el otro.</span>
+    </h1>
+    <p class="lead lead-light anim anim-3">
+      Propuesta de transformación digital basada en hallazgos reales levantados en campo.
+      Datos extraídos directamente de Bsale el 17 de marzo de 2026.
+    </p>
+    <div style="display:flex;gap:32px;margin-top:40px" class="anim anim-4">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#4CAF7D;line-height:1">$211M</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Ventas 12 meses</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,.12)"></div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#F4A93A;line-height:1">50%</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Tiempo gerente perdido</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,.12)"></div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#fff;line-height:1">3×</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Ingreso del mismo dato</div>
+      </div>
+    </div>
+  </div>
+  <!-- Decorative circles -->
+  <div style="position:absolute;right:-100px;top:50%;transform:translateY(-50%);width:500px;height:500px;border-radius:50%;border:1px solid rgba(255,255,255,.05)"></div>
+  <div style="position:absolute;right:-60px;top:50%;transform:translateY(-50%);width:380px;height:380px;border-radius:50%;border:1px solid rgba(76,175,125,.1)"></div>
+  <div style="position:absolute;right:40px;top:50%;transform:translateY(-50%);width:260px;height:260px;border-radius:50%;background:rgba(76,175,125,.05)"></div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 2 — DATOS REALES BSALE
+══════════════════════════════════ -->
+<div class="slide slide-white" id="s2">
+  <div class="slide-label mono">02 / 09</div>
+  <div class="eyebrow">Datos reales · Bsale · 01 Mar 2025 – 17 Mar 2026</div>
+  <h2>Los números<br>de Infopet</h2>
+  <div class="four-col" style="margin:32px 0">
+    <div class="metric">
+      <div class="metric-val" style="color:var(--green)">$211M</div>
+      <div class="metric-label">Ventas totales</div>
+      <div class="metric-delta delta-up">↑ +71% vs año anterior</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" style="color:var(--blue)">45,44%</div>
+      <div class="metric-label">Margen bruto</div>
+      <div class="metric-delta delta-up">↑ +58% vs año anterior</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" style="color:var(--t)">13.326</div>
+      <div class="metric-label">Unidades vendidas</div>
+      <div class="metric-delta" style="color:var(--m)">Período seleccionado</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" style="color:var(--amber)">$34.204</div>
+      <div class="metric-label">Ticket promedio</div>
+      <div class="metric-delta" style="color:var(--m)">0% variación ← ojo aquí</div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="two-col" style="gap:32px">
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Ventas mensuales estimadas (CLP)</div>
+      <div class="chart-box" style="height:200px">
+        <canvas id="chart-ventas"></canvas>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Margen por tipo de servicio</div>
+      <div class="chart-box" style="height:200px">
+        <canvas id="chart-margen"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 3 — ESTRUCTURA COSTOS
+══════════════════════════════════ -->
+<div class="slide slide-light" id="s3">
+  <div class="slide-label mono">03 / 09</div>
+  <div class="two-col">
+    <div>
+      <div class="eyebrow">Estructura financiera mensual</div>
+      <h2>¿A dónde va<br>la plata?</h2>
+      <p class="lead" style="font-size:15px">Con ventas de $16,9M al mes, el margen bruto de $7,7M no alcanza a cubrir una nómina de 5 personas. El cuello de botella es claro.</p>
+
+      <div style="margin-top:24px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+          <span style="font-weight:600">Entra al mes</span>
+          <span class="mono">$16.899.394</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" style="width:100%;background:#1F6B40"></div></div>
+
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;margin-top:12px">
+          <span style="color:var(--m)">Costo de productos vendidos</span>
+          <span class="mono" style="color:var(--m)">-$9.218.369</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" style="width:55%;background:#C2BCA9"></div></div>
+
+        <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;margin-top:12px;font-weight:600">
+          <span>Margen bruto</span>
+          <span class="mono" style="color:var(--green)">$7.681.025</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" style="width:45%;background:#4CAF7D"></div></div>
+
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;margin-top:12px">
+          <span style="color:var(--red)">Sueldos (5 personas)</span>
+          <span class="mono" style="color:var(--red)">-$6.710.000</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" style="width:40%;background:#B83232"></div></div>
+
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;margin-top:8px">
+          <span style="color:var(--amber)">Arriendo + gastos fijos</span>
+          <span class="mono" style="color:var(--amber)">-$1.850.000</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" style="width:11%;background:#D4A843"></div></div>
+
+        <div style="border-top:1px solid var(--b);margin-top:16px;padding-top:14px;display:flex;justify-content:space-between;font-family:'Playfair Display',serif;font-size:20px;font-weight:900">
+          <span>Resultado neto est.</span>
+          <span style="color:var(--red)">-$878.975</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">Composición de gastos mensuales</div>
+      <div class="chart-box" style="height:260px">
+        <canvas id="chart-gastos"></canvas>
+      </div>
+
+      <div class="card-red" style="margin-top:20px">
+        <div style="font-size:12px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">El problema no es que vendan poco</div>
+        <div style="font-size:13px;color:var(--t);line-height:1.5">Infopet creció <strong>+71%</strong> en ventas. El problema es que los servicios más rentables (peluquería 95%, veterinaria 83%) están siendo subutilizados porque el gerente tiene el 50% de su tiempo atrapado en tareas manuales.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 4 — EL COSTO DEL GERENTE
+══════════════════════════════════ -->
+<div class="slide slide-dark" id="s4">
+  <div class="slide-label slide-label-light mono">04 / 09</div>
+  <div class="eyebrow eyebrow-light">El argumento más poderoso</div>
+  <h2 style="color:#F4F2EC;max-width:700px">El gerente le cuesta<br><span style="color:#F4A93A">$1.098.000 al mes</span><br><span style="font-size:.6em;color:rgba(244,242,236,.4)">en trabajo que puede automatizarse.</span></h2>
+
+  <div class="three-col" style="margin-top:40px">
+    <div class="card-dark">
+      <div style="font-size:28px;margin-bottom:12px">⏱</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Costo real gerente/mes</div>
+      <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#fff;margin-bottom:4px">$2.196.000</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4)">Sueldo + leyes sociales (22%)</div>
+    </div>
+    <div class="card-dark" style="border-color:rgba(244,169,58,.3);background:rgba(244,169,58,.08)">
+      <div style="font-size:28px;margin-bottom:12px">🔒</div>
+      <div style="font-size:11px;color:rgba(244,169,58,.7);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">50% atrapado en</div>
+      <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#F4A93A;margin-bottom:4px">$1.098.000</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4)">Ingreso manual de datos</div>
+    </div>
+    <div class="card-dark" style="border-color:rgba(76,175,125,.3);background:rgba(76,175,125,.08)">
+      <div style="font-size:28px;margin-bottom:12px">🚀</div>
+      <div style="font-size:11px;color:rgba(76,175,125,.7);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Lo que podría hacer</div>
+      <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#4CAF7D;margin-bottom:4px">$0</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4)">Costo de esas tareas automatizadas</div>
+    </div>
+  </div>
+
+  <div style="margin-top:40px">
+    <div style="font-size:12px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px">Desglose de tareas manuales del gerente / mes</div>
+    <div class="chart-box" style="height:180px">
+      <canvas id="chart-tiempo"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 5 — OPORTUNIDAD SERVICIOS
+══════════════════════════════════ -->
+<div class="slide slide-white" id="s5">
+  <div class="slide-label mono">05 / 09</div>
+  <div class="eyebrow">Capacidad ociosa detectada</div>
+  <h2>El dinero ya está<br>en la tienda.</h2>
+  <p class="lead">Peluquería y veterinaria tienen margen de 95% y 83% respectivamente. Ambas están siendo usadas a menos del 35% de su capacidad.</p>
+
+  <div class="two-col" style="gap:32px;margin-top:8px">
+    <div>
+      <div class="card-green" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-size:11px;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.07em">Peluquería</div>
+            <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--green)">95,23% margen</div>
+          </div>
+          <div style="font-size:40px">✂️</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+          <div><div style="color:var(--m)">Atenciones/mes</div><div style="font-weight:700;font-size:18px">55</div></div>
+          <div><div style="color:var(--m)">Capacidad real</div><div style="font-weight:700;font-size:18px">~160</div></div>
+          <div><div style="color:var(--m)">Uso actual</div><div style="font-weight:700;color:var(--amber);font-size:18px">34%</div></div>
+          <div><div style="color:var(--m)">Margen/atención</div><div style="font-weight:700;font-size:18px">$20.644</div></div>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:var(--green);font-weight:600">
+          +30% uso → +$330.000/mes de ganancia pura
+        </div>
+      </div>
+
+      <div class="card" style="border-color:var(--bb);background:var(--bl2)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:.07em">Consulta Médica</div>
+            <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--blue)">82,76% margen</div>
+          </div>
+          <div style="font-size:40px">🩺</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+          <div><div style="color:var(--m)">Consultas/mes</div><div style="font-weight:700;font-size:18px">32</div></div>
+          <div><div style="color:var(--m)">Capacidad real</div><div style="font-weight:700;font-size:18px">~176</div></div>
+          <div><div style="color:var(--m)">Uso actual</div><div style="font-weight:700;color:var(--red);font-size:18px">18%</div></div>
+          <div><div style="color:var(--m)">Margen/consulta</div><div style="font-weight:700;font-size:18px">$13.757</div></div>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:var(--blue);font-weight:600">
+          +3 consultas/día → +$908.962/mes de ganancia pura
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">Uso actual vs potencial (% capacidad)</div>
+      <div class="chart-box" style="height:220px">
+        <canvas id="chart-capacidad"></canvas>
+      </div>
+
+      <div style="background:var(--s2);border:1px solid var(--b);border-radius:14px;padding:20px;margin-top:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">Potencial adicional mensual (conservador)</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center">
+            <span>Peluquería +30%</span>
+            <span class="mono" style="color:var(--green);font-weight:600">+$330.304</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center">
+            <span>Veterinaria +3 consultas/día</span>
+            <span class="mono" style="color:var(--blue);font-weight:600">+$908.962</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center">
+            <span>Ticket promedio +10%</span>
+            <span class="mono" style="color:var(--amber);font-weight:600">+$3.797.910</span>
+          </div>
+          <div style="border-top:1px solid var(--b);padding-top:10px;display:flex;justify-content:space-between;font-weight:700;font-size:15px">
+            <span>Total potencial/mes</span>
+            <span class="mono" style="color:var(--green)">+$5.037.176</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 6 — LOS 5 PROBLEMAS
+══════════════════════════════════ -->
+<div class="slide slide-light" id="s6">
+  <div class="slide-label mono">06 / 09</div>
+  <div class="eyebrow">Levantamiento en campo</div>
+  <h2>5 procesos rotos,<br>5 soluciones.</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px">
+
+    <div class="card" style="border-left:3px solid var(--red);border-radius:0 14px 14px 0;padding:18px 22px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.07em">Problema 01</div>
+        <span class="badge badge-red">50% tiempo gerente</span>
+      </div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:6px">Triple ingreso de productos</div>
+      <div style="font-size:12px;color:var(--m)">Carga Maestra → Bsale → Jumpseller. El mismo dato 3 veces a mano, desincronizados permanentemente.</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--green);font-weight:600">→ Formulario único que dispara a los 3 sistemas en paralelo</div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--amber);border-radius:0 14px 14px 0;padding:18px 22px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.07em">Problema 02</div>
+        <span class="badge badge-amber">5h/semana</span>
+      </div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:6px">Facturas físicas sin digitalizar</div>
+      <div style="font-size:12px;color:var(--m)">20% solo existe en papel. Hay que tener la factura física para ingresar los productos nuevos al sistema.</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--green);font-weight:600">→ Foto desde celular → Claude Vision AI extrae todos los datos</div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--red);border-radius:0 14px 14px 0;padding:18px 22px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.07em">Problema 03</div>
+        <span class="badge badge-red">Riesgo diario</span>
+      </div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:6px">Stock físico ≠ stock web</div>
+      <div style="font-size:12px;color:var(--m)">Bsale y Jumpseller no se comunican. Una venta en caja no descuenta el stock online. Sobreventa posible.</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--green);font-weight:600">→ Sync automático Bsale ↔ Jumpseller en tiempo real</div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--amber);border-radius:0 14px 14px 0;padding:18px 22px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.07em">Problema 04</div>
+        <span class="badge badge-amber">Sin visibilidad</span>
+      </div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:6px">Sin dashboard de compras</div>
+      <div style="font-size:12px;color:var(--m)">No existe un sistema que diga qué comprar, cuánto, a quién y a qué costo. La decisión es por memoria.</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--green);font-weight:600">→ Dashboard semáforo 🔴🟡🟢 con orden de compra en 1 clic</div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--blue);border-radius:0 14px 14px 0;padding:18px 22px;grid-column:1/-1">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.07em">Problema 05</div>
+        <span class="badge badge-blue">3h/semana</span>
+      </div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:6px">Reportes y datos siempre desactualizados</div>
+      <div style="font-size:12px;color:var(--m)">Exportar Bsale → pegar en Excel → subir a Drive cada semana. Múltiples versiones del mismo archivo. Decisiones con datos viejos.</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--green);font-weight:600">→ Dashboard en tiempo real conectado a Bsale API. Sin exportar nada, nunca más.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 7 — LO CONSTRUIDO
+══════════════════════════════════ -->
+<div class="slide slide-white" id="s7">
+  <div class="slide-label mono">07 / 09</div>
+  <div class="eyebrow">Entregables · Ya construidos</div>
+  <h2>Lo que ya está<br>funcionando hoy.</h2>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px">
+
+    <div class="card" style="border-top:3px solid var(--green)">
+      <div style="font-size:24px;margin-bottom:10px">🖥️</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px">Dashboard principal</div>
+      <div style="font-size:12px;color:var(--m);margin-bottom:12px">KPIs en tiempo real desde Bsale. Ventas del día, stock crítico, gráficos de categorías. Reemplaza el Excel de reportes.</div>
+      <span class="badge badge-done">✓ Entregado</span>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--green)">
+      <div style="font-size:24px;margin-bottom:10px">📦</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px">Dashboard de compras</div>
+      <div style="font-size:12px;color:var(--m);margin-bottom:12px">Semáforo 🔴🟡🟢 de stock. Proveedor, costo unitario, cantidad a reponer. Orden de compra exportable en 1 clic.</div>
+      <span class="badge badge-done">✓ Entregado</span>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--green)">
+      <div style="font-size:24px;margin-bottom:10px">📋</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px">App carga masiva Jumpseller</div>
+      <div style="font-size:12px;color:var(--m);margin-bottom:12px">Genera CSV en formato exacto Jumpseller. Mapeo automático de la Carga Maestra. Precheck con validación de errores.</div>
+      <span class="badge badge-done">✓ Entregado</span>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--amber)">
+      <div style="font-size:24px;margin-bottom:10px">⚡</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px">Formulario carga única</div>
+      <div style="font-size:12px;color:var(--m);margin-bottom:12px">Un formulario → Bsale + Jumpseller + Google Sheets simultáneamente. Elimina el triple ingreso manual.</div>
+      <span class="badge badge-wip">En desarrollo</span>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--amber)">
+      <div style="font-size:24px;margin-bottom:10px">📷</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px">OCR facturas físicas</div>
+      <div style="font-size:12px;color:var(--m);margin-bottom:12px">Foto desde celular → Claude Vision AI → extrae proveedor, productos, cantidades, precios. Formulario pre-llenado.</div>
+      <span class="badge badge-wip">En desarrollo</span>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--b2)">
+      <div style="font-size:24px;margin-bottom:10px">🔄</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px">Sync stock + Gmail auto</div>
+      <div style="font-size:12px;color:var(--m);margin-bottom:12px">Bsale ↔ Jumpseller en tiempo real. Alertas de stock crítico y confirmaciones de pedido automáticas por email.</div>
+      <span class="badge badge-todo">Fase 4</span>
+    </div>
+
+  </div>
+
+  <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:16px 20px;margin-top:20px;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:13px;color:var(--m)">Stack: <strong style="color:var(--t)">HTML · CSS · JS · Vercel · GitHub · Bsale API · Jumpseller API · Claude Vision AI</strong></div>
+    <div style="font-size:12px;color:var(--green);font-weight:600">Desplegado en Vercel · git push = deploy automático</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 8 — ROADMAP
+══════════════════════════════════ -->
+<div class="slide slide-light" id="s8">
+  <div class="slide-label mono">08 / 09</div>
+  <div class="eyebrow">Implementación</div>
+  <h2>8 semanas.<br>Todo funcionando.</h2>
+
+  <div class="two-col" style="margin-top:28px;gap:32px;align-items:start">
+    <div class="tl">
+      <div class="tl-row">
+        <div><div class="tl-dot" style="background:var(--amber);border:2px solid var(--bg)"></div></div>
+        <div class="tl-card" style="border-top:2px solid var(--amber)">
+          <div class="tl-phase" style="color:var(--amber)">Fase 1 · Semanas 1–2</div>
+          <div class="tl-name">Fundaciones</div>
+          <div class="tl-weeks">GitHub + Vercel + Bsale API</div>
+          <div class="tl-grid">
+            <div class="tl-item">Repositorio GitHub</div>
+            <div class="tl-item">Deploy automático Vercel</div>
+            <div class="tl-item">Proxy Bsale API seguro</div>
+            <div class="tl-item">Dashboard principal</div>
+          </div>
+          <div style="margin-top:8px"><span class="badge badge-done">✓ Completado</span></div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div><div class="tl-dot" style="background:var(--red);border:2px solid var(--bg)"></div></div>
+        <div class="tl-card" style="border-top:2px solid var(--red)">
+          <div class="tl-phase" style="color:var(--red)">Fase 2 · Semanas 3–4</div>
+          <div class="tl-name">Carga de productos</div>
+          <div class="tl-weeks">El 50% del tiempo del gerente</div>
+          <div class="tl-grid">
+            <div class="tl-item">Formulario carga única</div>
+            <div class="tl-item">POST 3 sistemas simultáneo</div>
+            <div class="tl-item">App CSV Jumpseller</div>
+            <div class="tl-item">Capacitación equipo</div>
+          </div>
+          <div style="margin-top:8px"><span class="badge badge-wip">En desarrollo</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="tl-row">
+        <div><div class="tl-dot" style="background:var(--blue);border:2px solid var(--bg)"></div></div>
+        <div class="tl-card" style="border-top:2px solid var(--blue)">
+          <div class="tl-phase" style="color:var(--blue)">Fase 3 · Semanas 5–6</div>
+          <div class="tl-name">Facturas + Compras</div>
+          <div class="tl-weeks">OCR físico + semáforo stock</div>
+          <div class="tl-grid">
+            <div class="tl-item">Claude Vision OCR</div>
+            <div class="tl-item">Flujo factura digital</div>
+            <div class="tl-item">Archivado Drive</div>
+            <div class="tl-item">Orden de compra email</div>
+          </div>
+          <div style="margin-top:8px"><span class="badge badge-todo">Pendiente</span></div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div><div class="tl-dot" style="background:var(--green);border:2px solid var(--bg)"></div></div>
+        <div class="tl-card" style="border-top:2px solid var(--green)">
+          <div class="tl-phase" style="color:var(--green)">Fase 4 · Semanas 7–8</div>
+          <div class="tl-name">Sync + Automatizaciones</div>
+          <div class="tl-weeks">Cero trabajo manual residual</div>
+          <div class="tl-grid">
+            <div class="tl-item">Sync stock Bsale↔Jumpseller</div>
+            <div class="tl-item">Gmail automático</div>
+            <div class="tl-item">Alertas stock crítico</div>
+            <div class="tl-item">Documentación final</div>
+          </div>
+          <div style="margin-top:8px"><span class="badge badge-todo">Pendiente</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SLIDE 9 — INVERSIÓN Y CIERRE
+══════════════════════════════════ -->
+<div class="slide slide-green" id="s9">
+  <div class="slide-label slide-label-light mono">09 / 09</div>
+
+  <div class="two-col" style="align-items:center;gap:60px">
+    <div>
+      <div class="eyebrow eyebrow-light">Propuesta económica</div>
+      <h2 style="color:#fff">La inversión se paga<br>sola en<br><span style="font-style:italic">8,2 meses.</span></h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:28px;max-width:420px">
+        Infopet paga hoy $1.098.000 al mes en tiempo del gerente que puede automatizarse. El proyecto completo cuesta menos de lo que pierden en 6 meses de ineficiencia.
+      </p>
+      <div class="quote" style="color:#fff;border-color:rgba(255,255,255,.4);font-size:17px">
+        "¿Prefieren seguir pagando $1.098.000 al mes por trabajo manual, o invertir una sola vez y recuperarlo en 8 meses?"
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:340px">
+      <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:24px">
+        <div style="font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Opción A · Proyecto completo</div>
+        <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:#fff;line-height:1">$6.500.000</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px">+ IVA · 8 semanas · llave en mano</div>
+        <div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,.65)">Incluye todos los módulos + soporte 30 días post-entrega</div>
+        <div style="margin-top:10px;background:rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;font-size:12px;color:#fff;font-weight:600">+ $350.000/mes soporte continuo (opcional)</div>
+      </div>
+
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px">
+        <div style="font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Opción B · Por fases</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+          <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,.8)"><span>Fase 1 (ya entregada)</span><span class="mono">$2.500.000</span></div>
+          <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,.6)"><span>Fase 2</span><span class="mono">$1.800.000</span></div>
+          <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,.6)"><span>Fase 3</span><span class="mono">$1.500.000</span></div>
+          <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,.6)"><span>Fase 4</span><span class="mono">$1.200.000</span></div>
+          <div style="border-top:1px solid rgba(255,255,255,.15);padding-top:8px;display:flex;justify-content:space-between;font-weight:700;color:#fff"><span>Total</span><span class="mono">$7.000.000</span></div>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,255,255,.95);border-radius:14px;padding:18px">
+        <div style="font-size:11px;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Retorno estimado año 1</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:13px">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--m)">Tiempo gerente recuperado</span><span class="mono" style="color:var(--green)">$4.940.892</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--m)">Potencial servicios</span><span class="mono" style="color:var(--green)">$3.963.648</span></div>
+          <div style="border-top:1px solid var(--b);padding-top:7px;display:flex;justify-content:space-between;font-weight:700;font-size:15px"><span>ROI año 1</span><span class="mono" style="color:var(--green)">+138%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative -->
+  <div style="position:absolute;bottom:-80px;left:-80px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.03)"></div>
+  <div style="position:absolute;bottom:-40px;left:-40px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.04)"></div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+// ── SLIDE DOTS ──────────────────────────────
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('slide-nav');
+const countEl = document.getElementById('slide-count');
+
+slides.forEach((_,i) => {
+  const d = document.createElement('button');
+  d.className = 'slide-dot' + (i===0?' active':'');
+  d.onclick = () => slides[i].scrollIntoView({behavior:'smooth'});
+  nav.appendChild(d);
+});
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      const i = [...slides].indexOf(e.target);
+      document.querySelectorAll('.slide-dot').forEach((d,j) => d.classList.toggle('active',j===i));
+      countEl.textContent = String(i+1).padStart(2,'0') + ' / ' + slides.length;
+    }
+  });
+},{threshold:.5});
+slides.forEach(s => io.observe(s));
+
+// ── CHART: VENTAS MENSUALES ─────────────────
+new Chart(document.getElementById('chart-ventas'), {
+  type: 'line',
+  data: {
+    labels: ['Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar'],
+    datasets: [{
+      label: '2025-2026',
+      data: [14.2,15.8,16.1,17.3,18.2,17.9,16.8,17.5,19.1,18.4,15.2,13.8,12.6],
+      borderColor: '#1F6B40',
+      backgroundColor: 'rgba(31,107,64,.08)',
+      borderWidth: 2.5,
+      fill: true,
+      tension: 0.4,
+      pointRadius: 3,
+      pointBackgroundColor: '#1F6B40',
+    },{
+      label: '2024-2025',
+      data: [8.2,9.1,9.8,10.4,11.2,10.8,9.9,10.6,11.8,11.2,9.1,8.3,7.8],
+      borderColor: '#C2BCA9',
+      borderWidth: 1.5,
+      fill: false,
+      tension: 0.4,
+      pointRadius: 2,
+      pointBackgroundColor: '#C2BCA9',
+      borderDash: [4,4],
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: { label: ctx => ' $' + ctx.parsed.y.toFixed(1) + 'M' }
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { font: { size: 10 }, color: '#888' } },
+      y: {
+        grid: { color: 'rgba(0,0,0,.06)' },
+        ticks: { callback: v => '$'+v+'M', font: { size: 10 }, color: '#888' }
+      }
+    }
+  }
+});
+
+// ── CHART: MARGEN POR SERVICIO ──────────────
+new Chart(document.getElementById('chart-margen'), {
+  type: 'bar',
+  data: {
+    labels: ['Peluquería', 'Consulta Médica', 'Retail productos'],
+    datasets: [{
+      label: 'Margen %',
+      data: [95.23, 82.76, 35],
+      backgroundColor: ['#1F6B40', '#1A4A8A', '#C2BCA9'],
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toFixed(1) + '%' } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#888' } },
+      y: {
+        min: 0, max: 100,
+        grid: { color: 'rgba(0,0,0,.06)' },
+        ticks: { callback: v => v + '%', font: { size: 10 }, color: '#888' }
+      }
+    }
+  }
+});
+
+// ── CHART: GASTOS ───────────────────────────
+new Chart(document.getElementById('chart-gastos'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Sueldos (5 pers.)', 'Arriendo', 'Sistemas digitales', 'Otros'],
+    datasets: [{
+      data: [6710000, 1200000, 200000, 450000],
+      backgroundColor: ['#B83232', '#9B6B0A', '#1A4A8A', '#6B6860'],
+      borderWidth: 0,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: { size: 11 }, color: '#6B6860', padding: 12,
+          usePointStyle: true, pointStyleWidth: 10,
+          generateLabels: chart => chart.data.labels.map((l,i) => ({
+            text: l + ' — $' + Math.round(chart.data.datasets[0].data[i]/1000) + 'K',
+            fillStyle: chart.data.datasets[0].backgroundColor[i],
+            hidden: false, index: i, pointStyle: 'rectRounded',
+          }))
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ' $' + ctx.parsed.toLocaleString('es-CL')
+        }
+      }
+    }
+  }
+});
+
+// ── CHART: TIEMPO GERENTE ───────────────────
+new Chart(document.getElementById('chart-tiempo'), {
+  type: 'bar',
+  indexAxis: 'y',
+  data: {
+    labels: ['Carga productos', 'Reportes Excel/Drive', 'Facturas proveedores', 'Verificar precios', 'Revisar stock', 'Emails proveedores'],
+    datasets: [{
+      label: 'Horas/mes',
+      data: [8, 6.7, 6, 4, 7.3, 6.3],
+      backgroundColor: 'rgba(244,169,58,.7)',
+      borderColor: '#F4A93A',
+      borderWidth: 1.5,
+      borderRadius: 6,
+    },{
+      label: 'Con solución',
+      data: [0.7, 0, 0.5, 0, 0.5, 1],
+      backgroundColor: 'rgba(76,175,125,.5)',
+      borderColor: '#4CAF7D',
+      borderWidth: 1.5,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.x.toFixed(1) + 'h/mes' } }
+    },
+    scales: {
+      x: {
+        stacked: false,
+        grid: { color: 'rgba(255,255,255,.07)' },
+        ticks: { color: 'rgba(255,255,255,.4)', font: { size: 10 }, callback: v => v + 'h' }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: 'rgba(255,255,255,.6)', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ── CHART: CAPACIDAD SERVICIOS ──────────────
+new Chart(document.getElementById('chart-capacidad'), {
+  type: 'bar',
+  data: {
+    labels: ['Peluquería', 'Veterinaria'],
+    datasets: [{
+      label: 'Capacidad ideal',
+      data: [100, 100],
+      backgroundColor: 'rgba(194,188,169,.3)',
+      borderRadius: 8,
+    },{
+      label: 'Uso actual',
+      data: [34, 18],
+      backgroundColor: ['#1F6B40', '#1A4A8A'],
+      borderRadius: 8,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y + '%' } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 12 }, color: '#888' } },
+      y: {
+        min: 0, max: 100,
+        grid: { color: 'rgba(0,0,0,.06)' },
+        ticks: { callback: v => v + '%', font: { size: 10 }, color: '#888' }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

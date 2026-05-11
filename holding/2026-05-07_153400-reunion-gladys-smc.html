@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reunión Gladys · Smart Connection SpA · 2026-05-07</title>
+<style>
+:root{
+  --navy:#1B2F4E;
+  --navy-mid:#243d63;
+  --navy-deep:#0F1F38;
+  --cream:#F5EDD8;
+  --cream-mid:#EDE3C9;
+  --cream-soft:#FAF5E8;
+  --cream-deep:#D9CDAD;
+  --gold:#C49A3A;
+  --gold-dim:#D4AA4A;
+  --gold-soft:#D4B466;
+  --gold-pale:rgba(196,154,58,0.08);
+  --sage:#6B9B7A;
+  --sage-light:#d4ebe0;
+  --terracotta:#C77A50;
+  --bg:#ffffff;
+  --bg-alt:#f5f5f7;
+  --bg-warm:#fafaf8;
+  --text:#1d1d1f;
+  --muted:#6e6e73;
+  --subtle:#86868b;
+  --border:#d2d2d7;
+  --border-w:#e8e8ed;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;
+  --shadow-sm:0 2px 10px rgba(27,47,78,0.07);
+  --shadow-md:0 6px 24px rgba(27,47,78,0.10);
+  --shadow-lift:0 12px 40px rgba(27,47,78,0.14);
+  --radius:16px;
+  --radius-sm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:'kern','liga','clig','calt';
+}
+
+/* HEADER */
+.nav-global{
+  position:fixed;top:0;left:0;right:0;z-index:200;height:48px;
+  background:rgba(27,47,78,0.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(196,154,58,0.25);
+  display:flex;align-items:center;padding:0 24px;
+}
+.nav-inner{max-width:1080px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-mark{
+  width:24px;height:24px;border:2px solid var(--gold);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold);font-weight:800;font-size:11px;letter-spacing:-.04em;
+}
+.nav-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:.08em;text-transform:uppercase}
+.nav-sep{font-size:12px;color:rgba(255,255,255,.25);margin:0 4px}
+.nav-sub{font-size:12px;color:rgba(255,255,255,.45);font-weight:400}
+.nav-meeting{
+  font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  padding:6px 14px;border-radius:980px;background:var(--gold);color:var(--navy);
+}
+
+/* SUB-NAV */
+.sub-nav{
+  position:fixed;top:48px;left:0;right:0;z-index:199;height:52px;
+  background:rgba(245,237,216,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--cream-mid);
+  display:flex;align-items:center;padding:0 24px;
+}
+.sub-inner{max-width:1080px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+.sub-brand{font-size:13px;font-weight:800;color:var(--navy);letter-spacing:.04em;text-transform:uppercase}
+.sub-links{display:flex;gap:18px;list-style:none;flex-wrap:wrap}
+.sub-links a{
+  text-decoration:none;font-size:11px;font-weight:600;
+  color:var(--navy);opacity:.65;letter-spacing:.06em;text-transform:uppercase;
+  transition:opacity .2s;
+}
+.sub-links a:hover{opacity:1;color:var(--gold)}
+
+/* CONTAINER */
+main{padding-top:100px}
+.container{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* HERO */
+.hero{
+  padding:80px 24px 70px;text-align:center;
+  background:linear-gradient(180deg,var(--bg) 0%,var(--cream-soft) 100%);
+}
+.hero-eyebrow{
+  display:inline-block;font-size:11px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:18px;
+}
+.hero-title{
+  font-size:84px;font-weight:800;line-height:.96;letter-spacing:-.04em;
+  color:var(--navy);max-width:920px;margin:0 auto 24px;
+}
+.hero-title em{color:var(--gold);font-style:normal}
+.hero-sub{
+  font-size:18px;color:var(--muted);max-width:660px;margin:0 auto 40px;line-height:1.6;
+}
+.hero-meta{
+  display:inline-flex;gap:30px;padding:14px 28px;
+  background:var(--cream);border-radius:980px;
+  font-size:12px;letter-spacing:.05em;
+}
+.hero-meta strong{color:var(--navy);font-weight:800}
+.hero-meta span{color:var(--muted)}
+
+/* SECTION */
+section.block{padding:80px 0;border-bottom:1px solid var(--border-w)}
+section.dark{background:var(--navy);color:var(--cream)}
+section.dark h2,section.dark h3,section.dark h4{color:#fff}
+section.dark .eyebrow{color:var(--gold)}
+section.dark p{color:rgba(245,237,216,.7)}
+section.dark .card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:#fff}
+section.dark .card h3{color:#fff}
+section.dark .card p{color:rgba(255,255,255,.7)}
+section.cream{background:var(--cream-soft)}
+
+.eyebrow{
+  display:inline-block;font-size:11px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:16px;
+  padding-left:32px;position:relative;
+}
+.eyebrow::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:20px;height:2px;background:var(--gold);
+}
+h2.title{
+  font-size:54px;font-weight:800;line-height:1;letter-spacing:-.035em;
+  color:var(--navy);margin-bottom:22px;max-width:880px;
+}
+h2.title em{color:var(--gold);font-style:normal}
+p.lead{
+  font-size:17px;color:var(--muted);max-width:760px;margin-bottom:50px;line-height:1.65;
+}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:24px}
+.card{
+  background:var(--bg);border:1px solid var(--border-w);
+  padding:30px 28px;border-radius:var(--radius);
+  transition:transform .3s,box-shadow .3s,border-color .2s;
+  box-shadow:var(--shadow-sm);position:relative;
+}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:rgba(196,154,58,.4)}
+.card-eyebrow{
+  font-size:10px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:12px;
+}
+.card h3{
+  font-size:24px;font-weight:800;line-height:1.15;letter-spacing:-.02em;
+  color:var(--navy);margin-bottom:12px;
+}
+.card p{font-size:14px;color:var(--muted);line-height:1.6}
+.card .card-num{
+  font-size:48px;font-weight:800;letter-spacing:-.03em;line-height:1;
+  color:var(--navy);margin:14px 0 8px;
+}
+.card .card-num .currency{color:var(--gold);font-size:24px;vertical-align:top}
+.card .card-foot{margin-top:18px;padding-top:18px;border-top:1px solid var(--border-w);font-size:12px;color:var(--subtle)}
+
+/* SCENARIO CARDS */
+.scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.scenario{
+  border-radius:var(--radius);padding:30px;
+  position:relative;overflow:hidden;
+}
+.scenario.pessimistic{background:#FCE8E0;border:1px solid rgba(199,122,80,.3)}
+.scenario.regular{background:var(--cream);border:1px solid var(--cream-deep)}
+.scenario.optimistic{background:var(--sage-light);border:1px solid rgba(107,155,122,.3)}
+.scenario .label{
+  font-size:10px;font-weight:800;letter-spacing:.18em;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.scenario.pessimistic .label{color:var(--terracotta)}
+.scenario.regular .label{color:var(--gold)}
+.scenario.optimistic .label{color:var(--sage)}
+.scenario h3{
+  font-size:22px;font-weight:800;color:var(--navy);
+  letter-spacing:-.02em;margin-bottom:18px;
+}
+.scenario .timeline{display:flex;flex-direction:column;gap:14px}
+.scenario .step{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid rgba(27,47,78,.08)}
+.scenario .step:last-child{border-bottom:none}
+.scenario .step .when{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.scenario .step .amt{font-size:24px;font-weight:800;color:var(--navy);letter-spacing:-.02em}
+.scenario .step .amt .currency{color:var(--gold);font-size:14px;vertical-align:top}
+.scenario .note{margin-top:18px;font-size:12px;color:var(--muted);line-height:1.5}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:24px 0;border-radius:var(--radius);box-shadow:var(--shadow-sm);background:var(--bg);border:1px solid var(--border-w)}
+table{width:100%;border-collapse:collapse}
+table thead{background:var(--cream)}
+table th{padding:18px 22px;text-align:left;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--navy)}
+table td{padding:16px 22px;font-size:14px;color:var(--text);border-bottom:1px solid var(--border-w);vertical-align:top}
+table tr:last-child td{border-bottom:none}
+table tr:hover{background:var(--bg-warm)}
+.num{font-variant-numeric:tabular-nums;text-align:right;font-feature-settings:'tnum'}
+.pos{color:var(--sage);font-weight:700}
+.neg{color:var(--terracotta);font-weight:700}
+.tag{display:inline-block;padding:3px 10px;border-radius:980px;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.tag.confirmed{background:#E8F4EE;color:#2C7A4F}
+.tag.pending{background:#FBF1D9;color:#9C7B1F}
+.tag.future{background:#DDF1F0;color:#1F7C76}
+.tag.empty{background:#EEE9DC;color:#7C7256}
+
+/* CALLOUT CENTRAL */
+.central-question{
+  background:var(--navy);color:#fff;border-radius:var(--radius);
+  padding:50px 60px;margin:40px 0;position:relative;overflow:hidden;
+}
+.central-question::before{
+  content:'?';position:absolute;top:-30px;right:-10px;
+  font-size:280px;font-weight:800;color:var(--gold);
+  opacity:.12;line-height:1;
+}
+.central-question .label{
+  font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;
+}
+.central-question h3{
+  font-size:42px;font-weight:800;line-height:1.1;letter-spacing:-.025em;
+  color:#fff;margin-bottom:18px;max-width:760px;
+}
+.central-question p{font-size:16px;color:rgba(255,255,255,.78);max-width:680px;line-height:1.65}
+
+/* GASTOS GRID */
+.gastos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:30px}
+.gasto-card{
+  background:var(--bg);border:1px solid var(--border-w);border-radius:var(--radius-sm);
+  padding:22px 22px 18px;transition:border-color .2s;
+}
+.gasto-card:hover{border-color:var(--gold)}
+.gasto-card .num-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:8px;background:var(--gold-pale);
+  color:var(--gold);font-weight:800;font-size:13px;margin-bottom:10px;
+}
+.gasto-card h4{font-size:16px;font-weight:800;color:var(--navy);letter-spacing:-.01em;margin-bottom:8px}
+.gasto-card ul{list-style:none;padding:0;margin:8px 0 0}
+.gasto-card li{
+  font-size:13px;color:var(--muted);padding:5px 0;
+  border-bottom:1px solid var(--border-w);display:flex;align-items:center;gap:8px;
+}
+.gasto-card li:last-child{border:none}
+.gasto-card li::before{content:'•';color:var(--gold);font-weight:800}
+.gasto-card .total{margin-top:10px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.05em;text-transform:uppercase}
+
+/* PREGUNTAS GLADYS */
+.preguntas-list{list-style:none;padding:0;margin:30px 0 0;counter-reset:p}
+.preguntas-list li{
+  counter-increment:p;background:var(--bg);border:1px solid var(--border-w);
+  border-radius:var(--radius-sm);padding:22px 28px 22px 70px;margin-bottom:10px;
+  position:relative;transition:border-color .2s,transform .2s;
+}
+.preguntas-list li:hover{border-color:var(--gold);transform:translateX(4px)}
+.preguntas-list li::before{
+  content:counter(p,decimal-leading-zero);position:absolute;left:24px;top:22px;
+  font-size:14px;font-weight:800;color:var(--gold);letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.preguntas-list .pregunta{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:6px;line-height:1.4}
+.preguntas-list .propuesta{font-size:13px;color:var(--muted);line-height:1.55}
+.preguntas-list .propuesta strong{color:var(--gold);font-weight:700}
+.preguntas-list .priority{
+  position:absolute;top:22px;right:24px;
+  font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
+  padding:3px 9px;border-radius:980px;
+}
+.priority.p1{background:#FCE8E0;color:var(--terracotta)}
+.priority.p2{background:#FBF1D9;color:var(--gold)}
+.priority.p3{background:#DDF1F0;color:#1F7C76}
+
+/* DECISIONES ESPERADAS */
+.decision-list{list-style:none;padding:0;margin-top:24px}
+.decision-list li{
+  display:flex;align-items:flex-start;gap:14px;padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);font-size:15px;color:#fff;
+}
+.decision-list li:last-child{border:none}
+.decision-list .check{
+  flex-shrink:0;width:24px;height:24px;border-radius:50%;
+  border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:var(--gold);
+}
+
+/* FOOTER */
+footer{background:var(--navy-deep);color:var(--cream);padding:40px 24px;text-align:center}
+footer p{font-size:12px;letter-spacing:.1em;color:rgba(245,237,216,.55);text-transform:uppercase}
+footer .gold{color:var(--gold)}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .hero-title{font-size:48px}
+  h2.title{font-size:36px}
+  .scenarios{grid-template-columns:1fr}
+  .central-question{padding:30px}
+  .central-question h3{font-size:28px}
+  .sub-links{display:none}
+}
+@media print{
+  .nav-global,.sub-nav{position:static;background:#fff;color:var(--navy)}
+  .nav-name,.nav-sub,.nav-sep{color:var(--navy)}
+  main{padding-top:0}
+  section.block{page-break-inside:avoid;padding:40px 0}
+  .central-question{break-inside:avoid}
+  .scenarios{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-global">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-mark">SC</div>
+      <div class="nav-name">Smart Connection</div>
+      <div class="nav-sep">·</div>
+      <div class="nav-sub">SpA · 76.811.863-9</div>
+    </div>
+    <div class="nav-meeting">Reunión Gladys 16:00</div>
+  </div>
+</nav>
+
+<div class="sub-nav">
+  <div class="sub-inner">
+    <div class="sub-brand">Briefing tributario</div>
+    <ul class="sub-links">
+      <li><a href="#contexto">Contexto</a></li>
+      <li><a href="#ingresos">Ingresos</a></li>
+      <li><a href="#escenarios">Escenarios</a></li>
+      <li><a href="#central">Pregunta central</a></li>
+      <li><a href="#gastos">Gastos</a></li>
+      <li><a href="#preguntas">Preguntas</a></li>
+      <li><a href="#decisiones">Decisiones</a></li>
+    </ul>
+  </div>
+</div>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-eyebrow">2026-05-07 · 16:00</span>
+  <h1 class="hero-title">Reunión <em>Gladys</em>.<br>Smart Connection SpA.</h1>
+  <p class="hero-sub">
+    Briefing focalizado: reactivación post-freeze, proyección Y1 con tres escenarios,
+    estructura de gastos para optimización tributaria, y preguntas clave para la contadora.
+  </p>
+  <div class="hero-meta">
+    <span>RUT <strong>76.811.863-9</strong></span>
+    <span>Estado SII <strong style="color:var(--sage)">Sin reparos</strong></span>
+    <span>Régimen propuesto <strong>14D N°3</strong></span>
+  </div>
+</section>
+
+<!-- 01 CONTEXTO -->
+<section class="block" id="contexto">
+  <div class="container">
+    <span class="eyebrow">01 · Contexto SMC</span>
+    <h2 class="title">Empresa de tecnología <em>en reactivación</em>.</h2>
+    <p class="lead">
+      SMC SpA constituida y operando legalmente. Estuvo en freeze (sin movimiento real)
+      desde 2022. SII no reporta reparos. Plan: reactivar facturación · ajustar régimen ·
+      construir estructura de gastos sólida desde el día 1.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-eyebrow">Identidad legal</div>
+        <h3>Smart Connection SpA</h3>
+        <p>Servicios de tecnología · consultoría IA · línea SAP. Empresa 100% Guillermo González León.</p>
+        <div class="card-foot">
+          RUT 76.811.863-9 · SN Luis 465 · Valparaíso<br>
+          guillermo.gonzalez@smconnection.cl
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow">Estado tributario</div>
+        <h3>Sin reparos · 0 deuda</h3>
+        <p>SII no reporta declaraciones pendientes ni multas. F22 abril 2026 presentado en cero. Reactivación sin costo regulatorio.</p>
+        <div class="card-foot">
+          Última F22 con movimiento real: 2022<br>
+          Sin empleados con contrato actualmente
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow">Plan de reactivación</div>
+        <h3>Q2 2026 → operación real</h3>
+        <p>Facturar pendientes (Duoc $1M, Fernando $5M), abrir cuenta corriente PYME, definir régimen 14D N°3 con Gladys, ajustar capital pagado si aplica.</p>
+        <div class="card-foot">
+          Sin cuenta bancaria activa hoy<br>
+          Sin contratos vigentes formalizados
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 INGRESOS CONFIRMADOS -->
+<section class="block cream" id="ingresos">
+  <div class="container">
+    <span class="eyebrow">02 · Estructura de ventas</span>
+    <h2 class="title">Tengo <em>clientes</em> · falta gastos.</h2>
+    <p class="lead">
+      Pipeline real Y1 con clientes activos, pendientes y futuros. Mezcla SAP + IA.
+      Esta es la base sobre la cual proyectamos escenarios.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Línea</th><th>Cliente</th><th>Subcliente / detalle</th><th class="num">Y1 estimado</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SAP</strong></td><td>FreeSAP</td><td>Duoc UC · proyectos puntuales</td><td class="num">$5.0M</td><td><span class="tag confirmed">Activo</span></td></tr>
+          <tr><td><strong>SAP</strong></td><td>SAP-ABAP SpA · Fernando</td><td>Parque Arauco</td><td class="num">$1.0M</td><td><span class="tag pending">One-shot · facturable</span></td></tr>
+          <tr><td><strong>SAP</strong></td><td>SAP-ABAP SpA · Fernando</td><td>Cencosud</td><td class="num">$4.0M</td><td><span class="tag pending">Estimado · timing TBD</span></td></tr>
+          <tr><td><strong>SAP</strong></td><td>SAP-ABAP SpA · Fernando</td><td>Proyectos nuevos por facturar</td><td class="num">$10.0M</td><td><span class="tag future">Pipeline activo</span></td></tr>
+          <tr><td><strong>IA</strong></td><td>CREALO SpA</td><td>Bendito Capricho · proyecto IA</td><td class="num">$2.5M</td><td><span class="tag pending">Empieza próximo mes</span></td></tr>
+          <tr><td><strong>IA</strong></td><td>Agencia de Marketing</td><td>Proyecto único</td><td class="num">$2.0M</td><td><span class="tag future">Por vender</span></td></tr>
+          <tr><td><strong>IA</strong></td><td>InfoPet</td><td>Trabajo no facturable</td><td class="num">$0</td><td><span class="tag empty">Cortesía</span></td></tr>
+          <tr><td><strong>Internos</strong></td><td>Servicios a relacionadas</td><td>Plataforma + IA · recurrente</td><td class="num">$8.0M</td><td><span class="tag future">Activa M3+</span></td></tr>
+          <tr style="background:var(--cream);font-weight:700"><td colspan="3"><strong>TOTAL Y1 ESCENARIO REGULAR</strong></td><td class="num"><strong>$32.5M</strong></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ESCENARIOS -->
+<section class="block" id="escenarios">
+  <div class="container">
+    <span class="eyebrow">03 · Proyección 3 / 6 / 12 meses</span>
+    <h2 class="title">Tres escenarios · <em>tres realidades</em>.</h2>
+    <p class="lead">
+      Pesimista, regular y optimista. El regular es la línea base con clientes confirmados.
+      Pesimista asume atrasos y deals caídos. Optimista asume aceleración natural del pipeline.
+    </p>
+
+    <div class="scenarios">
+      <div class="scenario pessimistic">
+        <div class="label">Pesimista · −30%</div>
+        <h3>Atrasos · deals caídos</h3>
+        <div class="timeline">
+          <div class="step">
+            <span class="when">3 meses</span>
+            <span class="amt"><span class="currency">$</span>3.5M</span>
+          </div>
+          <div class="step">
+            <span class="when">6 meses</span>
+            <span class="amt"><span class="currency">$</span>10.0M</span>
+          </div>
+          <div class="step">
+            <span class="when">12 meses · Y1</span>
+            <span class="amt"><span class="currency">$</span>22.7M</span>
+          </div>
+        </div>
+        <p class="note">
+          Duoc no factura 4 meses · Cencosud se cae · proyectos nuevos Fernando solo $5M
+          de los $10M · CREALO se atrasa · Agencia Marketing se cae · internos arrancan tarde.
+        </p>
+      </div>
+
+      <div class="scenario regular">
+        <div class="label">Regular · línea base</div>
+        <h3>Lo que ya tenemos</h3>
+        <div class="timeline">
+          <div class="step">
+            <span class="when">3 meses</span>
+            <span class="amt"><span class="currency">$</span>5.0M</span>
+          </div>
+          <div class="step">
+            <span class="when">6 meses</span>
+            <span class="amt"><span class="currency">$</span>14.0M</span>
+          </div>
+          <div class="step">
+            <span class="when">12 meses · Y1</span>
+            <span class="amt"><span class="currency">$</span>32.5M</span>
+          </div>
+        </div>
+        <p class="note">
+          Duoc factura promedio · Fernando entrega Parque + Cencosud + $10M nuevos ·
+          CREALO empieza M2 · Agencia Marketing cierra · servicios relacionadas activan M3.
+        </p>
+      </div>
+
+      <div class="scenario optimistic">
+        <div class="label">Optimista · +40%</div>
+        <h3>Aceleración del pipeline</h3>
+        <div class="timeline">
+          <div class="step">
+            <span class="when">3 meses</span>
+            <span class="amt"><span class="currency">$</span>8.0M</span>
+          </div>
+          <div class="step">
+            <span class="when">6 meses</span>
+            <span class="amt"><span class="currency">$</span>20.0M</span>
+          </div>
+          <div class="step">
+            <span class="when">12 meses · Y1</span>
+            <span class="amt"><span class="currency">$</span>45.5M</span>
+          </div>
+        </div>
+        <p class="note">
+          Cencosud pleno · proyectos Fernando crecen a $14M · CREALO recurrente ·
+          Agencia Marketing contrato anual · aparece nuevo cliente IA grande · internos crecen.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 PREGUNTA CENTRAL -->
+<section class="block dark" id="central">
+  <div class="container">
+    <span class="eyebrow">04 · La pregunta central</span>
+    <h2 class="title">¿Cómo <em>reducir</em> impuestos legalmente?</h2>
+    <p class="lead">
+      Como empresa de tecnología, tengo flexibilidad alta para construir estructura de gastos.
+      Quiero usarla bien · sin levantar bandera con SII · maximizando deducción.
+    </p>
+
+    <div class="central-question">
+      <div class="label">Pregunta clave para Gladys</div>
+      <h3>Tengo estructura de venta. Falta estructura de gasto.</h3>
+      <p>
+        ¿Qué gastos puedo generar legalmente para reducir base imponible?
+        ¿Hasta cuánto puedo subcontratar? ¿Qué porcentaje de mis ingresos debería transformarse en gastos deducibles
+        para mantener margen razonable y minimizar IDPC sin riesgos?
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 05 UNIVERSO DE GASTOS -->
+<section class="block cream" id="gastos">
+  <div class="container">
+    <span class="eyebrow">05 · Universo de gastos posibles</span>
+    <h2 class="title">10 categorías de <em>gastos deducibles</em>.</h2>
+    <p class="lead">
+      Como empresa de tecnología tengo flexibilidad. Cada gasto debe tener factura,
+      ser necesario para producir la renta y estar respaldado documentalmente.
+    </p>
+
+    <div class="gastos-grid">
+      <div class="gasto-card">
+        <div class="num-icon">01</div>
+        <h4>Honorarios subcontratistas</h4>
+        <ul>
+          <li>Consultores SAP / IA freelance</li>
+          <li>Diseñadores externos</li>
+          <li>Devs frontend / backend</li>
+          <li>Sebastián González (cuando arranque)</li>
+        </ul>
+        <div class="total">~$6-12M Y1 estimado</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">02</div>
+        <h4>Servicios profesionales</h4>
+        <ul>
+          <li>Contadora (Gladys)</li>
+          <li>Abogado · contratos / pacto</li>
+          <li>Coach / mentor empresarial</li>
+        </ul>
+        <div class="total">~$3M Y1</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">03</div>
+        <h4>Hardware (CapEx · activo fijo)</h4>
+        <ul>
+          <li>MacBook Pro M4 · $2.5M</li>
+          <li>Mac mini M4 · $1.2M</li>
+          <li>Vision Pro · $3.5M</li>
+          <li>Monitor 4K · $700K</li>
+        </ul>
+        <div class="total">~$8M one-time · deprecia 36 meses</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">04</div>
+        <h4>SaaS y software</h4>
+        <ul>
+          <li>Vercel Pro · Supabase Pro · AWS</li>
+          <li>Anthropic API · OpenAI API</li>
+          <li>GitHub Copilot · Cursor IDE</li>
+          <li>Notion · Linear · Adobe CC</li>
+        </ul>
+        <div class="total">~$4-5M Y1</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">05</div>
+        <h4>Conectividad</h4>
+        <ul>
+          <li>Internet fibra empresa</li>
+          <li>Plan datos celular</li>
+          <li>VPN profesional</li>
+        </ul>
+        <div class="total">~$1.2M Y1</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">06</div>
+        <h4>Capacitación deducible</h4>
+        <ul>
+          <li>Franquicia SENCE 1%</li>
+          <li>Cursos OpenAI / Anthropic</li>
+          <li>Conferencias tech (entradas + viajes)</li>
+        </ul>
+        <div class="total">~$2M Y1</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">07</div>
+        <h4>Marketing B2B</h4>
+        <ul>
+          <li>LinkedIn Ads</li>
+          <li>Web hosting + dominios</li>
+          <li>Content + producción audiovisual</li>
+        </ul>
+        <div class="total">~$1.5M Y1</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">08</div>
+        <h4>Movilidad</h4>
+        <ul>
+          <li>Bencina · visitas clientes</li>
+          <li>Uber a reuniones</li>
+          <li>Mantención auto (parcial)</li>
+        </ul>
+        <div class="total">~$2M Y1</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">09</div>
+        <h4>Oficina (opcional)</h4>
+        <ul>
+          <li>Arriendo dpto Concón a pareja: $500K/mes</li>
+          <li>Servicios básicos prorrateados</li>
+        </ul>
+        <div class="total">~$6M Y1 si se activa</div>
+      </div>
+
+      <div class="gasto-card">
+        <div class="num-icon">10</div>
+        <h4>Representación</h4>
+        <ul>
+          <li>Almuerzos / cafés con clientes</li>
+          <li>Regalos corporativos</li>
+        </ul>
+        <div class="total">~$1M Y1</div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);padding:30px;border-radius:var(--radius);margin-top:30px;border:1px solid var(--border-w);box-shadow:var(--shadow-sm)">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Total potencial deducible Y1</div>
+      <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap">
+        <div style="font-size:54px;font-weight:800;color:var(--navy);letter-spacing:-.03em"><span style="color:var(--gold);font-size:28px">$</span>30-42M</div>
+        <div style="font-size:14px;color:var(--muted);max-width:520px">según escenario operativo · suficiente para neutralizar utilidad y minimizar IDPC manteniendo margen razonable</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 PREGUNTAS PARA GLADYS -->
+<section class="block" id="preguntas">
+  <div class="container">
+    <span class="eyebrow">06 · Preguntas para Gladys</span>
+    <h2 class="title">15 puntos · <em>orden de criticidad</em>.</h2>
+    <p class="lead">
+      Cada pregunta tiene mi propuesta inicial. Gladys valida, ajusta o redirige.
+      Las P1 son bloqueantes para reactivar SMC.
+    </p>
+
+    <ol class="preguntas-list">
+      <li>
+        <span class="priority p1">P1</span>
+        <div class="pregunta">¿Confirma régimen <strong>14D N°3 Pro-PYME General</strong> para SMC?</div>
+        <div class="propuesta">Mi propuesta: <strong>14D N°3</strong> (25% utilidad, contabilidad simplificada, IVA mensual, distribución integrada). Alternativa rechazada: 14D N°8 Transparente (no conviene por mi tasa marginal alta vía Globant).</div>
+      </li>
+      <li>
+        <span class="priority p1">P1</span>
+        <div class="pregunta">¿Cómo reactivar SMC formalmente después del freeze 2022-2026?</div>
+        <div class="propuesta">Mi propuesta: facturar pendiente Duoc $1M en M1 · presentar F29 con movimiento · avisar SII formalmente. ¿Hay que hacer algo más legal?</div>
+      </li>
+      <li>
+        <span class="priority p1">P1</span>
+        <div class="pregunta">¿Cuál es el capital pagado declarado original de SMC?</div>
+        <div class="propuesta">Necesito el dato exacto para certificar · ¿hay que aumentar el capital antes de facturar volumen?</div>
+      </li>
+      <li>
+        <span class="priority p1">P1</span>
+        <div class="pregunta">¿Cuándo abrir cuenta corriente PYME y en qué banco?</div>
+        <div class="propuesta">BancoEstado (sin costo) o Bci (API bancaria). ¿Conviene esperar o abrir ahora? Necesidad: depositar primeros pagos.</div>
+      </li>
+      <li>
+        <span class="priority p2">P2</span>
+        <div class="pregunta">¿Conviene <strong>arrendar dpto Concón a mi pareja</strong> como gasto SMC?</div>
+        <div class="propuesta">Mi propuesta: contrato $500K/mes · gasto deducible SMC · ingreso boleta honorarios para pareja. ¿Qué riesgos SII? ¿Precio mercado?</div>
+      </li>
+      <li>
+        <span class="priority p2">P2</span>
+        <div class="pregunta">¿Cuánto puedo deducir en honorarios subcontratistas sin levantar bandera?</div>
+        <div class="propuesta">Mi propuesta: hasta 40-50% de ingresos en honorarios externos (Sebastián, freelancers, consultores). ¿Hay límite de proporción?</div>
+      </li>
+      <li>
+        <span class="priority p2">P2</span>
+        <div class="pregunta">¿Cómo capitalizar hardware óptimo para deducción?</div>
+        <div class="propuesta">$8M en equipos (MacBook, Mac mini, Vision Pro, monitor) · ¿activación de gasto vs depreciación lineal 36 meses? ¿Qué método me conviene Y1?</div>
+      </li>
+      <li>
+        <span class="priority p2">P2</span>
+        <div class="pregunta">¿Cómo activar la franquicia SENCE 1%?</div>
+        <div class="propuesta">Para capacitación de equipo · cuando contrate primer empleado o yo mismo como dueño-trabajador. ¿Aplica antes de tener empleados?</div>
+      </li>
+      <li>
+        <span class="priority p2">P2</span>
+        <div class="pregunta">¿Cuándo conviene <strong>contratar empleado</strong> vs honorarios?</div>
+        <div class="propuesta">Punto de equilibrio: honorarios (sin previsional) vs contrato (15-20% adicional cotizaciones · pero crédito SENCE).</div>
+      </li>
+      <li>
+        <span class="priority p2">P2</span>
+        <div class="pregunta">¿Cómo documentar facturación a empresas relacionadas (Art. 41 E LIR)?</div>
+        <div class="propuesta">Mi propuesta: contratos escritos · precio mercado documentado · factura DTE 33 · bitácora. ¿Modelo de contrato que use ella?</div>
+      </li>
+      <li>
+        <span class="priority p3">P3</span>
+        <div class="pregunta">¿Pagar contratos en UF vs CLP?</div>
+        <div class="propuesta">Para clientes recurrentes · ¿conviene anclar precios en UF para protección inflacionaria? ¿Implicaciones tributarias?</div>
+      </li>
+      <li>
+        <span class="priority p3">P3</span>
+        <div class="pregunta">¿Regla SII para gastos de auto personal usado en empresa?</div>
+        <div class="propuesta">Bencina · mantención · peajes · seguro. ¿Qué % del uso real puedo deducir? ¿Cómo se documenta?</div>
+      </li>
+      <li>
+        <span class="priority p3">P3</span>
+        <div class="pregunta">¿Qué software contable usa o recomienda?</div>
+        <div class="propuesta">Mi propuesta: agente IA + DTE SII directo + Excel maestro. ¿Necesitamos Defontana/Nubox formalmente?</div>
+      </li>
+      <li>
+        <span class="priority p3">P3</span>
+        <div class="pregunta">¿Calendario tributario primer año reactivado?</div>
+        <div class="propuesta">F29 día 12 mensual · F22 abril 2027 · DDJJ relevantes · alertas que ella maneje y me avise.</div>
+      </li>
+      <li>
+        <span class="priority p3">P3</span>
+        <div class="pregunta">¿Sueldo bruto exacto Globant para mi F22 personal Abril 2027?</div>
+        <div class="propuesta">Tengo neto $3.9M/mes · necesito brutificar para calcular Imp. Único + Global Complementario.</div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 07 DECISIONES ESPERADAS -->
+<section class="block dark" id="decisiones">
+  <div class="container">
+    <span class="eyebrow">07 · Salida de la reunión</span>
+    <h2 class="title">Lo que <em>tiene que quedar</em> definido.</h2>
+    <p class="lead">
+      Si salimos con estas 8 decisiones tomadas, la reunión fue un éxito.
+      Lo demás se puede iterar después.
+    </p>
+
+    <ul class="decision-list">
+      <li><span class="check">1</span><div>Régimen tributario SMC <strong>confirmado</strong> (14D N°3 propuesto)</div></li>
+      <li><span class="check">2</span><div>Plan de reactivación post-freeze · pasos exactos · primer F29</div></li>
+      <li><span class="check">3</span><div>Capital pagado declarado · si hay que aumentarlo · cuándo</div></li>
+      <li><span class="check">4</span><div>Cuenta corriente PYME · banco elegido · timing</div></li>
+      <li><span class="check">5</span><div>Estrategia gastos · subcontratación tope · arriendo Concón sí/no</div></li>
+      <li><span class="check">6</span><div>Activación SENCE · timing · cómo</div></li>
+      <li><span class="check">7</span><div>Modelo de contrato para facturación a empresas relacionadas</div></li>
+      <li><span class="check">8</span><div>Honorarios de Gladys · forma de trabajo · frecuencia de revisión</div></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Smart Connection SpA <span class="gold">·</span> 76.811.863-9 <span class="gold">·</span> Reunión Gladys 2026-05-07 16:00</p>
+</footer>
+
+<script>
+document.querySelectorAll('.sub-links a').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target){
+      const offset = 100;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({top, behavior:'smooth'});
+    }
+  });
+});
+</script>
+
+</body>
+</html>

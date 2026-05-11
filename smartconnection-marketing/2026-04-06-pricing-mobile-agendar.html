@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing · Smart Connection — Maqueta 2026-04-06</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!--
+    ════════════════════════════════════════════════════════════════
+    MAQUETA: Pricing Mobile + Modal Agendar
+    Autor: Panchita · Smart Connection · 2026-04-06
+    ════════════════════════════════════════════════════════════════
+
+    QUÉ CAMBIA VS EL ORIGINAL:
+    1. Pricing cards — mobile scroll horizontal con scroll-snap
+       (desktop mantiene grid 4 columnas)
+    2. Dots indicator sincronizados con scroll (solo mobile ≤768px)
+    3. Modal Agendar glassmorphism — flujo: nombre + date + hora pill
+    4. Genera URL Google Calendar con fechas reales y abre en nueva tab
+    5. Validación con shake animation si falta campo
+    6. Toggle Space (dark) / White (light) via CSS variables
+    7. WhatsApp CTA secundario en modal
+    ════════════════════════════════════════════════════════════════
+  -->
+
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ul { list-style: none; }
+    a { text-decoration: none; }
+
+    /* ── TOKENS SPACE (default dark) ── */
+    :root {
+      --bg: #060912;
+      --surface: #0a0d14;
+      --elevated: #0f1520;
+      --glass: rgba(15,22,35,0.85);
+      --border: rgba(255,255,255,0.06);
+      --border-hover: rgba(255,255,255,0.15);
+      --text: #f1f5f9;
+      --text2: #94a3b8;
+      --muted: #475569;
+      --accent: #00b4d8;
+      --gold: #f97316;
+      --blue: #4a9eff;
+      --purple: #a78bfa;
+      --shadow: rgba(0,0,0,0.5);
+      --overlay: rgba(6,9,18,0.85);
+    }
+
+    /* ── TOKENS WHITE (light) ── */
+    :root.theme-white {
+      --bg: #ffffff;
+      --surface: #f8fafc;
+      --elevated: #f1f5f9;
+      --glass: rgba(255,255,255,0.9);
+      --border: rgba(0,0,0,0.08);
+      --border-hover: rgba(0,0,0,0.2);
+      --text: #0f172a;
+      --text2: #475569;
+      --muted: #94a3b8;
+      --shadow: rgba(0,0,0,0.12);
+      --overlay: rgba(248,250,252,0.85);
+    }
+
+    /* ── BASE ── */
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.4s, color 0.4s;
+      padding: 0 0 80px 0;
+    }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 4px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 16px var(--shadow);
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .theme-toggle button {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      color: var(--text2);
+      background: transparent;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .theme-toggle button.active {
+      background: var(--elevated);
+      color: var(--text);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 24px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── PRICING SECTION ── */
+    .pricing-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── DESKTOP GRID ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding-top: 20px;
+    }
+
+    /* ── MOBILE SCROLL ── */
+    @media (max-width: 768px) {
+      .pricing-section {
+        padding: 0;
+      }
+
+      .pricing-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        gap: 0;
+        padding: 24px 0 16px 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .pricing-grid::-webkit-scrollbar { display: none; }
+
+      .pricing-card {
+        flex: 0 0 calc(100vw - 48px);
+        scroll-snap-align: center;
+        margin: 0 12px;
+      }
+      .pricing-card:first-child { margin-left: 24px; }
+      .pricing-card:last-child  { margin-right: 24px; }
+    }
+
+    /* ── CARD BASE ── */
+    .pricing-card {
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: border-color 0.4s, transform 0.4s, box-shadow 0.4s, background 0.4s;
+    }
+    .pricing-card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* Card colores de acento */
+    .pricing-card.card-saas:hover     { border-color: #00b4d8; box-shadow: 0 0 32px rgba(0,180,216,0.15); }
+    .pricing-card.card-discovery:hover{ border-color: #f97316; box-shadow: 0 0 32px rgba(249,115,22,0.15); }
+    .pricing-card.card-build:hover    { border-color: #4a9eff; box-shadow: 0 0 32px rgba(74,158,255,0.15); }
+    .pricing-card.card-support        { border-color: rgba(167,139,250,0.3); }
+    .pricing-card.card-support:hover  { border-color: #a78bfa; box-shadow: 0 0 32px rgba(167,139,250,0.2); }
+
+    /* Shimmer en Project + Support */
+    .pricing-card.card-support::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: linear-gradient(135deg, transparent 40%, rgba(167,139,250,0.06) 50%, transparent 60%);
+      background-size: 200% 200%;
+      animation: shimmer 3s infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% -200%; }
+      100% { background-position: 200% 200%; }
+    }
+
+    /* ── PRICING TAG ── */
+    .pricing-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .tag-cyan    { background: rgba(0,180,216,0.15); color: #00b4d8; border: 1px solid rgba(0,180,216,0.3); }
+    .tag-gold    { background: rgba(249,115,22,0.15); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+    .tag-blue    { background: rgba(74,158,255,0.15); color: #4a9eff; border: 1px solid rgba(74,158,255,0.3); }
+    .tag-purple  { background: rgba(167,139,250,0.15); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+
+    /* ── CARD CONTENT ── */
+    .pricing-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 8px;
+    }
+    .pricing-price {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .pricing-price small {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text2);
+      letter-spacing: 0;
+    }
+    .pricing-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+      flex: 1;
+    }
+    .pricing-divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── FEATURES LIST ── */
+    .pricing-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pricing-features li {
+      font-size: 13px;
+      color: var(--text2);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .pricing-features li .check {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 10px;
+    }
+    .check-cyan   { background: rgba(0,180,216,0.15); color: #00b4d8; }
+    .check-gold   { background: rgba(249,115,22,0.15); color: #f97316; }
+    .check-blue   { background: rgba(74,158,255,0.15); color: #4a9eff; }
+    .check-purple { background: rgba(167,139,250,0.15); color: #a78bfa; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      border: none;
+      width: 100%;
+      margin-top: auto;
+    }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-cyan    { background: #00b4d8; color: #fff; }
+    .btn-cyan:hover { background: #00c8f0; box-shadow: 0 4px 20px rgba(0,180,216,0.4); }
+
+    .btn-gold    { background: #f97316; color: #fff; }
+    .btn-gold:hover { background: #fb8833; box-shadow: 0 4px 20px rgba(249,115,22,0.4); }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border-hover);
+      color: var(--text);
+    }
+    .btn-ghost:hover { background: var(--elevated); }
+
+    .btn-purple  { background: #a78bfa; color: #fff; }
+    .btn-purple:hover { background: #b9a0fc; box-shadow: 0 4px 20px rgba(167,139,250,0.4); }
+
+    /* ── DOTS INDICATOR (solo mobile) ── */
+    .dots-container {
+      display: none;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 0 0;
+    }
+    @media (max-width: 768px) {
+      .dots-container { display: flex; }
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-hover);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .dot.active {
+      width: 20px;
+      border-radius: 3px;
+      background: var(--accent);
+    }
+
+    /* ── DEMO BUTTON ── */
+    .demo-btn-wrap {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding: 0 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .btn-demo {
+      background: var(--elevated);
+      border: 1px solid var(--border-hover);
+      color: var(--text2);
+      border-radius: 100px;
+      padding: 10px 24px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-demo:hover { color: var(--text); border-color: var(--gold); }
+
+    /* ════════════════════════════
+       MODAL AGENDAR
+    ════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--glass);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      box-shadow: 0 24px 64px var(--shadow);
+      transform: scale(0.95) translateY(16px);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.4s;
+    }
+    .modal-overlay.open .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    /* Borde superior gold */
+    .modal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 32px; right: 32px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #f97316, transparent);
+      border-radius: 100px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--elevated);
+      color: var(--text2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--border-hover); }
+
+    .modal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f97316;
+      background: rgba(249,115,22,0.1);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 100px;
+      padding: 4px 10px;
+      margin-bottom: 12px;
+    }
+
+    .modal h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .modal-subtitle {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .modal-pill {
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 2px 8px;
+      font-size: 11px;
+      color: var(--text2);
+    }
+
+    /* Form */
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .form-input {
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      outline: none;
+      width: 100%;
+    }
+    .form-input:focus {
+      border-color: #f97316;
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.12);
+    }
+    .form-input::placeholder { color: var(--muted); }
+
+    /* Date input — ocultar icono nativo, estilar nuestro */
+    input[type="date"] {
+      color-scheme: dark;
+    }
+    :root.theme-white input[type="date"] {
+      color-scheme: light;
+    }
+
+    /* ── HORA PILLS ── */
+    .hours-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .hours-scroll::-webkit-scrollbar { display: none; }
+    .hour-pill {
+      flex-shrink: 0;
+      padding: 8px 16px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--elevated);
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .hour-pill:hover { border-color: var(--border-hover); color: var(--text); }
+    .hour-pill.selected {
+      background: rgba(249,115,22,0.15);
+      border-color: #f97316;
+      color: #f97316;
+    }
+
+    /* ── MODAL BUTTONS ── */
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-confirm {
+      background: linear-gradient(135deg, #f97316, #fb8a2a);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-confirm:hover {
+      box-shadow: 0 8px 24px rgba(249,115,22,0.4);
+      transform: translateY(-1px);
+    }
+    .btn-confirm:active { transform: scale(0.98); }
+
+    .btn-whatsapp {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+    }
+    .btn-whatsapp:hover {
+      border-color: #25d366;
+      color: #25d366;
+      background: rgba(37,211,102,0.06);
+    }
+
+    /* ── SHAKE ANIMATION (validación) ── */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(-6px); }
+      30% { transform: translateX(6px); }
+      45% { transform: translateX(-4px); }
+      60% { transform: translateX(4px); }
+      75% { transform: translateX(-2px); }
+      90% { transform: translateX(2px); }
+    }
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+    .form-input.error,
+    .hours-scroll.error { border-color: #ef4444 !important; }
+    .hours-scroll.error { border: 1px solid #ef4444; border-radius: 12px; padding: 8px; }
+
+    /* ── ÉXITO ── */
+    .modal-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      padding: 16px 0;
+    }
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(249,115,22,0.15);
+      border: 2px solid #f97316;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    .modal-success p {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── TOGGLE DE TEMA ── -->
+  <div class="theme-toggle" role="group" aria-label="Cambiar tema">
+    <button id="btn-space" class="active" onclick="setTheme('space')" aria-pressed="true">🌌 Space</button>
+    <button id="btn-white" onclick="setTheme('white')" aria-pressed="false">☀️ White</button>
+  </div>
+
+  <!-- ── LABEL ── -->
+  <p class="section-label">Sección: Pricing</p>
+
+  <!-- ══════════════════════════════
+       PRICING CARDS
+  ══════════════════════════════ -->
+  <section class="pricing-section" aria-label="Planes y precios">
+    <div class="pricing-grid" id="pricingGrid">
+
+      <!-- CARD 1 · SaaS Start -->
+      <article class="pricing-card card-saas">
+        <span class="pricing-tag tag-cyan">Más popular</span>
+
+        <div>
+          <p class="pricing-name">SaaS Start</p>
+          <p class="pricing-price">
+            Desde $100K <small>CLP/mes</small>
+          </p>
+        </div>
+
+        <p class="pricing-desc">
+          Plataforma lista, te conectamos en días. Sin inversión inicial. Ideal para empezar a automatizar.
+        </p>
+
+        <div class="pricing-divider"></div>
+
+        <ul class="pricing-features">
+          <li><span class="check check-cyan">✓</span>Onboarding en días no meses</li>
+          <li><span class="check check-cyan">✓</span>Sin inversión inicial</li>
+          <li><span class="check check-cyan">✓</span>Soporte incluido</li>
+          <li><span class="check check-cyan">✓</span>Escalar cuando quieras</li>
+        </ul>
+
+        <button class="btn btn-cyan">Ver qué incluye</button>
+      </article>
+
+      <!-- CARD 2 · Discovery & Design Sprint -->
+      <article class="pricing-card card-discovery">
+        <span class="pricing-tag tag-gold">Empezar aquí</span>
+
+        <div>
+          <p class="pricing-name">Discovery & Design Sprint</p>
+          <p class="pricing-price">
+            Desde $500K <small>CLP</small>
+          </p>
+        </div>
+
+        <p class="pricing-desc">
+          La mejor inversión antes de construir. Mapeamos tus procesos y entregamos el plan completo.
+        </p>
+
+        <div class="pricing-divider"></div>
+
+        <ul class="pricing-features">
+          <li><span class="check check-gold">✓</span>Mapeo completo de tus procesos</li>
+          <li><span class="check check-gold">✓</span>Top 3 quick wins con retorno estimado</li>
+          <li><span class="check check-gold">✓</span>BPMN + specs + presupuesto</li>
+          <li><span class="check check-gold">✓</span>Plan de acción en 1 semana</li>
+        </ul>
+
+        <button class="btn btn-gold" onclick="openModal()">Agendar Discovery</button>
+      </article>
+
+      <!-- CARD 3 · Build Premium -->
+      <article class="pricing-card card-build">
+        <span class="pricing-tag tag-blue">Tú eres el dueño</span>
+
+        <div>
+          <p class="pricing-name">Build Premium</p>
+          <p class="pricing-price">
+            Desde $2M <small>CLP</small>
+          </p>
+        </div>
+
+        <p class="pricing-desc">
+          Desarrollo a medida. El código es tuyo. Tu equipo técnico puede operar y mantener.
+        </p>
+
+        <div class="pricing-divider"></div>
+
+        <ul class="pricing-features">
+          <li><span class="check check-blue">✓</span>Repositorio y código completo</li>
+          <li><span class="check check-blue">✓</span>Documentación técnica incluida</li>
+          <li><span class="check check-blue">✓</span>Entrega por hitos acordados</li>
+          <li><span class="check check-blue">✓</span>Sin dependencia post-entrega</li>
+        </ul>
+
+        <button class="btn btn-ghost">Cotizar proyecto</button>
+      </article>
+
+      <!-- CARD 4 · Project + Support -->
+      <article class="pricing-card card-support">
+        <span class="pricing-tag tag-purple">TODO INCLUIDO</span>
+
+        <div>
+          <p class="pricing-name">Project + Support</p>
+          <p class="pricing-price" style="font-size:14px; font-weight:600; color: var(--text2); letter-spacing: 0;">
+            Contrato formalizado · SLA garantizado
+          </p>
+        </div>
+
+        <p class="pricing-desc">
+          Tu equipo técnico externo, siempre activo. Sin contratar developers.
+        </p>
+
+        <div class="pricing-divider"></div>
+
+        <ul class="pricing-features">
+          <li><span class="check check-purple">✓</span>Todo lo de Build Premium</li>
+          <li><span class="check check-purple">✓</span>Monitoreo activo 24/7</li>
+          <li><span class="check check-purple">✓</span>Ajustes y mejoras continuas</li>
+          <li><span class="check check-purple">✓</span>SLA garantizado por contrato</li>
+        </ul>
+
+        <button class="btn btn-purple" onclick="openModal()">Hablar con equipo</button>
+      </article>
+
+    </div><!-- /pricing-grid -->
+
+    <!-- DOTS (solo mobile) -->
+    <div class="dots-container" id="dotsContainer" role="tablist" aria-label="Navegar cards de pricing">
+      <span class="dot active" data-index="0" onclick="scrollToCard(0)" role="tab" aria-selected="true" tabindex="0"></span>
+      <span class="dot" data-index="1" onclick="scrollToCard(1)" role="tab" aria-selected="false" tabindex="-1"></span>
+      <span class="dot" data-index="2" onclick="scrollToCard(2)" role="tab" aria-selected="false" tabindex="-1"></span>
+      <span class="dot" data-index="3" onclick="scrollToCard(3)" role="tab" aria-selected="false" tabindex="-1"></span>
+    </div>
+
+  </section>
+
+  <!-- ── BOTÓN DEMO MODAL ── -->
+  <div class="demo-btn-wrap">
+    <button class="btn-demo" onclick="openModal()">→ Abrir modal Agendar (demo)</button>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       MODAL AGENDAR
+  ══════════════════════════════ -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="handleOverlayClick(event)">
+    <div class="modal">
+
+      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar modal">✕</button>
+
+      <!-- Estado: formulario -->
+      <div id="modalForm">
+        <span class="modal-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Discovery Sprint
+        </span>
+
+        <h2 id="modalTitle">Agenda tu Discovery</h2>
+        <div class="modal-subtitle">
+          <span class="modal-pill">⏱ 30 min</span>
+          <span class="modal-pill">🎥 Google Meet</span>
+          <span class="modal-pill">Sin compromiso</span>
+        </div>
+
+        <div class="modal-form" id="theForm">
+
+          <!-- Campo: nombre -->
+          <div class="form-group">
+            <label class="form-label" for="inputNombre">Tu nombre o empresa</label>
+            <input
+              class="form-input"
+              type="text"
+              id="inputNombre"
+              placeholder="Ej: María García · Empresa Ltda."
+              autocomplete="name"
+            >
+          </div>
+
+          <!-- Campo: fecha -->
+          <div class="form-group">
+            <label class="form-label" for="inputFecha">Fecha preferida</label>
+            <input
+              class="form-input"
+              type="date"
+              id="inputFecha"
+              style="cursor:pointer;"
+            >
+          </div>
+
+          <!-- Campo: hora -->
+          <div class="form-group">
+            <label class="form-label">Hora preferida</label>
+            <div class="hours-scroll" id="hoursScroll">
+              <button class="hour-pill" data-hour="09:00" onclick="selectHour(this)">09:00</button>
+              <button class="hour-pill" data-hour="10:00" onclick="selectHour(this)">10:00</button>
+              <button class="hour-pill" data-hour="11:00" onclick="selectHour(this)">11:00</button>
+              <button class="hour-pill" data-hour="14:00" onclick="selectHour(this)">14:00</button>
+              <button class="hour-pill" data-hour="15:00" onclick="selectHour(this)">15:00</button>
+              <button class="hour-pill" data-hour="16:00" onclick="selectHour(this)">16:00</button>
+              <button class="hour-pill" data-hour="17:00" onclick="selectHour(this)">17:00</button>
+            </div>
+          </div>
+
+          <!-- Botones -->
+          <div class="modal-actions">
+            <button class="btn-confirm" onclick="confirmarAgenda()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="16" x2="15" y2="16"/><line x1="12" y1="13" x2="12" y2="19"/></svg>
+              Confirmar en Google Calendar
+            </button>
+            <a
+              class="btn-whatsapp"
+              href="https://wa.me/56955361419?text=Hola%2C%20quiero%20agendar%20un%20Discovery%20Sprint"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Escribir por WhatsApp
+            </a>
+          </div>
+
+        </div><!-- /modalForm inner -->
+      </div><!-- /modalForm outer -->
+
+      <!-- Estado: éxito -->
+      <div class="modal-success" id="modalSuccess">
+        <div class="success-icon">🗓️</div>
+        <h2 style="font-size:20px;">¡Listo, te esperamos!</h2>
+        <p>Abrimos Google Calendar para que confirmes el evento. Recibirás invitación en tu correo.</p>
+        <button class="btn btn-ghost" style="max-width:200px;" onclick="closeModal()">Cerrar</button>
+      </div>
+
+    </div><!-- /modal -->
+  </div><!-- /overlay -->
+
+
+  <!-- ══════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════ -->
+  <script>
+    /* ─── TEMA ─── */
+    function setTheme(theme) {
+      const html = document.documentElement;
+      const btnSpace = document.getElementById('btn-space');
+      const btnWhite = document.getElementById('btn-white');
+
+      if (theme === 'white') {
+        html.classList.add('theme-white');
+        btnWhite.classList.add('active');
+        btnSpace.classList.remove('active');
+        btnWhite.setAttribute('aria-pressed', 'true');
+        btnSpace.setAttribute('aria-pressed', 'false');
+      } else {
+        html.classList.remove('theme-white');
+        btnSpace.classList.add('active');
+        btnWhite.classList.remove('active');
+        btnSpace.setAttribute('aria-pressed', 'true');
+        btnWhite.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    /* ─── SCROLL DOTS ─── */
+    const grid  = document.getElementById('pricingGrid');
+    const dots  = document.querySelectorAll('.dot');
+
+    function scrollToCard(index) {
+      const cards = grid.querySelectorAll('.pricing-card');
+      if (cards[index]) {
+        cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+
+    function updateDots(activeIndex) {
+      dots.forEach((dot, i) => {
+        const isActive = i === activeIndex;
+        dot.classList.toggle('active', isActive);
+        dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        dot.setAttribute('tabindex', isActive ? '0' : '-1');
+      });
+    }
+
+    // Sincronizar dots con scroll
+    if (grid) {
+      grid.addEventListener('scroll', () => {
+        const cards = grid.querySelectorAll('.pricing-card');
+        if (!cards.length) return;
+        const scrollLeft = grid.scrollLeft;
+        const cardWidth  = cards[0].offsetWidth + 24; // card + gap
+        const index      = Math.round(scrollLeft / cardWidth);
+        updateDots(Math.min(index, cards.length - 1));
+      }, { passive: true });
+    }
+
+    /* ─── FECHA MÍNIMA (mañana, solo hábiles) ─── */
+    function getNextBusinessDay() {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      // Saltar fin de semana
+      while (d.getDay() === 0 || d.getDay() === 6) {
+        d.setDate(d.getDate() + 1);
+      }
+      return d.toISOString().split('T')[0];
+    }
+
+    // Inicializar fecha mínima al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+      const fechaInput = document.getElementById('inputFecha');
+      fechaInput.min = getNextBusinessDay();
+
+      // Bloquear fines de semana en el change
+      fechaInput.addEventListener('change', () => {
+        const selected = new Date(fechaInput.value + 'T12:00:00');
+        const day = selected.getDay();
+        if (day === 0 || day === 6) {
+          fechaInput.setCustomValidity('Solo días hábiles (lunes a viernes)');
+          fechaInput.value = getNextBusinessDay();
+        } else {
+          fechaInput.setCustomValidity('');
+        }
+      });
+    });
+
+    /* ─── HORA PILLS ─── */
+    let selectedHour = null;
+
+    function selectHour(el) {
+      document.querySelectorAll('.hour-pill').forEach(p => p.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedHour = el.dataset.hour;
+      document.getElementById('hoursScroll').classList.remove('error');
+    }
+
+    /* ─── MODAL OPEN / CLOSE ─── */
+    function openModal() {
+      document.getElementById('modalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      // Reset estado
+      document.getElementById('modalForm').style.display = 'block';
+      document.getElementById('modalSuccess').style.display = 'none';
+      // Focus en nombre
+      setTimeout(() => document.getElementById('inputNombre').focus(), 300);
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modalOverlay')) {
+        closeModal();
+      }
+    }
+
+    // Cerrar con Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    /* ─── VALIDAR + GOOGLE CALENDAR ─── */
+    function confirmarAgenda() {
+      const nombre = document.getElementById('inputNombre').value.trim();
+      const fecha  = document.getElementById('inputFecha').value;
+      let hasError = false;
+
+      // Validar nombre
+      if (!nombre) {
+        shakeField('inputNombre');
+        hasError = true;
+      }
+
+      // Validar fecha
+      if (!fecha) {
+        shakeField('inputFecha');
+        hasError = true;
+      }
+
+      // Validar hora
+      if (!selectedHour) {
+        shakeHours();
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      // Construir fechas para Google Calendar
+      const [hh, mm] = selectedHour.split(':');
+      const startDt  = buildCalDate(fecha, parseInt(hh), parseInt(mm), 0);
+      const endDt    = buildCalDate(fecha, parseInt(hh), parseInt(mm) + 30, 0);
+
+      const title   = encodeURIComponent(`Discovery Sprint — Smart Connection`);
+      const details = encodeURIComponent(
+        `Reunión de Discovery Sprint con Smart Connection.\n` +
+        `Analizamos tus procesos y encontramos automatizaciones con ROI positivo.\n` +
+        `Solicitado por: ${nombre}`
+      );
+      const calUrl  =
+        `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+        `&text=${title}` +
+        `&details=${details}` +
+        `&add=contacto%40smconnection.cl` +
+        `&dates=${startDt}/${endDt}`;
+
+      window.open(calUrl, '_blank', 'noopener,noreferrer');
+
+      // Mostrar estado de éxito
+      document.getElementById('modalForm').style.display = 'none';
+      document.getElementById('modalSuccess').style.display = 'flex';
+    }
+
+    // Formato YYYYMMDDTHHMMSS (local)
+    function buildCalDate(dateStr, hours, minutes, seconds) {
+      const d = new Date(dateStr + 'T12:00:00'); // noon para evitar problemas TZ
+      d.setHours(hours);
+      d.setMinutes(minutes);
+      d.setSeconds(seconds);
+      const pad = n => String(n).padStart(2, '0');
+      return (
+        `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
+        `T${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`
+      );
+    }
+
+    function shakeField(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('error', 'shake');
+      // Trigger reflow
+      void el.offsetWidth;
+      el.classList.add('error', 'shake');
+      el.addEventListener('animationend', () => el.classList.remove('shake'), { once: true });
+    }
+
+    function shakeHours() {
+      const el = document.getElementById('hoursScroll');
+      el.classList.remove('shake');
+      void el.offsetWidth;
+      el.classList.add('error', 'shake');
+      el.addEventListener('animationend', () => el.classList.remove('shake'), { once: true });
+    }
+  </script>
+
+</body>
+</html>

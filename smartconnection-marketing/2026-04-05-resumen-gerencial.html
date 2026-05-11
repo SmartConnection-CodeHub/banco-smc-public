@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumen Gerencial — SMC Q2 2026</title>
+<style>
+  :root {
+    --bg-base: #060912;
+    --bg-surface: #0a0d14;
+    --bg-elevated: #0f1520;
+    --bg-glass: rgba(15, 22, 35, 0.85);
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-accent: rgba(0, 229, 176, 0.2);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #00e5b0;
+    --gold: #f97316;
+    --blue: #00b4d8;
+    --red: #ef4444;
+    --green: #22c55e;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-surface); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; opacity: 0.5; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 60px 24px 48px;
+    text-align: center;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(0,229,176,0.04) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,229,176,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #ef4444;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .hero-badge::before { content: '🔒'; font-size: 10px; }
+
+  .hero-eyebrow {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #f1f5f9 0%, var(--accent) 50%, var(--blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .hero-sub {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+
+  .meta-chip span { color: var(--accent); font-weight: 600; }
+
+  /* MAIN LAYOUT */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section { padding: 56px 0; border-bottom: 1px solid var(--border-subtle); }
+  section:last-child { border-bottom: none; }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .section-number {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    color: #060912;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .section-title span {
+    background: linear-gradient(135deg, var(--text-primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* GLASS CARD */
+  .card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 229, 176, 0.08);
+  }
+
+  /* SCORE CARDS */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .score-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-color, var(--accent));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  .score-card:hover::after { transform: scaleX(1); }
+  .score-card:hover { border-color: rgba(255,255,255,0.1); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+
+  .score-number {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--card-color, var(--accent));
+    line-height: 1;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .score-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .score-sublabel {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--blue) 50%, var(--text-muted) 100%);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 32px;
+    padding: 20px 24px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    transition: all 0.2s;
+  }
+
+  .timeline-item:hover {
+    border-color: var(--border-accent);
+    box-shadow: 0 4px 24px rgba(0,229,176,0.06);
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -26px; top: 22px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--dot-color, var(--accent));
+    border: 2px solid var(--bg-base);
+    box-shadow: 0 0 12px var(--dot-color, var(--accent));
+  }
+
+  .timeline-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .timeline-heading {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .timeline-body {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .timeline-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-top: 10px;
+    margin-right: 6px;
+  }
+
+  .tag-done { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); }
+  .tag-wip { background: rgba(0,180,216,0.12); color: var(--blue); border: 1px solid rgba(0,180,216,0.2); }
+  .tag-next { background: rgba(249,115,22,0.12); color: var(--gold); border: 1px solid rgba(249,115,22,0.2); }
+
+  /* PHASE TABLE */
+  .phase-container { margin-bottom: 32px; }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(0,229,176,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,176,0.25);
+  }
+
+  .phase-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .phase-status {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .phase-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+  }
+
+  .phase-table th {
+    background: rgba(255,255,255,0.02);
+    padding: 10px 20px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .phase-table td {
+    padding: 14px 20px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+
+  .phase-table tr:last-child td { border-bottom: none; }
+
+  .phase-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+    color: var(--text-primary);
+  }
+
+  .item-name {
+    font-weight: 600;
+    color: var(--text-primary) !important;
+    font-family: var(--font-mono);
+    font-size: 12px !important;
+  }
+
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .status-done { color: var(--green); }
+  .status-wip { color: var(--blue); }
+  .status-pending { color: var(--gold); }
+
+  /* PIVOT SECTION */
+  .pivot-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .pivot-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+    color: var(--accent);
+    font-size: 28px;
+  }
+
+  .pivot-card {
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+
+  .pivot-before {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.2);
+  }
+
+  .pivot-after {
+    background: rgba(0,229,176,0.06);
+    border: 1px solid rgba(0,229,176,0.2);
+  }
+
+  .pivot-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .pivot-before .pivot-label { color: var(--red); }
+  .pivot-after .pivot-label { color: var(--accent); }
+
+  .pivot-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .pivot-list {
+    list-style: none;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .pivot-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .pivot-list li:last-child { border-bottom: none; }
+
+  .pivot-before .pivot-list li::before { content: '✗'; color: var(--red); font-weight: 700; flex-shrink: 0; }
+  .pivot-after .pivot-list li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+  /* DRIVE DIAGRAM */
+  .drive-diagram {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 32px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .flow-node {
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .node-blue { background: rgba(0,180,216,0.15); border: 1px solid rgba(0,180,216,0.3); color: var(--blue); }
+  .node-green { background: rgba(0,229,176,0.15); border: 1px solid rgba(0,229,176,0.3); color: var(--accent); }
+  .node-gold { background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3); color: var(--gold); }
+  .node-red { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: var(--red); }
+  .node-gray { background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: var(--text-secondary); }
+
+  .flow-arrow {
+    color: var(--text-muted);
+    padding: 0 10px;
+    font-size: 16px;
+  }
+
+  .flow-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    padding-left: 18px;
+  }
+
+  /* DEUDA TÉCNICA */
+  .debt-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .debt-table th {
+    background: rgba(255,255,255,0.02);
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .debt-table td {
+    padding: 14px 20px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
+  }
+
+  .debt-table tr:last-child td { border-bottom: none; }
+  .debt-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .priority-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 80px;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    animation: fillBar 1.2s ease-out forwards;
+    transform-origin: left;
+  }
+
+  @keyframes fillBar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  .bar-p1 { background: var(--red); width: 95%; }
+  .bar-p2 { background: var(--gold); width: 70%; }
+  .bar-p3 { background: var(--blue); width: 45%; }
+  .bar-p4 { background: var(--text-muted); width: 20%; }
+
+  .badge-p1 { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-p2 { background: rgba(249,115,22,0.15); color: var(--gold); border: 1px solid rgba(249,115,22,0.3); }
+  .badge-p3 { background: rgba(0,180,216,0.12); color: var(--blue); border: 1px solid rgba(0,180,216,0.2); }
+
+  .priority-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* KPI GRID */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .kpi-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--kpi-color, var(--accent));
+  }
+
+  .kpi-card:hover {
+    border-color: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .kpi-icon {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--kpi-color, var(--accent));
+    line-height: 1;
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .kpi-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* NEXT STEPS */
+  .steps-list {
+    counter-reset: step;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .step-item {
+    counter-increment: step;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    transition: all 0.2s;
+  }
+
+  .step-item:hover {
+    border-color: var(--border-accent);
+    background: rgba(0,229,176,0.03);
+  }
+
+  .step-number {
+    width: 30px; height: 30px;
+    background: rgba(0,229,176,0.1);
+    border: 1px solid rgba(0,229,176,0.3);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+  }
+
+  .step-content { flex: 1; }
+
+  .step-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .step-meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .agent-chip {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 100px;
+    background: rgba(0,229,176,0.08);
+    border: 1px solid rgba(0,229,176,0.2);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .effort-chip {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .footer-brand {
+    font-size: 18px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+
+  /* PROGRESS BAR ANIMATED */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .progress-label { font-size: 13px; font-weight: 600; min-width: 100px; }
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    animation: fillBar 1.5s ease-out forwards;
+  }
+
+  .progress-value { font-size: 13px; font-weight: 700; min-width: 40px; text-align: right; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+    margin: 32px 0;
+  }
+
+  /* CALLOUT */
+  .callout {
+    background: rgba(0,229,176,0.06);
+    border: 1px solid rgba(0,229,176,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 24px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .callout strong { color: var(--accent); }
+
+  /* GRID 2COL */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .pivot-grid { grid-template-columns: 1fr; }
+    .pivot-arrow { display: none; }
+    .score-grid { grid-template-columns: repeat(2, 1fr); }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .phase-table th:nth-child(3), .phase-table td:nth-child(3) { display: none; }
+    .debt-table th:nth-child(3), .debt-table td:nth-child(3) { display: none; }
+    .hero h1 { font-size: 28px; }
+    .flow-row { gap: 0; }
+  }
+
+  @media (max-width: 480px) {
+    .score-grid { grid-template-columns: repeat(2, 1fr); }
+    .kpi-grid { grid-template-columns: 1fr; }
+    body { font-size: 14px; }
+    section { padding: 36px 0; }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate { animation: fadeUp 0.5s ease-out forwards; opacity: 0; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+  .delay-6 { animation-delay: 0.6s; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Confidencial</div>
+  <div class="hero-eyebrow">Smart Connection · Q2 2026</div>
+  <h1>Resumen Gerencial</h1>
+  <p class="hero-sub">Estado del sistema, pivots estratégicos y próximos pasos</p>
+  <div class="hero-meta">
+    <div class="meta-chip">📅 <span>2026-04-05</span></div>
+    <div class="meta-chip">🤖 Agentes activos: <span>10/10</span></div>
+    <div class="meta-chip">⚡ Tips implementados: <span>85%</span></div>
+    <div class="meta-chip">💰 Ahorro Zapier→n8n: <span>$468 USD/año</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════════════
+       SECCIÓN 1: SCORE CARDS + PROGRESO GENERAL
+  ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="section-label">
+      <div class="section-number">1</div>
+      <h2 class="section-title"><span>Métricas de Estado Global</span></h2>
+    </div>
+
+    <div class="score-grid">
+      <div class="score-card animate delay-1" style="--card-color: var(--accent)">
+        <div class="score-number">85%</div>
+        <div class="score-label">Tips Activos</div>
+        <div class="score-sublabel">85 de 100 implementados</div>
+      </div>
+      <div class="score-card animate delay-2" style="--card-color: var(--blue)">
+        <div class="score-number">10</div>
+        <div class="score-label">Skills Creados</div>
+        <div class="score-sublabel">Phase 1 completa</div>
+      </div>
+      <div class="score-card animate delay-3" style="--card-color: var(--gold)">
+        <div class="score-number">8</div>
+        <div class="score-label">Docs Estratégicos</div>
+        <div class="score-sublabel">Phase 2A completa</div>
+      </div>
+      <div class="score-card animate delay-4" style="--card-color: #a78bfa)">
+        <div class="score-number" style="color: #a78bfa">4</div>
+        <div class="score-label">Tools HTML</div>
+        <div class="score-sublabel">Phase 2B completa</div>
+      </div>
+      <div class="score-card animate delay-5" style="--card-color: var(--green)">
+        <div class="score-number">5</div>
+        <div class="score-label">Scripts Auto.</div>
+        <div class="score-sublabel">Phase 2C completa</div>
+      </div>
+      <div class="score-card animate delay-6" style="--card-color: var(--gold)">
+        <div class="score-number">$468</div>
+        <div class="score-label">USD/año Ahorrado</div>
+        <div class="score-sublabel">Zapier → n8n</div>
+      </div>
+    </div>
+
+    <div class="card animate">
+      <div style="margin-bottom: 16px; font-size: 14px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px;">Progreso por fase</div>
+      <div class="progress-row">
+        <div class="progress-label" style="color: var(--accent)">Phase 1</div>
+        <div class="progress-track">
+          <div class="progress-fill" style="background: var(--accent); width: 100%;"></div>
+        </div>
+        <div class="progress-value" style="color: var(--accent)">100%</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label" style="color: var(--blue)">Phase 2A</div>
+        <div class="progress-track">
+          <div class="progress-fill" style="background: var(--blue); width: 100%;"></div>
+        </div>
+        <div class="progress-value" style="color: var(--blue)">100%</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label" style="color: #a78bfa">Phase 2B</div>
+        <div class="progress-track">
+          <div class="progress-fill" style="background: #a78bfa; width: 100%;"></div>
+        </div>
+        <div class="progress-value" style="color: #a78bfa">100%</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label" style="color: var(--green)">Phase 2C</div>
+        <div class="progress-track">
+          <div class="progress-fill" style="background: var(--green); width: 100%;"></div>
+        </div>
+        <div class="progress-value" style="color: var(--green)">100%</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label" style="color: var(--gold)">PYME ICP</div>
+        <div class="progress-track">
+          <div class="progress-fill" style="background: var(--gold); width: 0%; animation-delay: 0.5s"></div>
+        </div>
+        <div class="progress-value" style="color: var(--gold)">0%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECCIÓN 2: TIMELINE EVOLUCIÓN
+  ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="section-label">
+      <div class="section-number">2</div>
+      <h2 class="section-title"><span>Timeline de Evolución</span></h2>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item animate" style="--dot-color: var(--text-muted)">
+        <div class="timeline-date">Hace 2 semanas</div>
+        <div class="timeline-heading">Sistema Base — 10 Agentes Básicos</div>
+        <div class="timeline-body">
+          10 agentes operativos con modos básicos. Sin skills ejecutables. Sin sistema de memorias estructurado. Posicionamiento SAP-céntrico. Sin herramientas interactivas para ventas.
+        </div>
+        <span class="timeline-tag tag-done">Estado inicial</span>
+      </div>
+
+      <div class="timeline-item animate" style="--dot-color: var(--accent)">
+        <div class="timeline-date">Semana 1 — Phase 1 + Phase 2A + 2B</div>
+        <div class="timeline-heading">Top 100 Tips: Skills + Docs + Tools HTML</div>
+        <div class="timeline-body">
+          10 skills ejecutables en <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px;">~/.claude/skills/</code>. 8 documentos estratégicos en <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px;">~/Claude/DocumentacionSMC/</code>. ROI Calculator, Carousel Editor, Slide Deck y este Resumen Gerencial como tools interactivos.
+        </div>
+        <span class="timeline-tag tag-done">✅ Completado</span>
+        <span class="timeline-tag tag-done">✅ 85% tips activos</span>
+      </div>
+
+      <div class="timeline-item animate" style="--dot-color: var(--blue)">
+        <div class="timeline-date">Semana 1 — Phase 2C</div>
+        <div class="timeline-heading">Scripts de Automatización + Migración Zapier</div>
+        <div class="timeline-body">
+          5 scripts implementados: sync SAP↔Shopify n8n, drip campaign, feedback analyzer con Claude Haiku, batch images a WebP responsive, y migración de 5 Zaps VOY a n8n. Ahorro: $468 USD/año.
+        </div>
+        <span class="timeline-tag tag-done">✅ Completado</span>
+        <span class="timeline-tag tag-wip">🔄 Pendiente deploy</span>
+      </div>
+
+      <div class="timeline-item animate" style="--dot-color: var(--gold)">
+        <div class="timeline-date">Semana 1 — Google Drive Integration</div>
+        <div class="timeline-heading">Service Account + Backend endpoint /api/docs/sync</div>
+        <div class="timeline-body">
+          SA creada y configurada. Función <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px;">uploadFile()</code> en <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px;">packages/backend/src/google-drive.ts</code>. Endpoint <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px;">POST /api/docs/sync</code> creado. Bloqueado: requiere DWD en Google Admin.
+        </div>
+        <span class="timeline-tag tag-wip">🔄 Bloqueado por DWD</span>
+      </div>
+
+      <div class="timeline-item animate" style="--dot-color: var(--gold)">
+        <div class="timeline-date">Próximo sprint — Pivot PYME</div>
+        <div class="timeline-heading">4 Nuevos ICPs + Landing PYME + Activar DWD</div>
+        <div class="timeline-body">
+          Crear ICPs para Bsale y Jumpseller (Gerente TI PYME + Dueño PYME). Nueva landing page con posicionamiento correcto. Activar Domain-Wide Delegation en Google Admin (15 min). Desbloquea sync automático a Drive.
+        </div>
+        <span class="timeline-tag tag-next">📋 Próximo sprint</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECCIÓN 3: FASES DETALLADAS
+  ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="section-label">
+      <div class="section-number">3</div>
+      <h2 class="section-title"><span>Detalle por Fase — Top 100 Tips</span></h2>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="phase-container animate">
+      <div class="phase-header">
+        <span class="phase-badge">Phase 1</span>
+        <span class="phase-title">Skills Ejecutables</span>
+        <span class="phase-status">✅ 10/10 completado</span>
+      </div>
+      <table class="phase-table">
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Función</th>
+            <th>Ruta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="item-name">panchita</td><td>Arquitecta funcional, maquetas HTML, benchmark</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/panchita</td></tr>
+          <tr><td class="item-name">hoku</td><td>Desarrollador full-stack, features, deploys</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/hoku</td></tr>
+          <tr><td class="item-name">camilita</td><td>QA policía, smoke tests, reportes de bugs</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/camilita</td></tr>
+          <tr><td class="item-name">arielito</td><td>Auditoría técnica, seguridad, deuda técnica</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/arielito</td></tr>
+          <tr><td class="item-name">sergito</td><td>Pensamiento divergente, TRIZ, SCAMPER</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/sergito</td></tr>
+          <tr><td class="item-name">update-config</td><td>Configurar hooks, settings.json, comportamientos</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/update-config</td></tr>
+          <tr><td class="item-name">keybindings-help</td><td>Personalizar atajos de teclado</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/keybindings</td></tr>
+          <tr><td class="item-name">simplify</td><td>Review de código, calidad, eficiencia</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/simplify</td></tr>
+          <tr><td class="item-name">loop</td><td>Tareas recurrentes, polling, intervalos</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/loop</td></tr>
+          <tr><td class="item-name">schedule</td><td>Agentes remotos programados, cron jobs</td><td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted)">~/.claude/skills/schedule</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Phase 2A -->
+    <div class="phase-container animate" style="margin-top: 24px;">
+      <div class="phase-header">
+        <span class="phase-badge" style="background: rgba(0,180,216,0.15); color: var(--blue); border-color: rgba(0,180,216,0.25);">Phase 2A</span>
+        <span class="phase-title">Docs Estratégicos</span>
+        <span class="phase-status">✅ 8/8 completado</span>
+      </div>
+      <table class="phase-table">
+        <thead>
+          <tr>
+            <th>Documento</th>
+            <th>Propósito</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-name">GTM-PLAYBOOK.md</td>
+            <td>Playbook outbound completo para Chile PYME</td>
+            <td><span class="status-dot status-done">✅ Creado</span></td>
+          </tr>
+          <tr>
+            <td class="item-name">CONTENT-CALENDAR-30D.md</td>
+            <td>12 posts LinkedIn / 30 días calendario editorial</td>
+            <td><span class="status-dot status-done">✅ Creado</span></td>
+          </tr>
+          <tr>
+            <td class="item-name">LINKEDIN-FUNNEL.md</td>
+            <td>Funnel 5 etapas + DM protocols + secuencias</td>
+            <td><span class="status-dot status-done">✅ Creado</span></td>
+          </tr>
+          <tr>
+            <td class="item-name">GEO-OPTIMIZATION-GUIDE.md</td>
+            <td>Optimización para ChatGPT/Perplexity/AI Overviews</td>
+            <td><span class="status-dot status-done">✅ Creado</span></td>
+          </tr>
+          <tr>
+            <td class="item-name">BRAND-VOICE.md</td>
+            <td>Tono, voz, palabras SMC y anti-patrones de copy</td>
+            <td><span class="status-dot status-done">✅ Creado</span></td>
+          </tr>
+          <tr>
+            <td class="item-name">ICP-BUILD-PREMIUM.md</td>
+            <td>Perfil cliente ideal modelo Build Premium 80-500 UF</td>
+            <td><span class="status-dot status-done">✅ Creado</span></td>
+          </tr>
+          <tr>
+            <td class="item-name">ICP-DISCOVERY-SPRINT.md</td>
+            <td>Perfil cliente ideal Discovery 15-40 UF entry point</td>
+            <td><span class="status-dot status-done">✅ Creado</span></td>
+          </tr>
+          <tr>
+            <td class="item-name">OBJECTIONS-BANK.md</td>
+            <td>Banco objeciones: "muy caro", "tengo dev propio", etc.</td>
+            <td><span class="status-dot status-done">✅ Creado</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Phase 2B + 2C -->
+    <div class="grid-2 animate" style="margin-top: 24px;">
+      <div class="phase-container">
+        <div class="phase-header">
+          <span class="phase-badge" style="background: rgba(167,139,250,0.15); color: #a78bfa; border-color: rgba(167,139,250,0.25);">Phase 2B</span>
+          <span class="phase-title">Tools HTML</span>
+          <span class="phase-status">✅ 4/4</span>
+        </div>
+        <table class="phase-table">
+          <thead><tr><th>Tool</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td class="item-name">roi-calculator.html</td><td><span class="status-dot status-done">✅</span></td></tr>
+            <tr><td class="item-name">carousel-template.html</td><td><span class="status-dot status-done">✅</span></td></tr>
+            <tr><td class="item-name">slide-deck-template.html</td><td><span class="status-dot status-done">✅</span></td></tr>
+            <tr><td class="item-name">resumen-gerencial.html</td><td><span class="status-dot status-wip">🔄 Este doc</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="phase-container">
+        <div class="phase-header">
+          <span class="phase-badge" style="background: rgba(34,197,94,0.12); color: var(--green); border-color: rgba(34,197,94,0.2);">Phase 2C</span>
+          <span class="phase-title">Scripts Auto.</span>
+          <span class="phase-status">✅ 5/5</span>
+        </div>
+        <table class="phase-table">
+          <thead><tr><th>Script</th><th>Ahorro/función</th></tr></thead>
+          <tbody>
+            <tr><td class="item-name">sap-sync-ecommerce.json</td><td style="font-size: 12px; color: var(--text-muted)">SAP↔Shopify 15min</td></tr>
+            <tr><td class="item-name">lead-drip-campaign.json</td><td style="font-size: 12px; color: var(--text-muted)">Drip 3 etapas n8n</td></tr>
+            <tr><td class="item-name">feedback-analyzer.js</td><td style="font-size: 12px; color: var(--text-muted)">Claude Haiku classify</td></tr>
+            <tr><td class="item-name">batch-images.sh</td><td style="font-size: 12px; color: var(--text-muted)">WebP responsive bulk</td></tr>
+            <tr><td class="item-name">voy-zaps-migration.js</td><td style="font-size: 12px; color: var(--accent)">$468/año ahorrado</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECCIÓN 4: PIVOT ESTRATÉGICO
+  ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="section-label">
+      <div class="section-number">4</div>
+      <h2 class="section-title"><span>Pivot Estratégico Comercial</span></h2>
+    </div>
+
+    <div class="callout">
+      <strong>Decisión clave:</strong> Salir del posicionamiento SAP-céntrico y apuntar directamente al ecosistema PYME chileno: Bsale (+8,000 clientes) + Jumpseller (+15,000 tiendas). Mercado 10x más grande, ciclo de venta 5x más corto, y SMC ya tiene integraciones en producción.
+    </div>
+
+    <div class="pivot-grid animate">
+      <div class="pivot-card pivot-before">
+        <div class="pivot-label">⛔ Antes (posicionamiento SAP)</div>
+        <div class="pivot-title" style="color: var(--red)">SAP-Céntrico</div>
+        <ul class="pivot-list">
+          <li>Ciclo de venta largo (90-180 días)</li>
+          <li>Requiere consultora SAP certificada</li>
+          <li>Deal size alto pero pocas oportunidades</li>
+          <li>Competencia de Big 4 y SI globales</li>
+          <li>Barrera de entrada: certificaciones SAP</li>
+          <li>Mercado limitado: ~200 empresas Chile</li>
+          <li>ICPs no ajustados al mercado real de SMC</li>
+        </ul>
+      </div>
+
+      <div class="pivot-arrow">→</div>
+
+      <div class="pivot-card pivot-after">
+        <div class="pivot-label">✅ Ahora (posicionamiento PYME)</div>
+        <div class="pivot-title" style="color: var(--accent)">PYME Bsale/Jumpseller</div>
+        <ul class="pivot-list">
+          <li>Ciclo de venta corto (14-30 días)</li>
+          <li>SMC ya tiene integraciones en producción</li>
+          <li>Volumen: 23,000+ empresas potenciales</li>
+          <li>Competencia fragmentada, sin líderes claros</li>
+          <li>Entry point: Discovery Sprint 15-40 UF</li>
+          <li>Mercado activo: Bsale 8K + Jumpseller 15K</li>
+          <li>ICPs específicos: Gerente TI + Dueño PYME</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="grid-2 animate">
+      <div class="card" style="text-align: center;">
+        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Mercado anterior</div>
+        <div style="font-size: 42px; font-weight: 900; color: var(--red); line-height: 1;">~200</div>
+        <div style="font-size: 13px; color: var(--text-secondary); margin-top: 6px;">empresas con SAP en Chile</div>
+      </div>
+      <div class="card" style="text-align: center;">
+        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Mercado nuevo</div>
+        <div style="font-size: 42px; font-weight: 900; color: var(--accent); line-height: 1;">23K+</div>
+        <div style="font-size: 13px; color: var(--text-secondary); margin-top: 6px;">tiendas activas Bsale + Jumpseller</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECCIÓN 5: GOOGLE DRIVE INTEGRATION
+  ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="section-label">
+      <div class="section-number">5</div>
+      <h2 class="section-title"><span>Google Drive Integration</span></h2>
+    </div>
+
+    <div class="grid-2 animate" style="margin-bottom: 24px;">
+      <div class="card">
+        <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">Lo que está listo</div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary);">
+            <span style="color: var(--green); font-weight: 700; flex-shrink: 0;">✅</span>
+            <span>Carpeta <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">/comercial</code> creada en governance Drive</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary);">
+            <span style="color: var(--green); font-weight: 700; flex-shrink: 0;">✅</span>
+            <span>Service Account configurada con permisos de lectura</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary);">
+            <span style="color: var(--green); font-weight: 700; flex-shrink: 0;">✅</span>
+            <span>Función <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">uploadFile()</code> en <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">google-drive.ts</code></span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary);">
+            <span style="color: var(--green); font-weight: 700; flex-shrink: 0;">✅</span>
+            <span>Endpoint <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">POST /api/docs/sync</code> creado en intranet</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary);">
+            <span style="color: var(--green); font-weight: 700; flex-shrink: 0;">✅</span>
+            <span>Script Puppeteer listo como workaround alternativo</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card" style="border-color: rgba(249,115,22,0.2);">
+        <div style="font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">Bloqueado</div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary);">
+            <span style="color: var(--gold); font-weight: 700; flex-shrink: 0;">⚠️</span>
+            <span>Upload requiere <strong style="color: var(--gold)">Domain-Wide Delegation (DWD)</strong> en Google Admin</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary);">
+            <span style="color: var(--gold); font-weight: 700; flex-shrink: 0;">⚠️</span>
+            <span>Tiempo de desbloqueo: solo <strong style="color: var(--accent)">15 minutos</strong> en Google Admin Console</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary);">
+            <span style="color: var(--gold); font-weight: 700; flex-shrink: 0;">⚠️</span>
+            <span>Workaround disponible: Puppeteer vía Chrome autenticado</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Diagrama de flujo -->
+    <div class="drive-diagram animate">
+      <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;">Flujo de sincronización de documentos</div>
+
+      <div class="flow-row">
+        <div class="flow-node node-green">intranet POST /api/docs/sync</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-blue">google-drive.ts uploadFile()</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-gray">Service Account SA</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-gold">Google Drive /comercial/</div>
+      </div>
+      <div class="flow-label">SA puede LEER ✅ · SA puede ESCRIBIR si DWD activo ⚠️</div>
+
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-subtle);">
+        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;">Workaround alternativo (disponible ahora)</div>
+        <div class="flow-row">
+          <div class="flow-node node-gray">Script Puppeteer</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node node-green">Chrome autenticado (Guillermo)</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node node-gold">Google Drive /comercial/</div>
+        </div>
+        <div class="flow-label">Funciona sin DWD · Requiere Chrome abierto con sesión activa</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECCIÓN 6: DEUDA TÉCNICA
+  ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="section-label">
+      <div class="section-number">6</div>
+      <h2 class="section-title"><span>Deuda Técnica Identificada</span></h2>
+    </div>
+
+    <table class="debt-table animate">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Prioridad</th>
+          <th>Esfuerzo</th>
+          <th>Responsable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div style="font-weight: 600; color: var(--text-primary); font-size: 13px; margin-bottom: 4px;">Activar DWD en Google Admin</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Desbloquea sync automático SA → Drive sin Puppeteer</div>
+          </td>
+          <td>
+            <div class="priority-bar">
+              <span class="priority-badge badge-p2" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(249,115,22,0.15); color: var(--gold); border: 1px solid rgba(249,115,22,0.3);">P2</span>
+              <div class="bar-track"><div class="bar-fill bar-p2" style="animation-delay: 0.2s"></div></div>
+            </div>
+          </td>
+          <td style="color: var(--accent); font-weight: 600; font-family: var(--font-mono);">15 min</td>
+          <td><span class="agent-chip">Pipeline</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div style="font-weight: 600; color: var(--text-primary); font-size: 13px; margin-bottom: 4px;">Crear 4 ICPs PYME nuevos</div>
+            <div style="font-size: 12px; color: var(--text-muted);">ICP-BSALE-GERENTETI.md, ICP-BSALE-DUENOPYME.md, ICP-JUMPSELLER-GERENTETI.md, ICP-JUMPSELLER-DUENOPYME.md</div>
+          </td>
+          <td>
+            <div class="priority-bar">
+              <span class="priority-badge badge-p2" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(249,115,22,0.15); color: var(--gold); border: 1px solid rgba(249,115,22,0.3);">P2</span>
+              <div class="bar-track"><div class="bar-fill bar-p2" style="animation-delay: 0.3s"></div></div>
+            </div>
+          </td>
+          <td style="color: var(--accent); font-weight: 600; font-family: var(--font-mono);">2h</td>
+          <td><span class="agent-chip">Panchita</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div style="font-weight: 600; color: var(--text-primary); font-size: 13px; margin-bottom: 4px;">Deploy docs a Drive via Puppeteer (workaround)</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Subir los 8 docs estratégicos mientras DWD no está activo</div>
+          </td>
+          <td>
+            <div class="priority-bar">
+              <span class="priority-badge badge-p3" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(0,180,216,0.12); color: var(--blue); border: 1px solid rgba(0,180,216,0.2);">P3</span>
+              <div class="bar-track"><div class="bar-fill bar-p3" style="animation-delay: 0.4s"></div></div>
+            </div>
+          </td>
+          <td style="color: var(--accent); font-weight: 600; font-family: var(--font-mono);">30 min</td>
+          <td><span class="agent-chip">Pipeline</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div style="font-weight: 600; color: var(--text-primary); font-size: 13px; margin-bottom: 4px;">Maqueta nueva landing PYME</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Landing con posicionamiento Bsale/Jumpseller, testimonios PYME, pricing en UF</div>
+          </td>
+          <td>
+            <div class="priority-bar">
+              <span class="priority-badge badge-p2" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(249,115,22,0.15); color: var(--gold); border: 1px solid rgba(249,115,22,0.3);">P2</span>
+              <div class="bar-track"><div class="bar-fill bar-p2" style="animation-delay: 0.5s"></div></div>
+            </div>
+          </td>
+          <td style="color: var(--accent); font-weight: 600; font-family: var(--font-mono);">4h</td>
+          <td><span class="agent-chip">Panchita</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECCIÓN 7: KPIs
+  ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="section-label">
+      <div class="section-number">7</div>
+      <h2 class="section-title"><span>KPIs del Sistema</span></h2>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card animate delay-1" style="--kpi-color: var(--accent)">
+        <div class="kpi-icon">🤖</div>
+        <div class="kpi-value">10/10</div>
+        <div class="kpi-label">Agentes Activos</div>
+        <div class="kpi-note">PM, Panchita, Arielito, Hoku, ABAP, Fiori, Camilita, Comercial, Pipeline, Cerebro</div>
+      </div>
+
+      <div class="kpi-card animate delay-2" style="--kpi-color: var(--blue)">
+        <div class="kpi-icon">⚡</div>
+        <div class="kpi-value">10/10</div>
+        <div class="kpi-label">Skills Ejecutables</div>
+        <div class="kpi-note">Phase 1 completada. Todos en ~/.claude/skills/</div>
+      </div>
+
+      <div class="kpi-card animate delay-3" style="--kpi-color: var(--gold)">
+        <div class="kpi-icon">📊</div>
+        <div class="kpi-value">85%</div>
+        <div class="kpi-label">Tips Implementados</div>
+        <div class="kpi-note">85 de 100 del Top 100 Claude Code Tips</div>
+      </div>
+
+      <div class="kpi-card animate delay-4" style="--kpi-color: #a78bfa">
+        <div class="kpi-icon">📄</div>
+        <div class="kpi-value">8</div>
+        <div class="kpi-label">Docs Estratégicos</div>
+        <div class="kpi-note">GTM, Calendar, LinkedIn, GEO, Brand Voice, 2x ICP, Objections</div>
+      </div>
+
+      <div class="kpi-card animate delay-5" style="--kpi-color: var(--green)">
+        <div class="kpi-icon">🛠️</div>
+        <div class="kpi-value">5</div>
+        <div class="kpi-label">Scripts Auto.</div>
+        <div class="kpi-note">n8n, drip, feedback, images, Zapier migration</div>
+      </div>
+
+      <div class="kpi-card animate delay-6" style="--kpi-color: var(--gold)">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-value">$468</div>
+        <div class="kpi-label">USD/año Ahorrado</div>
+        <div class="kpi-note">Migración 5 Zaps VOY → n8n self-hosted</div>
+      </div>
+
+      <div class="kpi-card animate delay-1" style="--kpi-color: var(--blue)">
+        <div class="kpi-icon">🏪</div>
+        <div class="kpi-value">23K+</div>
+        <div class="kpi-label">TAM Nuevo</div>
+        <div class="kpi-note">Tiendas potenciales Bsale + Jumpseller en Chile</div>
+      </div>
+
+      <div class="kpi-card animate delay-2" style="--kpi-color: var(--accent)">
+        <div class="kpi-icon">💼</div>
+        <div class="kpi-value">5K UF</div>
+        <div class="kpi-label">Pipeline Potencial</div>
+        <div class="kpi-note">Estimado anual mercado PYME (conservador)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECCIÓN 8: PRÓXIMOS PASOS
+  ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="section-label">
+      <div class="section-number">8</div>
+      <h2 class="section-title"><span>Próximos Pasos</span></h2>
+    </div>
+
+    <ol class="steps-list">
+      <li class="step-item animate delay-1">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <div class="step-title">Activar Domain-Wide Delegation (DWD) en Google Admin</div>
+          <div class="step-desc">
+            Ir a <strong>admin.google.com → Seguridad → Controles de API → Domain-Wide Delegation</strong>. Agregar Client ID de la Service Account con scope <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">https://www.googleapis.com/auth/drive</code>. Desbloquea el endpoint <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">POST /api/docs/sync</code> completamente.
+          </div>
+          <div class="step-meta">
+            <span class="agent-chip">Pipeline</span>
+            <span class="effort-chip">⏱ 15 min</span>
+            <span class="priority-badge badge-p2" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(249,115,22,0.15); color: var(--gold); border: 1px solid rgba(249,115,22,0.3);">P2 — Alta</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="step-item animate delay-2">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <div class="step-title">Crear 4 ICPs PYME para mercado Bsale + Jumpseller</div>
+          <div class="step-desc">
+            <strong>ICP-BSALE-GERENTETI.md</strong>, <strong>ICP-BSALE-DUENOPYME.md</strong>, <strong>ICP-JUMPSELLER-GERENTETI.md</strong>, <strong>ICP-JUMPSELLER-DUENOPYME.md</strong>. Cada uno con: demografía, firmografía, pain points Bsale/Jumpseller específicos, jobs-to-be-done, señales de compra y tácticas de outreach.
+          </div>
+          <div class="step-meta">
+            <span class="agent-chip">Panchita</span>
+            <span class="agent-chip">Comercial</span>
+            <span class="effort-chip">⏱ 2h</span>
+            <span class="priority-badge badge-p2" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(249,115,22,0.15); color: var(--gold); border: 1px solid rgba(249,115,22,0.3);">P2 — Alta</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="step-item animate delay-3">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <div class="step-title">Maqueta nueva landing page con posicionamiento PYME</div>
+          <div class="step-desc">
+            Rediseñar <strong>smconnection.cl</strong> para reflejar el nuevo ICP. Hero section: "Automatiza tu Bsale y Jumpseller". Testimonios de PYME. Pricing en UF con modelos Discovery + SaaS Start + Build Premium. CTA principal: agendar Discovery Sprint. Benchmark 3-5 competidores del rubro.
+          </div>
+          <div class="step-meta">
+            <span class="agent-chip">Panchita</span>
+            <span class="effort-chip">⏱ 4h</span>
+            <span class="priority-badge badge-p2" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(249,115,22,0.15); color: var(--gold); border: 1px solid rgba(249,115,22,0.3);">P2 — Alta</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="step-item animate delay-4">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <div class="step-title">Deploy docs estratégicos a Google Drive (workaround Puppeteer)</div>
+          <div class="step-desc">
+            Mientras DWD no está activo: usar script Puppeteer con Chrome autenticado para subir los 8 documentos de <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">~/Claude/DocumentacionSMC/</code> a la carpeta <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">/comercial</code> en Drive.
+          </div>
+          <div class="step-meta">
+            <span class="agent-chip">Pipeline</span>
+            <span class="effort-chip">⏱ 30 min</span>
+            <span class="priority-badge badge-p3" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(0,180,216,0.12); color: var(--blue); border: 1px solid rgba(0,180,216,0.2);">P3 — Media</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="step-item animate delay-5">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <div class="step-title">Implementar nueva landing y hacer push a S3/CloudFront</div>
+          <div class="step-desc">
+            Una vez aprobada la maqueta de Panchita: Fiori implementa en HTML puro estático. Pipeline deploya via <code style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">scripts/deploy-s3.sh</code> → S3 sync → CloudFront invalidation. No --delete, no Astro, HTML puro.
+          </div>
+          <div class="step-meta">
+            <span class="agent-chip">Fiori</span>
+            <span class="agent-chip">Pipeline</span>
+            <span class="effort-chip">⏱ 2h</span>
+            <span class="priority-badge badge-p2" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(249,115,22,0.15); color: var(--gold); border: 1px solid rgba(249,115,22,0.3);">P2 — Alta</span>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">Smart Connection</div>
+  <div>smconnection.cl · Resumen Gerencial Q2 2026</div>
+  <div style="margin-top: 6px;">Generado por 🐕 Panchita · 2026-04-05 · Confidencial</div>
+</footer>
+
+<script>
+  // Intersection Observer para animaciones on-scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.animate').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Animar barras de progreso cuando entran en vista
+  const progressObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.bar-fill, .progress-fill').forEach(bar => {
+          bar.style.animationPlayState = 'running';
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.card, .debt-table, .phase-container').forEach(el => {
+    el.querySelectorAll('.bar-fill, .progress-fill').forEach(bar => {
+      bar.style.animationPlayState = 'paused';
+    });
+    progressObserver.observe(el);
+  });
+</script>
+</body>
+</html>

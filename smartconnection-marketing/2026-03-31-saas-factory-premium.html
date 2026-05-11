@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Connection — SaaS Factory con IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   TOKENS & CUSTOM PROPERTIES
+   ============================================ */
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --glow-opacity {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: false;
+}
+
+:root {
+  --bg: #060912;
+  --surface: #0a0d14;
+  --elevated: #0f1520;
+  --glass: rgba(15, 22, 35, 0.85);
+  --glass-light: rgba(15, 22, 35, 0.6);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.15);
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --muted: #475569;
+  --accent: #00e5b0;
+  --accent-dark: #00c49a;
+  --accent-glow: rgba(0,229,176,0.12);
+  --blue: #4a9eff;
+  --purple: #a855f7;
+  --orange: #f59e0b;
+  --pink: #ec4899;
+  --cyan: #06b6d4;
+  --red: #ef4444;
+  --lime: #84cc16;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+::selection { background: rgba(0,229,176,0.3); color: #fff; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ============================================
+   NOISE TEXTURE OVERLAY
+   ============================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ============================================
+   CURSOR GLOW
+   ============================================ */
+#cursorGlow {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,176,0.12), rgba(0,229,176,0.04) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+  mix-blend-mode: screen;
+}
+
+/* ============================================
+   SECTION DIVIDERS
+   ============================================ */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.25;
+}
+
+/* ============================================
+   ANIMATE ON SCROLL
+   ============================================ */
+.aos {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.aos.visible { opacity: 1; transform: translateY(0); }
+.aos-d1 { transition-delay: 0.1s; }
+.aos-d2 { transition-delay: 0.2s; }
+.aos-d3 { transition-delay: 0.3s; }
+.aos-d4 { transition-delay: 0.4s; }
+.aos-d5 { transition-delay: 0.5s; }
+.aos-d6 { transition-delay: 0.6s; }
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 16px 24px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.navbar.scrolled {
+  background: rgba(6,9,18,0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(0,229,176,0.1);
+  padding: 12px 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.logo span {
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  align-items: center;
+}
+.nav-links a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.3s;
+}
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  background: var(--accent);
+  color: var(--bg);
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.nav-cta:hover {
+  background: var(--accent-dark);
+  box-shadow: 0 0 30px rgba(0,229,176,0.3);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   HIGHLIGHT TEXT
+   ============================================ */
+.hl {
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   SECTION COMMON
+   ============================================ */
+section { padding: 100px 24px; position: relative; overflow: hidden; }
+.cx { max-width: 1280px; margin: 0 auto; }
+.section-label {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+.section-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+.section-desc {
+  color: var(--text2);
+  max-width: 620px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.section-header { text-align: center; margin-bottom: 64px; }
+.section-header .section-desc { margin: 0 auto; }
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 4px 24px rgba(0,229,176,0.25);
+}
+.btn-primary:hover {
+  background: var(--accent-dark);
+  box-shadow: 0 8px 40px rgba(0,229,176,0.4);
+  transform: translateY(-2px);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-hover);
+  backdrop-filter: blur(8px);
+}
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   GLASS CARD (reusable)
+   ============================================ */
+.glass-card {
+  background: var(--glass-light);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,229,176,0.08);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.glass-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0,229,176,0.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(0,229,176,0.05);
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0,229,176,0.1), transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.glass-card:hover::before { opacity: 1; }
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 20px;
+  padding: 1px;
+  background: conic-gradient(from var(--border-angle), transparent 40%, rgba(0,229,176,0.3) 50%, transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+  animation: rotateBorder 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.glass-card:hover::after { opacity: 1; }
+.glass-card .card-inner {
+  position: relative;
+  z-index: 2;
+  padding: 28px;
+}
+
+@keyframes rotateBorder {
+  from { --border-angle: 0deg; }
+  to { --border-angle: 360deg; }
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+#heroCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.hero-mesh {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 50%, rgba(0,229,176,0.07), transparent),
+    radial-gradient(ellipse 600px 500px at 80% 30%, rgba(74,158,255,0.05), transparent),
+    radial-gradient(ellipse 1000px 800px at 50% 80%, rgba(0,100,193,0.04), transparent);
+}
+.hero-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,229,176,0.08);
+  border: 1px solid rgba(0,229,176,0.2);
+  border-radius: 100px;
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 24px;
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.8s ease forwards;
+}
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+.hero-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.08;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+  animation: fadeInUp 0.8s ease 0.1s forwards;
+  opacity: 0;
+}
+.hero-desc {
+  font-size: 17px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 520px;
+  animation: fadeInUp 0.8s ease 0.2s forwards;
+  opacity: 0;
+}
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.8s ease 0.3s forwards;
+  opacity: 0;
+}
+
+/* ============================================
+   MIND MAP (Hero right)
+   ============================================ */
+.mindmap-container {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 520px;
+  margin: 0 auto;
+  animation: fadeInUp 0.8s ease 0.4s forwards;
+  opacity: 0;
+}
+.mindmap-container svg {
+  width: 100%;
+  height: 100%;
+}
+.mm-node {
+  cursor: default;
+  transition: all 0.3s;
+}
+.mm-node:hover text { fill: var(--accent) !important; }
+.mm-node:hover rect, .mm-node:hover ellipse {
+  stroke: var(--accent) !important;
+  filter: drop-shadow(0 0 12px rgba(0,229,176,0.4));
+}
+.mm-line {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: drawLine 1.5s ease forwards;
+}
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+.mm-pulse {
+  animation: mmPulse 3s ease-in-out infinite;
+}
+@keyframes mmPulse {
+  0%, 100% { r: 52; opacity: 0.15; }
+  50% { r: 58; opacity: 0.25; }
+}
+
+/* ============================================
+   CONCEPT CARDS (6)
+   ============================================ */
+.concept-section { background: var(--surface); }
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.concept-card .card-inner { padding: 32px; }
+.concept-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(0,229,176,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+.glass-card:hover .concept-icon {
+  background: rgba(0,229,176,0.2);
+  box-shadow: 0 0 30px rgba(0,229,176,0.15);
+}
+.concept-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.concept-card p {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+/* ============================================
+   METHODOLOGY GALAXY
+   ============================================ */
+.meth-section { min-height: 700px; }
+.galaxy-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+.galaxy-svg {
+  width: 100%;
+  aspect-ratio: 1;
+}
+.galaxy-category {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.galaxy-category:hover text { fill: var(--accent) !important; }
+.galaxy-category:hover circle {
+  stroke: var(--accent) !important;
+  filter: drop-shadow(0 0 20px rgba(0,229,176,0.5));
+}
+.galaxy-methods {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,229,176,0.15);
+  border-radius: 20px;
+  padding: 28px;
+  width: 340px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 20;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.galaxy-methods.active { display: block; animation: fadeInUp 0.3s ease; }
+.galaxy-methods h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--accent);
+}
+.galaxy-method-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.galaxy-method-item:last-child { border-bottom: none; }
+.galaxy-method-item h5 {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.galaxy-method-item p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.galaxy-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text2);
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.galaxy-close:hover { color: var(--accent); }
+
+/* ============================================
+   SERVICES — Staggered layout
+   ============================================ */
+.services-section { background: var(--surface); }
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.service-card .card-inner { padding: 32px; }
+.service-card:nth-child(2) { transform: translateY(30px); }
+.service-card:nth-child(5) { transform: translateY(30px); }
+.service-card:nth-child(8) { transform: translateY(30px); }
+.service-card:hover { transform: translateY(-8px) !important; }
+.service-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  font-size: 22px;
+  transition: all 0.3s;
+}
+.service-icon.enterprise { background: rgba(74,158,255,0.12); color: var(--blue); }
+.service-icon.pymes { background: rgba(0,229,176,0.12); color: var(--accent); }
+.service-icon.all { background: rgba(168,85,247,0.12); color: var(--purple); }
+.glass-card:hover .service-icon { box-shadow: 0 0 30px currentColor; filter: brightness(1.2); }
+.service-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.service-card p { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
+.service-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+.badge-enterprise { background: rgba(74,158,255,0.08); color: var(--blue); border-color: rgba(74,158,255,0.2); }
+.badge-pymes { background: rgba(0,229,176,0.08); color: var(--accent); border-color: rgba(0,229,176,0.2); }
+.badge-all { background: rgba(168,85,247,0.08); color: var(--purple); border-color: rgba(168,85,247,0.2); }
+
+/* ============================================
+   TECH SOLAR SYSTEM
+   ============================================ */
+.solar-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  aspect-ratio: 1;
+  position: relative;
+}
+.solar-svg { width: 100%; height: 100%; }
+.orbit-ring {
+  fill: none;
+  stroke: rgba(255,255,255,0.04);
+  stroke-width: 1;
+  transition: stroke 0.3s;
+}
+.orbit-ring:hover { stroke: rgba(0,229,176,0.15); }
+.tech-planet {
+  cursor: default;
+  transition: all 0.3s;
+}
+.tech-planet:hover circle {
+  r: 20;
+  filter: drop-shadow(0 0 15px rgba(0,229,176,0.5));
+}
+.tech-planet text {
+  font-size: 9px;
+  fill: var(--text2);
+  transition: fill 0.3s;
+}
+.tech-planet:hover text { fill: var(--text); font-weight: 700; }
+.solar-center-glow {
+  animation: solarPulse 4s ease-in-out infinite;
+}
+@keyframes solarPulse {
+  0%, 100% { opacity: 0.15; r: 45; }
+  50% { opacity: 0.3; r: 52; }
+}
+
+/* ============================================
+   STATS
+   ============================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.stat-card .card-inner {
+  text-align: center;
+  padding: 40px 20px;
+}
+.stat-number {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  margin-bottom: 8px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stat-label {
+  font-size: 14px;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+/* ============================================
+   CTA
+   ============================================ */
+.cta-section { overflow: hidden; }
+.cta-beam {
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 120%;
+  height: 200%;
+  background: linear-gradient(135deg, transparent 30%, rgba(0,229,176,0.03) 45%, rgba(0,229,176,0.06) 50%, rgba(0,229,176,0.03) 55%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: beamShift 8s ease-in-out infinite alternate;
+}
+@keyframes beamShift {
+  0% { transform: translateX(-5%) rotate(0deg); }
+  100% { transform: translateX(5%) rotate(2deg); }
+}
+.cta-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.cta-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+.cta-desc {
+  font-size: 18px;
+  color: var(--text2);
+  margin-bottom: 40px;
+  line-height: 1.7;
+}
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 24px 24px;
+}
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-text { color: var(--muted); font-size: 13px; }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { color: var(--text2); text-decoration: none; font-size: 13px; transition: color 0.3s; }
+.footer-links a:hover { color: var(--accent); }
+
+/* ============================================
+   WHATSAPP FLOATING
+   ============================================ */
+.wa-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  width: 60px;
+  height: 60px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+  transition: transform 0.3s;
+  text-decoration: none;
+}
+.wa-float:hover { transform: scale(1.1); }
+.wa-float svg { width: 28px; height: 28px; fill: white; }
+
+/* ============================================
+   FLOATING DOTS
+   ============================================ */
+.floating-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.floating-dot {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(0,229,176,0.2);
+  animation: floatDot linear infinite;
+}
+@keyframes floatDot {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-800px) translateX(40px); opacity: 0; }
+}
+
+/* ============================================
+   KEYFRAMES
+   ============================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .mindmap-container { max-width: 400px; }
+  .concept-grid { grid-template-columns: repeat(2, 1fr); }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .service-card:nth-child(2), .service-card:nth-child(5), .service-card:nth-child(8) { transform: none; }
+  .solar-container { max-width: 600px; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero-title { font-size: 2rem; }
+  .concept-grid { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-number { font-size: 36px; }
+  .cta-buttons { flex-direction: column; align-items: center; }
+  .footer-inner { flex-direction: column; text-align: center; }
+  .footer-links { justify-content: center; }
+  .galaxy-container { max-width: 100%; }
+  .galaxy-methods { width: 90vw; left: 50%; }
+  .solar-container { max-width: 100%; }
+  section { padding: 72px 16px; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .mindmap-container { max-width: 300px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR GLOW -->
+<div id="cursorGlow"></div>
+
+<!-- ============================================
+     NAVBAR
+     ============================================ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">Smart<span>Connection</span></a>
+    <ul class="nav-links">
+      <li><a href="#concepto">SaaS Factory</a></li>
+      <li><a href="#metodologias">Metodologias</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#tecnologias">Tecnologias</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <a href="#contacto" class="nav-cta">Agendar Reunion</a>
+  </div>
+</nav>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<section class="hero" id="inicio">
+  <div class="hero-mesh"></div>
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-fade"></div>
+
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        SaaS Factory con Inteligencia Artificial
+      </div>
+      <h1 class="hero-title">Un equipo completo de <span class="hl">especialistas IA</span> trabajando en tu proyecto</h1>
+      <p class="hero-desc">No somos un desarrollador freelance ni una consultora generica. Somos una fabrica de software con 12 agentes especializados potenciados por IA que cubren cada angulo: estrategia, diseno, arquitectura, desarrollo, calidad e innovacion.</p>
+      <div class="hero-buttons">
+        <a href="#contacto" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Cuentanos tu desafio
+        </a>
+        <a href="#concepto" class="btn btn-ghost">Como funciona</a>
+      </div>
+    </div>
+
+    <!-- MIND MAP SVG -->
+    <div class="mindmap-container">
+      <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" id="mindmapSvg">
+        <!-- Central glow -->
+        <circle cx="250" cy="250" r="52" fill="rgba(0,229,176,0.15)" class="mm-pulse"/>
+        <circle cx="250" cy="250" r="38" fill="rgba(0,229,176,0.08)" stroke="rgba(0,229,176,0.5)" stroke-width="2"/>
+        <text x="250" y="245" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="800">Tu</text>
+        <text x="250" y="260" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="800">Proyecto</text>
+
+        <!-- Lines from center (animated) -->
+        <line x1="250" y1="212" x2="250" y2="100" stroke="url(#lineGrad)" stroke-width="1.5" class="mm-line" style="animation-delay:0.2s"/>
+        <line x1="288" y1="240" x2="400" y2="160" stroke="url(#lineGrad)" stroke-width="1.5" class="mm-line" style="animation-delay:0.4s"/>
+        <line x1="288" y1="260" x2="420" y2="250" stroke="url(#lineGrad)" stroke-width="1.5" class="mm-line" style="animation-delay:0.5s"/>
+        <line x1="288" y1="270" x2="400" y2="340" stroke="url(#lineGrad)" stroke-width="1.5" class="mm-line" style="animation-delay:0.6s"/>
+        <line x1="250" y1="288" x2="250" y2="400" stroke="url(#lineGrad)" stroke-width="1.5" class="mm-line" style="animation-delay:0.8s"/>
+        <line x1="212" y1="260" x2="100" y2="340" stroke="url(#lineGrad)" stroke-width="1.5" class="mm-line" style="animation-delay:0.9s"/>
+        <line x1="212" y1="240" x2="80" y2="200" stroke="url(#lineGrad)" stroke-width="1.5" class="mm-line" style="animation-delay:1.0s"/>
+        <line x1="212" y1="250" x2="80" y2="270" stroke="url(#lineGrad)" stroke-width="1.5" class="mm-line" style="animation-delay:1.1s"/>
+
+        <!-- Parallel branch lines -->
+        <line x1="400" y1="340" x2="370" y2="420" stroke="rgba(74,158,255,0.3)" stroke-width="1" class="mm-line" style="animation-delay:1.3s"/>
+        <line x1="400" y1="340" x2="420" y2="420" stroke="rgba(74,158,255,0.3)" stroke-width="1" class="mm-line" style="animation-delay:1.4s"/>
+        <line x1="400" y1="340" x2="460" y2="400" stroke="rgba(74,158,255,0.3)" stroke-width="1" class="mm-line" style="animation-delay:1.5s"/>
+        <line x1="400" y1="340" x2="340" y2="410" stroke="rgba(74,158,255,0.3)" stroke-width="1" class="mm-line" style="animation-delay:1.6s"/>
+
+        <!-- Gradient definition -->
+        <defs>
+          <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="rgba(0,229,176,0.6)"/>
+            <stop offset="100%" stop-color="rgba(74,158,255,0.4)"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Nodes -->
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 0.5s forwards; opacity:0">
+          <rect x="205" y="70" width="90" height="32" rx="10" fill="rgba(0,229,176,0.1)" stroke="rgba(0,229,176,0.3)" stroke-width="1"/>
+          <text x="250" y="91" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="600">Estrategia</text>
+        </g>
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 0.6s forwards; opacity:0">
+          <rect x="355" y="130" width="100" height="32" rx="10" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.3)" stroke-width="1"/>
+          <text x="405" y="151" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="600">Diseno UX</text>
+        </g>
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 0.7s forwards; opacity:0">
+          <rect x="365" y="233" width="110" height="32" rx="10" fill="rgba(74,158,255,0.1)" stroke="rgba(74,158,255,0.3)" stroke-width="1"/>
+          <text x="420" y="254" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="600">Arquitectura</text>
+        </g>
+
+        <!-- Parallel nodes (grouped) -->
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 0.9s forwards; opacity:0">
+          <rect x="355" y="313" width="90" height="30" rx="10" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+          <text x="400" y="333" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="700">En Paralelo</text>
+        </g>
+
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 1.2s forwards; opacity:0">
+          <rect x="310" y="405" width="55" height="26" rx="8" fill="rgba(168,85,247,0.08)" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
+          <text x="338" y="422" text-anchor="middle" fill="#a855f7" font-size="9" font-weight="600">IA</text>
+        </g>
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 1.3s forwards; opacity:0">
+          <rect x="340" y="435" width="75" height="26" rx="8" fill="rgba(74,158,255,0.08)" stroke="rgba(74,158,255,0.25)" stroke-width="1"/>
+          <text x="378" y="452" text-anchor="middle" fill="#4a9eff" font-size="9" font-weight="600">Backend</text>
+        </g>
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 1.4s forwards; opacity:0">
+          <rect x="395" y="405" width="80" height="26" rx="8" fill="rgba(0,229,176,0.08)" stroke="rgba(0,229,176,0.25)" stroke-width="1"/>
+          <text x="435" y="422" text-anchor="middle" fill="#00e5b0" font-size="9" font-weight="600">Frontend</text>
+        </g>
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 1.5s forwards; opacity:0">
+          <rect x="420" y="440" width="90" height="26" rx="8" fill="rgba(6,182,212,0.08)" stroke="rgba(6,182,212,0.25)" stroke-width="1"/>
+          <text x="465" y="457" text-anchor="middle" fill="#06b6d4" font-size="9" font-weight="600">Integraciones</text>
+        </g>
+
+        <!-- Bottom nodes -->
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 1.0s forwards; opacity:0">
+          <rect x="210" y="400" width="80" height="32" rx="10" fill="rgba(132,204,22,0.1)" stroke="rgba(132,204,22,0.3)" stroke-width="1"/>
+          <text x="250" y="421" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="600">Deploy</text>
+        </g>
+
+        <!-- Left nodes -->
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 1.1s forwards; opacity:0">
+          <rect x="40" y="320" width="70" height="32" rx="10" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.3)" stroke-width="1"/>
+          <text x="75" y="341" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="600">QA</text>
+        </g>
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 1.2s forwards; opacity:0">
+          <rect x="25" y="178" width="90" height="32" rx="10" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.3)" stroke-width="1"/>
+          <text x="70" y="199" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="600">Soporte</text>
+        </g>
+        <g class="mm-node" style="animation: fadeInUp 0.5s ease 1.25s forwards; opacity:0">
+          <rect x="25" y="250" width="95" height="32" rx="10" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+          <text x="73" y="271" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="600">Innovacion</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================
+     CONCEPTO SAAS FACTORY (6 cards)
+     ============================================ -->
+<section class="concept-section" id="concepto">
+  <div class="floating-dots" id="fd1"></div>
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Nuestro diferenciador</span>
+      <h2 class="section-title">Que es una <span class="hl">SaaS Factory con IA</span>?</h2>
+      <p class="section-desc">No construimos software de la manera tradicional. Operamos como una fabrica inteligente donde cada especialidad tiene un responsable dedicado, potenciado por inteligencia artificial.</p>
+    </div>
+
+    <div class="concept-grid">
+      <div class="glass-card concept-card aos aos-d1">
+        <div class="card-inner">
+          <div class="concept-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
+          </div>
+          <h3>Velocidad x Paralelismo</h3>
+          <p>Backend, frontend e IA se desarrollan simultaneamente contra contratos de API predefinidos. Lo que otros hacen en 3 meses, lo entregamos en semanas.</p>
+        </div>
+      </div>
+
+      <div class="glass-card concept-card aos aos-d2">
+        <div class="card-inner">
+          <div class="concept-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </div>
+          <h3>IA en cada capa</h3>
+          <p>No solo construimos CON IA. Usamos IA para disenar, desarrollar, testear, optimizar prompts, evaluar calidad y monitorear en produccion. IA de punta a punta.</p>
+        </div>
+      </div>
+
+      <div class="glass-card concept-card aos aos-d3">
+        <div class="card-inner">
+          <div class="concept-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Arquitectura Cross</h3>
+          <p>Un arquitecto define estandares, contratos y decisiones tecnicas que todos siguen. Nada se improvisa: cada pieza encaja por diseno, no por casualidad.</p>
+        </div>
+      </div>
+
+      <div class="glass-card concept-card aos aos-d4">
+        <div class="card-inner">
+          <div class="concept-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <h3>MCP: IA conectada con todo</h3>
+          <p>Model Context Protocol permite que nuestra IA acceda a calendarios, analytics, Asana, documentacion y mas. No es chat generico: es IA que actua sobre tus sistemas reales.</p>
+        </div>
+      </div>
+
+      <div class="glass-card concept-card aos aos-d5">
+        <div class="card-inner">
+          <div class="concept-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Calidad como usuario real</h3>
+          <p>Cada feature se testea como 6 personas distintas: el novato, el impaciente, el desconfiado. Si confunde a un usuario real, no sale a produccion.</p>
+        </div>
+      </div>
+
+      <div class="glass-card concept-card aos aos-d6">
+        <div class="card-inner">
+          <div class="concept-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
+          <h3>Decisiones con datos</h3>
+          <p>Priorizamos con metricas reales (RICE scoring, AARRR). No construimos lo que "suena bien". Construimos lo que mueve tu negocio.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================
+     METODOLOGIAS — Galaxy / Constellation
+     ============================================ -->
+<section class="meth-section" id="metodologias">
+  <div class="floating-dots" id="fd2"></div>
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">+50 metodologias activas</span>
+      <h2 class="section-title">Como pensamos y <span class="hl">entregamos valor</span></h2>
+      <p class="section-desc">Cada area del equipo opera con metodologias probadas. No improvisamos. Haz click en cada categoria para explorar.</p>
+    </div>
+
+    <div class="galaxy-container aos" id="galaxyContainer">
+      <svg class="galaxy-svg" viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg">
+        <!-- Orbit rings -->
+        <circle cx="350" cy="350" r="120" class="orbit-ring" stroke-dasharray="4 8"/>
+        <circle cx="350" cy="350" r="200" class="orbit-ring" stroke-dasharray="4 8"/>
+        <circle cx="350" cy="350" r="280" class="orbit-ring" stroke-dasharray="4 8"/>
+
+        <!-- Connection lines from center to categories -->
+        <line x1="350" y1="350" x2="350" y2="130" stroke="rgba(0,229,176,0.1)" stroke-width="1"/>
+        <line x1="350" y1="350" x2="540" y2="200" stroke="rgba(74,158,255,0.1)" stroke-width="1"/>
+        <line x1="350" y1="350" x2="580" y2="350" stroke="rgba(168,85,247,0.1)" stroke-width="1"/>
+        <line x1="350" y1="350" x2="540" y2="500" stroke="rgba(245,158,11,0.1)" stroke-width="1"/>
+        <line x1="350" y1="350" x2="350" y2="570" stroke="rgba(239,68,68,0.1)" stroke-width="1"/>
+        <line x1="350" y1="350" x2="160" y2="500" stroke="rgba(132,204,22,0.1)" stroke-width="1"/>
+        <line x1="350" y1="350" x2="120" y2="350" stroke="rgba(236,72,153,0.1)" stroke-width="1"/>
+        <line x1="350" y1="350" x2="160" y2="200" stroke="rgba(6,182,212,0.1)" stroke-width="1"/>
+
+        <!-- Center node -->
+        <circle cx="350" cy="350" r="50" fill="rgba(0,229,176,0.08)" class="solar-center-glow"/>
+        <circle cx="350" cy="350" r="35" fill="rgba(0,229,176,0.06)" stroke="rgba(0,229,176,0.4)" stroke-width="2"/>
+        <text x="350" y="346" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="800">Nuestras</text>
+        <text x="350" y="360" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="800">Metodologias</text>
+
+        <!-- Category nodes -->
+        <g class="galaxy-category" data-cat="gestion" onclick="showMethods('gestion')">
+          <circle cx="350" cy="130" r="35" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.4)" stroke-width="1.5"/>
+          <text x="350" y="127" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="700">Gestion</text>
+          <text x="350" y="139" text-anchor="middle" fill="#94a3b8" font-size="8">2 metodos</text>
+        </g>
+
+        <g class="galaxy-category" data-cat="comercial" onclick="showMethods('comercial')">
+          <circle cx="540" cy="200" r="35" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.4)" stroke-width="1.5"/>
+          <text x="540" y="197" text-anchor="middle" fill="#ec4899" font-size="9" font-weight="700">Comercial</text>
+          <text x="540" y="209" text-anchor="middle" fill="#94a3b8" font-size="8">4 metodos</text>
+        </g>
+
+        <g class="galaxy-category" data-cat="producto" onclick="showMethods('producto')">
+          <circle cx="580" cy="350" r="35" fill="rgba(6,182,212,0.1)" stroke="rgba(6,182,212,0.4)" stroke-width="1.5"/>
+          <text x="580" y="347" text-anchor="middle" fill="#06b6d4" font-size="9" font-weight="700">Producto</text>
+          <text x="580" y="359" text-anchor="middle" fill="#94a3b8" font-size="8">4 metodos</text>
+        </g>
+
+        <g class="galaxy-category" data-cat="ia" onclick="showMethods('ia')">
+          <circle cx="540" cy="500" r="35" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.4)" stroke-width="1.5"/>
+          <text x="540" y="497" text-anchor="middle" fill="#a855f7" font-size="9" font-weight="700">IA</text>
+          <text x="540" y="509" text-anchor="middle" fill="#94a3b8" font-size="8">6 metodos</text>
+        </g>
+
+        <g class="galaxy-category" data-cat="arquitectura" onclick="showMethods('arquitectura')">
+          <circle cx="350" cy="570" r="35" fill="rgba(74,158,255,0.1)" stroke="rgba(74,158,255,0.4)" stroke-width="1.5"/>
+          <text x="350" y="567" text-anchor="middle" fill="#4a9eff" font-size="9" font-weight="700">Arquitectura</text>
+          <text x="350" y="579" text-anchor="middle" fill="#94a3b8" font-size="8">6 metodos</text>
+        </g>
+
+        <g class="galaxy-category" data-cat="devops" onclick="showMethods('devops')">
+          <circle cx="160" cy="500" r="35" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.4)" stroke-width="1.5"/>
+          <text x="160" y="497" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="700">DevOps</text>
+          <text x="160" y="509" text-anchor="middle" fill="#94a3b8" font-size="8">2 metodos</text>
+        </g>
+
+        <g class="galaxy-category" data-cat="qa" onclick="showMethods('qa')">
+          <circle cx="120" cy="350" r="35" fill="rgba(132,204,22,0.1)" stroke="rgba(132,204,22,0.4)" stroke-width="1.5"/>
+          <text x="120" y="347" text-anchor="middle" fill="#84cc16" font-size="9" font-weight="700">QA</text>
+          <text x="120" y="359" text-anchor="middle" fill="#94a3b8" font-size="8">3 metodos</text>
+        </g>
+
+        <g class="galaxy-category" data-cat="innovacion" onclick="showMethods('innovacion')">
+          <circle cx="160" cy="200" r="35" fill="rgba(0,229,176,0.1)" stroke="rgba(0,229,176,0.4)" stroke-width="1.5"/>
+          <text x="160" y="197" text-anchor="middle" fill="#00e5b0" font-size="9" font-weight="700">Innovacion</text>
+          <text x="160" y="209" text-anchor="middle" fill="#94a3b8" font-size="8">4 metodos</text>
+        </g>
+
+        <!-- Tiny orbiting particles -->
+        <circle r="2" fill="rgba(0,229,176,0.4)">
+          <animateMotion dur="20s" repeatCount="indefinite"><mpath href="#orb1"/></animateMotion>
+        </circle>
+        <circle r="1.5" fill="rgba(74,158,255,0.4)">
+          <animateMotion dur="30s" repeatCount="indefinite"><mpath href="#orb2"/></animateMotion>
+        </circle>
+        <circle r="2.5" fill="rgba(168,85,247,0.3)">
+          <animateMotion dur="40s" repeatCount="indefinite"><mpath href="#orb3"/></animateMotion>
+        </circle>
+        <path id="orb1" d="M350 230 A120 120 0 1 1 349.99 230" fill="none"/>
+        <path id="orb2" d="M350 150 A200 200 0 1 1 349.99 150" fill="none"/>
+        <path id="orb3" d="M350 70 A280 280 0 1 1 349.99 70" fill="none"/>
+      </svg>
+
+      <!-- Method panels (hidden by default) -->
+      <div class="galaxy-methods" id="panel-gestion">
+        <button class="galaxy-close" onclick="closeMethods()">&times;</button>
+        <h4>Gestion</h4>
+        <div class="galaxy-method-item"><h5>RICE Scoring</h5><p>Priorizamos por Reach x Impact x Confidence / Effort. Solo construimos lo que mueve metricas.</p></div>
+        <div class="galaxy-method-item"><h5>Pirate Metrics (AARRR)</h5><p>Acquisition, Activation, Retention, Revenue, Referral. Medimos el funnel completo.</p></div>
+      </div>
+
+      <div class="galaxy-methods" id="panel-comercial">
+        <button class="galaxy-close" onclick="closeMethods()">&times;</button>
+        <h4>Comercial</h4>
+        <div class="galaxy-method-item"><h5>Challenger Sale</h5><p>No vendemos lo que pides: te ensenamos lo que necesitas con insights de mercado.</p></div>
+        <div class="galaxy-method-item"><h5>SPIN Selling</h5><p>Situacion, Problema, Implicacion, Necesidad. Diagnosticamos antes de proponer.</p></div>
+        <div class="galaxy-method-item"><h5>Value-Based Pricing</h5><p>Cobramos por el valor que generamos, no por las horas que trabajamos.</p></div>
+        <div class="galaxy-method-item"><h5>Land & Expand</h5><p>Empezamos con un proyecto acotado, crecemos dentro del cliente con resultados probados.</p></div>
+      </div>
+
+      <div class="galaxy-methods" id="panel-producto">
+        <button class="galaxy-close" onclick="closeMethods()">&times;</button>
+        <h4>Producto</h4>
+        <div class="galaxy-method-item"><h5>Design Thinking</h5><p>Empatizar, Definir, Idear, Prototipar, Testear. El usuario al centro siempre.</p></div>
+        <div class="galaxy-method-item"><h5>Jobs to Be Done</h5><p>Para que contrata este feature? Si no hay job concreto, no lo construimos.</p></div>
+        <div class="galaxy-method-item"><h5>Wardley Mapping</h5><p>Build, buy o skip? Mapeamos madurez de componentes para decidir donde invertir.</p></div>
+        <div class="galaxy-method-item"><h5>BPMN 2.0</h5><p>Procesos de negocio mapeados end-to-end antes de escribir codigo. Reglas claras, SLAs definidos.</p></div>
+      </div>
+
+      <div class="galaxy-methods" id="panel-ia">
+        <button class="galaxy-close" onclick="closeMethods()">&times;</button>
+        <h4>Inteligencia Artificial</h4>
+        <div class="galaxy-method-item"><h5>Eval-Driven Development</h5><p>Como TDD pero para IA. Criterios de calidad ANTES del prompt. Si el eval no pasa, no se deploya.</p></div>
+        <div class="galaxy-method-item"><h5>Prompt Versioning</h5><p>Cada prompt versionado en codigo. Changelog, rollback, metricas comparadas v1 vs v2.</p></div>
+        <div class="galaxy-method-item"><h5>Guardrails Pattern</h5><p>Validacion de input Y output en cada llamada IA. Pre-guard + post-guard.</p></div>
+        <div class="galaxy-method-item"><h5>Human-in-the-Loop</h5><p>Umbral de confianza: la IA decide sola lo rutinario, escala a humano lo critico.</p></div>
+        <div class="galaxy-method-item"><h5>LLMOps</h5><p>Cada llamada IA logueada: tokens, costo, latencia, calidad. Dashboards y optimizacion.</p></div>
+        <div class="galaxy-method-item"><h5>Retrieval Engineering</h5><p>RAG optimizado: chunking, embeddings, hybrid search, reranking. No solo hacer RAG: hacerlo bien.</p></div>
+      </div>
+
+      <div class="galaxy-methods" id="panel-arquitectura">
+        <button class="galaxy-close" onclick="closeMethods()">&times;</button>
+        <h4>Arquitectura</h4>
+        <div class="galaxy-method-item"><h5>Kaizen</h5><p>Mejora continua cada 3 dias. Auditoria 360 del sistema completo automaticamente.</p></div>
+        <div class="galaxy-method-item"><h5>OODA Loop</h5><p>Observe, Orient, Decide, Act. Cada decision tecnica documentada y revisable.</p></div>
+        <div class="galaxy-method-item"><h5>Gemba</h5><p>No decidimos leyendo codigo: verificamos produccion real. Prod manda.</p></div>
+        <div class="galaxy-method-item"><h5>Conway's Law</h5><p>La arquitectura refleja al equipo. Repos separados, APIs como contratos.</p></div>
+        <div class="galaxy-method-item"><h5>Poka-Yoke</h5><p>Validaciones que hacen IMPOSIBLE el bug. Types estrictos, guards, exhaustive checks.</p></div>
+        <div class="galaxy-method-item"><h5>Jidoka</h5><p>Build falla = NO deploy. Sin excepciones. La linea se para ante cualquier error.</p></div>
+      </div>
+
+      <div class="galaxy-methods" id="panel-devops">
+        <button class="galaxy-close" onclick="closeMethods()">&times;</button>
+        <h4>DevOps</h4>
+        <div class="galaxy-method-item"><h5>GitOps</h5><p>Infra declarativa en repo. Push a main = produccion. Rollback en menos de 15 min.</p></div>
+        <div class="galaxy-method-item"><h5>SRE</h5><p>SLOs, error budgets, postmortems. 99.9% uptime no es un slogan: es un objetivo medido.</p></div>
+      </div>
+
+      <div class="galaxy-methods" id="panel-qa">
+        <button class="galaxy-close" onclick="closeMethods()">&times;</button>
+        <h4>QA</h4>
+        <div class="galaxy-method-item"><h5>Shift Left</h5><p>Testear antes, no al final. Validamos specs ANTES de implementar. 10x mas barato.</p></div>
+        <div class="galaxy-method-item"><h5>Chaos Engineering</h5><p>Que pasa si la API cae? Si hay 0 datos? Rompemos a proposito para que no rompa en prod.</p></div>
+        <div class="galaxy-method-item"><h5>Exploratory Testing</h5><p>Sesiones sin script, como usuario real. Los mejores bugs aparecen cuando NO sigues el happy path.</p></div>
+      </div>
+
+      <div class="galaxy-methods" id="panel-innovacion">
+        <button class="galaxy-close" onclick="closeMethods()">&times;</button>
+        <h4>Innovacion</h4>
+        <div class="galaxy-method-item"><h5>TRIZ</h5><p>40 principios de invencion para resolver contradicciones tecnicas que parecen imposibles.</p></div>
+        <div class="galaxy-method-item"><h5>SCAMPER</h5><p>Sustituir, Combinar, Adaptar, Modificar, Poner otro uso, Eliminar, Reversar.</p></div>
+        <div class="galaxy-method-item"><h5>Blue Ocean</h5><p>Que eliminar? Reducir? Elevar? Crear? Encontramos espacios sin competencia.</p></div>
+        <div class="galaxy-method-item"><h5>First Principles</h5><p>Descomponemos hasta los fundamentos. Eliminamos suposiciones heredadas.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================
+     SERVICIOS (9 cards, staggered)
+     ============================================ -->
+<section class="services-section" id="servicios">
+  <div class="floating-dots" id="fd3"></div>
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Servicios</span>
+      <h2 class="section-title">Lo que construimos para ti</h2>
+      <p class="section-desc">Desde consultoria SAP enterprise hasta apps inteligentes para PYMES. Cada servicio con metodologias probadas y equipo dedicado.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="glass-card service-card aos aos-d1">
+        <div class="card-inner">
+          <div class="service-icon enterprise">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          </div>
+          <h3>SAP BTP & Cloud</h3>
+          <p>Extensiones e integraciones en la nube SAP. Tu ERP al siguiente nivel con BTP, ABAP Cloud y SAP AI Core.</p>
+          <span class="service-badge badge-enterprise">Enterprise</span>
+        </div>
+      </div>
+
+      <div class="glass-card service-card aos aos-d2">
+        <div class="card-inner">
+          <div class="service-icon enterprise">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+          </div>
+          <h3>Migraciones S/4HANA</h3>
+          <p>Migraciones agiles con rollback garantizado. Mappeo de procesos, data cleansing y go-live sin sorpresas.</p>
+          <span class="service-badge badge-enterprise">Enterprise</span>
+        </div>
+      </div>
+
+      <div class="glass-card service-card aos aos-d3">
+        <div class="card-inner">
+          <div class="service-icon enterprise">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h3>ABAP & FIORI</h3>
+          <p>Desarrollo a medida en SAP con interfaces que los usuarios quieren usar. OData, CDS Views, Freestyle y Elements.</p>
+          <span class="service-badge badge-enterprise">Enterprise</span>
+        </div>
+      </div>
+
+      <div class="glass-card service-card aos aos-d4">
+        <div class="card-inner">
+          <div class="service-icon enterprise">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+          </div>
+          <h3>Integraciones PI/PO & CPI</h3>
+          <p>Conectamos tu SAP con todo tu ecosistema: ERPs, CRMs, eCommerce, APIs. Middleware enterprise-grade.</p>
+          <span class="service-badge badge-enterprise">Enterprise</span>
+        </div>
+      </div>
+
+      <div class="glass-card service-card aos aos-d5">
+        <div class="card-inner">
+          <div class="service-icon pymes">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </div>
+          <h3>Apps con IA</h3>
+          <p>Chatbots, RAG, agentes inteligentes, analisis de documentos. Claude, GPT, Groq y 10 providers integrados.</p>
+          <span class="service-badge badge-pymes">Empresas + PYMES</span>
+        </div>
+      </div>
+
+      <div class="glass-card service-card aos aos-d6">
+        <div class="card-inner">
+          <div class="service-icon pymes">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
+          <h3>Analytics & BI</h3>
+          <p>Dashboards ejecutivos y Business Intelligence. Decisiones con datos, no intuicion. PostHog, GA4, custom.</p>
+          <span class="service-badge badge-pymes">Empresas + PYMES</span>
+        </div>
+      </div>
+
+      <div class="glass-card service-card aos aos-d1">
+        <div class="card-inner">
+          <div class="service-icon pymes">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          </div>
+          <h3>Desarrollo Web & eCommerce</h3>
+          <p>Sitios de alta conversion, tiendas online, marketplaces. Next.js, Astro, Tailwind. Lighthouse mayor a 90.</p>
+          <span class="service-badge badge-pymes">Empresas + PYMES</span>
+        </div>
+      </div>
+
+      <div class="glass-card service-card aos aos-d2">
+        <div class="card-inner">
+          <div class="service-icon pymes">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <h3>Apps Moviles & PWA</h3>
+          <p>Progressive Web Apps instalables, offline, push notifications. Como app nativa, sin app store.</p>
+          <span class="service-badge badge-pymes">Empresas + PYMES</span>
+        </div>
+      </div>
+
+      <div class="glass-card service-card aos aos-d3">
+        <div class="card-inner">
+          <div class="service-icon all">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Soporte Continuo AMS</h3>
+          <p>No desaparecemos. Monitoreo 24/7, mejoras incrementales, Kaizen cada 3 dias. SLAs garantizados.</p>
+          <span class="service-badge badge-all">Todos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================
+     TECH SOLAR SYSTEM
+     ============================================ -->
+<section id="tecnologias">
+  <div class="floating-dots" id="fd4"></div>
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Stack tecnologico</span>
+      <h2 class="section-title">Las herramientas detras de la <span class="hl">magia</span></h2>
+      <p class="section-desc">Elegimos cada tecnologia por merito, no por moda. Benchmarks reales, no marketing.</p>
+    </div>
+
+    <div class="solar-container aos">
+      <svg class="solar-svg" viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg" id="solarSvg">
+        <!-- Orbit rings -->
+        <circle cx="350" cy="350" r="90" class="orbit-ring"/>
+        <circle cx="350" cy="350" r="150" class="orbit-ring"/>
+        <circle cx="350" cy="350" r="210" class="orbit-ring"/>
+        <circle cx="350" cy="350" r="270" class="orbit-ring"/>
+        <circle cx="350" cy="350" r="320" class="orbit-ring"/>
+
+        <!-- Center glow -->
+        <circle cx="350" cy="350" r="50" fill="rgba(0,229,176,0.1)" class="solar-center-glow"/>
+        <circle cx="350" cy="350" r="32" fill="rgba(0,229,176,0.06)" stroke="rgba(0,229,176,0.5)" stroke-width="2"/>
+        <text x="350" y="347" text-anchor="middle" fill="var(--accent)" font-size="9" font-weight="800">SMART</text>
+        <text x="350" y="359" text-anchor="middle" fill="var(--text)" font-size="8" font-weight="700">CONNECTION</text>
+
+        <!-- IA Orbit (r=90) -->
+        <g class="tech-planet"><circle cx="350" cy="260" r="14" fill="rgba(168,85,247,0.15)" stroke="rgba(168,85,247,0.4)" stroke-width="1"/><text x="350" y="264" text-anchor="middle" fill="#a855f7" font-size="7" font-weight="600">Claude</text></g>
+        <g class="tech-planet"><circle cx="428" cy="310" r="14" fill="rgba(168,85,247,0.15)" stroke="rgba(168,85,247,0.4)" stroke-width="1"/><text x="428" y="314" text-anchor="middle" fill="#a855f7" font-size="7" font-weight="600">GPT</text></g>
+        <g class="tech-planet"><circle cx="272" cy="310" r="14" fill="rgba(168,85,247,0.15)" stroke="rgba(168,85,247,0.4)" stroke-width="1"/><text x="272" y="314" text-anchor="middle" fill="#a855f7" font-size="7" font-weight="600">Groq</text></g>
+        <g class="tech-planet"><circle cx="410" cy="410" r="14" fill="rgba(168,85,247,0.15)" stroke="rgba(168,85,247,0.4)" stroke-width="1"/><text x="410" y="414" text-anchor="middle" fill="#a855f7" font-size="7" font-weight="600">Gemini</text></g>
+
+        <!-- Dev Orbit (r=150) -->
+        <g class="tech-planet"><circle cx="350" cy="200" r="16" fill="rgba(0,229,176,0.12)" stroke="rgba(0,229,176,0.4)" stroke-width="1"/><text x="350" y="204" text-anchor="middle" fill="#00e5b0" font-size="7" font-weight="600">Next.js</text></g>
+        <g class="tech-planet"><circle cx="480" cy="280" r="14" fill="rgba(0,229,176,0.12)" stroke="rgba(0,229,176,0.4)" stroke-width="1"/><text x="480" y="284" text-anchor="middle" fill="#00e5b0" font-size="7" font-weight="600">React</text></g>
+        <g class="tech-planet"><circle cx="490" cy="400" r="14" fill="rgba(0,229,176,0.12)" stroke="rgba(0,229,176,0.4)" stroke-width="1"/><text x="490" y="404" text-anchor="middle" fill="#00e5b0" font-size="7" font-weight="600">Tailwind</text></g>
+        <g class="tech-planet"><circle cx="220" cy="280" r="14" fill="rgba(0,229,176,0.12)" stroke="rgba(0,229,176,0.4)" stroke-width="1"/><text x="220" y="284" text-anchor="middle" fill="#00e5b0" font-size="7" font-weight="600">TypeScript</text></g>
+        <g class="tech-planet"><circle cx="210" cy="400" r="14" fill="rgba(0,229,176,0.12)" stroke="rgba(0,229,176,0.4)" stroke-width="1"/><text x="210" y="404" text-anchor="middle" fill="#00e5b0" font-size="7" font-weight="600">Astro</text></g>
+
+        <!-- SAP Orbit (r=210) -->
+        <g class="tech-planet"><circle cx="350" cy="140" r="16" fill="rgba(74,158,255,0.12)" stroke="rgba(74,158,255,0.4)" stroke-width="1"/><text x="350" y="144" text-anchor="middle" fill="#4a9eff" font-size="7" font-weight="600">SAP BTP</text></g>
+        <g class="tech-planet"><circle cx="540" cy="250" r="14" fill="rgba(74,158,255,0.12)" stroke="rgba(74,158,255,0.4)" stroke-width="1"/><text x="540" y="254" text-anchor="middle" fill="#4a9eff" font-size="7" font-weight="600">S/4HANA</text></g>
+        <g class="tech-planet"><circle cx="545" cy="430" r="14" fill="rgba(74,158,255,0.12)" stroke="rgba(74,158,255,0.4)" stroke-width="1"/><text x="545" y="434" text-anchor="middle" fill="#4a9eff" font-size="7" font-weight="600">ABAP</text></g>
+        <g class="tech-planet"><circle cx="160" cy="250" r="14" fill="rgba(74,158,255,0.12)" stroke="rgba(74,158,255,0.4)" stroke-width="1"/><text x="160" y="254" text-anchor="middle" fill="#4a9eff" font-size="7" font-weight="600">FIORI</text></g>
+        <g class="tech-planet"><circle cx="160" cy="430" r="14" fill="rgba(74,158,255,0.12)" stroke="rgba(74,158,255,0.4)" stroke-width="1"/><text x="160" y="434" text-anchor="middle" fill="#4a9eff" font-size="7" font-weight="600">CPI</text></g>
+
+        <!-- Cloud Orbit (r=270) -->
+        <g class="tech-planet"><circle cx="350" cy="80" r="16" fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/><text x="350" y="84" text-anchor="middle" fill="#f59e0b" font-size="7" font-weight="600">AWS</text></g>
+        <g class="tech-planet"><circle cx="600" cy="250" r="14" fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/><text x="600" y="254" text-anchor="middle" fill="#f59e0b" font-size="7" font-weight="600">Supabase</text></g>
+        <g class="tech-planet"><circle cx="600" cy="460" r="14" fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/><text x="600" y="464" text-anchor="middle" fill="#f59e0b" font-size="7" font-weight="600">Vercel</text></g>
+        <g class="tech-planet"><circle cx="100" cy="250" r="14" fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/><text x="100" y="254" text-anchor="middle" fill="#f59e0b" font-size="7" font-weight="600">GitHub</text></g>
+        <g class="tech-planet"><circle cx="100" cy="460" r="14" fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/><text x="100" y="464" text-anchor="middle" fill="#f59e0b" font-size="7" font-weight="600">GCloud</text></g>
+
+        <!-- Integrations Orbit (r=320) -->
+        <g class="tech-planet"><circle cx="350" cy="30" r="13" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.3)" stroke-width="1"/><text x="350" y="34" text-anchor="middle" fill="#ec4899" font-size="6" font-weight="600">WhatsApp</text></g>
+        <g class="tech-planet"><circle cx="630" cy="190" r="13" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.3)" stroke-width="1"/><text x="630" y="194" text-anchor="middle" fill="#ec4899" font-size="6" font-weight="600">MeLi</text></g>
+        <g class="tech-planet"><circle cx="660" cy="380" r="13" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.3)" stroke-width="1"/><text x="660" y="384" text-anchor="middle" fill="#ec4899" font-size="6" font-weight="600">Bsale</text></g>
+        <g class="tech-planet"><circle cx="560" cy="560" r="13" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.3)" stroke-width="1"/><text x="560" y="564" text-anchor="middle" fill="#ec4899" font-size="6" font-weight="600">PostHog</text></g>
+        <g class="tech-planet"><circle cx="140" cy="560" r="13" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.3)" stroke-width="1"/><text x="140" y="564" text-anchor="middle" fill="#ec4899" font-size="6" font-weight="600">GA4</text></g>
+        <g class="tech-planet"><circle cx="40" cy="380" r="13" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.3)" stroke-width="1"/><text x="40" y="384" text-anchor="middle" fill="#ec4899" font-size="6" font-weight="600">Resend</text></g>
+        <g class="tech-planet"><circle cx="70" cy="190" r="13" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.3)" stroke-width="1"/><text x="70" y="194" text-anchor="middle" fill="#ec4899" font-size="6" font-weight="600">Airtable</text></g>
+
+        <!-- Orbiting particles -->
+        <circle r="2" fill="rgba(0,229,176,0.5)"><animateMotion dur="15s" repeatCount="indefinite" path="M350 260 A90 90 0 1 1 349.99 260"/></circle>
+        <circle r="1.5" fill="rgba(74,158,255,0.4)"><animateMotion dur="25s" repeatCount="indefinite" path="M350 200 A150 150 0 1 1 349.99 200"/></circle>
+        <circle r="2" fill="rgba(245,158,11,0.4)"><animateMotion dur="35s" repeatCount="indefinite" path="M350 140 A210 210 0 1 1 349.99 140"/></circle>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================
+     STATS
+     ============================================ -->
+<section id="resultados">
+  <div class="cx">
+    <div class="section-header aos">
+      <span class="section-label">Resultados</span>
+      <h2 class="section-title">Numeros reales</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="glass-card stat-card aos aos-d1">
+        <div class="card-inner">
+          <div class="stat-number"><span class="hl" data-count="7">0</span>+</div>
+          <div class="stat-label">Anos experiencia SAP</div>
+        </div>
+      </div>
+      <div class="glass-card stat-card aos aos-d2">
+        <div class="card-inner">
+          <div class="stat-number"><span class="hl" data-count="99">0</span>.9%</div>
+          <div class="stat-label">Uptime en produccion</div>
+        </div>
+      </div>
+      <div class="glass-card stat-card aos aos-d3">
+        <div class="card-inner">
+          <div class="stat-number"><span class="hl" data-count="50">0</span>+</div>
+          <div class="stat-label">Metodologias activas</div>
+        </div>
+      </div>
+      <div class="glass-card stat-card aos aos-d4">
+        <div class="card-inner">
+          <div class="stat-number"><span class="hl" data-count="10">0</span></div>
+          <div class="stat-label">Providers IA integrados</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================
+     CTA
+     ============================================ -->
+<section class="cta-section" id="contacto">
+  <div class="cta-beam"></div>
+  <div class="cta-content aos">
+    <span class="section-label">Listo para empezar?</span>
+    <h2 class="cta-title">Tu proyecto merece un <span class="hl">equipo completo</span></h2>
+    <p class="cta-desc">30 minutos. Sin compromiso. Diagnosticamos tu desafio y te decimos honestamente si podemos ayudarte.</p>
+    <div class="cta-buttons">
+      <a href="mailto:contacto@smconnection.cl" class="btn btn-primary" style="font-size:16px;padding:18px 40px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Agendar reunion gratuita
+      </a>
+      <a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Smart%20Connection" target="_blank" class="btn btn-ghost" style="font-size:16px;padding:18px 40px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        WhatsApp directo
+      </a>
+    </div>
+    <p style="margin-top:24px;font-size:14px;color:var(--muted)">contacto@smconnection.cl  |  +56 9 5536 1419</p>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-text">
+      &copy; 2026 Smart Connection. Todos los derechos reservados. Santiago, Chile.
+    </div>
+    <ul class="footer-links">
+      <li><a href="#concepto">SaaS Factory</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#tecnologias">Tecnologias</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOATING -->
+<a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20m%C3%A1s" target="_blank" class="wa-float">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+(function() {
+  'use strict';
+
+  // ============================================
+  // 1. CURSOR GLOW
+  // ============================================
+  const cursorGlow = document.getElementById('cursorGlow');
+  let mx = -500, my = -500, gx = -500, gy = -500;
+  document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
+  function animGlow() {
+    gx += (mx - gx) * 0.08;
+    gy += (my - gy) * 0.08;
+    cursorGlow.style.left = gx + 'px';
+    cursorGlow.style.top = gy + 'px';
+    requestAnimationFrame(animGlow);
+  }
+  animGlow();
+  if ('ontouchstart' in window) cursorGlow.style.display = 'none';
+
+  // ============================================
+  // 2. CARD GLOW TRACKING
+  // ============================================
+  document.querySelectorAll('.glass-card').forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mouse-x', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--mouse-y', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  // ============================================
+  // 3. NAVBAR SCROLL
+  // ============================================
+  var navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function() {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // ============================================
+  // 4. HERO PARTICLES (neural network)
+  // ============================================
+  var canvas = document.getElementById('heroCanvas');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var count = 120;
+    var connectDist = 150;
+    var herMouse = { x: null, y: null };
+
+    function resize() {
+      canvas.width = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    canvas.addEventListener('mousemove', function(e) {
+      var r = canvas.getBoundingClientRect();
+      herMouse.x = e.clientX - r.left;
+      herMouse.y = e.clientY - r.top;
+    });
+    canvas.addEventListener('mouseleave', function() { herMouse.x = null; herMouse.y = null; });
+
+    function Particle() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.r = Math.random() * 2 + 0.5;
+      this.o = Math.random() * 0.5 + 0.2;
+      this.isBlue = Math.random() < 0.2;
+    }
+    for (var i = 0; i < count; i++) particles.push(new Particle());
+
+    // Shooting stars
+    var stars = [];
+    function createStar() {
+      if (stars.length < 3 && Math.random() < 0.005) {
+        stars.push({ x: Math.random() * canvas.width, y: 0, vx: (Math.random() - 0.3) * 5, vy: Math.random() * 4 + 2, life: 1, len: Math.random() * 80 + 40 });
+      }
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        if (herMouse.x !== null) {
+          var dx = herMouse.x - p.x, dy = herMouse.y - p.y;
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 180) { p.x -= dx * 0.008; p.y -= dy * 0.008; }
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.isBlue ? 'rgba(74,158,255,' + p.o + ')' : 'rgba(0,229,176,' + p.o + ')';
+        ctx.fill();
+
+        if (p.r > 1.3) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+          ctx.fillStyle = p.isBlue ? 'rgba(74,158,255,' + (p.o * 0.06) + ')' : 'rgba(0,229,176,' + (p.o * 0.06) + ')';
+          ctx.fill();
+        }
+
+        for (var j = i + 1; j < particles.length; j++) {
+          var p2 = particles[j];
+          var dx2 = p.x - p2.x, dy2 = p.y - p2.y;
+          var d = Math.sqrt(dx2*dx2 + dy2*dy2);
+          if (d < connectDist) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = 'rgba(0,229,176,' + (0.08 * (1 - d / connectDist)) + ')';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Shooting stars
+      createStar();
+      for (var s = stars.length - 1; s >= 0; s--) {
+        var st = stars[s];
+        st.x += st.vx; st.y += st.vy; st.life -= 0.012;
+        if (st.life <= 0) { stars.splice(s, 1); continue; }
+        var grad = ctx.createLinearGradient(st.x, st.y, st.x - st.vx * st.len / 4, st.y - st.vy * st.len / 4);
+        grad.addColorStop(0, 'rgba(0,229,176,' + st.life + ')');
+        grad.addColorStop(1, 'transparent');
+        ctx.beginPath();
+        ctx.moveTo(st.x, st.y);
+        ctx.lineTo(st.x - st.vx * st.len / 4, st.y - st.vy * st.len / 4);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+  }
+
+  // ============================================
+  // 5. ANIMATE ON SCROLL
+  // ============================================
+  var aosObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.aos').forEach(function(el) { aosObs.observe(el); });
+
+  // ============================================
+  // 6. STATS COUNTER
+  // ============================================
+  var counted = false;
+  var statsObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting && !counted) {
+        counted = true;
+        document.querySelectorAll('[data-count]').forEach(function(el) {
+          var target = parseInt(el.getAttribute('data-count'));
+          var current = 0;
+          var inc = Math.ceil(target / 60);
+          function step() {
+            current += inc;
+            if (current >= target) { el.textContent = target; return; }
+            el.textContent = current;
+            requestAnimationFrame(step);
+          }
+          step();
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  var statsSection = document.getElementById('resultados');
+  if (statsSection) statsObs.observe(statsSection);
+
+  // ============================================
+  // 7. FLOATING DOTS
+  // ============================================
+  ['fd1','fd2','fd3','fd4'].forEach(function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    for (var i = 0; i < 15; i++) {
+      var dot = document.createElement('div');
+      dot.className = 'floating-dot';
+      dot.style.left = Math.random() * 100 + '%';
+      dot.style.top = (Math.random() * 100 + 100) + '%';
+      dot.style.animationDuration = (15 + Math.random() * 20) + 's';
+      dot.style.animationDelay = (Math.random() * 10) + 's';
+      container.appendChild(dot);
+    }
+  });
+
+  // ============================================
+  // 8. METHODOLOGY GALAXY — show/close panels
+  // ============================================
+  window.showMethods = function(cat) {
+    closeMethods();
+    var panel = document.getElementById('panel-' + cat);
+    if (panel) panel.classList.add('active');
+  };
+  window.closeMethods = function() {
+    document.querySelectorAll('.galaxy-methods').forEach(function(p) { p.classList.remove('active'); });
+  };
+  // Close on click outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.galaxy-category') && !e.target.closest('.galaxy-methods')) {
+      closeMethods();
+    }
+  });
+
+  // ============================================
+  // 9. SMOOTH SCROLL
+  // ============================================
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture Stack 2026 — Ecosistema de IA para Arquitecto TI</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════
+   TOKENS
+══════════════════════════════════════ */
+:root {
+  --ink:    #0e0e12;
+  --paper:  #f5f2eb;
+  --cream:  #ede9df;
+  --warm:   #e8e0d0;
+  --border: rgba(14,14,18,0.12);
+  --muted:  #7a7165;
+  --strong: #1a1814;
+
+  --claude:  #c0522a;
+  --deep:    #2a5fc0;
+  --green:   #1a8c5a;
+  --amber:   #c08a20;
+  --violet:  #6b3ec0;
+  --coral:   #c03e5f;
+
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+/* ══════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════
+   GRAIN TEXTURE
+══════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999;
+  opacity: 0.5;
+}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(245,242,235,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0;
+  height: 52px;
+  padding: 0 2rem;
+  overflow-x: auto;
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: var(--claude);
+  letter-spacing: -0.02em;
+  margin-right: 2.5rem;
+  flex-shrink: 0;
+  font-style: italic;
+}
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0 1.1rem;
+  height: 52px;
+  display: flex; align-items: center;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+  transition: color .18s, background .18s;
+}
+nav a:first-of-type { border-left: 1px solid var(--border); }
+nav a:hover { color: var(--strong); background: var(--cream); }
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 2px solid var(--ink);
+  overflow: hidden;
+}
+.hero-left {
+  padding: 7rem 4rem 5rem;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  position: relative;
+}
+.hero-left::before {
+  content: '2026';
+  position: absolute;
+  top: 3rem; left: 4rem;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--claude);
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+  color: var(--strong);
+}
+.hero h1 em { font-style: italic; color: var(--claude); }
+.hero-desc {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 420px;
+  margin-bottom: 3rem;
+}
+.hero-pills {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+}
+.pill {
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border-radius: 2px;
+}
+
+.hero-right {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6rem 3.5rem;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-right::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 80% 30%, rgba(192,82,42,0.2) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 50% at 20% 80%, rgba(42,95,192,0.15) 0%, transparent 60%);
+}
+.score-block {
+  position: relative;
+  margin-bottom: 3rem;
+}
+.score-block h3 {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245,242,235,0.45);
+  margin-bottom: 1.5rem;
+}
+.score-item {
+  display: grid;
+  grid-template-columns: 110px 1fr 32px;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.score-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: rgba(245,242,235,0.6);
+}
+.score-track {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.score-fill { height: 100%; border-radius: 2px; }
+.score-val {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: rgba(245,242,235,0.5);
+  text-align: right;
+}
+.verdict {
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 1.5rem;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.04);
+}
+.verdict-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.5rem;
+}
+.verdict p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(245,242,235,0.85);
+  font-weight: 300;
+}
+
+/* ══════════════════════════════════════
+   SECTION WRAPPER
+══════════════════════════════════════ */
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 3rem;
+}
+.section-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2.5rem;
+  align-items: start;
+  margin-bottom: 4rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  padding-top: 0.25rem;
+}
+.section-title {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--strong);
+  margin-bottom: 0.75rem;
+}
+.section-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* ══════════════════════════════════════
+   VS TABLE
+══════════════════════════════════════ */
+.vs-wrap {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.vs-thead {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr 80px;
+  background: var(--ink);
+  color: var(--paper);
+}
+.vs-th {
+  padding: 1rem 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.vs-th:last-child { border-right: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.vs-row {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr 80px;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.vs-row:last-child { border-bottom: none; }
+.vs-row:hover { background: var(--cream); }
+.vs-td {
+  padding: 1rem 1.25rem;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  border-right: 1px solid var(--border);
+  color: var(--ink);
+}
+.vs-td:last-child { border-right: none; }
+.vs-td.cat {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.win-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+.win-c { background: rgba(192,82,42,0.12); color: var(--claude); border: 1px solid rgba(192,82,42,0.25); }
+.win-d { background: rgba(42,95,192,0.12); color: var(--deep); border: 1px solid rgba(42,95,192,0.25); }
+.win-t { background: rgba(192,138,32,0.12); color: var(--amber); border: 1px solid rgba(192,138,32,0.25); }
+.vs-td.winner-c { border-left: 3px solid var(--claude); }
+.vs-td.winner-d { border-left: 3px solid var(--deep); }
+
+/* ══════════════════════════════════════
+   CHART GRID
+══════════════════════════════════════ */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.chart-full { grid-column: 1 / -1; }
+.chart-card {
+  background: var(--paper);
+  padding: 2rem;
+}
+.chart-card h4 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: var(--strong);
+}
+.chart-card .chart-note {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+.chart-inner { position: relative; }
+
+/* ══════════════════════════════════════
+   LAYERS (Architecture Layers)
+══════════════════════════════════════ */
+.layers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.layer-card {
+  background: var(--paper);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.layer-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+}
+.layer-card.lyr-code::before { background: var(--claude); }
+.layer-card.lyr-infra::before { background: var(--deep); }
+.layer-card.lyr-model::before { background: var(--green); }
+.layer-card.lyr-ops::before { background: var(--amber); }
+
+.layer-num {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+.layer-title {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+  color: var(--strong);
+}
+.layer-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.tool-row {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--border);
+}
+.tool-row:first-of-type { border-top: 1px solid var(--border); }
+.tool-icon-sm {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  background: var(--cream);
+}
+.tool-info {}
+.tool-info strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--strong);
+  margin-bottom: 0.1rem;
+}
+.tool-info span {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════
+   STACK MATRIX TABLE
+══════════════════════════════════════ */
+.matrix-wrap {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.matrix-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.matrix-wrap th {
+  background: var(--ink);
+  color: rgba(245,242,235,0.6);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.25rem;
+  text-align: left;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  font-weight: 400;
+}
+.matrix-wrap th:last-child { border-right: none; }
+.matrix-wrap td {
+  padding: 0.9rem 1.25rem;
+  font-size: 0.83rem;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  vertical-align: middle;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.matrix-wrap td:last-child { border-right: none; }
+.matrix-wrap tr:last-child td { border-bottom: none; }
+.matrix-wrap tr:hover td { background: var(--cream); }
+.choice {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.ch-c { color: var(--claude); background: rgba(192,82,42,0.08); border: 1px solid rgba(192,82,42,0.2); }
+.ch-d { color: var(--deep); background: rgba(42,95,192,0.08); border: 1px solid rgba(42,95,192,0.2); }
+.ch-b { color: var(--green); background: rgba(26,140,90,0.08); border: 1px solid rgba(26,140,90,0.2); }
+.ch-g { color: var(--amber); background: rgba(192,138,32,0.08); border: 1px solid rgba(192,138,32,0.2); }
+
+/* ══════════════════════════════════════
+   USE CASES
+══════════════════════════════════════ */
+.cases-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.case-card {
+  background: var(--paper);
+  padding: 2.5rem;
+  position: relative;
+}
+.case-index {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+.case-title {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+  color: var(--strong);
+  letter-spacing: -0.01em;
+}
+.case-scenario {
+  font-size: 0.83rem;
+  line-height: 1.65;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+.case-stack {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+.ctool {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.case-why {
+  font-size: 0.82rem;
+  line-height: 1.65;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--ink);
+}
+.case-why strong { color: var(--green); font-weight: 500; }
+
+/* ══════════════════════════════════════
+   CAREER SECTION
+══════════════════════════════════════ */
+.career-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.career-card {
+  background: var(--paper);
+  padding: 2.5rem;
+}
+.career-card.dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+.career-icon {
+  font-size: 1.75rem;
+  margin-bottom: 1.25rem;
+  display: block;
+}
+.career-title {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+.career-card.dark .career-title { color: var(--paper); }
+.career-body {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.career-card.dark .career-body { color: rgba(245,242,235,0.55); }
+.career-list {
+  list-style: none;
+  margin-top: 1rem;
+}
+.career-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--ink);
+  display: flex; align-items: flex-start; gap: 0.5rem;
+}
+.career-card.dark .career-list li {
+  border-color: rgba(255,255,255,0.08);
+  color: rgba(245,242,235,0.7);
+}
+.career-list li::before {
+  content: '→';
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--claude);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.career-list li:last-child { border-bottom: none; }
+
+/* ══════════════════════════════════════
+   COST SECTION
+══════════════════════════════════════ */
+.cost-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.cost-card {
+  background: var(--paper);
+  padding: 2rem;
+}
+.cost-card.highlight { background: var(--ink); }
+.cost-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+.cost-card.highlight .cost-label { color: rgba(245,242,235,0.4); }
+.cost-amount {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+  color: var(--strong);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.cost-card.highlight .cost-amount { color: var(--paper); }
+.cost-sub {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+.cost-items { list-style: none; }
+.cost-items li {
+  display: flex; justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.cost-card.highlight .cost-items li { border-color: rgba(255,255,255,0.07); color: rgba(245,242,235,0.5); }
+.cost-items li:last-child { border-bottom: none; }
+.cost-items li span { color: var(--ink); font-weight: 400; }
+.cost-card.highlight .cost-items li span { color: rgba(245,242,235,0.8); }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  background: var(--ink);
+  color: rgba(245,242,235,0.4);
+  padding: 3rem;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  line-height: 2;
+}
+footer strong { color: rgba(245,242,235,0.7); }
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(16px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.hero-left > * { animation: fadeUp .6s ease both; }
+.hero-eyebrow { animation-delay: .15s; }
+.hero h1 { animation-delay: .25s; }
+.hero-desc { animation-delay: .35s; }
+.hero-pills { animation-delay: .45s; }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-right { display: none; }
+  .hero-left { padding: 5rem 2rem 4rem; }
+  .section { padding: 4rem 1.5rem; }
+  .chart-grid, .layers-grid, .cases-list, .career-grid, .cost-grid { grid-template-columns: 1fr; }
+  .vs-thead, .vs-row { grid-template-columns: 2fr 1fr 1fr; }
+  .vs-th:last-child, .vs-td:last-child { display: none; }
+  .section-header { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─────────────────── NAV ─────────────────── -->
+<nav>
+  <span class="nav-logo">Stack·26</span>
+  <a href="#vs">VS Análisis</a>
+  <a href="#charts">Gráficos</a>
+  <a href="#capas">Capas</a>
+  <a href="#matrix">Matriz</a>
+  <a href="#casos">Casos</a>
+  <a href="#costos">Costos</a>
+  <a href="#carrera">Carrera</a>
+</nav>
+
+<!-- ─────────────────── HERO ─────────────────── -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Proyección · Arquitecto TI · Ecosistema IA</div>
+    <h1>Architecture<br><em>Stack</em><br>2026</h1>
+    <p class="hero-desc">Estrategia de implementación y comparativa de herramientas para escalar de ejecutor de tareas a diseñador de ecosistemas inteligentes.</p>
+    <div class="hero-pills">
+      <span class="pill">LLMs</span>
+      <span class="pill">RAG</span>
+      <span class="pill">Agents</span>
+      <span class="pill">Orquestación</span>
+      <span class="pill">DevSecOps</span>
+      <span class="pill">InfoPet</span>
+      <span class="pill">MCP</span>
+      <span class="pill">Self-host</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="score-block">
+      <h3>// Claude — Sonnet 4</h3>
+      <div class="score-item">
+        <span class="score-label">Razonamiento</span>
+        <div class="score-track"><div class="score-fill" style="width:96%;background:#c0522a"></div></div>
+        <span class="score-val">4.8</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">Idiomas</span>
+        <div class="score-track"><div class="score-fill" style="width:94%;background:#c0522a"></div></div>
+        <span class="score-val">4.7</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">Safety</span>
+        <div class="score-track"><div class="score-fill" style="width:98%;background:#c0522a"></div></div>
+        <span class="score-val">4.9</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">API / Tools</span>
+        <div class="score-track"><div class="score-fill" style="width:90%;background:#c0522a"></div></div>
+        <span class="score-val">4.5</span>
+      </div>
+    </div>
+    <div class="score-block">
+      <h3>// DeepSeek — R1</h3>
+      <div class="score-item">
+        <span class="score-label">Coding</span>
+        <div class="score-track"><div class="score-fill" style="width:96%;background:#2a5fc0"></div></div>
+        <span class="score-val">4.8</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">STEM</span>
+        <div class="score-track"><div class="score-fill" style="width:94%;background:#2a5fc0"></div></div>
+        <span class="score-val">4.7</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">Costo</span>
+        <div class="score-track"><div class="score-fill" style="width:96%;background:#2a5fc0"></div></div>
+        <span class="score-val">4.8</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">Self-host</span>
+        <div class="score-track"><div class="score-fill" style="width:100%;background:#2a5fc0"></div></div>
+        <span class="score-val">5.0</span>
+      </div>
+    </div>
+    <div class="verdict">
+      <div class="verdict-label">// Veredicto del arquitecto</div>
+      <p>No es "Claude o DeepSeek". Es cuándo usar cada uno. El sistema gana cuando los combinas bien.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── SECCIÓN 1: VS ─────────────────── -->
+<hr class="divider">
+<section class="section" id="vs">
+  <div class="section-header">
+    <div class="section-num">01 /</div>
+    <div>
+      <h2 class="section-title">Claude vs DeepSeek — Análisis por dimensión</h2>
+      <p class="section-sub">Evaluación técnica por 10 ejes clave. La columna "Resultado" indica qué modelo gana en ese eje para decisiones de arquitectura.</p>
+    </div>
+  </div>
+
+  <div class="vs-wrap">
+    <div class="vs-thead">
+      <div class="vs-th">Dimensión</div>
+      <div class="vs-th"><span class="dot" style="background:#c0522a"></span>Claude</div>
+      <div class="vs-th"><span class="dot" style="background:#2a5fc0"></span>DeepSeek</div>
+      <div class="vs-th">Resultado</div>
+    </div>
+
+    <div class="vs-row">
+      <div class="vs-td cat">💡 Razonamiento general</div>
+      <div class="vs-td winner-c">Excepcional en chain-of-thought, lógica compleja y prompts largos.</div>
+      <div class="vs-td">Fuerte en STEM. Razonamiento matemático competitivo con R1.</div>
+      <div class="vs-td"><span class="win-badge win-c">CLAUDE</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">⚙️ Generación de código</div>
+      <div class="vs-td">Python sólido, code suggestions seguras. Buena integración MCP.</div>
+      <div class="vs-td winner-d">Top en HumanEval y MBPP. Maneja tareas complejas de código.</div>
+      <div class="vs-td"><span class="win-badge win-d">DEEPSEEK</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🌐 Idiomas occidentales</div>
+      <div class="vs-td winner-c">Excelente inglés, español, francés. Respuestas coherentes y matizadas.</div>
+      <div class="vs-td">Menos fluido que Claude en lenguas occidentales.</div>
+      <div class="vs-td"><span class="win-badge win-c">CLAUDE</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🀄 Chino y asiáticos</div>
+      <div class="vs-td">Soporte limitado para lenguas asiáticas.</div>
+      <div class="vs-td winner-d">Best-in-class para chino. Soporte multilingüe asiático fuerte.</div>
+      <div class="vs-td"><span class="win-badge win-d">DEEPSEEK</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🛡️ Safety & Governance</div>
+      <div class="vs-td winner-c">Líder de la industria. Filtros éticos, cumplimiento enterprise. Ethics-first design.</div>
+      <div class="vs-td">Filtros moderados. Flexible para research pero puede filtrar poco.</div>
+      <div class="vs-td"><span class="win-badge win-c">CLAUDE</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">⚡ Velocidad e inferencia</div>
+      <div class="vs-td">Performance consistente. No optimizado para ultra-baja latencia.</div>
+      <div class="vs-td winner-d">Batches masivos, deployment low-latency. Eficiencia excepcional.</div>
+      <div class="vs-td"><span class="win-badge win-d">DEEPSEEK</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🤝 API & Integración</div>
+      <div class="vs-td winner-c">API robusta, docs excelentes, soporte MCP, enterprise security options.</div>
+      <div class="vs-td">API menos confiable fuera de China. Open-weights para research.</div>
+      <div class="vs-td"><span class="win-badge win-c">CLAUDE</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">💰 Costo por token</div>
+      <div class="vs-td">Premium. Sonnet ~$3/MTok entrada, $15 salida.</div>
+      <div class="vs-td winner-d">Muy competitivo vía API. Gratis si haces self-host de open-weights.</div>
+      <div class="vs-td"><span class="win-badge win-d">DEEPSEEK</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🏗️ Self-hosting</div>
+      <div class="vs-td">No disponible. Solo API cerrada.</div>
+      <div class="vs-td winner-d">Open-weights completo. On-premise, Ollama, vLLM. Soberanía total.</div>
+      <div class="vs-td"><span class="win-badge win-d">DEEPSEEK</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">📝 Escritura creativa</div>
+      <div class="vs-td winner-c">Excepcional. Voz, tono, creatividad abierta, instrucciones de estilo.</div>
+      <div class="vs-td">Menos matizado en escritura open-ended no estructurada.</div>
+      <div class="vs-td"><span class="win-badge win-c">CLAUDE</span></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-td cat">🏆 Score global</div>
+      <div class="vs-td" style="font-family:var(--mono);font-size:0.9rem;color:var(--claude);font-weight:500;">26 / 30</div>
+      <div class="vs-td" style="font-family:var(--mono);font-size:0.9rem;color:var(--deep);font-weight:500;">26 / 30</div>
+      <div class="vs-td"><span class="win-badge win-t">EMPATE</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─────────────────── SECCIÓN 2: CHARTS ─────────────────── -->
+<section class="section" id="charts">
+  <div class="section-header">
+    <div class="section-num">02 /</div>
+    <div>
+      <h2 class="section-title">Análisis visual — Gráficos comparativos</h2>
+      <p class="section-sub">Visualizaciones interactivas de capacidades, costos y posicionamiento de las herramientas de tu stack.</p>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h4>Radar de capacidades</h4>
+      <p class="chart-note">Cobertura técnica por eje — escala 0 a 5</p>
+      <div class="chart-inner" style="height:320px">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h4>Puntuación por dimensión</h4>
+      <p class="chart-note">Barras comparativas Claude vs DeepSeek</p>
+      <div class="chart-inner" style="height:320px">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card chart-full">
+      <h4>Posicionamiento del stack — Costo vs Capacidad</h4>
+      <p class="chart-note">Cada burbuja = una herramienta. Tamaño = relevancia en tu stack actual</p>
+      <div class="chart-inner" style="height:280px">
+        <canvas id="bubbleChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h4>Estimación de costos mensuales</h4>
+      <p class="chart-note">SaaS tradicional vs Modern AI-optimized stack</p>
+      <div class="chart-inner" style="height:260px">
+        <canvas id="costChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h4>Distribución de casos de uso</h4>
+      <p class="chart-note">Dónde aplicar cada modelo en tu arquitectura</p>
+      <div class="chart-inner" style="height:260px">
+        <canvas id="donutChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─────────────────── SECCIÓN 3: CAPAS ─────────────────── -->
+<section class="section" id="capas">
+  <div class="section-header">
+    <div class="section-num">03 /</div>
+    <div>
+      <h2 class="section-title">Las 4 capas del Arquitecto IA</h2>
+      <p class="section-sub">Tu stack organizado por capas de impacto. De ejecutor de tareas a diseñador de ecosistemas.</p>
+    </div>
+  </div>
+
+  <div class="layers-grid">
+    <!-- CAPA 1 -->
+    <div class="layer-card lyr-code">
+      <div class="layer-num">CAPA 01 — INGENIERÍA</div>
+      <h3 class="layer-title">Coding & IDE Intelligence</h3>
+      <p class="layer-desc">No es solo escribir código: es gestionar el contexto de todo un repositorio. El cambio está en pasar de autocompletado a refactorización arquitectónica masiva.</p>
+      <div class="tool-row">
+        <div class="tool-icon-sm">🖥️</div>
+        <div class="tool-info">
+          <strong>Cursor / Windsurf</strong>
+          <span>IDE Repo-Aware. Refactorizaciones masivas con coherencia arquitectónica. Supera a Copilot en contexto de proyecto.</span>
+        </div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-icon-sm">🔶</div>
+        <div class="tool-info">
+          <strong>Claude + MCP</strong>
+          <span>Agente de código con herramientas. Tool-use confiable para pipelines de código automatizados.</span>
+        </div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-icon-sm">🌊</div>
+        <div class="tool-info">
+          <strong>DeepSeek-Coder</strong>
+          <span>Top HumanEval. Para generación masiva de código, análisis de PRs y tareas repetitivas de bajo costo.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAPA 2 -->
+    <div class="layer-card lyr-infra">
+      <div class="layer-num">CAPA 02 — INFRAESTRUCTURA</div>
+      <h3 class="layer-title">Backend, Data & Vector</h3>
+      <p class="layer-desc">Soberanía de datos y escalabilidad. El arquitecto moderno no elige entre SQL y vectores: los une en la misma plataforma.</p>
+      <div class="tool-row">
+        <div class="tool-icon-sm">🗄️</div>
+        <div class="tool-info">
+          <strong>Supabase (pgvector)</strong>
+          <span>PostgreSQL + vectores en una plataforma. RAG sin cambiar de DB. Auth, Realtime y Storage incluidos.</span>
+        </div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-icon-sm">🔄</div>
+        <div class="tool-info">
+          <strong>n8n (self-hosted)</strong>
+          <span>Orquestación técnica con lógica compleja. Self-hosteable para seguridad. 400+ integraciones. Supera Zapier para arquitectos.</span>
+        </div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-icon-sm">▲</div>
+        <div class="tool-info">
+          <strong>Vercel AI SDK</strong>
+          <span>Streaming de LLMs en Next.js con hooks. Tool calls, structured outputs y RSC listos para producción.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAPA 3 -->
+    <div class="layer-card lyr-model">
+      <div class="layer-num">CAPA 03 — MODELOS</div>
+      <h3 class="layer-title">LLM Selection & Routing</h3>
+      <p class="layer-desc">La arquitectura resiliente no depende de un solo modelo. El routing inteligente reduce costos y elimina vendor lock-in.</p>
+      <div class="tool-row">
+        <div class="tool-icon-sm">🔀</div>
+        <div class="tool-info">
+          <strong>OpenRouter</strong>
+          <span>Un endpoint, 200+ modelos. Enruta entre Claude, GPT, DeepSeek, Mistral. Fallbacks automáticos. Esencial para resiliencia.</span>
+        </div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-icon-sm">⚡</div>
+        <div class="tool-info">
+          <strong>Groq (LPU hardware)</strong>
+          <span>Inferencia ultra-rápida con Llama 3. &lt;100ms para chatbots en tiempo real. Costo muy bajo.</span>
+        </div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-icon-sm">🔗</div>
+        <div class="tool-info">
+          <strong>Cohere (Embed + Rerank)</strong>
+          <span>Embed v3 para RAG de alta precisión. Reranker para mejorar relevancia. Referencia en búsqueda semántica enterprise.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAPA 4 -->
+    <div class="layer-card lyr-ops">
+      <div class="layer-num">CAPA 04 — OPERACIONES</div>
+      <h3 class="layer-title">Observability & Delivery</h3>
+      <p class="layer-desc">Tu valor como arquitecto no es escribir el código (la IA lo hace). Es asegurar que el sistema sea mantenible, seguro y observable.</p>
+      <div class="tool-row">
+        <div class="tool-icon-sm">📊</div>
+        <div class="tool-info">
+          <strong>Airtable (AI-native)</strong>
+          <span>CMS visual con AI fields. Prototipa flujos IA con equipos no técnicos. Gestión de datasets y apps no-code.</span>
+        </div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-icon-sm">📧</div>
+        <div class="tool-info">
+          <strong>Resend</strong>
+          <span>API de email moderna. Notificaciones generadas por IA, reportes automáticos, alertas de sistemas. React Email compatible.</span>
+        </div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-icon-sm">🌪️</div>
+        <div class="tool-info">
+          <strong>Mistral AI (GDPR)</strong>
+          <span>Modelos europeos para clientes EU. Soberanía de datos GDPR. Mixtral MoE para multilingüe y compliance.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─────────────────── SECCIÓN 4: MATRIX ─────────────────── -->
+<section class="section" id="matrix">
+  <div class="section-header">
+    <div class="section-num">04 /</div>
+    <div>
+      <h2 class="section-title">Cuadro comparativo del stack completo</h2>
+      <p class="section-sub">Guía de decisión técnica para cada herramienta: tipo, costo, self-host, mejor escenario y cuándo usarla.</p>
+    </div>
+  </div>
+
+  <div class="matrix-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Herramienta</th>
+          <th>Tipo</th>
+          <th>Costo</th>
+          <th>Self-host</th>
+          <th>Fortaleza clave</th>
+          <th>Usar cuando…</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--claude)">Claude Sonnet</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">LLM API</span></td>
+          <td>$$$ Premium</td>
+          <td>❌</td>
+          <td>Razonamiento, tools, contexto 200K</td>
+          <td><span class="choice ch-c">Calidad crítica · Agentes · Safety</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--deep)">DeepSeek-Coder</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">LLM Open</span></td>
+          <td>$ Bajo / Free</td>
+          <td>✅ Sí</td>
+          <td>Código, STEM, costo, privacidad</td>
+          <td><span class="choice ch-d">Código masivo · Self-host · Datos propios</span></td>
+        </tr>
+        <tr>
+          <td><strong>OpenAI</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">LLM + Embed</span></td>
+          <td>$$ Medio</td>
+          <td>❌</td>
+          <td>Ecosistema, embeddings, fine-tuning</td>
+          <td><span class="choice ch-b">RAG · Fine-tuning · Visión</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--amber)">Groq</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">Inference LPU</span></td>
+          <td>$ Muy bajo</td>
+          <td>❌</td>
+          <td>Velocidad sub-100ms</td>
+          <td><span class="choice ch-g">Latencia crítica · Chatbots RT</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--violet)">OpenRouter</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">Gateway</span></td>
+          <td>$ markup mínimo</td>
+          <td>❌</td>
+          <td>Multi-LLM, fallbacks, routing</td>
+          <td><span class="choice ch-b">Resiliencia · Anti lock-in · Costo-opt</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--green)">Supabase</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">Backend + VectorDB</span></td>
+          <td>$ Free → Scale</td>
+          <td>✅ Sí</td>
+          <td>pgvector + PostgreSQL + Auth</td>
+          <td><span class="choice ch-b">RAG + datos relacionales juntos</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--coral)">n8n</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">Orchestrator</span></td>
+          <td>$ Self-hosted</td>
+          <td>✅ Sí</td>
+          <td>Workflows, agentes, 400+ integraciones</td>
+          <td><span class="choice ch-b">Automatización · Pipelines IA · Sin código</span></td>
+        </tr>
+        <tr>
+          <td><strong>Vercel AI SDK</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">Framework</span></td>
+          <td>Free (SDK)</td>
+          <td>✅ Sí</td>
+          <td>Streaming UI, tool calls, RSC</td>
+          <td><span class="choice ch-c">AI apps React/Next.js producción</span></td>
+        </tr>
+        <tr>
+          <td><strong>Cohere</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">Embed + Rerank</span></td>
+          <td>$$ Medio</td>
+          <td>✅ Sí</td>
+          <td>Búsqueda semántica enterprise</td>
+          <td><span class="choice ch-b">RAG alta precisión · Reranking</span></td>
+        </tr>
+        <tr>
+          <td><strong>Mistral</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">LLM EU</span></td>
+          <td>$$ Medio</td>
+          <td>✅ Sí</td>
+          <td>GDPR, soberanía EU, multilingüe</td>
+          <td><span class="choice ch-b">Clientes europeos · Compliance</span></td>
+        </tr>
+        <tr>
+          <td><strong>Airtable</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">No-code DB</span></td>
+          <td>$$ Medio</td>
+          <td>❌</td>
+          <td>AI fields, prototipado rápido</td>
+          <td><span class="choice ch-g">Equipos no-técnicos · Datasets · CMS</span></td>
+        </tr>
+        <tr>
+          <td><strong>Resend</strong></td>
+          <td><span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">Email API</span></td>
+          <td>$ Bajo</td>
+          <td>❌</td>
+          <td>Email transaccional moderno</td>
+          <td><span class="choice ch-g">Alertas IA · Reportes · Notificaciones</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─────────────────── SECCIÓN 5: COSTOS ─────────────────── -->
+<section class="section" id="costos">
+  <div class="section-header">
+    <div class="section-num">05 /</div>
+    <div>
+      <h2 class="section-title">Estimación de costos — ROI del stack</h2>
+      <p class="section-sub">Comparativa real: stack SaaS tradicional vs. stack AI-optimized 2026.</p>
+    </div>
+  </div>
+
+  <div class="cost-grid">
+    <div class="cost-card">
+      <div class="cost-label">Stack SaaS Tradicional / mes</div>
+      <div class="cost-amount">$450</div>
+      <div class="cost-sub">Servicios genéricos sin IA integrada</div>
+      <ul class="cost-items">
+        <li>Copilot<span>$19</span></li>
+        <li>Zapier (Pro)<span>$49</span></li>
+        <li>Firebase Blaze<span>~$80</span></li>
+        <li>Hosting VPS<span>$60</span></li>
+        <li>ChatGPT Plus<span>$20</span></li>
+        <li>Varios SaaS<span>~$222</span></li>
+      </ul>
+    </div>
+    <div class="cost-card highlight">
+      <div class="cost-label">Modern AI-Optimized Stack / mes</div>
+      <div class="cost-amount">$120</div>
+      <div class="cost-sub">Stack autoescalable con IA en el core</div>
+      <ul class="cost-items">
+        <li>Claude API (uso real)<span>$30</span></li>
+        <li>Supabase Pro<span>$25</span></li>
+        <li>n8n (self-hosted VPS)<span>$12</span></li>
+        <li>Vercel Pro<span>$20</span></li>
+        <li>Groq API<span>$8</span></li>
+        <li>Resend + otros<span>$25</span></li>
+      </ul>
+    </div>
+    <div class="cost-card">
+      <div class="cost-label">ROI estimado</div>
+      <div class="cost-amount" style="color:var(--green)">-73%</div>
+      <div class="cost-sub">Reducción de costo mensual</div>
+      <ul class="cost-items">
+        <li>Ahorro mensual<span style="color:var(--green)">$330</span></li>
+        <li>Ahorro anual<span style="color:var(--green)">$3,960</span></li>
+        <li>Vel. entrega código<span>+40%</span></li>
+        <li>Tareas automatizadas<span>+300%</span></li>
+        <li>Costo por inference<span>-60%</span></li>
+        <li>Vendor lock-in<span>Eliminado</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─────────────────── SECCIÓN 6: CASOS ─────────────────── -->
+<section class="section" id="casos">
+  <div class="section-header">
+    <div class="section-num">06 /</div>
+    <div>
+      <h2 class="section-title">Casos de uso — Arquitecturas reales</h2>
+      <p class="section-sub">Escenarios concretos con stack técnico y justificación. Incluye InfoPet y casos DevSecOps.</p>
+    </div>
+  </div>
+
+  <div class="cases-list">
+    <div class="case-card">
+      <div class="case-index">CASO 01 · INFOPET</div>
+      <h3 class="case-title">Asistente veterinario con RAG</h3>
+      <p class="case-scenario">InfoPet necesita que los usuarios pregunten sobre síntomas de mascotas y reciban respuestas fundamentadas en literatura veterinaria, con historial por mascota y recordatorios automáticos de vacunas.</p>
+      <div class="case-stack">
+        <span class="ctool">Claude Sonnet</span>
+        <span class="ctool">Supabase pgvector</span>
+        <span class="ctool">Cohere Embed v3</span>
+        <span class="ctool">Cohere Reranker</span>
+        <span class="ctool">Vercel AI SDK</span>
+        <span class="ctool">Resend</span>
+      </div>
+      <div class="case-why">
+        <strong>¿Por qué?</strong> Claude por safety en contexto médico/veterinario. Cohere Embed para indexar literatura. pgvector en Supabase para búsqueda vectorial junto al historial relacional de cada mascota. Resend para recordatorios automáticos de vacunas vía email.
+      </div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-index">CASO 02 · DEVSECOPS</div>
+      <h3 class="case-title">Code review automático en PR</h3>
+      <p class="case-scenario">En el pipeline CI/CD, cada Pull Request recibe análisis automático de seguridad, bugs potenciales y violaciones de arquitectura. Solo notifica si hay hallazgos críticos.</p>
+      <div class="case-stack">
+        <span class="ctool">DeepSeek-Coder</span>
+        <span class="ctool">n8n (GitHub trigger)</span>
+        <span class="ctool">Resend (alerta)</span>
+        <span class="ctool">Supabase (historial)</span>
+      </div>
+      <div class="case-why">
+        <strong>¿Por qué?</strong> DeepSeek-Coder supera en análisis de código a costo muy bajo. n8n escucha GitHub webhooks y orquesta el flujo. Resend envía la alerta solo si hay vulnerabilidades críticas. Supabase guarda el historial de revisiones.
+      </div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-index">CASO 03 · ENTERPRISE</div>
+      <h3 class="case-title">Asistente interno de base de conocimiento</h3>
+      <p class="case-scenario">Los empleados consultan documentos internos en lenguaje natural: POCs, políticas, reportes técnicos. Respuestas con fuentes citadas, sin alucinaciones.</p>
+      <div class="case-stack">
+        <span class="ctool">Claude Sonnet</span>
+        <span class="ctool">Cohere Embed + Rerank</span>
+        <span class="ctool">Supabase pgvector</span>
+        <span class="ctool">Next.js + Vercel AI SDK</span>
+      </div>
+      <div class="case-why">
+        <strong>¿Por qué?</strong> Claude para razonamiento fiel con contexto de 200K. Cohere Embed indexa documentos, Reranker mejora la relevancia. pgvector almacena. Vercel AI SDK habilita el streaming en la UI.
+      </div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-index">CASO 04 · REAL-TIME</div>
+      <h3 class="case-title">Chatbot de atención al cliente</h3>
+      <p class="case-scenario">Atención 24/7 con baja latencia, memoria de conversación, escalado a humano cuando necesario y fallback automático si el modelo principal cae.</p>
+      <div class="case-stack">
+        <span class="ctool">Groq (Llama 3)</span>
+        <span class="ctool">OpenRouter (fallback)</span>
+        <span class="ctool">Supabase (memoria)</span>
+        <span class="ctool">Vercel AI SDK</span>
+      </div>
+      <div class="case-why">
+        <strong>¿Por qué?</strong> Groq para respuestas sub-100ms. OpenRouter como fallback a Claude para casos complejos. Supabase para memoria persistente de conversación. Vercel Edge para escalar automáticamente.
+      </div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-index">CASO 05 · ANALYTICS</div>
+      <h3 class="case-title">Pipeline de reportes ejecutivos IA</h3>
+      <p class="case-scenario">Automatizar análisis semanal de métricas: extraer datos, generar insights narrativos y enviar reporte al equipo directivo todos los lunes a las 8am.</p>
+      <div class="case-stack">
+        <span class="ctool">n8n (scheduler)</span>
+        <span class="ctool">Claude Opus</span>
+        <span class="ctool">Airtable (datos)</span>
+        <span class="ctool">Resend (delivery)</span>
+      </div>
+      <div class="case-why">
+        <strong>¿Por qué?</strong> n8n orquesta el flujo con cron. Claude Opus para análisis narrativo de alta calidad. Airtable como fuente accesible al equipo. Resend entrega el reporte HTML formateado.
+      </div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-index">CASO 06 · COMPLIANCE EU</div>
+      <h3 class="case-title">Stack GDPR-compliant para Europa</h3>
+      <p class="case-scenario">Cliente europeo que necesita clasificar documentos sensibles y mantener todos los datos en Europa. Ningún dato puede salir de la UE.</p>
+      <div class="case-stack">
+        <span class="ctool">Mistral Large (EU)</span>
+        <span class="ctool">Supabase EU Region</span>
+        <span class="ctool">n8n Self-hosted</span>
+      </div>
+      <div class="case-why">
+        <strong>¿Por qué?</strong> Mistral con servidores 100% europeos. Supabase en región EU. n8n self-hosted en servidor europeo propio. Stack de soberanía total: ningún dato toca jurisdicción no-europea.
+      </div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-index">CASO 07 · AGENT</div>
+      <h3 class="case-title">Agente autónomo con herramientas</h3>
+      <p class="case-scenario">Agente que ejecuta investigaciones de mercado automatizadas: busca en la web, consulta APIs externas, analiza datos y produce un informe estructurado.</p>
+      <div class="case-stack">
+        <span class="ctool">Claude Sonnet + MCP</span>
+        <span class="ctool">n8n (tools)</span>
+        <span class="ctool">OpenRouter (fallback)</span>
+        <span class="ctool">Supabase (estado)</span>
+      </div>
+      <div class="case-why">
+        <strong>¿Por qué?</strong> Claude + MCP para tool_use confiable. n8n expone herramientas como webhooks. OpenRouter maneja fallbacks. Supabase persiste el estado del agente entre pasos del flujo multi-step.
+      </div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-index">CASO 08 · MODERNIZACIÓN</div>
+      <h3 class="case-title">Migración de monolito a microservicios</h3>
+      <p class="case-scenario">Indexar una base de código legacy completa y generar automáticamente la estructura de microservicios con boundaries bien definidos, tests y documentación.</p>
+      <div class="case-stack">
+        <span class="ctool">Cursor (repo indexing)</span>
+        <span class="ctool">Claude Sonnet</span>
+        <span class="ctool">DeepSeek-Coder</span>
+        <span class="ctool">n8n (pipeline)</span>
+      </div>
+      <div class="case-why">
+        <strong>¿Por qué?</strong> Cursor indexa todo el repositorio para coherencia arquitectónica. Claude para decisiones de diseño y boundaries. DeepSeek para generación de código masivo. n8n para automatizar el pipeline de migración por módulos.
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─────────────────── SECCIÓN 7: CARRERA ─────────────────── -->
+<section class="section" id="carrera">
+  <div class="section-header">
+    <div class="section-num">07 /</div>
+    <div>
+      <h2 class="section-title">Visión de carrera — El arquitecto IA 2026</h2>
+      <p class="section-sub">El cambio de paradigma: de ejecutor de tareas a diseñador de ecosistemas. El Vibe Coding tiene un riesgo real.</p>
+    </div>
+  </div>
+
+  <div class="career-grid">
+    <div class="career-card">
+      <span class="career-icon">⚠️</span>
+      <h3 class="career-title">El riesgo del Vibe Coding</h3>
+      <p class="career-body">Programar por intuición usando IA puede destruir la arquitectura a largo plazo. Sin estructura, el código generado acumula deuda técnica invisible que explota en producción.</p>
+      <ul class="career-list">
+        <li>Sin arquitectura definida, los módulos IA generados chocan entre sí</li>
+        <li>El contexto de la IA no persiste entre sesiones: pierde coherencia</li>
+        <li>Tests y documentación quedan fuera del loop sin disciplina</li>
+        <li>La seguridad queda como afterthought, no como diseño</li>
+      </ul>
+    </div>
+
+    <div class="career-card dark">
+      <span class="career-icon">🏗️</span>
+      <h3 class="career-title">Tu ventaja diferencial</h3>
+      <p class="career-body">Como arquitecto, tu valor no es escribir el código. Es diseñar los sistemas que la IA construirá. La IA amplifica, tú decides la estructura.</p>
+      <ul class="career-list">
+        <li>Definir boundaries de servicios antes de generar con IA</li>
+        <li>Establecer contratos de API que la IA respeta como contexto</li>
+        <li>Diseñar pipelines de observabilidad desde el día 1</li>
+        <li>Gobernar el stack: qué modelo va en qué capa y por qué</li>
+      </ul>
+    </div>
+
+    <div class="career-card">
+      <span class="career-icon">📈</span>
+      <h3 class="career-title">Stack de observabilidad a agregar</h3>
+      <p class="career-body">Lo que diferencia al arquitecto senior: hacer el sistema visible, medible y auditable.</p>
+      <ul class="career-list">
+        <li>Grafana + Loki para logs de LLM calls y latencias</li>
+        <li>LangSmith / Langfuse para trazas de agentes</li>
+        <li>PostHog para analytics de uso y feature flags</li>
+        <li>Mintlify para documentación automática del sistema</li>
+        <li>Sentry para error tracking en pipelines IA</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <strong>Architecture Stack 2026</strong> · Análisis para Arquitecto TI<br>
+  Claude vs DeepSeek · OpenAI · Groq · OpenRouter · Supabase · n8n · Vercel AI SDK · Mistral · Cohere · Airtable · Resend<br>
+  Generado el 23 de marzo de 2026 · InfoPet Project · smconnection
+</footer>
+
+<!-- ══════════════════════════════════════
+     SCRIPTS — Chart.js
+══════════════════════════════════════ -->
+<script>
+const C = '#c0522a', D = '#2a5fc0';
+const gridC = 'rgba(14,14,18,0.08)';
+const tickC = '#7a7165';
+
+Chart.defaults.color = tickC;
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.font.size = 10;
+
+// RADAR
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Razonamiento','Idiomas','Coding','Safety','Velocidad','API/Tools','Creatividad'],
+    datasets: [
+      {
+        label: 'Claude',
+        data: [4.8, 4.7, 4.2, 4.9, 3.6, 4.5, 4.8],
+        backgroundColor: 'rgba(192,82,42,0.1)',
+        borderColor: C,
+        pointBackgroundColor: C,
+        borderWidth: 1.5,
+        pointRadius: 3
+      },
+      {
+        label: 'DeepSeek',
+        data: [4.7, 4.0, 4.8, 3.0, 4.6, 3.4, 3.2],
+        backgroundColor: 'rgba(42,95,192,0.1)',
+        borderColor: D,
+        pointBackgroundColor: D,
+        borderWidth: 1.5,
+        pointRadius: 3
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { color: tickC, boxWidth: 10, padding: 16 } } },
+    scales: {
+      r: {
+        min: 0, max: 5,
+        ticks: { stepSize: 1, color: tickC, backdropColor: 'transparent', font: { size: 9 } },
+        grid: { color: gridC },
+        angleLines: { color: gridC },
+        pointLabels: { color: '#1a1814', font: { size: 10 } }
+      }
+    }
+  }
+});
+
+// BAR
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Razonamiento','Idiomas','Coding','Safety','Velocidad','API','Creatividad'],
+    datasets: [
+      { label: 'Claude', data: [4.8,4.7,4.2,4.9,3.6,4.5,4.8], backgroundColor: 'rgba(192,82,42,0.75)', borderRadius: 2 },
+      { label: 'DeepSeek', data: [4.7,4.0,4.8,3.0,4.6,3.4,3.2], backgroundColor: 'rgba(42,95,192,0.75)', borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { color: tickC, boxWidth: 10 } } },
+    scales: {
+      x: { grid: { color: gridC }, ticks: { color: tickC } },
+      y: { min: 0, max: 5, grid: { color: gridC }, ticks: { color: tickC } }
+    }
+  }
+});
+
+// BUBBLE
+new Chart(document.getElementById('bubbleChart'), {
+  type: 'bubble',
+  data: {
+    datasets: [
+      { label: 'Claude',      data: [{x:4.2,y:4.6,r:18}], backgroundColor: 'rgba(192,82,42,0.7)' },
+      { label: 'DeepSeek',    data: [{x:1.4,y:4.3,r:16}], backgroundColor: 'rgba(42,95,192,0.7)' },
+      { label: 'OpenAI',      data: [{x:3.2,y:4.5,r:20}], backgroundColor: 'rgba(16,185,129,0.65)' },
+      { label: 'Groq',        data: [{x:1.2,y:3.8,r:12}], backgroundColor: 'rgba(192,138,32,0.7)' },
+      { label: 'Mistral',     data: [{x:2.6,y:4.0,r:14}], backgroundColor: 'rgba(107,62,192,0.65)' },
+      { label: 'Cohere',      data: [{x:2.8,y:3.5,r:11}], backgroundColor: 'rgba(192,62,95,0.65)' },
+      { label: 'OpenRouter',  data: [{x:1.0,y:3.8,r:9}],  backgroundColor: 'rgba(26,140,90,0.65)' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: tickC, boxWidth: 10, padding: 14 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label} — Costo: ${ctx.parsed.x.toFixed(1)} | Cap: ${ctx.parsed.y.toFixed(1)}`
+        }
+      }
+    },
+    scales: {
+      x: { title: { display:true, text:'Costo relativo (1=bajo, 5=alto)', color:tickC }, min:0, max:5.5, grid:{color:gridC}, ticks:{color:tickC} },
+      y: { title: { display:true, text:'Capacidad (0–5)', color:tickC }, min:0, max:5.5, grid:{color:gridC}, ticks:{color:tickC} }
+    }
+  }
+});
+
+// COST BAR
+new Chart(document.getElementById('costChart'), {
+  type: 'bar',
+  data: {
+    labels: ['SaaS Tradicional', 'AI-Optimized Stack'],
+    datasets: [{
+      label: 'USD / mes',
+      data: [450, 120],
+      backgroundColor: ['rgba(14,14,18,0.15)', 'rgba(192,82,42,0.75)'],
+      borderRadius: 3
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` $${ctx.raw} USD/mes` } }
+    },
+    scales: {
+      x: { grid: { display:false }, ticks: { color: tickC } },
+      y: { grid: { color: gridC }, ticks: { color: tickC, callback: v => '$'+v } }
+    }
+  }
+});
+
+// DONUT
+new Chart(document.getElementById('donutChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Claude: Agentes', 'DeepSeek: Código', 'Groq: Real-time', 'Mistral: EU', 'OpenAI: Embed/Fine-tune', 'OpenRouter: Gateway'],
+    datasets: [{
+      data: [30, 25, 15, 10, 12, 8],
+      backgroundColor: [
+        'rgba(192,82,42,0.8)',
+        'rgba(42,95,192,0.8)',
+        'rgba(192,138,32,0.8)',
+        'rgba(107,62,192,0.8)',
+        'rgba(16,185,129,0.8)',
+        'rgba(192,62,95,0.8)'
+      ],
+      borderColor: '#f5f2eb',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position:'right', labels: { color: tickC, boxWidth: 10, padding: 10, font: { size: 10 } } }
+    },
+    cutout: '60%'
+  }
+});
+</script>
+</body>
+</html>

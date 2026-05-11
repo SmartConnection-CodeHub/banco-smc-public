@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>RFP · SMC OS</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.6;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%);pointer-events:none;z-index:0}.container{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:20px}.crumb a{color:#7dd3fc;text-decoration:none}
+.badge{display:inline-block;font-size:10px;padding:4px 10px;background:rgba(0,229,176,.12);border:1px solid rgba(0,229,176,.3);border-radius:30px;color:#00e5b0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px}
+.lead{font-size:15px;color:#cbd5e1;margin-bottom:24px}
+h2{font-size:20px;font-weight:700;color:#f1f5f9;margin:36px 0 14px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px;display:flex;align-items:center;gap:10px}
+h2 .num{font-size:11px;color:#00e5b0;font-family:'JetBrains Mono',monospace;background:rgba(0,229,176,.08);padding:3px 8px;border-radius:4px}
+p{color:#cbd5e1;margin-bottom:12px;font-size:14px}
+.section{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;margin-bottom:14px}
+.callout{background:linear-gradient(135deg,rgba(0,229,176,.06),rgba(0,180,216,.06));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin:14px 0;font-size:13.5px}.callout b{color:#00e5b0}
+ul{padding-left:0;list-style:none}ul li{padding:6px 0 6px 24px;position:relative;color:#cbd5e1;font-size:13.5px}ul li::before{content:"›";position:absolute;left:8px;color:#00e5b0;font-weight:700}
+table{width:100%;border-collapse:collapse;margin:14px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:12.5px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;padding:9px 12px;text-align:left;font-size:11px;text-transform:uppercase}
+td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1}
+.meta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:24px}
+.meta-card{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px}
+.meta-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.meta-val{font-size:13px;color:#f1f5f9;font-weight:700}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../index.html">← SMC OS</a> / Docs / RFP</div>
+<span class="badge">RFP · v17 · sistema operativo SMC</span>
+<h1>📋 RFP · SMC OS · sistema operativo Smart Connection</h1>
+<p class="lead">Ordenar al equipo SMC sin contratar 23 personas · armar 23 agentes Claude Code especializados con loops formalizados e identidad visual · SO que escala con Sebas y mantiene contexto entre sesiones</p>
+<div class="meta-row">
+<div class="meta-card"><div class="meta-lbl">Cliente</div><div class="meta-val">Guillermo González (SMC)</div></div>
+<div class="meta-card"><div class="meta-lbl">Versión</div><div class="meta-val">v17 · 23 agentes · 7 loops</div></div>
+<div class="meta-card"><div class="meta-lbl">Estado</div><div class="meta-val">Live · activo</div></div>
+<div class="meta-card"><div class="meta-lbl">Owner</div><div class="meta-val">🧠 Cerebro orquesta</div></div>
+</div>
+
+<h2><span class="num">01</span>🎯 Contexto</h2>
+<div class="section">
+<p>Guillermo opera Smart Connection en formato consultora boutique · clientes B2B (Cencosud · Parque · MeLi) + proyectos propios (Kanki · InfoPet · Marketplace · VOY) + canales business-development. Tradicionalmente esto requiere 20+ personas (PM · BA · Architect · devs · QA · marketing · contabilidad · etc).</p>
+<div class="callout"><b>💡 Insight:</b> En vez de contratar 23 personas (costo ~$30M CLP/mes salario + cargas) · armamos 23 agentes Claude Code especializados que actúan como equipo virtual. Costo: plan Claude Max ~$200/mes. Diferencia: $30M vs $200 = 150x menos costo · mismo output con asistencia humana selectiva.</div>
+</div>
+
+<h2><span class="num">02</span>🔥 Problema</h2>
+<div class="section">
+<ul>
+<li><b>Context loss</b> · cada sesión Claude empezaba desde cero · re-explicar todo</li>
+<li><b>Inconsistencia</b> · sin agentes especializados · respuestas generales sin profundidad SMC</li>
+<li><b>Sin orquestación</b> · usuario debía decidir manualmente qué agente invocar</li>
+<li><b>Sin gobernanza</b> · sin reglas técnicas estables · cada sesión re-inventaba</li>
+<li><b>No escala con Sebas</b> · primer empleado necesita onboarding automático</li>
+</ul>
+</div>
+
+<h2><span class="num">03</span>💡 Hipótesis</h2>
+<div class="section">
+<div class="callout"><b>Hipótesis:</b> 23 agentes especializados con loops formalizados (Orchestrator · Conversacional · ReAct · Pipeline · Reflexion · Background · Híbrido) + memoria persistente + Cerebro orquestador = equipo virtual escalable a costo fijo bajo.</div>
+</div>
+
+<h2><span class="num">04</span>🛠️ Solución</h2>
+<div class="section">
+<h3>Arquitectura</h3>
+<ul>
+<li><b>23 agentes</b> · .md files en <code>~/.claude/agents/</code> · cada uno con identidad · rol · skills</li>
+<li><b>7 loops formalizados</b> · Orchestrator (PM) · Conversacional (BA · Architect) · ReAct (Hoku · Backend · Frontend) · Pipeline (User-QAS · BD · etc) · Reflexion (Cerebro) · Background (Security centinela) · Híbrido</li>
+<li><b>3 modelos Claude</b> · Opus 4.7 (7 agentes complejos) · Sonnet 4.6 (9 agentes) · Haiku (1 agente DevOps)</li>
+<li><b>Memorias persistentes</b> · <code>~/.claude/projects/.../memory/</code> · ~80 archivos · MEMORY.md como index</li>
+<li><b>Skills auto-load</b> · triggers por keywords/proyecto/agente · contextual</li>
+<li><b>Hooks</b> · SessionStart · PreToolUse guardrails · Stop notification · session_end_report</li>
+<li><b>17 connectors</b> · LLMs (Claude · Groq · Gemini · etc) + MCPs (Context7 · GitHub · Firecrawl · etc)</li>
+</ul>
+
+<h3>6 departamentos (organigrama)</h3>
+<table>
+<tbody>
+<tr><td>⚡ Strategy</td><td>PM · BA · Architect · RADAR · Cerebro · Compliance</td></tr>
+<tr><td>🛠️ Operations</td><td>Backend · Frontend · Hoku · User-QAS · Pipeline · Infra-Ops · Innovation-Lab</td></tr>
+<tr><td>💰 Sales</td><td>Business-Dev · Procurement · Supply-Chain</td></tr>
+<tr><td>📢 Marketing</td><td>Portavoz · Video&Img</td></tr>
+<tr><td>🧮 Finance</td><td>Controller · DATA-BW · Security</td></tr>
+<tr><td>👥 People</td><td>HR · AI/ML</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">05</span>📊 KPIs</h2>
+<div class="section">
+<table>
+<thead><tr><th>Métrica</th><th>Target</th><th>Real</th></tr></thead>
+<tbody>
+<tr><td>Costo mensual</td><td>&lt;$300 USD</td><td>~$200 (Plan Max)</td></tr>
+<tr><td># agentes operativos</td><td>20+</td><td>23 ✅</td></tr>
+<tr><td># loops formalizados</td><td>7</td><td>7 ✅</td></tr>
+<tr><td>Context persistencia entre sesiones</td><td>100%</td><td>100% (~80 memorias)</td></tr>
+<tr><td>Onboarding Sebas</td><td>1 día</td><td>Pendiente (falta GitHub user)</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">06</span>⚠️ Riesgos</h2>
+<div class="section">
+<table>
+<tbody>
+<tr><td>Cambios pricing Anthropic</td><td>Medio</td><td>Plan Max anclado · fallback OpenRouter</td></tr>
+<tr><td>Guards CLI bloquean Sentinela</td><td>Alto</td><td>4 guards documentados · patrones aprendidos</td></tr>
+<tr><td>Memoria crece sin orden</td><td>Medio</td><td>MEMORY.md index actualizado · auditoría trimestral</td></tr>
+<tr><td>Sebas no aprende sistema</td><td>Alto</td><td>install.ps1 + onboarding doc + Task Scheduler 3x día</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">07</span>🛣️ Roadmap</h2>
+<div class="section">
+<h3>Fase 1 · v1-v10 · base agentes (✅)</h3>
+<ul><li>Definición 10 agentes core · arquitectura base · CLAUDE.md inicial</li></ul>
+<h3>Fase 2 · v11-v16 · loops + memorias (✅)</h3>
+<ul><li>Formalización loops · sistema memorias persistentes · MEMORY.md index</li></ul>
+<h3>Fase 3 · v17 actual · 23 agentes + Sentinela (✅ LIVE)</h3>
+<ul><li>Cerebro orquestador · 23 agentes especializados · skills auto-load · sentinela mode</li></ul>
+<h3>Fase 4 · v18 (pendiente)</h3>
+<ul><li>Onboarding Sebas · multi-usuario · sync GitHub automático</li></ul>
+</div>
+
+<footer>📋 RFP SMC OS · v17 · 2026-05-11 · banco SMC<br>
+<a href="../index.html" style="color:#7dd3fc;text-decoration:none">← volver al banco SMC OS</a></footer>
+</div></body></html>

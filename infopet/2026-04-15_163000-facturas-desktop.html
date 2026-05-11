@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoPet — Facturas (Desktop)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #0C1210;
+    color: #f1f5f9;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: rgba(255,255,255,0.03);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  .sidebar-logo {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-logo-icon {
+    width: 32px; height: 32px;
+    background: #2D6A4F;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .sidebar-logo-text { font-size: 14px; font-weight: 700; color: #fff; }
+  .sidebar-logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+  .sidebar-nav { padding: 12px 10px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+  .nav-item.active {
+    background: rgba(45,106,79,0.2);
+    color: #34C759;
+    font-weight: 600;
+  }
+  .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+  /* ── Main ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .topbar {
+    height: 52px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+  .topbar-title { font-size: 15px; font-weight: 600; color: #fff; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: #2D6A4F;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+
+  .content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+
+  /* ── Page header ── */
+  .page-header { margin-bottom: 18px; }
+  .page-header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+
+  /* ── Filter pills ── */
+  .filter-pills { display: flex; gap: 6px; margin-bottom: 24px; }
+  .pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.5);
+    transition: all 0.15s;
+  }
+  .pill.active {
+    background: rgba(45,106,79,0.25);
+    border-color: rgba(45,106,79,0.5);
+    color: #34C759;
+  }
+
+  /* ── Glass card ── */
+  .glass {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+  }
+
+  /* ── Upload zone ── */
+  .upload-zone { padding: 24px; }
+  .upload-hint { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 16px; }
+  .upload-btn-primary {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: #2D6A4F;
+    border: 1px solid rgba(94,189,138,0.3);
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  .upload-btn-primary .icon { font-size: 28px; }
+  .upload-btn-primary .label { font-size: 13px; font-weight: 700; color: #fff; }
+  .upload-btn-primary .sublabel { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .divider { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+  .divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+  .divider-text { font-size: 10px; color: rgba(255,255,255,0.25); font-weight: 600; }
+  .upload-btn-secondary {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+  }
+  .upload-btn-secondary .icon { font-size: 22px; }
+  .upload-btn-secondary .label { font-size: 13px; color: rgba(255,255,255,0.65); }
+  .upload-btn-secondary .sublabel { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+  .chevron { margin-left: auto; color: rgba(255,255,255,0.25); font-size: 16px; }
+
+  /* ── Modal overlay ── */
+  .overlay {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal {
+    background: #111A15;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    width: 100%; max-width: 1000px;
+    max-height: 88vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+  }
+  .modal-title { font-size: 14px; font-weight: 600; color: #fff; }
+  .modal-subtitle { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+  .modal-close {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: rgba(255,255,255,0.5);
+    cursor: pointer;
+  }
+
+  /* ── Table ── */
+  .table-wrap { overflow: auto; flex: 1; padding: 16px 22px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.4);
+    padding-bottom: 10px;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+  tbody tr { border-top: 1px solid rgba(255,255,255,0.05); }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  tbody tr.dup-row { background: rgba(239,68,68,0.04); }
+  td { padding: 6px 10px 6px 0; vertical-align: middle; }
+
+  .cell-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid transparent;
+    border-radius: 7px;
+    padding: 5px 8px;
+    color: #fff;
+    font-size: 12px;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .cell-input:focus { border-color: rgba(45,106,79,0.6); background: rgba(255,255,255,0.08); }
+
+  .sku-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 8px;
+    font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
+  }
+  .sku-badge.ok { color: #fff; }
+  .sku-badge.dup { color: #f87171; }
+  .sku-badge.empty { color: rgba(255,255,255,0.2); }
+
+  .maestro-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px; font-weight: 500;
+  }
+  .maestro-badge.match {
+    background: rgba(52,199,89,0.12);
+    border: 1px solid rgba(52,199,89,0.25);
+    color: #34C759;
+  }
+  .maestro-badge.no-match {
+    background: rgba(255,255,255,0.04);
+    border: 1px dashed rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* ── Acciones (los 3 botones) ── */
+  .acciones-cell { text-align: center; }
+  .acciones-group { display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+  /* Eliminar */
+  .btn-eliminar {
+    padding: 5px 7px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: #f87171;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .btn-eliminar:hover { background: rgba(248,113,113,0.12); color: #fca5a5; }
+
+  /* Guardar */
+  .btn-guardar {
+    padding: 5px 7px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: #60a5fa;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-guardar:hover { background: rgba(96,165,250,0.12); color: #93c5fd; }
+  .btn-guardar.saved { color: #34C759; background: rgba(52,199,89,0.1); }
+
+  /* Refrescar/Verificar */
+  .btn-refrescar {
+    padding: 5px 7px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: #fbbf24;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-refrescar:hover { background: rgba(251,191,36,0.12); color: #fcd34d; }
+  .btn-refrescar.ok { color: #34C759; background: rgba(52,199,89,0.1); }
+  .btn-refrescar.fail { color: #f87171; background: rgba(248,113,113,0.1); }
+
+  .sku-hint { font-size: 9px; color: rgba(255,255,255,0.25); text-align: center; margin-top: 2px; }
+
+  /* Drive link — abre Drive en esa fila */
+  .btn-drive-link {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 3px 7px; border-radius: 5px;
+    font-size: 10px; font-weight: 600;
+    background: rgba(66,133,244,0.12);
+    border: 1px solid rgba(66,133,244,0.25);
+    color: #7ab4f5;
+    cursor: pointer; text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .btn-drive-link:hover { background: rgba(66,133,244,0.2); color: #93c5fd; }
+
+  /* Badge SKU generado */
+  .sku-nuevo {
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .sku-nuevo-badge {
+    padding: 2px 7px; border-radius: 5px;
+    background: rgba(52,199,89,0.12);
+    border: 1px solid rgba(52,199,89,0.25);
+    color: #34C759; font-size: 11px; font-weight: 700;
+  }
+  .sku-nuevo-label { font-size: 9px; color: rgba(52,199,89,0.7); }
+
+  /* Tooltip */
+  .has-tip { position: relative; }
+  .has-tip:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: 110%; left: 50%; transform: translateX(-50%);
+    background: #1e2d26;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 10px; white-space: nowrap; color: rgba(255,255,255,0.8);
+    pointer-events: none; z-index: 99;
+  }
+
+  /* ── Alerta duplicado ── */
+  .dup-alert {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: 11px; color: #f87171;
+  }
+
+  /* ── Modal footer ── */
+  .modal-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 22px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+  }
+  .footer-left { display: flex; align-items: center; gap: 12px; }
+  .footer-count { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .footer-warn {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: #fbbf24; cursor: pointer;
+  }
+  .footer-right { display: flex; align-items: center; gap: 10px; }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 9px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; border: none;
+    transition: all 0.15s;
+  }
+  .btn-cancel {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+  }
+  .btn-cancel:hover { background: rgba(255,255,255,0.12); }
+  .btn-confirm {
+    background: #2D6A4F;
+    color: #fff;
+  }
+  .btn-confirm:hover { background: #3a8a65; }
+
+  /* ── Leyenda botones ── */
+  .legend {
+    display: flex; gap: 16px;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    font-size: 11px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.5); }
+  .legend-btn {
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">🐾</div>
+    <div>
+      <div class="sidebar-logo-text">InfoPet</div>
+      <div class="sidebar-logo-sub">Panel de gestión</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item"><span class="nav-icon">📦</span> Productos</div>
+    <div class="nav-item"><span class="nav-icon">📋</span> Stock</div>
+    <div class="nav-item active"><span class="nav-icon">🧾</span> Facturas</div>
+    <div class="nav-item"><span class="nav-icon">🛒</span> Órdenes</div>
+    <div class="nav-item"><span class="nav-icon">🤖</span> Tsukai IA</div>
+    <div class="nav-item"><span class="nav-icon">⚙️</span> Configuración</div>
+  </nav>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <span class="topbar-title">Facturas</span>
+    <div class="topbar-right">
+      <div class="avatar">IP</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="page-header">
+      <h1>Facturas</h1>
+    </div>
+
+    <!-- Tabs -->
+    <div class="filter-pills">
+      <div class="pill active">Física (OCR)</div>
+      <div class="pill">Digital (Bsale)</div>
+    </div>
+
+    <!-- Upload card -->
+    <div class="glass upload-zone" style="max-width: 520px;">
+      <p class="upload-hint">La IA extrae los datos automáticamente. Elige cómo subir la factura:</p>
+
+      <div class="upload-btn-primary">
+        <span class="icon">📷</span>
+        <div>
+          <div class="label">Tomar foto ahora</div>
+          <div class="sublabel">Abre la cámara en tiempo real</div>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-text">o</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="upload-btn-secondary">
+        <span class="icon">🖼️</span>
+        <div>
+          <div class="label">Elegir de galería</div>
+          <div class="sublabel">Foto ya tomada</div>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MODAL: Revisar productos ─────────────────────────────────── -->
+<div class="overlay">
+  <div class="modal">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Revisar productos antes de exportar</div>
+        <div class="modal-subtitle">Edita cualquier celda para corregir errores del OCR</div>
+      </div>
+      <div class="modal-close">×</div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrap">
+
+      <!-- Alerta duplicado -->
+      <div class="dup-alert">
+        <span>⚠️</span>
+        <span>SKU duplicado (144) — dos productos con el mismo SKU es un error de match</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Producto (factura)</th>
+            <th style="width:80px">SKU</th>
+            <th>En Maestro</th>
+            <th style="width:130px">Variante</th>
+            <th style="width:70px">Cant.</th>
+            <th style="width:100px">P. Unit.</th>
+            <th style="width:140px; text-align:center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- ─── CASO 1: NUEVO sin SKU → pendiente guardar ─────────────────── -->
+          <tr>
+            <td>
+              <div style="font-size:9px;color:rgba(251,191,36,0.8);font-weight:600;margin-bottom:2px;">① NUEVO — sin SKU</div>
+              <input class="cell-input" value="BELCANDO FINEST LIGHT 4KG">
+            </td>
+            <td><input class="cell-input" placeholder="—" style="width:70px;font-weight:600;font-variant-numeric:tabular-nums;" title="Vacío — sistema generará SKU al guardar"></td>
+            <td><input class="cell-input" placeholder="sin match — escribe el nombre" style="border-style:dashed;border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.35);"></td>
+            <td><input class="cell-input" value="4 KG"></td>
+            <td><input class="cell-input" type="number" value="2" style="width:60px"></td>
+            <td><input class="cell-input" type="number" value="38500" style="width:90px"></td>
+            <td class="acciones-cell">
+              <div class="acciones-group">
+                <button class="btn-eliminar has-tip" data-tip="Eliminar fila">✕</button>
+                <button class="btn-guardar has-tip" data-tip="Guardar nuevo → sistema genera SKU automático">💾</button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ─── CASO 2: NUEVO sin SKU → DESPUÉS de guardar ───────────────── -->
+          <tr style="background:rgba(52,199,89,0.03);">
+            <td>
+              <div style="font-size:9px;color:rgba(52,199,89,0.8);font-weight:600;margin-bottom:2px;">② NUEVO → guardado ✓ SKU generado</div>
+              <input class="cell-input" value="BELCANDO FINEST LIGHT 12.5KG">
+            </td>
+            <td>
+              <!-- SKU generado automáticamente, ahora editable -->
+              <div class="sku-nuevo">
+                <input class="cell-input" value="315" style="width:70px;font-weight:700;font-variant-numeric:tabular-nums;border-color:rgba(52,199,89,0.4);color:#34C759;">
+              </div>
+              <div class="sku-nuevo-label" style="margin-top:3px;">✦ generado</div>
+            </td>
+            <td><span class="maestro-badge match">BELCANDO FINEST LIGHT 12.5KG</span></td>
+            <td><input class="cell-input" value="12.5 KG"></td>
+            <td><input class="cell-input" type="number" value="1" style="width:60px"></td>
+            <td><input class="cell-input" type="number" value="54900" style="width:90px"></td>
+            <td class="acciones-cell">
+              <div class="acciones-group">
+                <button class="btn-eliminar has-tip" data-tip="Eliminar fila">✕</button>
+                <button class="btn-guardar saved has-tip" data-tip="Guardado ✓">✓</button>
+                <!-- aparece link al Drive en esa fila -->
+                <a class="btn-drive-link has-tip" data-tip="Abrir en Drive — fila 315" href="#">
+                  ↗ Drive
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ─── CASO 3: EXISTE con SKU → pendiente guardar ───────────────── -->
+          <tr>
+            <td>
+              <div style="font-size:9px;color:rgba(96,165,250,0.8);font-weight:600;margin-bottom:2px;">③ EXISTE — Javier editó nombre/precio</div>
+              <input class="cell-input" value="HILLS SCIENCE DIET ADULTO POLLO 15KG">
+            </td>
+            <td><input class="cell-input" value="281" style="width:70px;font-weight:600;font-variant-numeric:tabular-nums;"></td>
+            <td><input class="cell-input" value="HILLS SD ADULTO POLLO 15KG" style="border-color:rgba(45,106,79,0.4);color:#34C759;"></td>
+            <td><input class="cell-input" value="15 KG"></td>
+            <td><input class="cell-input" type="number" value="4" style="width:60px"></td>
+            <td><input class="cell-input" type="number" value="54900" style="width:90px;border-color:rgba(251,191,36,0.4);color:#fbbf24;" title="Precio editado"></td>
+            <td class="acciones-cell">
+              <div class="acciones-group">
+                <button class="btn-eliminar has-tip" data-tip="Eliminar fila">✕</button>
+                <button class="btn-guardar has-tip" data-tip="Sobreescribir fila en Drive">💾</button>
+                <button class="btn-refrescar has-tip" data-tip="Verificar · Refrescar · Abrir en Drive">↻</button>
+              </div>
+              <div class="sku-hint">SKU 281</div>
+            </td>
+          </tr>
+
+          <!-- ─── CASO 4: EXISTE → DESPUÉS de guardar ──────────────────────── -->
+          <tr style="background:rgba(52,199,89,0.03);">
+            <td>
+              <div style="font-size:9px;color:rgba(52,199,89,0.8);font-weight:600;margin-bottom:2px;">④ EXISTE → actualizado ✓</div>
+              <input class="cell-input" value="CREDELIO 225 MG PERRO 5,5-11 KG X 3">
+            </td>
+            <td><input class="cell-input" value="144" style="width:70px;font-weight:600;font-variant-numeric:tabular-nums;"></td>
+            <td><span class="maestro-badge match">CREDELIO 225MG 5.5-11KG X3</span></td>
+            <td><input class="cell-input" value="X 3 COMP MAST"></td>
+            <td><input class="cell-input" type="number" value="12" style="width:60px"></td>
+            <td><input class="cell-input" type="number" value="14900" style="width:90px"></td>
+            <td class="acciones-cell">
+              <div class="acciones-group">
+                <button class="btn-eliminar has-tip" data-tip="Eliminar fila">✕</button>
+                <button class="btn-guardar saved has-tip" data-tip="Actualizado en Drive ✓">✓</button>
+                <!-- link al Drive en esa fila exacta -->
+                <a class="btn-drive-link has-tip" data-tip="Abrir en Drive — fila 144" href="#">
+                  ↗ Drive
+                </a>
+              </div>
+              <div class="sku-hint">SKU 144</div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <!-- Leyenda -->
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-btn btn-eliminar" style="color:#f87171; background:rgba(248,113,113,0.08); padding:3px 7px; border-radius:5px; font-weight:700;">✕</span>
+          Eliminar esta fila de la tabla
+        </div>
+        <div class="legend-item">
+          <span class="legend-btn" style="color:#60a5fa; background:rgba(96,165,250,0.1); padding:3px 7px; border-radius:5px;">💾</span>
+          Guardar / actualizar en la Carga Maestra (Drive)
+        </div>
+        <div class="legend-item">
+          <span class="legend-btn" style="color:#fbbf24; background:rgba(251,191,36,0.1); padding:3px 7px; border-radius:5px;">↻</span>
+          Verificar en Drive · refresca fila · abre Drive en esa fila
+        </div>
+        <div class="legend-item" style="color: rgba(255,255,255,0.3); font-size:10px;">
+          El botón ↻ solo aparece si la fila ya tiene SKU asignado
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <div class="footer-left">
+        <span class="footer-count">5 productos</span>
+      </div>
+      <div class="footer-right">
+        <button class="btn btn-cancel">Cancelar</button>
+        <button class="btn btn-confirm">Confirmar y descargar Excel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

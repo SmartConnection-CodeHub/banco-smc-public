@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holding · Smart Connection Group · Reunión Gladys 2026-05-07</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060912;
+  --bg-soft: #0a0d14;
+  --bg-card: rgba(15,22,35,0.7);
+  --bg-accent: rgba(0,229,176,0.08);
+  --ink: #f1f5f9;
+  --ink-soft: #94a3b8;
+  --ink-muted: #64748b;
+  --border: rgba(255,255,255,0.06);
+  --border-strong: rgba(255,255,255,0.12);
+  --accent: #00e5b0;
+  --accent-soft: #5eead4;
+  --accent-bg: rgba(0,229,176,0.12);
+  --cyan: #00b4d8;
+  --cyan-bg: rgba(0,180,216,0.12);
+  --green: #10b981;
+  --green-bg: rgba(16,185,129,0.15);
+  --yellow: #f59e0b;
+  --yellow-bg: rgba(245,158,11,0.15);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.15);
+  --gray-bg: rgba(255,255,255,0.04);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow-md: 0 4px 24px rgba(0,229,176,.08);
+  --shadow-lg: 0 20px 60px rgba(0,229,176,.15);
+}
+body{background:var(--bg)}
+.kpi,.entity-card,.donut-card,.diagram-holder,.flow-card,.iva-step,.simulator,.timeline-stage{
+  background:var(--bg-card) !important;backdrop-filter:blur(20px);
+  border:1px solid var(--border) !important;color:var(--ink);
+}
+.entity-card:hover{border-color:var(--accent) !important;box-shadow:0 0 30px rgba(0,229,176,.2) !important}
+table{background:var(--bg-card) !important;color:var(--ink)}
+table th{background:rgba(0,229,176,0.08) !important;color:var(--accent) !important;border-bottom:1px solid var(--border)}
+table td{border-bottom:1px solid var(--border) !important;color:var(--ink-soft)}
+table tr:hover{background:rgba(255,255,255,0.02) !important}
+.table-wrap{border:1px solid var(--border) !important;background:transparent}
+.matrix th{background:#0f1520 !important;color:var(--accent) !important}
+.matrix td{background:transparent !important;color:var(--ink-soft)}
+.matrix .row-label{background:rgba(0,229,176,0.06) !important;color:var(--ink) !important}
+.matrix .empty-cell{background:rgba(255,255,255,0.02) !important;color:var(--ink-muted)}
+.hero{background:linear-gradient(135deg,#060912 0%,#0a1929 100%) !important}
+section.block{border-bottom:1px solid var(--border) !important}
+section.block[style*="bg-soft"],section.block[style*="bg-accent"]{background:#0a0d14 !important}
+header.top{background:rgba(6,9,18,0.85) !important;border-bottom:1px solid var(--border)}
+.brand,nav.main a,.kpi-value,h1.title,h2.title,h3,h4,p,.mono{color:var(--ink) !important}
+.kpi-value.serif,h1.title,h2.title{background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+p,p.lead,.kpi-detail,.subtitle,small,.kpi-label,.eyebrow{color:var(--ink-soft) !important}
+.eyebrow{background:var(--accent-bg) !important;color:var(--accent) !important}
+.urgent-badge{background:var(--accent) !important;color:#060912 !important}
+nav.main a:hover{background:var(--accent-bg) !important;color:var(--accent) !important}
+.tab-btn{color:var(--ink-muted)}
+.tab-btn.active{color:var(--accent) !important;border-bottom-color:var(--accent) !important}
+.checklist li{background:var(--bg-card) !important;border:1px solid var(--border) !important;color:var(--ink)}
+.alert{background:var(--bg-card) !important;border:1px solid var(--border) !important;color:var(--ink)}
+.alert.success{border-left:4px solid var(--green) !important}
+.alert.warning{border-left:4px solid var(--yellow) !important}
+.alert.info{border-left:4px solid var(--cyan) !important}
+.callout{background:linear-gradient(135deg,rgba(0,229,176,0.08),rgba(0,180,216,0.08)) !important;border:1px solid var(--border)}
+.callout.success{background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(0,229,176,0.08)) !important}
+.callout.warning{background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(239,68,68,0.08)) !important}
+.callout.info{background:linear-gradient(135deg,rgba(0,180,216,0.15),rgba(0,229,176,0.08)) !important}
+.callout p{color:rgba(255,255,255,0.85) !important}
+.tag.confirmed{background:var(--green-bg) !important;color:var(--green) !important}
+.tag.pending{background:var(--yellow-bg) !important;color:var(--yellow) !important}
+.tag.future{background:var(--cyan-bg) !important;color:var(--cyan) !important}
+.tag.empty{background:var(--gray-bg) !important;color:var(--ink-muted) !important}
+.status.green{background:var(--green-bg) !important;color:var(--green) !important}
+.status.yellow{background:var(--yellow-bg) !important;color:var(--yellow) !important}
+.status.cyan{background:var(--cyan-bg) !important;color:var(--cyan) !important}
+.status.gray{background:var(--gray-bg) !important;color:var(--ink-muted) !important}
+.simulator{background:linear-gradient(135deg,rgba(0,229,176,0.05),rgba(0,180,216,0.05)) !important}
+.iva-step.highlight{background:var(--accent) !important;color:#060912 !important}
+.iva-step.highlight .step-label,.iva-step.highlight .step-value,.iva-step.highlight .step-desc{color:#060912 !important}
+footer{background:#000 !important}
+section[id="cifras"]>div>div[style*="background:white"]{background:var(--bg-card) !important;border:1px solid var(--border)}
+.num.pos{color:var(--accent) !important}
+.num.neg{color:#fb7185 !important}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.serif{font-family:'DM Serif Display',serif;font-weight:400}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* LAYOUT con SIDEBAR */
+:root{--sb-w:260px;--header-h:60px}
+body{padding-left:var(--sb-w)}
+.main-wrap{min-width:0}
+
+/* HEADER */
+header.top{
+  position:fixed;top:0;left:var(--sb-w);right:0;z-index:100;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  height:var(--header-h);
+}
+.topbar{
+  max-width:1400px;margin:0 auto;
+  padding:0 32px;height:100%;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.main-wrap{padding-top:var(--header-h)}
+
+/* SIDEBAR */
+aside.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sb-w);
+  background:var(--ink);color:rgba(255,255,255,.85);
+  overflow-y:auto;z-index:101;
+  border-right:1px solid rgba(255,255,255,.08);
+  padding:18px 0;
+}
+.sb-brand{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 20px 14px;font-size:13px;font-weight:700;color:white;
+  border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:10px;
+}
+.sb-brand .dot{width:8px;height:8px;border-radius:50%;background:#a5b4fc}
+.sb-block{padding:14px 20px 6px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4)}
+.sb-link{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 20px;color:rgba(255,255,255,.75);text-decoration:none;
+  font-size:13px;font-weight:500;transition:all .15s;
+  border-left:3px solid transparent;cursor:pointer;
+}
+.sb-link:hover{background:rgba(255,255,255,.05);color:white;border-left-color:#a5b4fc}
+.sb-link.active{background:rgba(99,102,241,.15);color:white;border-left-color:#6366f1}
+.sb-link .ic{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.sb-link .num{font-size:10px;color:rgba(255,255,255,.4);margin-left:auto;font-family:'JetBrains Mono',monospace}
+.sb-sub{padding-left:38px}
+.sb-sub .sb-link{font-size:12px;padding:5px 20px 5px 0;color:rgba(255,255,255,.55)}
+.sb-sub .sb-link:hover{color:white}
+.sb-sub .sb-link .swatch{width:6px;height:6px;border-radius:50%;background:#94a3b8}
+.sb-sub .sb-link .swatch.s1{background:#10b981}
+.sb-sub .sb-link .swatch.s2{background:#f59e0b}
+.sb-sub .sb-link .swatch.s3{background:#06b6d4}
+.sb-sub .sb-link .swatch.s4{background:#94a3b8}
+.sb-spacer{height:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--ink)}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.brand .meta{font-weight:400;color:var(--ink-muted);font-size:13px;margin-left:4px}
+nav.main{display:flex;gap:6px;flex-wrap:wrap}
+nav.main a{
+  text-decoration:none;color:var(--ink-soft);font-size:13px;font-weight:500;
+  padding:6px 11px;border-radius:8px;transition:all .15s;
+}
+nav.main a:hover{background:var(--accent-bg);color:var(--accent)}
+.urgent-badge{
+  background:var(--red);color:white;font-size:11px;font-weight:600;
+  padding:4px 10px;border-radius:99px;
+}
+
+/* CONTAINERS */
+section.block{padding:80px 32px;border-bottom:1px solid var(--border)}
+.container{max-width:1400px;margin:0 auto}
+.eyebrow{
+  display:inline-block;
+  text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;
+  color:var(--accent);background:var(--accent-bg);
+  padding:5px 11px;border-radius:99px;margin-bottom:16px;
+}
+h1.title{font-size:56px;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px}
+h2.title{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin-bottom:18px}
+h3{font-size:22px;font-weight:700;line-height:1.3;margin-bottom:12px}
+h4{font-size:16px;font-weight:600;line-height:1.4;margin-bottom:8px}
+p.lead{font-size:18px;color:var(--ink-soft);max-width:780px;margin-bottom:32px}
+p{color:var(--ink-soft);margin-bottom:12px}
+small{color:var(--ink-muted);font-size:12px}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,#fafbff 0%,#eef2ff 100%);
+  padding:100px 32px 80px;border-bottom:1px solid var(--border);
+}
+.hero-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:center;
+}
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:32px}
+.kpi{background:white;padding:20px;border-radius:14px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);font-weight:600;margin-bottom:6px}
+.kpi-value{font-size:28px;font-weight:700;color:var(--ink)}
+.kpi-value.serif{font-family:'DM Serif Display',serif;font-weight:400}
+.kpi-detail{font-size:12px;color:var(--ink-soft);margin-top:4px}
+
+/* DIAGRAMA HOLDING SVG */
+.diagram-holder{
+  background:white;border-radius:20px;padding:32px;
+  border:1px solid var(--border);box-shadow:var(--shadow-md);
+}
+
+/* VISION TIMELINE */
+.timeline-cenco{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:40px 0;
+  position:relative;
+}
+.timeline-cenco::before{
+  content:'';position:absolute;left:5%;right:5%;top:50%;height:2px;
+  background:linear-gradient(90deg,#1e1b4b 0%,#6366f1 50%,#10b981 100%);
+}
+.timeline-stage{
+  background:white;border:2px solid var(--border);
+  padding:14px 16px;text-align:center;border-radius:10px;
+  position:relative;z-index:1;margin:0 6px;
+}
+.timeline-stage .num{font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.timeline-stage .label{font-weight:700;font-size:14px;color:var(--ink)}
+
+.flow-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:32px}
+.flow-card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center}
+.flow-card.s1{border-color:#1e1b4b;background:#f5f3ff}
+.flow-card.s2{border-color:#6366f1;background:#eef2ff}
+.flow-card.s3{border-color:#06b6d4;background:#ecfeff}
+.flow-card.s4{border-color:#10b981;background:#d1fae5}
+.flow-card.s5{border-color:#f59e0b;background:#fef3c7}
+.flow-card .stage-name{font-size:11px;text-transform:uppercase;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:.05em}
+.flow-card .stage-actor{font-size:14px;font-weight:600;margin-bottom:6px}
+.flow-card .stage-desc{font-size:12px;color:var(--ink-soft);line-height:1.4}
+
+/* TABS */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:30px;flex-wrap:wrap}
+.tab-btn{
+  padding:12px 18px;border:none;background:none;cursor:pointer;
+  font-family:inherit;font-size:14px;font-weight:600;color:var(--ink-muted);
+  border-bottom:2px solid transparent;transition:all .15s;
+}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* CARDS GRID */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:24px}
+.entity-card{
+  background:white;border:1px solid var(--border);border-radius:16px;padding:24px;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.entity-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.entity-card .status{
+  position:absolute;top:16px;right:16px;
+  padding:4px 10px;border-radius:99px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.status.green{background:var(--green-bg);color:var(--green)}
+.status.yellow{background:var(--yellow-bg);color:var(--yellow)}
+.status.cyan{background:var(--cyan-bg);color:var(--cyan)}
+.status.gray{background:var(--gray-bg);color:var(--ink-muted)}
+.status.red{background:var(--red-bg);color:var(--red)}
+.entity-card .icon-big{font-size:32px;margin-bottom:14px}
+.entity-card h3{margin-bottom:6px}
+.entity-card .subtitle{color:var(--ink-muted);font-size:13px;margin-bottom:16px}
+.entity-card .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.entity-card .stat-item{font-size:12px}
+.entity-card .stat-item strong{display:block;font-size:16px;color:var(--ink);font-weight:700}
+.entity-card .stat-item span{color:var(--ink-muted)}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--border);border-radius:12px;background:white}
+table{width:100%;border-collapse:collapse;min-width:640px}
+table th{
+  background:var(--gray-bg);padding:12px 16px;text-align:left;
+  font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--ink-soft);font-weight:700;border-bottom:1px solid var(--border);
+}
+table td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:top}
+table tr:last-child td{border-bottom:none}
+table tr:hover{background:var(--bg-soft)}
+table .num{font-family:'JetBrains Mono',monospace;text-align:right}
+table .pos{color:var(--green);font-weight:600}
+table .neg{color:var(--red);font-weight:600}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.tag.confirmed{background:var(--green-bg);color:var(--green)}
+.tag.pending{background:var(--yellow-bg);color:var(--yellow)}
+.tag.future{background:var(--cyan-bg);color:var(--cyan)}
+.tag.empty{background:var(--gray-bg);color:var(--ink-muted)}
+
+/* MATRIX */
+.matrix-wrap{overflow-x:auto;margin:24px 0}
+.matrix{
+  width:100%;border-collapse:separate;border-spacing:0;
+  border:1px solid var(--border);border-radius:12px;overflow:hidden;background:white;
+}
+.matrix th{
+  background:var(--ink);color:white;padding:14px;text-align:center;
+  font-weight:600;font-size:13px;border:none;
+}
+.matrix td{
+  padding:14px 16px;border:1px solid var(--border);
+  font-size:13px;vertical-align:top;text-align:left;
+}
+.matrix .row-label{
+  background:var(--gray-bg);font-weight:700;text-align:left;
+}
+.matrix .empty-cell{background:#f8fafc;color:var(--ink-muted);text-align:center;font-style:italic}
+
+/* CALLOUTS */
+.callout{
+  background:linear-gradient(135deg,#1e1b4b,#312e81);
+  color:white;padding:32px;border-radius:16px;margin:30px 0;
+}
+.callout h3{color:white;margin-bottom:14px}
+.callout p{color:rgba(255,255,255,.85);margin-bottom:0}
+.callout.success{background:linear-gradient(135deg,#065f46,#10b981)}
+.callout.warning{background:linear-gradient(135deg,#92400e,#f59e0b)}
+.callout.info{background:linear-gradient(135deg,#155e75,#06b6d4)}
+
+/* DONUT */
+.donut-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:30px}
+.donut-card{background:white;border:1px solid var(--border);border-radius:14px;padding:24px}
+.donut-card h4{margin-bottom:8px;text-align:center}
+.donut-card .underline{width:30px;height:2px;background:var(--accent);margin:0 auto 18px}
+.donut-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.donut-row:last-child{border:none}
+.donut-row .legend{display:flex;align-items:center;gap:8px}
+.donut-row .swatch{width:10px;height:10px;border-radius:3px;background:var(--accent)}
+
+/* ACADEMIA TOOLTIP */
+.help-btn{
+  display:inline-block;background:var(--accent-bg);color:var(--accent);
+  padding:3px 8px;border-radius:99px;font-size:11px;font-weight:600;cursor:help;
+  margin-left:6px;
+}
+.help-btn:hover{background:var(--accent);color:white}
+
+/* ALERTS */
+.alert{
+  display:flex;gap:12px;padding:16px 20px;border-radius:12px;margin:16px 0;
+  align-items:flex-start;
+}
+.alert.success{background:var(--green-bg);border-left:4px solid var(--green)}
+.alert.warning{background:var(--yellow-bg);border-left:4px solid var(--yellow)}
+.alert.info{background:var(--cyan-bg);border-left:4px solid var(--cyan)}
+.alert.error{background:var(--red-bg);border-left:4px solid var(--red)}
+.alert .icon{font-size:20px;line-height:1}
+.alert .content{flex:1}
+.alert h4{margin-bottom:4px;font-size:14px}
+.alert p{font-size:13px;margin-bottom:0;color:var(--ink)}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.7);padding:50px 32px;font-size:13px}
+footer .footer-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:40px}
+footer h5{color:white;font-size:12px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+footer a{color:rgba(255,255,255,.7);text-decoration:none;display:block;padding:4px 0}
+footer a:hover{color:white}
+
+/* CHECKLIST */
+.checklist{list-style:none}
+.checklist li{
+  padding:12px 16px;background:white;border:1px solid var(--border);
+  border-radius:8px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;
+}
+.checklist li input[type=checkbox]{margin-top:4px;cursor:pointer}
+.checklist li .text{flex:1;font-size:14px}
+.checklist li .priority{
+  font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.priority.p1{background:var(--red-bg);color:var(--red)}
+.priority.p2{background:var(--yellow-bg);color:var(--yellow)}
+.priority.p3{background:var(--cyan-bg);color:var(--cyan)}
+
+/* IVA SIMULADOR */
+.simulator{background:linear-gradient(135deg,#fafbff,#f5f3ff);padding:30px;border-radius:16px;border:1px solid var(--border);margin:30px 0}
+.iva-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;align-items:center;margin-top:20px}
+.iva-step{
+  background:white;padding:20px 16px;border-radius:12px;text-align:center;
+  border:1px solid var(--border);position:relative;
+}
+.iva-step .step-icon{font-size:24px;margin-bottom:8px}
+.iva-step .step-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);font-weight:700;margin-bottom:6px}
+.iva-step .step-value{font-size:22px;font-weight:700;color:var(--ink)}
+.iva-step .step-desc{font-size:11px;color:var(--ink-soft);margin-top:6px}
+.iva-step.highlight{background:var(--ink);color:white}
+.iva-step.highlight .step-label{color:rgba(255,255,255,.7)}
+.iva-step.highlight .step-value{color:white}
+.iva-step.highlight .step-desc{color:rgba(255,255,255,.7)}
+.iva-arrow{display:flex;align-items:center;justify-content:center;color:var(--ink-muted);font-size:20px}
+
+/* RESPONSIVE */
+@media (max-width:1100px){
+  body{padding-left:0}
+  aside.sidebar{transform:translateX(-100%);transition:transform .25s}
+  aside.sidebar.open{transform:translateX(0)}
+  header.top{left:0}
+  .sb-toggle{display:flex !important}
+}
+@media (max-width:960px){
+  .hero-grid{grid-template-columns:1fr}
+  .timeline-cenco{grid-template-columns:1fr;gap:8px}
+  .timeline-cenco::before{display:none}
+  .flow-grid{grid-template-columns:1fr}
+  .iva-grid{grid-template-columns:1fr}
+  h1.title{font-size:36px}
+  h2.title{font-size:28px}
+  nav.main{display:none}
+}
+.sb-toggle{
+  display:none;background:var(--ink);color:white;border:none;
+  width:40px;height:40px;border-radius:8px;cursor:pointer;
+  align-items:center;justify-content:center;font-size:18px;
+}
+
+@media print{
+  body{padding-left:0}
+  aside.sidebar,header.top,.sb-toggle{display:none !important}
+  .main-wrap{padding-top:0}
+  section.block{page-break-inside:avoid;padding:40px 24px}
+  .callout,.simulator{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <span class="dot"></span>
+    <span>holding.smconnection.cl</span>
+  </div>
+
+  <a href="#home" class="sb-link"><span class="ic">🏠</span><span>Home</span><span class="num">00</span></a>
+
+  <div class="sb-block">Estratégico</div>
+  <a href="#vision" class="sb-link" data-tab="vision-1"><span class="ic">👁️</span><span>Visión</span><span class="num">01</span></a>
+  <a href="#vision" class="sb-link" data-tab="vision-2"><span class="ic">🔀</span><span>Procesos</span><span class="num">02</span></a>
+  <a href="#vision" class="sb-link" data-tab="vision-3"><span class="ic">🏗️</span><span>Arquitectura</span><span class="num">03</span></a>
+
+  <div class="sb-block">Entidades</div>
+  <a href="#guillermo-pn" class="sb-link"><span class="ic">👤</span><span>Guillermo PN</span><span class="num">04</span></a>
+  <a href="#entidades" class="sb-link"><span class="ic">🏢</span><span>SpAs · resumen</span><span class="num">05</span></a>
+  <div class="sb-sub">
+    <a href="#spa-smc" class="sb-link"><span class="swatch s1"></span><span>SMC SpA</span></a>
+    <a href="#spa-kanki" class="sb-link"><span class="swatch s2"></span><span>Kanki SpA</span></a>
+    <a href="#spa-marketplace" class="sb-link"><span class="swatch s3"></span><span>Marketplace SpA</span></a>
+  </div>
+  <a href="#cruzada" class="sb-link"><span class="ic">🔄</span><span>Vista Cruzada</span><span class="num">06</span></a>
+
+  <div class="sb-block">Operación</div>
+  <a href="#finanzas" class="sb-link"><span class="ic">💰</span><span>Finanzas</span><span class="num">07</span></a>
+  <a href="#fondos" class="sb-link"><span class="ic">🎯</span><span>Fondos públicos</span><span class="num">08</span></a>
+  <a href="#conexiones" class="sb-link"><span class="ic">🔌</span><span>Conexiones</span><span class="num">09</span></a>
+
+  <div class="sb-block">Knowledge</div>
+  <a href="#workspaces" class="sb-link" data-tab="ws-academia"><span class="ic">🎓</span><span>Academia</span><span class="num">10</span></a>
+  <a href="#workspaces" class="sb-link"><span class="ic">👥</span><span>Workspaces</span><span class="num">11</span></a>
+
+  <div class="sb-block">Información</div>
+  <a href="#cifras" class="sb-link"><span class="ic">📊</span><span>Cifras destacadas</span><span class="num">12</span></a>
+
+  <div class="sb-block">Reuniones</div>
+  <a href="#workspaces" class="sb-link" data-tab="ws-1"><span class="ic">📋</span><span>Gladys 16:00</span><span class="num">13</span></a>
+  <a href="#workspaces" class="sb-link" data-tab="ws-2"><span class="ic">📋</span><span>Bárbara fondos</span><span class="num">14</span></a>
+
+  <div class="sb-block">Extra</div>
+  <a href="#workspaces" class="sb-link" data-tab="ws-6"><span class="ic">💬</span><span>Sesión hoy</span></a>
+  <div class="sb-spacer"></div>
+</aside>
+
+<header class="top">
+  <div class="topbar">
+    <button class="sb-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <div class="brand">
+      <span class="dot"></span>
+      <span>holding.smconnection.cl</span>
+      <span class="meta">· Smart Connection Group</span>
+    </div>
+    <nav class="main">
+      <a href="#vision">Visión</a>
+      <a href="#entidades">Entidades</a>
+      <a href="#cruzada">Cruzada</a>
+      <a href="#finanzas">Finanzas</a>
+      <a href="#fondos">Fondos</a>
+      <a href="#conexiones">Conexiones</a>
+      <a href="#workspaces">Workspaces</a>
+      <a href="#cifras">Cifras</a>
+    </nav>
+    <span class="urgent-badge">Reunión Gladys 16:00</span>
+  </div>
+</header>
+
+<div class="main-wrap">
+
+<!-- HERO / HOME -->
+<section class="hero" id="home">
+  <div class="hero-grid">
+    <div>
+      <span class="eyebrow">Maqueta local · 2026-05-07</span>
+      <h1 class="title serif">Holding · Smart Connection Group</h1>
+      <p class="lead">
+        Vista consolidada del holding personal de Guillermo González León.
+        4 SpA + persona natural · estructurado para gestión, contabilidad y
+        crecimiento. Preparado por <strong>🧮 Contador IA</strong> para la
+        reunión con Gladys 16:00.
+      </p>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Entidades</div>
+          <div class="kpi-value serif">4</div>
+          <div class="kpi-detail">1 persona natural + 3 SpA</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Holding Y1 proyectado</div>
+          <div class="kpi-value serif">$72M</div>
+          <div class="kpi-detail">consolidado gestión</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Régimen propuesto</div>
+          <div class="kpi-value">14D N°3</div>
+          <div class="kpi-detail">Pro-PYME General · 3 SpA</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-label">Sercotec disponible</div>
+          <div class="kpi-value serif">$7M</div>
+          <div class="kpi-detail">Capital Semilla Kanki</div>
+        </div>
+      </div>
+    </div>
+    <div class="diagram-holder">
+      <h3 style="margin-bottom:20px">Mapa del holding</h3>
+      <svg viewBox="0 0 480 480" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+          </marker>
+        </defs>
+        <!-- Título -->
+        <text x="240" y="40" text-anchor="middle" font-family="Inter" font-weight="700" font-size="14" fill="#1e1b4b">Estructura del holding · 3 SpA independientes</text>
+        <text x="240" y="60" text-anchor="middle" font-family="Inter" font-size="11" fill="#94a3b8">Persona natural NO se conecta · contexto separado · ver sección 04</text>
+
+        <!-- SMC -->
+        <g>
+          <rect x="20" y="160" width="160" height="80" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+          <text x="100" y="185" text-anchor="middle" font-family="Inter" font-weight="700" font-size="13" fill="#1e1b4b">🟢 SMC SpA</text>
+          <text x="100" y="203" text-anchor="middle" font-family="Inter" font-size="10" fill="#475569">100% Guillermo · OPERANDO</text>
+          <text x="100" y="219" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#10b981">76.811.863-9</text>
+          <text x="100" y="234" text-anchor="middle" font-family="Inter" font-size="9" fill="#475569">SAP · IA · Broker</text>
+        </g>
+
+        <!-- Kanki -->
+        <g>
+          <rect x="160" y="160" width="160" height="80" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+          <text x="240" y="185" text-anchor="middle" font-family="Inter" font-weight="700" font-size="13" fill="#1e1b4b">🟡 Kanki &amp; Co. SpA</text>
+          <text x="240" y="203" text-anchor="middle" font-family="Inter" font-size="10" fill="#475569">50% Guille + 50% Martín</text>
+          <text x="240" y="219" text-anchor="middle" font-family="Inter" font-size="10" fill="#f59e0b">EN CONSTITUCIÓN</text>
+          <text x="240" y="234" text-anchor="middle" font-family="Inter" font-size="9" fill="#475569">Streetwear B2C</text>
+        </g>
+
+        <!-- Marketplace -->
+        <g>
+          <rect x="300" y="160" width="160" height="80" rx="12" fill="#ecfeff" stroke="#06b6d4" stroke-width="2"/>
+          <text x="380" y="185" text-anchor="middle" font-family="Inter" font-weight="700" font-size="13" fill="#1e1b4b">🔵 Marketplace SMC</text>
+          <text x="380" y="203" text-anchor="middle" font-family="Inter" font-size="10" fill="#475569">Guille + Javier</text>
+          <text x="380" y="219" text-anchor="middle" font-family="Inter" font-size="10" fill="#06b6d4">FUTURA</text>
+          <text x="380" y="234" text-anchor="middle" font-family="Inter" font-size="9" fill="#475569">B2C · B2G · B2B</text>
+        </g>
+
+        <!-- Cruzados internos SMC → Kanki + Marketplace -->
+        <line x1="100" y1="240" x2="240" y2="340" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+        <line x1="380" y1="240" x2="240" y2="340" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+
+        <!-- Etiquetas crédito -->
+        <text x="100" y="280" text-anchor="middle" font-family="Inter" font-weight="600" font-size="9" fill="#10b981">Servicios IA</text>
+        <text x="100" y="295" text-anchor="middle" font-family="Inter" font-size="8" fill="#475569">$1M one-time</text>
+        <text x="100" y="307" text-anchor="middle" font-family="Inter" font-size="8" fill="#475569">+$300K/mes</text>
+
+        <!-- Mid label -->
+        <g>
+          <rect x="60" y="340" width="360" height="100" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="240" y="370" text-anchor="middle" font-family="Inter" font-weight="700" font-size="13" fill="#6366f1">FACTURACIÓN CRUZADA N×N</text>
+          <text x="240" y="392" text-anchor="middle" font-family="Inter" font-size="11" fill="#475569">SMC factura servicios IA a Kanki y Marketplace</text>
+          <text x="240" y="410" text-anchor="middle" font-family="Inter" font-size="11" fill="#475569">Art. 41 E LIR · precio mercado · contrato escrito</text>
+          <text x="240" y="428" text-anchor="middle" font-family="Inter" font-size="10" fill="#94a3b8">Importación: directa por Kanki/Marketplace cuando aplique</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 01 VISIÓN · 3 TABS -->
+<section class="block" id="vision">
+  <div class="container">
+    <span class="eyebrow">01 · Visión · Procesos · Arquitectura</span>
+    <h2 class="title serif">Cómo se mueve el holding</h2>
+    <p class="lead">
+      Vista funcional del flywheel que conecta las 4 SpA con la persona natural.
+      Cada etapa tiene actores definidos. Esta integración no es accidental: es
+      el modelo de "private equity operativo personal".
+    </p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="vision-1">Visión · Flywheel</button>
+      <button class="tab-btn" data-tab="vision-2">Procesos · Macro y Micro</button>
+      <button class="tab-btn" data-tab="vision-3">Arquitectura · Cómo se modela</button>
+    </div>
+
+    <div class="tab-content active" id="vision-1">
+      <div class="timeline-cenco">
+        <div class="timeline-stage"><div class="num">Etapa 01</div><div class="label">Detectar</div></div>
+        <div class="timeline-stage"><div class="num">Etapa 02</div><div class="label">Estructurar</div></div>
+        <div class="timeline-stage"><div class="num">Etapa 03</div><div class="label">Vender</div></div>
+        <div class="timeline-stage"><div class="num">Etapa 04</div><div class="label">Capturar</div></div>
+        <div class="timeline-stage"><div class="num">Etapa 05</div><div class="label">Reinvertir</div></div>
+      </div>
+      <div class="flow-grid">
+        <div class="flow-card s1">
+          <div class="stage-name">RADAR</div>
+          <div class="stage-actor">Nexport · MeLi Intelligence</div>
+          <div class="stage-desc">Detectar nichos · productos · oportunidades de margen</div>
+        </div>
+        <div class="flow-card s2">
+          <div class="stage-name">SMC</div>
+          <div class="stage-actor">Tecnología · IA</div>
+          <div class="stage-desc">Construir plataforma · automatizar · integrar sistemas</div>
+        </div>
+        <div class="flow-card s3">
+          <div class="stage-name">KANKI · MKT</div>
+          <div class="stage-actor">Canales B2C/B2G/B2B</div>
+          <div class="stage-desc">Vender al cliente final · capturar pulso de mercado</div>
+        </div>
+        <div class="flow-card s4">
+          <div class="stage-name">CAPTURAR</div>
+          <div class="stage-actor">Margen vertical</div>
+          <div class="stage-desc">Optimizar costo · mejorar márgenes · alianzas directas</div>
+        </div>
+        <div class="flow-card s5">
+          <div class="stage-name">REINVERSIÓN</div>
+          <div class="stage-actor">Holding</div>
+          <div class="stage-desc">Capital a nuevo nicho · plataforma · activos</div>
+        </div>
+      </div>
+      <div class="callout info">
+        <h3>Valor de la integración</h3>
+        <p><strong>Antes:</strong> proyectos sueltos sin estructura · facturación dispersa entre persona natural y SpA · fondos públicos no aprovechados.</p>
+        <p style="margin-top:10px"><strong>Después:</strong> 4 SpA con régimen único 14D N°3 · facturación cruzada documentada · Sercotec activado · holding consolidado en gestión.</p>
+      </div>
+    </div>
+
+    <div class="tab-content" id="vision-2">
+      <h3 style="margin-top:10px">Macro · proceso end-to-end del holding</h3>
+      <p>El flujo unifica los 4 escenarios típicos del año contable:</p>
+      <div class="cards-grid">
+        <div class="entity-card">
+          <div class="icon-big">🟢</div>
+          <h3>A · Operación normal</h3>
+          <p style="font-size:13px">Cliente paga → SpA recibe → IVA débito → SpA gasta → IVA crédito → F29 mensual día 12.</p>
+        </div>
+        <div class="entity-card">
+          <div class="icon-big">📦</div>
+          <h3>B · Importación directa</h3>
+          <p style="font-size:13px">Kanki o Marketplace importan directo → DUS aduana → IVA aduana crédito → llega stock → vende al cliente final → ciclo IVA continúa. Si conviene: contratan a Nextport como servicio externo.</p>
+        </div>
+        <div class="entity-card">
+          <div class="icon-big">🎯</div>
+          <h3>C · Fondos públicos</h3>
+          <p style="font-size:13px">Postula → ejecuta plan al peso → rinde con factura+medio pago+foto → desembolso 5-6 meses.</p>
+        </div>
+        <div class="entity-card">
+          <div class="icon-big">🏛️</div>
+          <h3>D · ChileCompra</h3>
+          <p style="font-size:13px">Inscripción ChileProveedores → licita → garantía bancaria → Estado paga 60-90 días → factoring opcional.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="vision-3">
+      <h3 style="margin-top:10px">Stack tecnológico del holding</h3>
+      <p>Contador IA reemplaza software contable externo. Vive sobre Supabase con RLS estricto.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Capa</th><th>Sistema</th><th>Rol</th></tr></thead>
+          <tbody>
+            <tr><td>Capa de gestión</td><td>holding.smconnection.cl</td><td>Panel visual del holding (este sitio)</td></tr>
+            <tr><td>Capa de inteligencia</td><td>🧮 Contador IA + 🧠 Cerebro</td><td>Procesa, alerta, prepara declaraciones</td></tr>
+            <tr><td>Datos</td><td>Supabase (yjjtbwfgtoepsevvkzta)</td><td>Tablas <code>contador_*</code> con RLS</td></tr>
+            <tr><td>Verdad legal</td><td>SII (sii.cl)</td><td>F29 · F22 · libros · DTE</td></tr>
+            <tr><td>Asesoría humana</td><td>Gladys (operacional) · Bárbara (fondos)</td><td>Slot reservado · firma con Clave Única SII</td></tr>
+            <tr><td>Bancos</td><td>BancoEstado/Bci · MercadoPago · Global66</td><td>Movimientos · conciliación</td></tr>
+            <tr><td>Canales venta</td><td>MeLi · ChileCompra · tienda Kanki</td><td>API + scraping</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 ENTIDADES -->
+<section class="block" id="entidades" style="background:var(--bg-soft)">
+  <div class="container">
+    <span class="eyebrow">02 · Entidades del holding</span>
+    <h2 class="title serif">4 entidades · 3 SpA + 1 persona natural</h2>
+    <p class="lead">
+      Cada entidad tiene su propio régimen, sus propios clientes y su propia
+      caja. El holding se consolida solo para gestión personal de Guillermo
+      (no es consolidación tributaria — cada SpA tributa por separado).
+    </p>
+
+    <div class="cards-grid">
+      <div class="entity-card">
+        <span class="status yellow">Activa</span>
+        <div class="icon-big">👤</div>
+        <h3>Guillermo Persona Natural</h3>
+        <div class="subtitle">RUT propio · soltero · sin cargas</div>
+        <div class="stats">
+          <div class="stat-item"><strong>$3.9M</strong><span>Globant neto/mes</span></div>
+          <div class="stat-item"><strong>$46.8M</strong><span>Y1 neto</span></div>
+          <div class="stat-item"><strong>$10M</strong><span>Boletas 2025 ya declaradas</span></div>
+          <div class="stat-item"><strong>30-35%</strong><span>Tasa marginal GC</span></div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <span class="status green">Operando</span>
+        <div class="icon-big">🟢</div>
+        <h3>Smart Connection SpA</h3>
+        <div class="subtitle">100% Guillermo · 76.811.863-9</div>
+        <div class="stats">
+          <div class="stat-item"><strong>$24.2M</strong><span>Ingresos Y1</span></div>
+          <div class="stat-item"><strong>+$15.2M</strong><span>EBITDA Y1</span></div>
+          <div class="stat-item"><strong>14D N°3</strong><span>Régimen propuesto</span></div>
+          <div class="stat-item"><strong>0</strong><span>Reparos SII</span></div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <span class="status yellow">En constitución</span>
+        <div class="icon-big">🟡</div>
+        <h3>Kanki &amp; Co. SpA</h3>
+        <div class="subtitle">50% Guille + 50% Martín</div>
+        <div class="stats">
+          <div class="stat-item"><strong>$2.245M</strong><span>Capital fundadores</span></div>
+          <div class="stat-item"><strong>$44.0M</strong><span>Revenue Y1 (-20%)</span></div>
+          <div class="stat-item"><strong>$7.0M</strong><span>Sercotec post 5m</span></div>
+          <div class="stat-item"><strong>1-2 meses</strong><span>Timing notaría</span></div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <span class="status cyan">Futura</span>
+        <div class="icon-big">🔵</div>
+        <h3>Marketplace SMC SpA</h3>
+        <div class="subtitle">Guillermo + Javier</div>
+        <div class="stats">
+          <div class="stat-item"><strong>$66.0M</strong><span>Revenue Y1 (Kanki ×1.5)</span></div>
+          <div class="stat-item"><strong>+$6.9M</strong><span>EBITDA Y1</span></div>
+          <div class="stat-item"><strong>3 canales</strong><span>B2C · B2G · B2B</span></div>
+          <div class="stat-item"><strong>TBD</strong><span>Equity Javier</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 style="margin-top:50px">Detalle por SpA · clientes y subclientes</h3>
+
+    <h4 style="margin-top:30px;font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent)">🟢 Smart Connection SpA · 3 líneas de negocio</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Línea</th><th>Cliente</th><th>Subcliente</th><th class="num">Y1 estimado</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2">🟦 SAP</td><td>FreeSAP</td><td>Duoc UC</td><td class="num">$5.0M</td><td><span class="tag confirmed">Activo</span></td></tr>
+          <tr><td>SAP-ABAP SpA · Fernando</td><td>Parque Arauco · Cencosud</td><td class="num">$5.0M</td><td><span class="tag confirmed">Activo</span></td></tr>
+          <tr><td rowspan="3">🟪 IA</td><td>InfoPet (Javier)</td><td>—</td><td class="num">$0</td><td><span class="tag empty">Trabajo gratis</span></td></tr>
+          <tr><td>CREALO SpA</td><td>Bendito Capricho</td><td class="num">$2.5M</td><td><span class="tag pending">Empieza próx mes</span></td></tr>
+          <tr><td>Agencia Marketing</td><td>—</td><td class="num">$2.0M</td><td><span class="tag pending">Proyecto único TBD</span></td></tr>
+          <tr><td rowspan="2">💱 Cruzado interno</td><td>Kanki SpA</td><td>—</td><td class="num">$1M one + $300K/mes</td><td><span class="tag future">Activa al constituir</span></td></tr>
+          <tr><td>Marketplace SpA</td><td>—</td><td class="num">$1M one + $300K/mes</td><td><span class="tag future">Cuando arranque</span></td></tr>
+          <tr style="background:var(--accent-bg);font-weight:700"><td colspan="3">TOTAL Y1</td><td class="num">~$22.5M</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 style="margin-top:30px;font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--yellow)">🟡 Kanki &amp; Co. SpA · retail B2C streetwear</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Concepto</th><th class="num">Valor</th><th>Comentario</th></tr></thead>
+        <tbody>
+          <tr><td>Capital fundadores</td><td class="num">$2.245.284</td><td>$1.122.642 c/u Martín + Guillermo</td></tr>
+          <tr><td>Stock inicial</td><td class="num">$1.002.642</td><td>35 prendas · Essential FW24 + Grizzly</td></tr>
+          <tr><td>Revenue Mes 1</td><td class="num">$739.850</td><td>5 Essential + 10 Grizzly · margen 38%</td></tr>
+          <tr><td>Revenue Y1 (-20%)</td><td class="num">$44.0M</td><td>Crecimiento 1.3x mensual conservador</td></tr>
+          <tr><td>Margen bruto Y1</td><td class="num">$16.7M</td><td>38% blended (Essential 33% · Grizzly 44%)</td></tr>
+          <tr><td>EBITDA Y1</td><td class="num">+$4.6M</td><td>Después de gastos operativos $12M</td></tr>
+          <tr><td>Capital Semilla Sercotec</td><td class="num">+$7.0M</td><td>NO reembolsable · estimado mes 5</td></tr>
+          <tr style="background:var(--green-bg);font-weight:700"><td>Caja al cierre Y1</td><td class="num pos">~$12.0M</td><td>Reinversión 90% Y1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 style="margin-top:30px;font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan)">🔵 Marketplace SMC SpA · multi-canal B2C/B2G/B2B</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Canal</th><th>Cliente</th><th class="num">Y1 estimado</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>B2C</td><td>MercadoLibre Chile</td><td class="num">~50% revenue</td><td>Comisión MeLi 16% + IVA</td></tr>
+          <tr><td>B2G</td><td>Estado · Mercado Público</td><td class="num">~30% revenue</td><td>Plazo pago 60-90 días</td></tr>
+          <tr><td>B2B</td><td>Empresas privadas</td><td class="num">~20% revenue</td><td>Factoring posible</td></tr>
+          <tr style="background:var(--cyan-bg);font-weight:700"><td colspan="2">Revenue Y1 (Kanki Y1 × 1.5)</td><td class="num">$66.0M</td><td>Margen blended 38%</td></tr>
+          <tr><td colspan="2">EBITDA Y1</td><td class="num pos">+$6.9M</td><td>Necesidad capital inicial ~$10M</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- 02b · GUILLERMO PERSONA NATURAL -->
+<section class="block" id="guillermo-pn">
+  <div class="container">
+    <span class="eyebrow">04 · Vista independiente</span>
+    <h2 class="title serif">👤 Guillermo Persona Natural</h2>
+    <p class="lead">RUT propio · soltero · sin cargas familiares · empleado Globant.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ítem</th><th>Estado / valor</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Estado civil</strong></td><td>Soltero · sin cargas (hija +18)</td></tr>
+          <tr><td><strong>Empleo principal</strong></td><td>Globant · contrato indefinido</td></tr>
+          <tr><td><strong>Sueldo neto</strong></td><td>$3.9M/mes · $46.8M Y1</td></tr>
+          <tr><td><strong>Imp. Único</strong></td><td>Retiene Globant · va a Global Complementario F22</td></tr>
+          <tr><td><strong>Tasa marginal proyectada</strong></td><td>~30-35% (tramo medio-alto)</td></tr>
+          <tr><td><strong>Boletas honorarios 2025</strong></td><td>$10M (Duoc) · ya declaradas en F22 abril 2026</td></tr>
+          <tr><td><strong>APV / dividendo hipotecario</strong></td><td>No tiene · sin deducciones especiales</td></tr>
+          <tr><td><strong>Histórico boletas pre-SpA</strong></td><td>MeLi · clientes IA · clientes SAP (años anteriores)</td></tr>
+          <tr><td><strong>Plan migración a SpA</strong></td><td>Trabajos tech → SMC SpA · Globant queda en personal</td></tr>
+          <tr><td><strong>Retiros SpA Y1</strong></td><td>$0 · no se retiran utilidades aún</td></tr>
+          <tr><td><strong>F22 personal Abril 2027</strong></td><td>Saldo a pagar estimado ~$3-7M (confirmar con Gladys)</td></tr>
+          <tr><td><strong>Pendientes con Gladys</strong></td><td>Sueldo bruto exacto · tasa real · estrategia retiros</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 02c · SMC SpA · vista independiente -->
+<section class="block" id="spa-smc" style="background:var(--bg-soft)">
+  <div class="container">
+    <span class="eyebrow">05.1 · Vista independiente</span>
+    <h2 class="title serif">🟢 Smart Connection SpA</h2>
+    <p class="lead">Servicios tech + IA · 100% Guillermo · operando · 0 reparos SII.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ítem</th><th>Estado / valor</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Estado</strong></td><td><span class="tag confirmed">Operando</span> · 0 reparos SII</td></tr>
+          <tr><td><strong>RUT</strong></td><td>76.811.863-9</td></tr>
+          <tr><td><strong>Domicilio</strong></td><td>SN LUIS 465 · COMUNA VALPARAÍSO</td></tr>
+          <tr><td><strong>Email</strong></td><td>guillermo.gonzalez@smconnection.cl</td></tr>
+          <tr><td><strong>Capital fundadores</strong></td><td>100% Guillermo · capital declarado original (a confirmar)</td></tr>
+          <tr><td><strong>Socios + equity</strong></td><td>Guillermo 100%</td></tr>
+          <tr><td><strong>Giros</strong></td><td>Servicios tech · consultoría IA</td></tr>
+          <tr><td><strong>Bancos + cuentas</strong></td><td>Sin cuenta corriente activa · pendiente abrir PYME</td></tr>
+          <tr><td><strong>Régimen tributario propuesto</strong></td><td>14D N°3 Pro-PYME General · 25% utilidades</td></tr>
+          <tr><td><strong>Pacto de socios</strong></td><td>N/A (1 socio)</td></tr>
+          <tr><td><strong>Wallet + categorías gastos</strong></td><td>SaaS · Cel+auto · Hardware (CapEx) · Honorarios externos · Marketing</td></tr>
+          <tr><td><strong>Stock / inventario</strong></td><td>No aplica (servicios)</td></tr>
+          <tr><td><strong>Pasarela de pagos</strong></td><td>Transferencia + factura electrónica DTE 33</td></tr>
+          <tr><td><strong>Clientes + subclientes</strong></td><td>FreeSAP→Duoc · Fernando→Parque Arauco/Cencosud · CREALO→Bendito Capricho · Agencia Mkt · InfoPet</td></tr>
+          <tr><td><strong>Flujo caja Y1</strong></td><td>Ingresos $22.5M · Gastos $9M · CapEx $9M · Caja +$4.5M</td></tr>
+          <tr><td><strong>F29 + F22 borrador</strong></td><td>F29 mensual desde reactivación · F22 abril 2027 con movimiento real</td></tr>
+          <tr><td><strong>Retiros disponibles Y1</strong></td><td>$0 · reinversión total</td></tr>
+          <tr><td><strong>Conexiones activas</strong></td><td>SII · Mi SII · futuro: BancoEstado/Bci · facturación electrónica DTE</td></tr>
+          <tr><td><strong>Pendientes con Gladys</strong></td><td>Reactivar movimiento · capital pagado · cuenta PYME · pendientes Duoc/Fernando</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 02d · KANKI SpA · vista independiente -->
+<section class="block" id="spa-kanki">
+  <div class="container">
+    <span class="eyebrow">05.2 · Vista independiente</span>
+    <h2 class="title serif">🟡 Kanki &amp; Co. SpA</h2>
+    <p class="lead">Retail B2C streetwear · 50% Guille + 50% Martín · en constitución (1-2 meses).</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ítem</th><th>Estado / valor</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Estado</strong></td><td><span class="tag pending">En constitución</span> · notaría 1-2 meses</td></tr>
+          <tr><td><strong>RUT</strong></td><td>Por asignar al constituir</td></tr>
+          <tr><td><strong>Domicilio</strong></td><td>Por definir · domicilio fiscal</td></tr>
+          <tr><td><strong>Capital fundadores</strong></td><td>$2.245.284 ($1.122.642 c/u Martín + Guillermo)</td></tr>
+          <tr><td><strong>Socios + equity</strong></td><td>Guillermo 50% + Martín 50%</td></tr>
+          <tr><td><strong>Giros</strong></td><td>4791 e-commerce streetwear · Y2 importación directa si aplica</td></tr>
+          <tr><td><strong>Bancos + cuentas</strong></td><td>BancoEstado PYME (MVP) · Bci futuro con API bancaria</td></tr>
+          <tr><td><strong>Régimen tributario propuesto</strong></td><td>14D N°3 Pro-PYME General · 25% utilidades</td></tr>
+          <tr><td><strong>Pacto de socios</strong></td><td><strong>OBLIGATORIO antes de notaría</strong> · equity, retiros, votación, salida</td></tr>
+          <tr><td><strong>Wallet + categorías gastos</strong></td><td>📦 Inventario · 📣 Marketing · 🚚 Envíos · 🛠️ Operación · 💼 Otro (heredado panel-socios)</td></tr>
+          <tr><td><strong>Stock / inventario</strong></td><td>35 prendas iniciales · $1.002.642 a costo · Essential FW24 + Grizzly</td></tr>
+          <tr><td><strong>Pasarela de pagos</strong></td><td>MVP: transferencia · futuro: VentiPay 2.85% o MercadoPago 2.89%</td></tr>
+          <tr><td><strong>Clientes + subclientes</strong></td><td>Consumidor B2C anónimo · sin acuerdos B2B aún</td></tr>
+          <tr><td><strong>Flujo caja Y1</strong></td><td>Revenue $44M · Margen 38% $16.7M · EBITDA +$4.6M · Caja +$12M (con Sercotec $7M M5)</td></tr>
+          <tr><td><strong>F29 + F22 borrador</strong></td><td>F29 mensual desde constitución · F22 abril 2027 primer cierre</td></tr>
+          <tr><td><strong>Retiros disponibles Y1</strong></td><td>$0 · reinversión 90% Y1 acordada</td></tr>
+          <tr><td><strong>Conexiones activas</strong></td><td>SII (al constituir) · BancoEstado · MercadoPago wallet · futuro: MeLi</td></tr>
+          <tr><td><strong>Pendientes con Gladys</strong></td><td>Pacto socios redacción · notaría · Sercotec timing · cuenta PYME</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 02e · MARKETPLACE SpA · vista independiente -->
+<section class="block" id="spa-marketplace" style="background:var(--bg-soft)">
+  <div class="container">
+    <span class="eyebrow">05.3 · Vista independiente</span>
+    <h2 class="title serif">🔵 Marketplace SMC SpA</h2>
+    <p class="lead">Multi-canal B2C/B2G/B2B · Guillermo + Javier (equity TBD) · futura · constituir Q4 2026.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ítem</th><th>Estado / valor</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Estado</strong></td><td><span class="tag future">Futura</span> · constituir Q4 2026</td></tr>
+          <tr><td><strong>RUT</strong></td><td>Por asignar al constituir</td></tr>
+          <tr><td><strong>Capital fundadores</strong></td><td>~$10M estimado · Javier aporta TBD</td></tr>
+          <tr><td><strong>Socios + equity</strong></td><td>Guillermo + Javier · split por definir</td></tr>
+          <tr><td><strong>Giros</strong></td><td>Comercio multi-canal · Y2 importación directa si aplica</td></tr>
+          <tr><td><strong>Bancos + cuentas</strong></td><td>BancoEstado o Bci PYME al constituir</td></tr>
+          <tr><td><strong>Régimen tributario propuesto</strong></td><td>14D N°3 Pro-PYME General · ojo si supera 75K UF salta a Régimen General</td></tr>
+          <tr><td><strong>Pacto de socios</strong></td><td>OBLIGATORIO · equity con Javier + conflicto interés InfoPet</td></tr>
+          <tr><td><strong>Wallet + categorías gastos</strong></td><td>Mercadería · Comisión MeLi · Garantías ChileCompra · Logística · Marketing</td></tr>
+          <tr><td><strong>Stock / inventario</strong></td><td>Compra para reventa multi-categoría · ERP futuro</td></tr>
+          <tr><td><strong>Pasarela de pagos</strong></td><td>MercadoPago Empresa (B2C) · transferencia (B2G) · factura (B2B)</td></tr>
+          <tr><td><strong>Clientes + subclientes</strong></td><td>B2C MeLi (anónimo) · B2G ChileCompra (Estado) · B2B (empresas privadas)</td></tr>
+          <tr><td><strong>Flujo caja Y1</strong></td><td>Revenue $66M (Kanki Y1 × 1.5) · Margen 38% $25M · EBITDA +$6.9M · capital inicial ~$10M</td></tr>
+          <tr><td><strong>F29 + F22 borrador</strong></td><td>F29 mensual desde constitución · F22 primer cierre 2027</td></tr>
+          <tr><td><strong>Retiros disponibles Y1</strong></td><td>$0 · capitalización Y1</td></tr>
+          <tr><td><strong>Conexiones activas</strong></td><td>SII · MeLi + MP · ChileCompra + ChileProveedores · Bancos · F30/F30-1</td></tr>
+          <tr><td><strong>Pendientes con Gladys</strong></td><td>Definir equity Javier · cuándo constituir · capital inicial · cumplimiento previsional B2G</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 03 VISTA CRUZADA -->
+<section class="block" id="cruzada">
+  <div class="container">
+    <span class="eyebrow">03 · Vistas cruzadas</span>
+    <h2 class="title serif">Cómo se conectan las entidades entre sí</h2>
+    <p class="lead">
+      Toda factura entre SpA propias está sujeta a Art. 41 E LIR (precios de
+      transferencia). Como Guillermo es socio común, son <strong>partes
+      relacionadas</strong>. Cero margen de error: precio mercado obligatorio
+      y contrato escrito.
+    </p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="cruz-1">Matriz facturación N×N</button>
+      <button class="tab-btn" data-tab="cruz-2">Gastos compartidos atómicos</button>
+      <button class="tab-btn" data-tab="cruz-3">Cruz socios</button>
+      <button class="tab-btn" data-tab="cruz-4">Cruz dependencias</button>
+      <button class="tab-btn" data-tab="cruz-5">Cruz cronología</button>
+      <button class="tab-btn" data-tab="cruz-6">Conflictos de interés</button>
+    </div>
+
+    <div class="tab-content active" id="cruz-1">
+      <h3>Matriz 3×3 · ¿Quién factura a quién?</h3>
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th style="background:var(--ink-soft);min-width:120px">DE \ A</th>
+              <th>🟢 SMC</th>
+              <th>🟡 Kanki</th>
+              <th>🔵 Marketplace</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">🟢 SMC SpA</td>
+              <td class="empty-cell">—</td>
+              <td>Servicios IA · plataforma e-commerce<br><strong>$1M + $300K/mes</strong></td>
+              <td>Servicios IA · plataforma multi-canal<br><strong>$1M + $300K/mes</strong></td>
+            </tr>
+            <tr>
+              <td class="row-label">🟡 Kanki SpA</td>
+              <td>Comisión por canal o contenido<br><em>(esporádico)</em></td>
+              <td class="empty-cell">—</td>
+              <td>Comisión venta cross o branding</td>
+            </tr>
+            <tr>
+              <td class="row-label">🔵 Marketplace</td>
+              <td>Comisión por canal de venta</td>
+              <td>Servicio canal venta B2B</td>
+              <td class="empty-cell">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert warning">
+        <span class="icon">⚠️</span>
+        <div class="content">
+          <h4>Regla obligatoria SII (Art. 41 E LIR)</h4>
+          <p>1. Contrato escrito firmado entre SpA · 2. Precio de mercado documentado · 3. Factura electrónica DTE 33 · 4. Bitácora de servicio entregado. Si SII recalifica → multa hasta 100% del impuesto evadido.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="cruz-2">
+      <h3>Ejemplo atómico · el notebook compartido</h3>
+      <p>Guillermo necesita notebook para trabajar en Marketplace SMC.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Paso</th><th>Acción</th><th class="num">Monto</th><th>Efecto</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Marketplace compra notebook</td><td class="num">$1.500.000</td><td>IVA crédito Mkt: $239.496 · Activo fijo Mkt: $1.260.504 (deprecia 36 meses)</td></tr>
+            <tr><td>2</td><td>Tracking uso real</td><td class="num">—</td><td>Mkt 50% · SMC 30% · Kanki 20%</td></tr>
+            <tr><td>3</td><td>Refactura mensual a precio mercado</td><td class="num">$42.000/mes</td><td>Mkt → SMC: $12.600 · Mkt → Kanki: $8.400</td></tr>
+            <tr><td>4</td><td>Documentación SII</td><td class="num">—</td><td>Contrato uso compartido + factura mensual + bitácora uso</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:30px">Estructura de gastos por giro</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>SMC (servicios)</th><th>Kanki (retail)</th><th>Marketplace (multi-canal)</th><th>smc-XPort (importación)</th></tr></thead>
+          <tbody>
+            <tr><td>Mercadería</td><td>—</td><td class="pos">✓ Principal</td><td class="pos">✓ Reventa</td><td class="pos">✓ CIF importación</td></tr>
+            <tr><td>SaaS / cloud</td><td class="pos">✓ Principal</td><td>Plataforma</td><td>ERP escala</td><td>Tracking</td></tr>
+            <tr><td>Comisión MeLi/MP</td><td>—</td><td>Si activa</td><td class="pos">✓ Principal B2C</td><td>—</td></tr>
+            <tr><td>Garantías ChileCompra</td><td>—</td><td>—</td><td class="pos">✓ B2G</td><td>—</td></tr>
+            <tr><td>Aduana + arancel</td><td>—</td><td>—</td><td>—</td><td class="pos">✓ Principal</td></tr>
+            <tr><td>Marketing digital</td><td>B2B</td><td class="pos">✓ Principal</td><td>Multi-canal</td><td>—</td></tr>
+            <tr><td>Honorarios consultores</td><td class="pos">✓ Principal</td><td>—</td><td>—</td><td>Agente aduana</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-content" id="cruz-3">
+      <h3>Cruz socios · ¿Quién es dueño de qué?</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Socio</th><th>SMC SpA</th><th>Kanki SpA</th><th>Marketplace SpA</th><th>Total entidades</th></tr></thead>
+          <tbody>
+            <tr><td><strong>👤 Guillermo</strong></td><td><span class="tag confirmed">100%</span></td><td><span class="tag pending">50%</span></td><td><span class="tag future">TBD</span></td><td>3 SpA + persona natural</td></tr>
+            <tr><td><strong>👤 Martín</strong></td><td>—</td><td><span class="tag pending">50%</span></td><td>—</td><td>1 SpA (Kanki)</td></tr>
+            <tr><td><strong>👤 Javier</strong></td><td>—</td><td>—</td><td><span class="tag future">TBD</span></td><td>1 SpA (Marketplace)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;font-size:13px"><strong>Privacidad por rol:</strong> Martín solo ve Kanki · Javier solo ve Marketplace · Guillermo ve holding consolidado · Gladys/Bárbara ven lo contable que necesiten.</p>
+    </div>
+
+    <div class="tab-content" id="cruz-4">
+      <h3>Cruz dependencias · qué produce qué para qué</h3>
+      <div class="cards-grid">
+        <div class="entity-card">
+          <h4>SMC produce → consumen Kanki + Marketplace</h4>
+          <p style="font-size:13px">Servicios IA, plataforma tech, soporte cross. Si SMC se cae, las otras siguen pero sin innovación.</p>
+        </div>
+        <div class="entity-card">
+          <h4>Kanki produce → consume mercado</h4>
+          <p style="font-size:13px">Marca propia streetwear. Punto único de falla operacional (1 marca).</p>
+        </div>
+        <div class="entity-card">
+          <h4>Marketplace produce → consume mercado</h4>
+          <p style="font-size:13px">Canal multi-vertical. Mayor diversificación pero mayor complejidad operativa.</p>
+        </div>
+        <div class="entity-card">
+          <h4>Importación → directa por SpA</h4>
+          <p style="font-size:13px">Cuando Kanki o Marketplace necesiten importar, lo hacen directo o vía Nextport como cliente externo. Sin SpA dedicada.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="cruz-5">
+      <h3>Cruz cronología · timeline 2026-2030</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Período</th><th>SMC</th><th>Kanki</th><th>Marketplace</th></tr></thead>
+          <tbody>
+            <tr><td><strong>2026 Q2</strong></td><td>Reactivar facturación</td><td>Constituir notaría (1-2 meses)</td><td>—</td></tr>
+            <tr><td><strong>2026 Q3</strong></td><td>Cobrar pendientes Duoc/Fernando</td><td>Sercotec postula</td><td>—</td></tr>
+            <tr><td><strong>2026 Q4</strong></td><td>Crecer línea IA + cruzados</td><td>Sercotec entra ($7M)</td><td>Constituir con Javier</td></tr>
+            <tr><td><strong>2027 Q1</strong></td><td>F22 con movimiento real</td><td>Break-even Mes 6</td><td>Arranque B2C MeLi</td></tr>
+            <tr><td><strong>2027 Q2-Q4</strong></td><td>Escalar SAP + IA</td><td>Crece + Digitaliza</td><td>ChileCompra B2G</td></tr>
+            <tr><td><strong>2028+</strong></td><td>$50M+ Y2</td><td>$80M+ Y2</td><td>$120M+ Y2</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-content" id="cruz-6">
+      <h3>Relaciones bidireccionales · partners y clientes-proveedores</h3>
+      <p>No son conflictos · son relaciones naturales del ecosistema. Solo requieren contrato escrito simple para trazabilidad.</p>
+      <div class="alert info">
+        <span class="icon">🤝</span>
+        <div class="content">
+          <h4>Javier · cliente + socio</h4>
+          <p>Dueño de InfoPet (cliente SMC) y futuro socio Marketplace. Las operaciones SMC ↔ InfoPet y SMC ↔ Marketplace tienen contratos separados.</p>
+        </div>
+      </div>
+      <div class="alert info">
+        <span class="icon">🤝</span>
+        <div class="content">
+          <h4>CREALO · cliente y partner bidireccional</h4>
+          <p>Sergio (CREALO) es cliente de SMC (paga) Y proveedor (factura a SMC servicios consultoría IA). Cada flujo en su contrato separado.</p>
+        </div>
+      </div>
+      <div class="alert info">
+        <span class="icon">ℹ️</span>
+        <div class="content">
+          <h4>Fernando · cliente SAP</h4>
+          <p>Cliente directo línea SAP. Sin conflicto · relación cliente-proveedor estándar.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 FINANZAS -->
+<section class="block" id="finanzas" style="background:var(--bg-soft)">
+  <div class="container">
+    <span class="eyebrow">04 · Finanzas operativas</span>
+    <h2 class="title serif">Flujos de caja · IVA · calendario tributario</h2>
+    <p class="lead">
+      Lo que se paga al SII · cuándo · cuánto. Simulador IVA estilo Academia
+      Kanki ampliado a las 4 SpA. Calendario con alertas día 8 antes del
+      vencimiento día 12.
+    </p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="fin-1">Holding consolidado</button>
+      <button class="tab-btn" data-tab="fin-2">IVA simulador</button>
+      <button class="tab-btn" data-tab="fin-3">Flujo Kanki Y1</button>
+      <button class="tab-btn" data-tab="fin-4">Calendario tributario</button>
+      <button class="tab-btn" data-tab="fin-5">Global Complementario</button>
+    </div>
+
+    <div class="tab-content active" id="fin-1">
+      <h3>Holding consolidado Y1 (gestión, no tributario)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Entidad</th><th class="num">Ingresos Y1</th><th class="num">EBITDA Y1</th><th class="num">Caja al cierre</th><th>Notas</th></tr></thead>
+          <tbody>
+            <tr><td>👤 Guillermo PN</td><td class="num pos">$46.8M</td><td class="num">—</td><td class="num pos">$46.8M</td><td>Sueldo neto Globant</td></tr>
+            <tr><td>🟢 SMC SpA</td><td class="num pos">$22.5M</td><td class="num pos">+$13.5M</td><td class="num pos">+$4.5M</td><td>Sin arriendo · CapEx $9M hardware</td></tr>
+            <tr><td>🟡 Kanki SpA</td><td class="num pos">$44.0M</td><td class="num pos">+$4.6M</td><td class="num pos">+$12.0M</td><td>Incluye Sercotec $7M</td></tr>
+            <tr><td>🔵 Marketplace SpA</td><td class="num pos">$66.0M</td><td class="num pos">+$6.9M</td><td class="num">TBD</td><td>Kanki Y1 × 1.5 · necesita capital ~$10M</td></tr>
+            <tr style="background:var(--accent-bg);font-weight:700;font-size:15px"><td>HOLDING Y1</td><td class="num">$179.3M</td><td class="num pos">+$25.0M</td><td class="num pos">~$72M</td><td>Consolidado gestión</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout success">
+        <h3>✅ Caja líquida disponible Y1</h3>
+        <p>Sueldo neto Globant: <strong>$46.8M</strong> (lo que llega al bolsillo)</p>
+        <p>− Gastos personales (~50%): <strong>~$24M</strong></p>
+        <p>+ Sercotec si entra: <strong>+$7M</strong></p>
+        <p style="margin-top:10px"><strong>= Caja libre estimada: $30-37M</strong></p>
+      </div>
+    </div>
+
+    <div class="tab-content" id="fin-2">
+      <h3>IVA paso a paso · ejemplo Kanki Mes 1</h3>
+      <p>Cómo el IVA y el PPM afectan la caja. Modo dummy.</p>
+
+      <div class="simulator">
+        <div class="iva-grid">
+          <div class="iva-step">
+            <div class="step-icon">🛒</div>
+            <div class="step-label">Compras a proveedor</div>
+            <div class="step-value">$350K</div>
+            <div class="step-desc">Factura con IVA incluido</div>
+          </div>
+          <div class="iva-arrow">→</div>
+          <div class="iva-step">
+            <div class="step-icon">📄</div>
+            <div class="step-label">Crédito fiscal</div>
+            <div class="step-value" style="color:var(--green)">$55.9K</div>
+            <div class="step-desc">IVA que ya pagaste</div>
+          </div>
+          <div class="iva-arrow">→</div>
+          <div class="iva-step highlight">
+            <div class="step-icon">💵</div>
+            <div class="step-label">Ventas al cliente</div>
+            <div class="step-value">$635.880</div>
+            <div class="step-desc">M1 Kanki real</div>
+          </div>
+        </div>
+        <div class="iva-grid" style="margin-top:16px">
+          <div class="iva-step">
+            <div class="step-icon">📈</div>
+            <div class="step-label">Débito fiscal</div>
+            <div class="step-value" style="color:var(--red)">$101.5K</div>
+            <div class="step-desc">IVA cobras al cliente</div>
+          </div>
+          <div class="iva-arrow">→</div>
+          <div class="iva-step">
+            <div class="step-icon">⚖️</div>
+            <div class="step-label">IVA neto al SII</div>
+            <div class="step-value">$45.6K</div>
+            <div class="step-desc">Débito − Crédito</div>
+          </div>
+          <div class="iva-arrow">→</div>
+          <div class="iva-step" style="background:var(--red-bg);border-color:var(--red)">
+            <div class="step-icon">🏛️</div>
+            <div class="step-label">Total al SII</div>
+            <div class="step-value" style="color:var(--red)">~$50.9K</div>
+            <div class="step-desc">IVA + PPM 1%</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:30px">Fórmulas clave</h3>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td><strong>IVA incluido</strong></td><td class="mono">precio × 19/119</td></tr>
+            <tr><td><strong>IVA neto</strong></td><td class="mono">Débito − Crédito</td></tr>
+            <tr><td><strong>PPM</strong></td><td class="mono">ventas_netas × 1% / 1.19</td></tr>
+            <tr><td><strong>Renta</strong></td><td class="mono">utilidad × 25% (14D N°3) o × 27% (Régimen General)</td></tr>
+            <tr><td><strong>Caja real</strong></td><td class="mono">ventas − gastos − SII − PPM</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert info">
+        <span class="icon">💡</span>
+        <div class="content">
+          <h4>El IVA NO es ganancia tuya</h4>
+          <p>Es un impuesto que cobras al cliente y luego entregas al SII. Por eso la caja parece "grande" pero 19/119 de tus ventas le pertenecen al SII. Regla de oro: separar el 19% en cuenta de ahorro apenas llegue el dinero.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="fin-3">
+      <h3>Proyección Kanki Y1 · 1.3× mensual (-20% conservador)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mes</th><th class="num">Revenue</th><th class="num">Margen 38%</th><th class="num">Costo 62%</th><th>Hito</th></tr></thead>
+          <tbody>
+            <tr><td>M1</td><td class="num">$591.880</td><td class="num pos">$224.914</td><td class="num">$366.966</td><td>Stock inicial</td></tr>
+            <tr><td>M2</td><td class="num">$769.444</td><td class="num pos">$292.389</td><td class="num">$477.055</td><td></td></tr>
+            <tr><td>M3</td><td class="num">$1.000.278</td><td class="num pos">$380.106</td><td class="num">$620.172</td><td>Cruzados SMC</td></tr>
+            <tr><td>M4</td><td class="num">$1.300.361</td><td class="num pos">$494.137</td><td class="num">$806.224</td><td></td></tr>
+            <tr><td>M5</td><td class="num">$1.690.469</td><td class="num pos">$642.378</td><td class="num">$1.048.091</td><td>Sercotec entra +$7M</td></tr>
+            <tr><td>M6</td><td class="num">$2.197.610</td><td class="num pos">$835.092</td><td class="num">$1.362.518</td><td>Break-even</td></tr>
+            <tr><td>M7</td><td class="num">$2.856.893</td><td class="num pos">$1.085.619</td><td class="num">$1.771.273</td><td></td></tr>
+            <tr><td>M8</td><td class="num">$3.713.961</td><td class="num pos">$1.411.305</td><td class="num">$2.302.656</td><td></td></tr>
+            <tr><td>M9</td><td class="num">$4.828.149</td><td class="num pos">$1.834.697</td><td class="num">$2.993.452</td><td></td></tr>
+            <tr><td>M10</td><td class="num">$6.276.594</td><td class="num pos">$2.385.106</td><td class="num">$3.891.488</td><td></td></tr>
+            <tr><td>M11</td><td class="num">$8.159.572</td><td class="num pos">$3.100.637</td><td class="num">$5.058.935</td><td></td></tr>
+            <tr><td>M12</td><td class="num">$10.607.443</td><td class="num pos">$4.030.828</td><td class="num">$6.576.615</td><td></td></tr>
+            <tr style="background:var(--yellow-bg);font-weight:700"><td>Y1</td><td class="num">$43.992.654</td><td class="num pos">$16.717.208</td><td class="num">$27.275.446</td><td>−20% del optimista</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-content" id="fin-4">
+      <h3>Calendario tributario · alertas día 8 · vencimiento día 12</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Frecuencia</th><th>Obligación</th><th>Aplica a</th><th>Criticidad</th></tr></thead>
+          <tbody>
+            <tr><td>Día 12 mensual</td><td>F29 + PPM</td><td>SMC · Kanki · Mkt · XPort</td><td><span class="tag pending">ALTA</span></td></tr>
+            <tr><td>30 abril anual</td><td>F22 Renta</td><td>Cada SpA + persona natural</td><td><span class="tag" style="background:var(--red-bg);color:var(--red)">CRÍTICA</span></td></tr>
+            <tr><td>Mensual</td><td>F30 / F30-1 (si empleados)</td><td>Si tiene empleados</td><td><span class="tag pending">ALTA · bloquea ChileCompra</span></td></tr>
+            <tr><td>Marzo</td><td>Pre-renta · checklist F22</td><td>Todas</td><td><span class="tag" style="background:var(--red-bg);color:var(--red)">CRÍTICA</span></td></tr>
+            <tr><td>Enero</td><td>Renovación registros SII</td><td>Si aplica exención IVA</td><td><span class="tag pending">ALTA</span></td></tr>
+            <tr><td>Cuando ocurra</td><td>Cliente atrasa pago &gt;7 días</td><td>Cuentas por cobrar</td><td><span class="tag future">MEDIA</span></td></tr>
+            <tr><td>Cuando ocurra</td><td>Boleta garantía a vencer 30d</td><td>ChileCompra Marketplace</td><td><span class="tag pending">ALTA</span></td></tr>
+            <tr><td>Cuando ocurra</td><td>Sercotec rendición vence 15d</td><td>Kanki post Capital Semilla</td><td><span class="tag" style="background:var(--red-bg);color:var(--red)">CRÍTICA</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-content" id="fin-5">
+      <h3>Global Complementario Guillermo · F22 personal Abril 2027</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Componente</th><th class="num">Y1</th><th>Notas</th></tr></thead>
+          <tbody>
+            <tr><td>Sueldo Globant (bruto · estimar)</td><td class="num">~$72M</td><td>Brutificar el neto $46.8M / 0.65</td></tr>
+            <tr><td>Imp. Único ya retenido por Globant</td><td class="num">~$15M</td><td>Crédito en F22</td></tr>
+            <tr><td>Boletas honorarios 2025 (ya declaradas)</td><td class="num">$10M</td><td>NO se vuelven a declarar</td></tr>
+            <tr><td>Retiros SpA Y1</td><td class="num">$0</td><td>Sin retiros · todo reinversión</td></tr>
+            <tr style="background:var(--accent-bg);font-weight:700"><td>Base imponible F22</td><td class="num">~$72M</td><td>Solo sueldo bruto Globant</td></tr>
+            <tr><td>Tasa marginal proyectada</td><td class="num">~30-35%</td><td>Tramo medio-alto</td></tr>
+            <tr><td>Impuesto teórico</td><td class="num">~$18-22M</td><td>Antes de créditos</td></tr>
+            <tr><td>− Imp. Único retenido</td><td class="num">−$15M</td><td>Crédito</td></tr>
+            <tr style="background:var(--yellow-bg);font-weight:700"><td>Saldo a pagar Abril 2027</td><td class="num">~$3-7M</td><td>Estimación · confirmar con Gladys</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert info">
+        <span class="icon">💡</span>
+        <div class="content">
+          <h4>Estrategia de timing de retiros</h4>
+          <p>Cuando empieces a retirar utilidades de SpA (Año 2-3), cada peso retirado suma a tu Global Complementario y puede subirte de tramo. Conviene planificar retiros parciales en años de baja base imponible (ej: si dejas Globant, baja la base y conviene retirar más).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 FONDOS -->
+<section class="block" id="fondos">
+  <div class="container">
+    <span class="eyebrow">05 · Fondos públicos</span>
+    <h2 class="title serif">Mapa de oportunidades · ~$70M potenciales</h2>
+    <p class="lead">
+      Sercotec, CORFO, FOSIS, ChileCompra y SII tienen programas que aplican
+      a tu holding. Tiempos reales: 5-6 meses de demora a desembolso. La
+      especialista para esto es <strong>Bárbara</strong> (slot reservado).
+    </p>
+
+    <div class="callout success">
+      <h3>🎯 Quick wins postular AHORA</h3>
+      <p><strong>1. Sercotec Capital Semilla → Kanki</strong> · $7M no reembolsable · Martín postula como persona natural antes de constituir SpA · llegada estimada Sep 2026</p>
+      <p style="margin-top:10px"><strong>2. CORFO IFI → SMC línea IA</strong> · cofinancia 70% un proyecto IA grande · monto $25-50M · base ya armable</p>
+      <p style="margin-top:10px"><strong>3. SENCE franquicia → SMC</strong> · 1% gasto capacitación deducible inmediato · activable cuando contrate primer empleado</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>SpA</th><th>Fondo</th><th class="num">Monto</th><th>Demora</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="3">🟡 Kanki</td><td>Sercotec Capital Semilla Emprende</td><td class="num pos">$3.5M c/u</td><td>5 meses</td><td><span class="tag pending">Postular</span></td></tr>
+          <tr><td>Sercotec Crece</td><td class="num">$5.0M</td><td>12+ meses empresa</td><td><span class="tag future">Futuro</span></td></tr>
+          <tr><td>Digitaliza tu Negocio</td><td class="num">$1.5M</td><td>6 meses</td><td><span class="tag future">Futuro</span></td></tr>
+          <tr><td rowspan="3">🟢 SMC</td><td>CORFO IFI</td><td class="num pos">$25-50M</td><td>6 meses</td><td><span class="tag pending">Postular</span></td></tr>
+          <tr><td>Semilla Expande</td><td class="num">$25M</td><td>6 meses</td><td><span class="tag pending">Postular</span></td></tr>
+          <tr><td>SENCE franquicia</td><td class="num">~$1M</td><td>3 meses</td><td><span class="tag confirmed">Activar</span></td></tr>
+          <tr><td rowspan="3">🔵 Marketplace</td><td>Sercotec Crece</td><td class="num">$5.0M</td><td>12+ meses</td><td><span class="tag future">Futuro</span></td></tr>
+          <tr><td>Crece Sostenible</td><td class="num">$5.0M</td><td>6 meses</td><td><span class="tag future">Futuro</span></td></tr>
+          <tr><td>ChileCompra B2G</td><td class="num">Variable</td><td>Ongoing</td><td><span class="tag future">Futuro</span></td></tr>
+          <tr style="background:var(--accent-bg);font-weight:700"><td colspan="2">TOTAL POTENCIAL</td><td class="num pos">~$70M</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert warning">
+      <span class="icon">⚠️</span>
+      <div class="content">
+        <h4>Cumplimiento previsional F30/F30-1</h4>
+        <p>Antes de postular cualquier fondo público o licitar en ChileCompra: estar al día con cotizaciones previsionales. Si SMC contrata empleado, F30 obligatorio mensual. Sin esto, quedas inhábil para fondos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 CONEXIONES -->
+<section class="block" id="conexiones" style="background:var(--bg-soft)">
+  <div class="container">
+    <span class="eyebrow">06 · Conexiones externas</span>
+    <h2 class="title serif">Sistemas con los que opera el Contador IA</h2>
+    <p class="lead">
+      <strong>Contador IA reemplaza software contable externo.</strong> No
+      necesita Defontana ni Nubox. Hereda funciones de mercado y opera con
+      Clave Única SII directamente, como Patricia (otro agente similar).
+    </p>
+
+    <div class="cards-grid">
+      <div class="entity-card">
+        <div class="icon-big">🏛️</div>
+        <h3>SII (Servicio de Impuestos Internos)</h3>
+        <p style="font-size:13px">F29 mensual · F22 anual · libros · DTE emisión · certificados · Clave Única por SpA · Mi SII por RUT empresa.</p>
+        <p style="font-size:12px;color:var(--ink-muted);margin-top:8px"><strong>SMC:</strong> 76.811.863-9 · 0 reparos</p>
+      </div>
+      <div class="entity-card">
+        <div class="icon-big">🏦</div>
+        <h3>Bancos</h3>
+        <p style="font-size:13px">BancoEstado PYME (MVP) · Bci con API bancaria (futuro) · MercadoPago (Wallet Kanki) · Global66 (pagos internacionales smc-XPort).</p>
+      </div>
+      <div class="entity-card">
+        <div class="icon-big">🛒</div>
+        <h3>MercadoLibre + MercadoPago</h3>
+        <p style="font-size:13px">API oficial · ventas B2C · comisiones 16%+IVA · retenciones 1% renta · liquidaciones · cesión boletas automáticas.</p>
+      </div>
+      <div class="entity-card">
+        <div class="icon-big">🏛️</div>
+        <h3>ChileCompra · ChileProveedores</h3>
+        <p style="font-size:13px">Mercado Público · licitaciones LP · convenio marco · garantías bancarias · F30/F30-1 al día · plazo pago Estado 60-90d.</p>
+      </div>
+      <div class="entity-card">
+        <div class="icon-big">💸</div>
+        <h3>Wallet Kanki (panel-socios)</h3>
+        <p style="font-size:13px">Heredado de panel-socios.html · flujo aprobación entre Martín y Guillermo · categorías: Inventario, Marketing, Envíos, Operación, Otro.</p>
+      </div>
+      <div class="entity-card">
+        <div class="icon-big">🚢</div>
+        <h3>Importación directa (cuando aplique)</h3>
+        <p style="font-size:13px">Si Kanki o Marketplace importan, contratan agente aduana + pagos internacionales (Global66) + inspección origen como servicios externos · sin SpA dedicada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 WORKSPACES -->
+<section class="block" id="workspaces">
+  <div class="container">
+    <span class="eyebrow">07 · Workspaces por destinatario</span>
+    <h2 class="title serif">Vista adaptada por persona</h2>
+    <p class="lead">
+      Cada persona ve solo lo que le corresponde. Mismo Contador IA, distintos
+      formatos de salida. Privacidad estricta entre socios.
+    </p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="ws-1">📋 Gladys (16:00 hoy)</button>
+      <button class="tab-btn" data-tab="ws-2">📋 Bárbara (fondos)</button>
+      <button class="tab-btn" data-tab="ws-3">👤 Guillermo</button>
+      <button class="tab-btn" data-tab="ws-4">👤 Martín (Kanki)</button>
+      <button class="tab-btn" data-tab="ws-5">👤 Javier (Mkt)</button>
+      <button class="tab-btn" data-tab="ws-6">💬 Sesión</button>
+      <button class="tab-btn" data-tab="ws-academia">🎓 Academia</button>
+    </div>
+
+    <div class="tab-content active" id="ws-1">
+      <h3>📋 Índice Reunión Gladys · 16:00 hoy 2026-05-07</h3>
+      <p>Estado: <span class="tag pending">PRIMERA REUNIÓN</span> · Objetivo: validar régimen, plan reactivación SMC, estructura constitución Kanki.</p>
+
+      <h4 style="margin-top:24px">Temas a tratar (por orden de criticidad)</h4>
+      <ul class="checklist">
+        <li><input type="checkbox"> <span class="text"><strong>SMC freeze · regularización</strong> · 0 reparos en SII · solo reactivar movimiento</span> <span class="priority p1">P1</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Confirmar régimen 14D N°3 Pro-PYME General</strong> para las 4 SpA</span> <span class="priority p1">P1</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Constitución Kanki</strong> en 1-2 meses · pacto socios · notaría · BancoEstado</span> <span class="priority p1">P1</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Pacto de Socios Kanki</strong> · ¿Gladys redacta plantilla o abogado?</span> <span class="priority p1">P1</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Capital pagado SMC</strong> original · ¿hay que aumentar?</span> <span class="priority p2">P2</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Cuenta corriente PYME</strong> · ¿abrir con SMC ahora o esperar Kanki?</span> <span class="priority p2">P2</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Arrendar dpto Concón</strong> · ¿conviene como gasto SMC vs ingreso pareja?</span> <span class="priority p2">P2</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Facturación cruzada</strong> entre SpA · Art. 41 E LIR · cómo documentar</span> <span class="priority p2">P2</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Calendario tributario</strong> 4 SpA · primer año · alertas</span> <span class="priority p2">P2</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Sueldo bruto Globant</strong> exacto · para F22 personal Abril 2027</span> <span class="priority p3">P3</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Estructura gastos por giro</strong> · qué deducir y cómo documentar</span> <span class="priority p3">P3</span></li>
+        <li><input type="checkbox"> <span class="text"><strong>Software contable</strong> · ¿Gladys usa alguno obligatorio? (Contador IA reemplaza)</span> <span class="priority p3">P3</span></li>
+      </ul>
+
+      <h4 style="margin-top:30px">Lo que necesito que Gladys me confirme</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pregunta</th><th>Mi propuesta</th></tr></thead>
+          <tbody>
+            <tr><td>Régimen tributario para 3 SpA</td><td>14D N°3 Pro-PYME General</td></tr>
+            <tr><td>Cómo reactivar SMC</td><td>Facturar pendiente Duoc $1M en Mes 1</td></tr>
+            <tr><td>Notaría Kanki</td><td>1-2 meses · BancoEstado PYME</td></tr>
+            <tr><td>Arriendo Concón</td><td>$500K/mes · gasto deducible · ingreso pareja como honorarios</td></tr>
+            <tr><td>Constitución Marketplace</td><td>Q4 2026 cuando Javier defina equity</td></tr>
+            <tr><td>Importación Kanki/Marketplace</td><td>Servicios externos (Nextport o agente aduana) · sin SpA dedicada</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-content" id="ws-2">
+      <h3>📋 Índice Reunión Bárbara · futura · fondos públicos</h3>
+      <p>Estado: <span class="tag future">POR AGENDAR</span> · Objetivo: postular Sercotec Capital Semilla Kanki + CORFO IFI SMC.</p>
+
+      <h4 style="margin-top:20px">Plan de postulaciones priorizado</h4>
+      <ol style="padding-left:24px">
+        <li style="margin-bottom:12px"><strong>Sercotec Capital Semilla Kanki</strong> ($7M) · Martín postula como persona natural · sin SpA aún · 5 meses al pago</li>
+        <li style="margin-bottom:12px"><strong>CORFO IFI SMC IA</strong> ($25-50M) · cofinancia 70% un proyecto IA grande · base ya armable · 6 meses</li>
+        <li style="margin-bottom:12px"><strong>SENCE franquicia SMC</strong> ($1M) · activar cuando contrate primer empleado</li>
+        <li style="margin-bottom:12px"><strong>Sercotec Crece</strong> Kanki · Y2 cuando empresa tenga 12+ meses</li>
+        <li style="margin-bottom:12px"><strong>ProChile + CORFO Internacionalización</strong> · cuando Kanki o Marketplace inicien importación directa</li>
+      </ol>
+
+      <h4 style="margin-top:24px">Datos a confirmar con Bárbara</h4>
+      <ul class="checklist">
+        <li><input type="checkbox"> <span class="text">Convocatorias activas Sercotec con fechas exactas</span> <span class="priority p1">P1</span></li>
+        <li><input type="checkbox"> <span class="text">Bases del programa Capital Semilla Emprende vigentes</span> <span class="priority p1">P1</span></li>
+        <li><input type="checkbox"> <span class="text">Plan de inversión Kanki con cotizaciones</span> <span class="priority p1">P1</span></li>
+        <li><input type="checkbox"> <span class="text">Plataforma SAS Sercotec · cómo se navega</span> <span class="priority p2">P2</span></li>
+        <li><input type="checkbox"> <span class="text">Cronograma postulación · ejecución · rendición</span> <span class="priority p2">P2</span></li>
+        <li><input type="checkbox"> <span class="text">Riesgo si rinde mal · plan B</span> <span class="priority p2">P2</span></li>
+      </ul>
+    </div>
+
+    <div class="tab-content" id="ws-3">
+      <h3>👤 Workspace Guillermo · holding consolidado</h3>
+      <p>Vista personal. Modo Ben Affleck preciso. Tablas crudas, no endulzar.</p>
+      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kpi"><div class="kpi-label">Sueldo Globant Y1</div><div class="kpi-value serif">$46.8M</div></div>
+        <div class="kpi"><div class="kpi-label">Holding Y1</div><div class="kpi-value serif">+$78M</div></div>
+        <div class="kpi"><div class="kpi-label">Caja libre Y1</div><div class="kpi-value serif">~$30-37M</div></div>
+        <div class="kpi"><div class="kpi-label">Imp. F22 2027</div><div class="kpi-value serif">~$3-7M</div></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="ws-4">
+      <h3>👤 Workspace Martín · solo Kanki</h3>
+      <p>Modo Academia Kanki. Didáctico. Privacidad: NO ve SMC, Marketplace ni smc-XPort.</p>
+      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kpi"><div class="kpi-label">Tu aporte capital</div><div class="kpi-value serif">$1.122.642</div></div>
+        <div class="kpi"><div class="kpi-label">Equity</div><div class="kpi-value serif">50%</div></div>
+        <div class="kpi"><div class="kpi-label">Sercotec posible</div><div class="kpi-value serif">$3.5M</div></div>
+        <div class="kpi"><div class="kpi-label">Retiro Y1</div><div class="kpi-value serif">$0</div></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="ws-5">
+      <h3>👤 Workspace Javier · solo Marketplace</h3>
+      <p>Modo técnico-contable. Privacidad: NO ve SMC ni Kanki.</p>
+      <div class="alert info">
+        <span class="icon">🤝</span>
+        <div class="content">
+          <h4>Relación bidireccional cliente + socio</h4>
+          <p>Javier es dueño de InfoPet (cliente SMC) Y futuro socio Marketplace. Las operaciones se documentan con contrato simple para mantener la trazabilidad · sin alarma · es relación de partner natural.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="ws-6">
+      <h3>💬 Sesión 2026-05-07 · resumen ejecutivo</h3>
+      <p>Conversación de diseño del holding · 7+ horas · 5 agentes activos: Cerebro, Contador, Comercial, Panchita, Fiori.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bloque</th><th>Decisión clave</th></tr></thead>
+          <tbody>
+            <tr><td>Mapa del holding</td><td>3 SpA + persona natural · 7 iteraciones</td></tr>
+            <tr><td>Agente Contador</td><td>MD creado en ~/.claude/agents/CONTADOR.md · Sonnet 4.6 · 50 skills</td></tr>
+            <tr><td>Régimen tributario</td><td>14D N°3 Pro-PYME General para las 3 SpA</td></tr>
+            <tr><td>SMC freeze</td><td>Sin reparos · regularización $0 · solo reactivar movimiento</td></tr>
+            <tr><td>Estructura facturación</td><td>Matriz 3×3 · Art. 41 E LIR obligatorio</td></tr>
+            <tr><td>Software contable</td><td>Contador IA reemplaza · Defontana/Nubox NO</td></tr>
+            <tr><td>Maqueta</td><td>Este HTML · sidebar + 14 módulos · listo para Gladys</td></tr>
+            <tr><td>Importación</td><td>Sin SpA dedicada · Kanki/Mkt importan directo o vía Nextport</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;font-size:12px;color:var(--ink-muted)">Transcripción completa disponible en historial Claude Code.</p>
+    </div>
+
+    <div class="tab-content" id="ws-academia">
+      <h3>🎓 Academia · doble clic para aprender cualquier tema</h3>
+      <p>La Academia es transversal · hereda de los 4 bloques · 8 sub-bloques.</p>
+
+      <div class="cards-grid" style="margin-top:24px">
+        <div class="entity-card">
+          <h4>A · Estratégico</h4>
+          <p style="font-size:12px">¿Qué es un flywheel? · Procesos cruzados (BPMN básico) · Arquitectura tech del holding</p>
+        </div>
+        <div class="entity-card">
+          <h4>B · Entidades y societario</h4>
+          <p style="font-size:12px">Persona Natural vs SpA · Regímenes (14A, 14D N°3, 14D N°8) · Constituir SpA · Pacto socios</p>
+        </div>
+        <div class="entity-card">
+          <h4>C · Operación por giro</h4>
+          <p style="font-size:12px">🟢 Servicios Tech (SMC) · 🟡 Retail B2C (Kanki) · 🔵 Multi-canal (Mkt)</p>
+        </div>
+        <div class="entity-card">
+          <h4>D · Contabilidad y tributario</h4>
+          <p style="font-size:12px">IVA modo dummy · PPM vs Renta · Caja real vs aparente · Glosario tributario</p>
+        </div>
+        <div class="entity-card">
+          <h4>E · Contabilidad cruzada</h4>
+          <p style="font-size:12px">Precios transferencia Art. 41 E LIR · Facturación entre relacionadas · Riesgos SII</p>
+        </div>
+        <div class="entity-card">
+          <h4>F · Fondos públicos</h4>
+          <p style="font-size:12px">Sercotec · CORFO · FOSIS · ChileCompra · SII · Postular · Ejecutar · Rendir</p>
+        </div>
+        <div class="entity-card">
+          <h4>G · Finanzas</h4>
+          <p style="font-size:12px">Flujo caja · F30/F30-1 · Garantías bancarias · Factoring · Tipo cambio USD/CLP</p>
+        </div>
+        <div class="entity-card">
+          <h4>H · Conexiones y sistemas</h4>
+          <p style="font-size:12px">SII Clave Única · Bancos PYME · MeLi+MP · ChileCompra · Wallet Kanki</p>
+        </div>
+      </div>
+
+      <h4 style="margin-top:30px">Glosario tributario express</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Sigla</th><th>Significado</th><th>Cuándo aplica</th></tr></thead>
+          <tbody>
+            <tr><td><strong>F29</strong></td><td>Formulario 29 · IVA + PPM mensual</td><td>Cada mes · día 12</td></tr>
+            <tr><td><strong>F22</strong></td><td>Declaración Renta anual</td><td>Abril cada año</td></tr>
+            <tr><td><strong>PPM</strong></td><td>Pago Provisional Mensual · anticipo Renta</td><td>Mensual con F29</td></tr>
+            <tr><td><strong>IDPC</strong></td><td>Impuesto Primera Categoría · 25-27%</td><td>Anual con F22</td></tr>
+            <tr><td><strong>DTE</strong></td><td>Documento Tributario Electrónico</td><td>Cada factura/boleta</td></tr>
+            <tr><td><strong>RLI</strong></td><td>Renta Líquida Imponible · base IDPC</td><td>Cierre anual</td></tr>
+            <tr><td><strong>F30 / F30-1</strong></td><td>Cumplimiento previsional</td><td>Si tiene empleados</td></tr>
+            <tr><td><strong>14D N°3</strong></td><td>Régimen Pro-PYME General</td><td>Empresas hasta 75.000 UF/año</td></tr>
+            <tr><td><strong>14D N°8</strong></td><td>Régimen Pro-PYME Transparente</td><td>Tributa el dueño directamente</td></tr>
+            <tr><td><strong>DUS</strong></td><td>Documento Único de Salida (importación)</td><td>Cuando Kanki/Mkt importen</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 CIFRAS -->
+<section class="block" id="cifras" style="background:var(--bg-accent)">
+  <div class="container" style="text-align:center">
+    <span class="eyebrow" style="background:white">Cifras destacadas</span>
+    <h2 class="title serif">Holding Smart Connection · datos al cierre</h2>
+    <p style="text-align:center;color:var(--ink-muted);font-size:14px;margin-bottom:50px">2026-05-07 · proyección Y1 conservadora</p>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:30px;max-width:1100px;margin:0 auto">
+      <div style="background:white;padding:40px;border-radius:16px;box-shadow:var(--shadow-md)">
+        <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:8px">Entidades del holding</h4>
+        <div class="serif" style="font-size:80px;color:var(--accent);line-height:1;margin:14px 0">4</div>
+        <p style="font-size:13px;color:var(--ink-soft)">1 persona natural + 3 SpA</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px">
+          <div style="background:var(--green-bg);padding:14px;border-radius:8px"><div style="font-size:24px;font-weight:700">1</div><div style="font-size:11px;color:var(--green)">Operando</div></div>
+          <div style="background:var(--yellow-bg);padding:14px;border-radius:8px"><div style="font-size:24px;font-weight:700">1</div><div style="font-size:11px;color:var(--yellow)">Constitución</div></div>
+          <div style="background:var(--cyan-bg);padding:14px;border-radius:8px"><div style="font-size:24px;font-weight:700">1</div><div style="font-size:11px;color:var(--cyan)">Futura</div></div>
+        </div>
+      </div>
+      <div style="background:white;padding:40px;border-radius:16px;box-shadow:var(--shadow-md)">
+        <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:8px">Holding Y1 consolidado</h4>
+        <div class="serif" style="font-size:80px;color:var(--green);line-height:1;margin:14px 0">+$72M</div>
+        <p style="font-size:13px;color:var(--ink-soft)">Resultado gestión (no tributario)</p>
+        <div style="margin-top:18px;text-align:left">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span>👤 Persona natural (contexto)</span><strong>+$46.8M</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span>🟢 SMC</span><strong>+$13.5M</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span>🟡 Kanki</span><strong>+$4.6M</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span>🔵 Marketplace (Kanki ×1.5)</span><strong>+$6.9M</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1100px;margin:30px auto 0">
+      <div style="background:white;padding:24px;border-radius:14px;box-shadow:var(--shadow-sm)">
+        <div style="font-size:13px;color:var(--ink-muted);margin-bottom:6px">Socios totales</div>
+        <div class="serif" style="font-size:36px;color:var(--ink)">3</div>
+        <div style="font-size:11px;color:var(--ink-muted)">Guille · Martín · Javier</div>
+      </div>
+      <div style="background:white;padding:24px;border-radius:14px;box-shadow:var(--shadow-sm)">
+        <div style="font-size:13px;color:var(--ink-muted);margin-bottom:6px">Clientes mapeados</div>
+        <div class="serif" style="font-size:36px;color:var(--ink)">10</div>
+        <div style="font-size:11px;color:var(--ink-muted)">Confirmados + 13 gaps</div>
+      </div>
+      <div style="background:white;padding:24px;border-radius:14px;box-shadow:var(--shadow-sm)">
+        <div style="font-size:13px;color:var(--ink-muted);margin-bottom:6px">Fondos potenciales</div>
+        <div class="serif" style="font-size:36px;color:var(--green)">$70M</div>
+        <div style="font-size:11px;color:var(--ink-muted)">Sercotec + CORFO + SII</div>
+      </div>
+      <div style="background:white;padding:24px;border-radius:14px;box-shadow:var(--shadow-sm)">
+        <div style="font-size:13px;color:var(--ink-muted);margin-bottom:6px">Régimen único</div>
+        <div class="serif" style="font-size:36px;color:var(--accent)">14D N°3</div>
+        <div style="font-size:11px;color:var(--ink-muted)">Pro-PYME General · 3 SpA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /main-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h5>Holding</h5>
+      <a href="#vision">Visión · Procesos · Arq</a>
+      <a href="#entidades">5 entidades</a>
+      <a href="#cruzada">Vistas cruzadas</a>
+      <a href="#cifras">Cifras destacadas</a>
+    </div>
+    <div>
+      <h5>Operación</h5>
+      <a href="#finanzas">Finanzas · IVA</a>
+      <a href="#fondos">Fondos públicos</a>
+      <a href="#conexiones">Conexiones SII</a>
+    </div>
+    <div>
+      <h5>Workspaces</h5>
+      <a href="#workspaces">Reunión Gladys 16:00</a>
+      <a href="#workspaces">Reunión Bárbara (futura)</a>
+      <a href="#workspaces">Sesión 2026-05-07</a>
+    </div>
+    <div>
+      <h5>Generado por</h5>
+      <p style="color:rgba(255,255,255,.7);line-height:1.6">🧮 Contador IA<br>🧠 Cerebro<br>💰 Comercial<br>🐕 Panchita<br>🎨 Fiori</p>
+      <p style="margin-top:14px;font-size:11px;color:rgba(255,255,255,.5)">Smart Connection Group · 2026-05-07</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Tabs
+document.querySelectorAll('.tabs').forEach(tabsEl=>{
+  const buttons = tabsEl.querySelectorAll('.tab-btn');
+  const section = tabsEl.parentElement;
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const target = btn.dataset.tab;
+      buttons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      section.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+      const content = document.getElementById(target);
+      if(content) content.classList.add('active');
+    });
+  });
+});
+
+// Smooth scroll + activación de tab desde sidebar
+function activateTab(tabId){
+  const content = document.getElementById(tabId);
+  if(!content) return;
+  const section = content.closest('section');
+  if(!section) return;
+  section.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  content.classList.add('active');
+  section.querySelectorAll('.tab-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tab === tabId);
+  });
+}
+
+document.querySelectorAll('nav.main a, .sb-link').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const href = a.getAttribute('href');
+    if(!href || !href.startsWith('#')) return;
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+    const tabId = a.dataset.tab;
+    if(tabId){ setTimeout(()=>activateTab(tabId), 350); }
+    document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+    if(a.classList.contains('sb-link')) a.classList.add('active');
+    if(window.innerWidth<=1100) document.getElementById('sidebar').classList.remove('open');
+  });
+});
+
+// Highlight sidebar link al hacer scroll
+const sections = ['home','vision','entidades','cruzada','finanzas','fondos','conexiones','workspaces','cifras'];
+window.addEventListener('scroll',()=>{
+  const y = window.scrollY + 120;
+  let current = 'home';
+  sections.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && el.offsetTop <= y) current = id;
+  });
+  document.querySelectorAll('.sb-link').forEach(l=>{
+    const href = l.getAttribute('href');
+    if(href === '#'+current && !l.dataset.tab) l.classList.add('active');
+    else if(href !== '#'+current) l.classList.remove('active');
+  });
+});
+</script>
+
+</body>
+</html>

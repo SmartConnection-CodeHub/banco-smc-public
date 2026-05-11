@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KANKI STREET — Storefront</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pacifico&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   🐕 PANCHITA + ⚡ SERGITO — Storefront Kanki Street v2
+   Layout: sidebar FLOTA sobre hero, no columna rígida
+   Productos con SVG ilustraciones realistas
+   Referencia: imagen Gemini del cliente
+   ═══════════════════════════════════════════════════ */
+:root {
+  --sand-light:#f5f0e8; --sand:#e8dcc8; --sand-dark:#d4c5a9;
+  --kraft:#c4a882; --kraft-dark:#a68b6b;
+  --wood:#6b4c3b; --wood-dark:#3d2b1f;
+  --cream:#faf7f2;
+  --teal:#2d9da1; --teal-dark:#1e7a7d; --teal-light:#4fc4c7;
+  --coral:#e07c5a; --coral-dark:#c4613f;
+  --green-ok:#6b9e4f; --yellow-warn:#d4a843; --red-alert:#c4503f;
+  --text-dark:#2a1f14; --text-body:#4a3f35; --text-muted:#8a7e72;
+  --border-kraft:rgba(164,139,107,0.4);
+  --shadow-warm:rgba(61,43,31,0.15);
+  --shadow-warm-lg:rgba(61,43,31,0.25);
+  --font-display:'Bebas Neue',sans-serif;
+  --font-script:'Pacifico',cursive;
+  --font-serif:'Lora',Georgia,serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --header-h:64px;
+  --subheader-h:36px;
+  --brand-filter-h:36px;
+  --radius-sm:4px; --radius-md:8px; --radius-lg:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--font-body);color:var(--text-body);min-height:100vh;overflow-x:hidden;background:var(--sand-light)}
+
+/* ═══ HEADER ═══ */
+.header {
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--header-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;
+  background:linear-gradient(180deg,rgba(245,240,232,0.97),rgba(245,240,232,0.92));
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border-kraft);
+}
+.header-nav{display:flex;gap:20px}
+.header-nav a{font-family:var(--font-display);font-size:0.95rem;color:var(--wood-dark);text-decoration:none;letter-spacing:3px;transition:color 0.2s}
+.header-nav a:hover,.header-nav a.active{color:var(--teal)}
+.header-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center}
+.header-logo h1{font-family:var(--font-display);font-size:2.6rem;color:var(--wood-dark);letter-spacing:8px;line-height:1}
+.header-logo .subtitle{font-family:var(--font-display);font-size:0.65rem;color:var(--kraft-dark);letter-spacing:5px;margin-top:-2px}
+.header-right{display:flex;align-items:center;gap:16px}
+.header-right a{font-family:var(--font-display);font-size:0.95rem;color:var(--wood-dark);text-decoration:none;letter-spacing:3px;transition:color 0.2s}
+.header-right a:hover{color:var(--teal)}
+.header-icons{display:flex;gap:12px;margin-left:6px}
+.header-icons button{background:none;border:none;font-size:1.15rem;color:var(--wood-dark);cursor:pointer;transition:color 0.2s;position:relative}
+.header-icons button:hover{color:var(--teal)}
+.badge-count{position:absolute;top:-5px;right:-7px;background:var(--coral);color:#fff;font-size:0.5rem;font-weight:700;padding:1px 4px;border-radius:10px;font-family:var(--font-body)}
+
+/* ═══ SUBHEADER ═══ */
+.subheader {
+  position:fixed;top:var(--header-h);left:0;right:0;z-index:99;
+  height:var(--subheader-h);display:flex;align-items:center;justify-content:center;gap:36px;
+  background:rgba(232,220,200,0.88);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border-kraft);
+}
+.subheader a{font-family:var(--font-display);font-size:0.8rem;color:var(--wood);text-decoration:none;letter-spacing:3px;transition:color 0.2s}
+.subheader a:hover,.subheader a.active{color:var(--teal-dark);text-decoration:underline;text-underline-offset:4px}
+
+/* ═══ BRAND FILTER ═══ */
+.brand-filter {
+  position:fixed;top:calc(var(--header-h) + var(--subheader-h));left:0;right:0;z-index:98;
+  height:36px;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:rgba(245,240,232,0.95);backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(196,168,130,0.15);
+}
+.brand-filter-label {
+  font-family:var(--font-display);font-size:0.6rem;letter-spacing:2px;
+  color:var(--text-muted);margin-right:4px;
+}
+.brand-btn {
+  font-family:var(--font-display);font-size:0.7rem;letter-spacing:2px;
+  padding:3px 14px;border-radius:20px;cursor:pointer;transition:all 0.2s;
+  border:1px solid var(--border-kraft);background:transparent;color:var(--wood);
+}
+.brand-btn:hover { border-color:var(--teal);color:var(--teal); }
+.brand-btn.active { background:var(--navy,#1B2F4E);color:var(--cream);border-color:var(--navy,#1B2F4E); }
+
+/* ═══ HERO SECTION — wallpaper con sidebar flotante ═══ */
+.hero-section {
+  position:relative;
+  margin-top:calc(var(--header-h) + var(--subheader-h) + var(--brand-filter-h));
+  width:100%;
+  height:70vh;min-height:480px;max-height:700px;
+  overflow:hidden;
+}
+.hero-img {
+  width:100%;height:100%;object-fit:cover;object-position:center 20%;
+  cursor:pointer;transition:transform 0.5s;
+}
+.hero-section:hover .hero-img{transform:scale(1.015)}
+/* ⚡ Sergito: vignette orgánica — no boxy */
+.hero-section::after {
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(245,240,232,0.35) 0%, transparent 12%, transparent 88%, rgba(245,240,232,0.5) 100%),
+    linear-gradient(90deg, rgba(245,240,232,0.55) 0%, transparent 15%, transparent 100%);
+}
+.hero-hint {
+  position:absolute;top:16px;right:20px;z-index:5;
+  background:rgba(61,43,31,0.65);backdrop-filter:blur(8px);
+  padding:8px 18px;border-radius:var(--radius-sm);
+  font-family:var(--font-display);font-size:0.85rem;letter-spacing:2px;color:var(--cream);
+  border:1px solid rgba(196,168,130,0.3);
+  cursor:pointer;transition:background 0.2s;
+}
+.hero-hint:hover{background:rgba(45,157,161,0.75)}
+
+/* ═══ SIDEBAR — FLOTA sobre el hero ═══ */
+/* Server Component — solo lectura */
+.sidebar-float {
+  position:absolute;top:16px;left:16px;z-index:10;
+  width:200px;
+  background:rgba(250,247,242,0.92);backdrop-filter:blur(14px);
+  border:1px solid var(--border-kraft);
+  border-radius:var(--radius-md);
+  padding:18px 16px;
+  box-shadow:4px 4px 20px var(--shadow-warm-lg);
+}
+.sidebar-float ul{list-style:none;margin-bottom:16px}
+.sidebar-float li{margin-bottom:1px}
+.sidebar-float a {
+  display:block;padding:6px 8px;
+  font-family:var(--font-display);font-size:0.88rem;letter-spacing:2px;
+  color:var(--wood-dark);text-decoration:none;
+  border-radius:var(--radius-sm);transition:all 0.15s;
+}
+.sidebar-float a:hover{background:rgba(196,168,130,0.2)}
+.sidebar-float a.active{color:var(--teal-dark);background:rgba(45,157,161,0.08)}
+.filter-label{font-family:var(--font-display);font-size:0.8rem;letter-spacing:3px;color:var(--wood-dark);margin-bottom:8px;padding-top:8px;border-top:1px solid var(--border-kraft)}
+.filter-sel {
+  width:100%;padding:7px 10px;margin-bottom:8px;
+  border:1px solid var(--border-kraft);border-radius:var(--radius-sm);
+  background:var(--cream);font-family:var(--font-body);font-size:0.78rem;
+  color:var(--text-body);cursor:pointer;outline:none;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a7e72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;
+}
+.filter-sel:focus{border-color:var(--teal)}
+
+/* ═══ PRODUCTS SECTION — superpuesta ligeramente al hero ═══ */
+/* ⚡ Sergito: los productos "emergen" del hero, no son una sección separada cuadrada */
+.products-section {
+  position:relative;z-index:2;
+  margin-top:-40px;
+  padding:0 24px 24px;
+}
+.products-inner {
+  background:rgba(250,247,242,0.93);backdrop-filter:blur(12px);
+  border:1px solid var(--border-kraft);
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  padding:24px;
+  box-shadow:0 -8px 30px var(--shadow-warm);
+}
+.section-title {
+  font-family:var(--font-display);font-size:1rem;letter-spacing:3px;
+  color:var(--wood-dark);margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-title .line{flex:1;height:1px;background:var(--border-kraft)}
+
+/* ═══ PRODUCT CARDS — con imágenes SVG realistas ═══ */
+/* 'use client' — onClick, hover */
+.products-grid {
+  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+}
+/* Catalog feature banner */
+.catalog-feature-banner{
+  grid-column:1/-1;
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-radius:var(--radius-md);overflow:hidden;
+  margin-bottom:4px;
+  min-height:220px;
+}
+.catalog-feature-banner img{
+  width:100%;height:100%;object-fit:cover;object-position:center top;
+  display:block;
+}
+.catalog-feature-copy{
+  background:var(--navy,#1B2F4E);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:32px 36px;
+  color:var(--cream,#F5EDD8);
+}
+.catalog-feature-copy .eyebrow{
+  font-size:0.65rem;letter-spacing:4px;color:var(--gold,#C49A3A);
+  font-family:var(--font-display);margin-bottom:10px;
+}
+.catalog-feature-copy h3{
+  font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;
+  margin-bottom:10px;line-height:1.2;
+}
+.catalog-feature-copy p{
+  font-size:0.85rem;opacity:0.75;line-height:1.5;margin-bottom:18px;
+}
+.catalog-feature-copy a{
+  display:inline-block;
+  font-family:var(--font-display);font-size:0.7rem;letter-spacing:3px;
+  border:1px solid var(--gold,#C49A3A);color:var(--gold,#C49A3A);
+  padding:8px 20px;border-radius:2px;text-decoration:none;
+  transition:background 0.2s,color 0.2s;width:fit-content;
+}
+.catalog-feature-copy a:hover{background:var(--gold,#C49A3A);color:var(--navy,#1B2F4E);}
+/* Brands separator */
+.brands-row-label{
+  grid-column:1/-1;
+  display:flex;align-items:center;gap:12px;
+  margin-top:8px;margin-bottom:-4px;
+}
+.brands-row-label span{
+  font-family:var(--font-display);font-size:0.65rem;letter-spacing:4px;
+  color:var(--wood,#8B6914);white-space:nowrap;
+}
+.brands-row-label::before,.brands-row-label::after{
+  content:'';flex:1;height:1px;background:rgba(139,105,20,0.25);
+}
+.product-card {
+  background:var(--cream);border:1px solid rgba(196,168,130,0.3);
+  border-radius:var(--radius-md);overflow:hidden;
+  box-shadow:0 2px 8px var(--shadow-warm);
+  transition:transform 0.25s,box-shadow 0.25s;
+  cursor:pointer;
+}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px var(--shadow-warm-lg)}
+
+/* Product images — SVG inline illustrations */
+.product-img {
+  width:100%;aspect-ratio:4/5;
+  display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid rgba(196,168,130,0.2);
+  overflow:hidden;position:relative;
+  background:linear-gradient(145deg,var(--sand-light) 0%,var(--sand) 100%);
+  perspective:900px;
+}
+/* ── FLIP INNER ── */
+.flip-inner {
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.55s cubic-bezier(0.4,0,0.2,1);
+}
+.product-card:not([onclick="return false"]):hover .flip-inner {
+  transform:rotateY(180deg);
+}
+/* Front face */
+.flip-front {
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  overflow:hidden;
+}
+.flip-front img {
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform 0.4s ease;
+}
+/* Back face */
+.flip-back {
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:rotateY(180deg);
+  background:linear-gradient(145deg,var(--navy,#1B2F4E) 0%,#0d1e33 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+.flip-back-content {
+  text-align:center;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.flip-back-brand {
+  font-family:var(--font-display,'Bebas Neue',sans-serif);
+  font-size:0.6rem;letter-spacing:3px;color:rgba(196,154,58,0.8);
+}
+.flip-back-name {
+  font-family:var(--font-display,'Bebas Neue',sans-serif);
+  font-size:1.1rem;letter-spacing:3px;color:#F5EDD8;line-height:1.15;
+}
+.flip-back-price {
+  font-size:1.3rem;font-weight:700;color:#C49A3A;letter-spacing:1px;
+}
+.flip-back-cta {
+  font-family:var(--font-display,'Bebas Neue',sans-serif);
+  font-size:0.65rem;letter-spacing:2.5px;color:rgba(245,237,216,0.55);
+  margin-top:4px;
+}
+/* ── fallback SVG (no flip) ── */
+.product-img svg {
+  width:65%;height:auto;max-height:80%;
+  filter:drop-shadow(2px 4px 6px rgba(61,43,31,0.2));
+  transition:transform 0.3s;
+}
+.product-card:hover .product-img svg{transform:scale(1.05) rotate(-2deg)}
+
+/* Quick view overlay */
+.product-overlay {
+  position:absolute;inset:0;
+  background:rgba(61,43,31,0.45);backdrop-filter:blur(2px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.25s;
+}
+.product-card:hover .product-overlay{opacity:1}
+.qv-btn {
+  background:var(--cream);color:var(--wood-dark);
+  font-family:var(--font-display);font-size:0.75rem;letter-spacing:2px;
+  padding:8px 18px;border-radius:var(--radius-sm);border:none;cursor:pointer;
+  transition:all 0.2s;
+}
+.qv-btn:hover{background:var(--teal);color:#fff}
+
+.product-info{padding:14px 16px}
+.product-name{font-family:var(--font-display);font-size:0.82rem;letter-spacing:1.5px;color:var(--wood-dark);margin-bottom:3px;line-height:1.2}
+.product-price{font-family:var(--font-display);font-size:1.05rem;letter-spacing:1px;color:var(--teal-dark);margin-bottom:8px}
+.product-brand-tag{font-family:var(--font-display);font-size:0.65rem;letter-spacing:3px;color:var(--gold,#C49A3A);margin-bottom:2px;font-weight:700}
+.product-colors{display:flex;gap:5px;margin-bottom:10px}
+.color-swatch{width:16px;height:16px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color 0.2s}
+.color-swatch:hover,.color-swatch.active{border-color:var(--wood-dark)}
+.btn-cart{width:100%;padding:9px;border:none;font-family:var(--font-display);font-size:0.75rem;letter-spacing:2px;cursor:pointer;border-radius:var(--radius-sm);transition:all 0.2s}
+.btn-shop{background:var(--teal);color:#fff}
+.btn-shop:hover{background:var(--teal-dark)}
+.btn-add{background:var(--sand);color:var(--wood-dark)}
+.btn-add:hover{background:var(--kraft);color:#fff}
+
+/* ═══ LIFESTYLE — madera + productos ═══ */
+/* ⚡ Sergito: textura de madera CSS pura, no imagen */
+.lifestyle {
+  position:relative;overflow:hidden;
+  padding:40px 24px;
+  background:
+    repeating-linear-gradient(0deg,rgba(107,76,59,0.06) 0px,rgba(107,76,59,0.06) 2px,transparent 2px,transparent 14px),
+    linear-gradient(180deg,var(--wood) 0%,var(--wood-dark) 100%);
+  text-align:center;
+}
+.lifestyle h3{font-family:var(--font-display);font-size:1.6rem;letter-spacing:6px;color:var(--sand-light);text-shadow:1px 1px 3px rgba(0,0,0,0.4)}
+.lifestyle p{font-family:var(--font-script);font-size:0.85rem;color:var(--teal-light);margin-top:2px}
+.lifestyle-items{display:flex;gap:16px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.lifestyle-item {
+  width:70px;height:70px;
+  background:rgba(250,247,242,0.1);border:1px solid rgba(196,168,130,0.2);
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.3s,background 0.3s;cursor:pointer;
+}
+.lifestyle-item:nth-child(1){transform:rotate(-3deg)}
+.lifestyle-item:nth-child(2){transform:rotate(2deg)}
+.lifestyle-item:nth-child(3){transform:rotate(-1deg)}
+.lifestyle-item:nth-child(4){transform:rotate(3deg)}
+.lifestyle-item:nth-child(5){transform:rotate(-2deg)}
+.lifestyle-item:hover{transform:rotate(0deg) scale(1.1);background:rgba(250,247,242,0.2)}
+.lifestyle-item svg{width:40px;height:40px;opacity:0.7}
+
+/* ═══ FOOTER ═══ */
+.footer{padding:12px 28px;display:flex;align-items:center;justify-content:space-between;font-size:0.68rem;color:var(--text-muted);border-top:1px solid var(--border-kraft);background:rgba(250,247,242,0.9)}
+.footer-brand{font-family:var(--font-display);letter-spacing:3px;color:var(--wood)}
+.footer-status{display:flex;align-items:center;gap:6px;font-family:var(--font-display);letter-spacing:2px}
+.status-dot{width:6px;height:6px;background:var(--green-ok);border-radius:50%}
+
+/* ═══ WALLPAPER POPUP ═══ */
+.wp-popup{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;cursor:zoom-out}
+.wp-popup.open{display:flex}
+.wp-inner{width:92%;max-width:1200px;position:relative;animation:popIn 0.3s ease-out}
+@keyframes popIn{0%{transform:scale(0.92);opacity:0}100%{transform:scale(1);opacity:1}}
+.wp-inner img{width:100%;height:auto;max-height:82vh;object-fit:contain;border-radius:var(--radius-lg);box-shadow:0 20px 80px rgba(0,0,0,0.5)}
+.wp-caption{text-align:center;margin-top:12px}
+.wp-caption h3{font-family:var(--font-display);font-size:2rem;letter-spacing:8px;color:var(--cream)}
+.wp-caption p{font-family:var(--font-script);font-size:0.9rem;color:var(--teal-light);margin-top:2px}
+.wp-close{position:absolute;top:-36px;right:0;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.5);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--cream);transition:all 0.2s}
+.wp-close:hover{background:var(--coral);border-color:var(--coral)}
+
+/* ═══ PRODUCT POPUP ═══ */
+.pp-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center}
+.pp-overlay.open{display:flex}
+.pp-box{width:90%;max-width:680px;max-height:85vh;overflow-y:auto;background:var(--cream);border:2px solid var(--kraft);border-radius:var(--radius-lg);padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:popIn 0.25s ease-out}
+.pp-x{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:1px solid var(--border-kraft);background:var(--cream);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all 0.2s}
+.pp-x:hover{background:var(--red-alert);color:#fff;border-color:var(--red-alert)}
+.pp-layout{display:flex;gap:24px}
+.pp-preview{width:240px;flex-shrink:0;aspect-ratio:4/5;background:linear-gradient(145deg,var(--sand-light),var(--sand));border-radius:var(--radius-md);border:1px solid var(--border-kraft);display:flex;align-items:center;justify-content:center}
+.pp-preview svg{width:60%;height:auto;filter:drop-shadow(2px 4px 8px rgba(61,43,31,0.2))}
+.pp-detail{flex:1}
+.pp-name{font-family:var(--font-display);font-size:1.3rem;letter-spacing:3px;color:var(--wood-dark);margin-bottom:4px}
+.pp-price{font-family:var(--font-display);font-size:1.6rem;color:var(--teal-dark);letter-spacing:2px;margin-bottom:10px}
+.pp-desc{font-family:var(--font-serif);font-size:0.82rem;color:var(--text-body);line-height:1.5;margin-bottom:14px}
+.pp-sizes{display:flex;gap:6px;margin-bottom:14px}
+.pp-sz{padding:6px 14px;border:1px solid var(--border-kraft);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:0.78rem;letter-spacing:1px;cursor:pointer;transition:all 0.15s;background:var(--cream);color:var(--wood-dark)}
+.pp-sz:hover,.pp-sz.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.pp-add{width:100%;padding:12px;border:none;font-family:var(--font-display);font-size:0.85rem;letter-spacing:3px;background:var(--teal);color:#fff;border-radius:var(--radius-sm);cursor:pointer;transition:background 0.2s}
+.pp-add:hover{background:var(--teal-dark)}
+
+/* ═══ MOBILE ═══ */
+.mobile-toggle{display:none;position:fixed;bottom:20px;right:20px;z-index:200;width:48px;height:48px;border-radius:50%;border:none;background:var(--wood-dark);color:var(--cream);font-size:1.3rem;cursor:pointer;box-shadow:0 4px 16px var(--shadow-warm-lg)}
+
+@media(max-width:767px){
+  .header-nav a,.header-right a{font-size:0.7rem;letter-spacing:1px}
+  .header-logo h1{font-size:1.5rem;letter-spacing:3px}
+  .subheader{gap:14px}.subheader a{font-size:0.65rem;letter-spacing:1px}
+  .sidebar-float{position:fixed;top:calc(var(--header-h) + var(--subheader-h) + var(--brand-filter-h));left:0;bottom:0;width:240px;border-radius:0;transform:translateX(-110%);transition:transform 0.3s;z-index:95}
+  .sidebar-float.open{transform:translateX(0)}
+  .mobile-toggle{display:flex;align-items:center;justify-content:center}
+  .hero-section{height:50vh;min-height:300px}
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .lifestyle{padding:28px 16px}
+  .lifestyle-item{width:50px;height:50px}
+  .pp-layout{flex-direction:column}.pp-preview{width:100%;height:200px}
+}
+@media(min-width:768px) and (max-width:1023px){
+  .products-grid{grid-template-columns:repeat(3,1fr)}
+  .hero-section{height:55vh}
+}
+@media(min-width:1440px){
+  .hero-section{height:75vh}
+  .products-grid{gap:22px}
+}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--kraft);border-radius:3px}
+.watermark{position:fixed;bottom:30px;right:-50px;font-family:var(--font-script);font-size:5rem;color:rgba(196,168,130,0.04);transform:rotate(-15deg);pointer-events:none;z-index:0;user-select:none}
+
+/* ═══ CART DRAWER — panel lateral derecho ═══ */
+/* 'use client' — Dialog/Sheet @smc/ui */
+.cart-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.4);backdrop-filter:blur(2px)}
+.cart-overlay.open{display:block}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:90vw;z-index:410;background:var(--cream);border-left:2px solid var(--kraft);box-shadow:-8px 0 30px var(--shadow-warm-lg);transform:translateX(100%);transition:transform 0.3s ease;display:flex;flex-direction:column}
+.cart-drawer.open{transform:translateX(0)}
+.cart-header{padding:18px 20px;border-bottom:1px solid var(--border-kraft);display:flex;align-items:center;justify-content:space-between}
+.cart-header h3{font-family:var(--font-display);font-size:1.1rem;letter-spacing:3px;color:var(--wood-dark);display:flex;align-items:center;gap:8px}
+.cart-count{background:var(--teal);color:#fff;font-size:0.6rem;padding:2px 7px;border-radius:10px;font-family:var(--font-body)}
+.cart-close{width:30px;height:30px;border-radius:50%;border:1px solid var(--border-kraft);background:var(--cream);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all 0.2s}
+.cart-close:hover{background:var(--red-alert);color:#fff;border-color:var(--red-alert)}
+.cart-body{flex:1;overflow-y:auto;padding:16px 20px}
+.cart-empty{text-align:center;padding:40px 0;color:var(--text-muted)}
+.cart-empty-icon{font-size:2.5rem;margin-bottom:10px;opacity:0.4}
+.cart-empty-text{font-family:var(--font-serif);font-size:0.85rem;font-style:italic}
+.cart-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(196,168,130,0.15);position:relative}
+.cart-item-img{width:65px;height:80px;flex-shrink:0;background:var(--sand);border-radius:var(--radius-sm);border:1px solid var(--border-kraft);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cart-item-img svg{width:80%;height:auto}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-family:var(--font-display);font-size:0.75rem;letter-spacing:1.5px;color:var(--wood-dark);margin-bottom:2px}
+.cart-item-size{font-size:0.65rem;color:var(--text-muted);margin-bottom:4px}
+.cart-item-price{font-family:var(--font-display);font-size:0.9rem;color:var(--teal-dark);letter-spacing:1px}
+.cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:6px}
+.qty-btn{width:24px;height:24px;border-radius:4px;border:1px solid var(--border-kraft);background:var(--cream);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;color:var(--text-body)}
+.qty-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+.qty-val{font-family:var(--font-display);font-size:0.85rem;color:var(--wood-dark);min-width:16px;text-align:center}
+.cart-item-remove{position:absolute;top:14px;right:0;font-size:0.7rem;color:var(--text-muted);cursor:pointer;transition:color 0.2s;background:none;border:none;font-family:var(--font-body)}
+.cart-item-remove:hover{color:var(--red-alert)}
+.cart-footer{padding:16px 20px;border-top:2px solid var(--kraft);background:rgba(232,220,200,0.3)}
+.cart-subtotal{display:flex;justify-content:space-between;margin-bottom:6px;font-size:0.8rem;color:var(--text-body)}
+.cart-total{display:flex;justify-content:space-between;margin-bottom:14px;font-family:var(--font-display);font-size:1.1rem;letter-spacing:1px;color:var(--wood-dark)}
+.cart-checkout{width:100%;padding:12px;border:none;font-family:var(--font-display);font-size:0.85rem;letter-spacing:3px;background:var(--teal);color:#fff;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.2s;margin-bottom:8px}
+.cart-checkout:hover{background:var(--teal-dark)}
+.cart-continue{width:100%;padding:10px;border:1px solid var(--border-kraft);font-family:var(--font-display);font-size:0.75rem;letter-spacing:2px;background:var(--cream);color:var(--wood-dark);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.2s}
+.cart-continue:hover{background:var(--sand)}
+.cart-shipping{text-align:center;font-size:0.65rem;color:var(--text-muted);margin-top:8px;font-style:italic;font-family:var(--font-serif)}
+
+/* ═══ TOAST — feedback al agregar al carrito ═══ */
+/* ⚡ Sergito: efecto "ola" en el toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);z-index:500;background:var(--wood-dark);color:var(--cream);padding:12px 24px;border-radius:var(--radius-md);font-family:var(--font-display);font-size:0.8rem;letter-spacing:2px;box-shadow:0 8px 24px rgba(0,0,0,0.3);display:flex;align-items:center;gap:10px;transition:transform 0.4s ease;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast-icon{font-size:1.1rem}
+.toast-wave{position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--teal-light),var(--teal));border-radius:0 0 var(--radius-md) var(--radius-md);animation:wave-fill 2s linear forwards}
+@keyframes wave-fill{0%{width:100%}100%{width:0%}}
+
+/* ⚡ Sergito: animación "fly to cart" */
+.fly-item{position:fixed;z-index:450;pointer-events:none;transition:all 0.6s cubic-bezier(0.2,0.8,0.2,1);opacity:1}
+.fly-item.flying{opacity:0;transform:scale(0.3)!important}
+
+/* Badge bounce */
+@keyframes badge-bounce{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+/* ═══════════════════════════════════════════════════
+   ✨ EFECTOS VISUALES v2 — agregados 2026-04-01
+   ═══════════════════════════════════════════════════ */
+
+/* ── 1 & 2. Scroll Reveal + Stagger ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Stagger delays para las 4 cards */
+.products-grid .product-card:nth-child(1).reveal { transition-delay: 0s }
+.products-grid .product-card:nth-child(2).reveal { transition-delay: 0.1s }
+.products-grid .product-card:nth-child(3).reveal { transition-delay: 0.2s }
+.products-grid .product-card:nth-child(4).reveal { transition-delay: 0.3s }
+.products-grid .product-card:nth-child(5).reveal { transition-delay: 0.4s }
+.products-grid .product-card:nth-child(6).reveal { transition-delay: 0.5s }
+.products-grid .product-card:nth-child(7).reveal { transition-delay: 0.6s }
+
+/* ── 3. Marquee / Ticker ── */
+.marquee-band {
+  width: 100%;
+  overflow: hidden;
+  background: var(--wood-dark);
+  border-top: 1px solid rgba(196,168,130,0.25);
+  border-bottom: 1px solid rgba(196,168,130,0.25);
+  padding: 7px 0;
+  position: relative;
+  z-index: 3;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+  gap: 0;
+}
+.marquee-track:hover { animation-play-state: paused }
+.marquee-item {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  color: var(--sand);
+  white-space: nowrap;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.marquee-item::after {
+  content: '·';
+  color: var(--teal-light);
+  font-size: 1rem;
+  line-height: 1;
+  margin-left: 10px;
+}
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0) }
+  100% { transform: translateX(-50%) }
+}
+
+/* ── 4. Grain / Noise sobre el hero ── */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* ── 5. Hover Tilt / Rotate 3D ── */
+.product-card {
+  transform-style: preserve-3d;
+  /* el tilt lo aplica JS via style inline */
+}
+/* asegurar que el transition del card incluya la nueva transform */
+.product-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+/* ── 6. Text Gradient en logo KANKI STREET ── */
+.header-logo h1 {
+  background: linear-gradient(135deg, #c4a882 0%, #2d9da1 55%, #e07c5a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── 7. Skeleton Loading ── */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+@media(max-width:767px) { .skeleton-grid { grid-template-columns: repeat(2,1fr); gap: 10px } }
+@media(min-width:768px) and (max-width:1023px) { .skeleton-grid { grid-template-columns: repeat(3,1fr) } }
+
+.skeleton-card {
+  background: var(--cream);
+  border: 1px solid rgba(196,168,130,0.2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.skeleton-img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  background: linear-gradient(90deg, var(--sand) 25%, var(--sand-light) 50%, var(--sand) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-info { padding: 14px 16px }
+.skeleton-line {
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--sand) 25%, var(--sand-light) 50%, var(--sand) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  margin-bottom: 8px;
+}
+.skeleton-line.short { width: 55% }
+.skeleton-line.btn { width: 100%; height: 32px; border-radius: var(--radius-sm) }
+@keyframes shimmer {
+  0%   { background-position: 200% 0 }
+  100% { background-position: -200% 0 }
+}
+
+/* ── 9. Border Glow Animated en pp-add ── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45,157,161,0.4), 0 0 8px rgba(45,157,161,0.2) }
+  50%       { box-shadow: 0 0 0 4px rgba(45,157,161,0.15), 0 0 20px rgba(45,157,161,0.4) }
+}
+.pp-add {
+  animation: glow-pulse 2.2s ease-in-out infinite;
+  border: 1px solid transparent;
+}
+.pp-add:hover {
+  animation: none;
+  box-shadow: 0 0 16px rgba(45,157,161,0.6);
+}
+
+/* ── 10. Scroll Snap en mobile para grid de productos ── */
+@media(max-width:767px) {
+  .products-grid {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  .products-grid::-webkit-scrollbar { display: none }
+  .product-card {
+    flex: 0 0 72vw;
+    max-width: 280px;
+    scroll-snap-align: start;
+  }
+  .catalog-feature-banner {
+    flex: 0 0 90vw;
+    max-width: 360px;
+    scroll-snap-align: start;
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .catalog-feature-banner img { height: 180px; }
+  .catalog-feature-copy { padding: 20px 20px; }
+  .catalog-feature-copy h3 { font-size: 1.2rem; }
+  .brands-row-label {
+    flex: 0 0 90vw;
+    scroll-snap-align: start;
+  }
+}
+/* ═══ PRODUCT BADGES ═══ */
+.product-badge{position:absolute;top:10px;right:10px;z-index:3;font-family:var(--font-display);font-size:0.6rem;letter-spacing:2px;padding:4px 10px;border-radius:var(--radius-sm)}
+.badge-new{background:var(--teal);color:#fff}
+.badge-hot{background:var(--coral);color:#fff}
+/* PRÓXIMAMENTE diagonal ribbon */
+.product-card.coming-soon .product-img::after {
+  content:'PRÓXIMAMENTE';
+  position:absolute;inset:0;z-index:4;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(27,47,78,0.72);
+  backdrop-filter:blur(2px);
+  font-family:var(--font-display);font-size:0.72rem;letter-spacing:3px;
+  color:var(--cream,#F5EDD8);font-weight:700;
+}
+.product-card.coming-soon .product-img .ribbon-diagonal {
+  position:absolute;top:22px;right:-28px;z-index:5;
+  background:var(--navy,#1B2F4E);color:var(--gold,#C49A3A);
+  font-family:var(--font-display);font-size:0.58rem;letter-spacing:2px;
+  padding:5px 36px;transform:rotate(35deg);font-weight:700;
+  box-shadow:0 2px 6px rgba(0,0,0,0.35);
+}
+.product-card.coming-soon .btn-cart { pointer-events:none; opacity:0.4; }
+.price-old{text-decoration:line-through;color:var(--text-muted);font-size:0.8rem;margin-right:6px}
+
+/* ═══ WISHLIST HEART ═══ */
+.wishlist-btn{position:absolute;top:10px;left:10px;z-index:3;width:32px;height:32px;border-radius:50%;border:1px solid rgba(196,168,130,0.4);background:rgba(250,247,242,0.85);backdrop-filter:blur(4px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;color:var(--text-muted)}
+.wishlist-btn:hover,.wishlist-btn.liked{color:#e25555;border-color:#e25555;background:rgba(226,85,85,0.08)}
+.wishlist-btn.liked::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(226,85,85,0.3);animation:heart-ring 0.4s ease-out forwards}
+@keyframes heart-ring{0%{transform:scale(0.5);opacity:1}100%{transform:scale(1.3);opacity:0}}
+
+/* ═══ SEARCH OVERLAY ═══ */
+.search-overlay{display:none;position:fixed;inset:0;z-index:550;background:rgba(0,0,0,0.5);backdrop-filter:blur(3px)}
+.search-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding-top:100px}
+.search-box{width:90%;max-width:580px;background:var(--cream);border:2px solid var(--kraft);border-radius:var(--radius-lg);padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:popIn 0.25s ease-out}
+.search-input{width:100%;padding:14px 18px;border:1px solid var(--border-kraft);border-radius:var(--radius-md);font-family:var(--font-body);font-size:1rem;color:var(--text-dark);background:var(--sand-light);outline:none}
+.search-input:focus{border-color:var(--teal)}
+.search-results{margin-top:12px;max-height:300px;overflow-y:auto}
+.search-result-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:var(--radius-sm);cursor:pointer;transition:background 0.15s}
+.search-result-item:hover{background:rgba(45,157,161,0.06)}
+.search-result-item .sr-name{font-family:var(--font-display);font-size:0.85rem;letter-spacing:1px;color:var(--wood-dark)}
+.search-result-item .sr-price{font-family:var(--font-display);font-size:0.9rem;color:var(--teal-dark)}
+.search-no-results{padding:20px;text-align:center;color:var(--text-muted);font-family:var(--font-serif);font-style:italic}
+
+/* ═══ COLLECTIONS SECTION ═══ */
+.collections-section{padding:48px 24px;background:var(--sand-light)}
+.collections-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+.collection-card{position:relative;height:280px;border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;border:1px solid var(--border-kraft);box-shadow:0 4px 16px var(--shadow-warm)}
+.collection-card::before{content:'';position:absolute;inset:0;z-index:1;transition:background 0.3s}
+.collection-card:nth-child(1)::before{background:linear-gradient(135deg,rgba(45,157,161,0.7),rgba(30,122,125,0.85))}
+.collection-card:nth-child(2)::before{background:linear-gradient(135deg,rgba(224,124,90,0.7),rgba(196,97,63,0.85))}
+.collection-card:nth-child(3)::before{background:linear-gradient(135deg,rgba(107,76,59,0.7),rgba(61,43,31,0.85))}
+.collection-card:hover::before{opacity:0.85}
+.collection-card .cc-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 0.4s}
+.collection-card:hover .cc-bg{transform:scale(1.05)}
+.collection-card .cc-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:24px}
+.cc-tag{font-family:var(--font-display);font-size:0.65rem;letter-spacing:4px;color:rgba(255,255,255,0.7);margin-bottom:4px}
+.cc-name{font-family:var(--font-display);font-size:1.8rem;letter-spacing:4px;color:#fff;line-height:1.1}
+.cc-count{font-family:var(--font-serif);font-size:0.78rem;color:rgba(255,255,255,0.7);margin-top:6px;font-style:italic}
+.cc-btn{display:inline-block;margin-top:12px;padding:8px 20px;background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.3);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:0.7rem;letter-spacing:2px;color:#fff;cursor:pointer;transition:all 0.2s}
+.cc-btn:hover{background:rgba(255,255,255,0.3)}
+
+/* ═══ TESTIMONIALS SECTION ═══ */
+.testimonials-section{padding:48px 24px;background:linear-gradient(180deg,var(--sand) 0%,var(--sand-light) 100%)}
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px}
+.testimonial-card{background:var(--cream);border:1px solid var(--border-kraft);border-radius:var(--radius-md);padding:22px;position:relative;box-shadow:2px 3px 12px var(--shadow-warm);transform:rotate(var(--rot,0deg));transition:transform 0.3s}
+.testimonial-card:nth-child(1){--rot:-1deg}
+.testimonial-card:nth-child(2){--rot:0.5deg}
+.testimonial-card:nth-child(3){--rot:-0.8deg}
+.testimonial-card:hover{transform:rotate(0deg) translateY(-3px)}
+.testimonial-card::before{content:'';position:absolute;top:-8px;left:20px;width:35px;height:16px;background:rgba(212,197,169,0.7);transform:rotate(-3deg);border-radius:2px}
+.tc-stars{color:var(--coral);font-size:0.8rem;margin-bottom:8px;letter-spacing:2px}
+.tc-text{font-family:var(--font-serif);font-size:0.82rem;color:var(--text-body);line-height:1.5;font-style:italic;margin-bottom:12px}
+.tc-author{font-family:var(--font-display);font-size:0.75rem;letter-spacing:2px;color:var(--wood-dark)}
+.tc-location{font-size:0.65rem;color:var(--text-muted)}
+
+/* ═══ NEWSLETTER SECTION ═══ */
+.newsletter-section{padding:40px 24px;text-align:center;background:var(--wood-dark);position:relative;overflow:hidden}
+.newsletter-section::before{content:'KANKI';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-display);font-size:12rem;color:rgba(196,168,130,0.04);letter-spacing:20px;pointer-events:none}
+.nl-title{font-family:var(--font-display);font-size:1.4rem;letter-spacing:6px;color:var(--sand-light)}
+.nl-sub{font-family:var(--font-script);font-size:0.85rem;color:var(--teal-light);margin:6px 0 20px}
+.nl-form{display:flex;gap:10px;justify-content:center;max-width:420px;margin:0 auto}
+.nl-input{flex:1;padding:12px 16px;border:1px solid rgba(196,168,130,0.3);border-radius:var(--radius-sm);background:rgba(250,247,242,0.08);color:var(--cream);font-family:var(--font-body);font-size:0.85rem;outline:none;backdrop-filter:blur(4px)}
+.nl-input::placeholder{color:rgba(196,168,130,0.5)}
+.nl-input:focus{border-color:var(--teal)}
+.nl-btn{padding:12px 24px;border:none;background:var(--teal);color:#fff;font-family:var(--font-display);font-size:0.78rem;letter-spacing:2px;border-radius:var(--radius-sm);cursor:pointer;transition:background 0.2s}
+.nl-btn:hover{background:var(--teal-dark)}
+
+/* ═══ BETTER FOOTER ═══ */
+.footer-full{background:var(--sand);border-top:2px solid var(--kraft);padding:40px 24px 16px}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;max-width:1200px;margin:0 auto}
+.footer-col h4{font-family:var(--font-display);font-size:0.85rem;letter-spacing:3px;color:var(--wood-dark);margin-bottom:12px}
+.footer-col p,.footer-col a{font-family:var(--font-body);font-size:0.78rem;color:var(--text-body);text-decoration:none;line-height:1.8;display:block;transition:color 0.2s}
+.footer-col a:hover{color:var(--teal)}
+.footer-logo{font-family:var(--font-display);font-size:2rem;letter-spacing:6px;color:var(--wood-dark);margin-bottom:6px}
+.footer-tagline{font-family:var(--font-script);font-size:0.8rem;color:var(--teal);margin-bottom:10px}
+.footer-social{display:flex;gap:10px;margin-top:10px}
+.footer-social a{width:32px;height:32px;border-radius:50%;border:1px solid var(--border-kraft);display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--wood);transition:all 0.2s}
+.footer-social a:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+.footer-bottom{text-align:center;padding-top:20px;margin-top:20px;border-top:1px solid var(--border-kraft);font-size:0.68rem;color:var(--text-muted);font-family:var(--font-display);letter-spacing:2px}
+
+/* ═══ WHATSAPP BUTTON ═══ */
+.whatsapp-float{position:fixed;bottom:24px;right:24px;z-index:300;width:54px;height:54px;border-radius:50%;background:#25D366;color:#fff;border:none;font-size:1.6rem;cursor:pointer;box-shadow:0 4px 16px rgba(37,211,102,0.4);display:flex;align-items:center;justify-content:center;transition:transform 0.2s;animation:wa-pulse 2s infinite}
+.whatsapp-float:hover{transform:scale(1.1)}
+@keyframes wa-pulse{0%,100%{box-shadow:0 4px 16px rgba(37,211,102,0.4)}50%{box-shadow:0 4px 24px rgba(37,211,102,0.6),0 0 0 8px rgba(37,211,102,0.1)}}
+
+/* ═══ BACK TO TOP ═══ */
+.back-top{position:fixed;bottom:24px;right:86px;z-index:300;width:42px;height:42px;border-radius:50%;background:var(--wood-dark);color:var(--cream);border:1px solid var(--kraft);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.3s;box-shadow:0 4px 12px var(--shadow-warm)}
+.back-top.visible{opacity:1;pointer-events:auto}
+.back-top:hover{background:var(--teal);border-color:var(--teal)}
+
+/* ═══ CHECKOUT FORM (inside cart drawer) ═══ */
+.checkout-form{padding:0 20px 16px;display:none}
+.checkout-form.active{display:block}
+.ck-title{font-family:var(--font-display);font-size:0.9rem;letter-spacing:3px;color:var(--wood-dark);margin-bottom:14px;padding-top:8px;border-top:1px solid var(--border-kraft)}
+.ck-field{margin-bottom:10px}
+.ck-field label{font-family:var(--font-display);font-size:0.65rem;letter-spacing:2px;color:var(--text-muted);display:block;margin-bottom:3px}
+.ck-field input,.ck-field select{width:100%;padding:9px 12px;border:1px solid var(--border-kraft);border-radius:var(--radius-sm);font-family:var(--font-body);font-size:0.8rem;color:var(--text-body);background:var(--cream);outline:none}
+.ck-field input:focus,.ck-field select:focus{border-color:var(--teal)}
+.ck-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ck-summary{background:var(--sand-light);border:1px solid var(--border-kraft);border-radius:var(--radius-sm);padding:12px;margin:12px 0}
+.ck-summary-row{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-body);margin-bottom:4px}
+.ck-summary-row.total{font-family:var(--font-display);font-size:0.95rem;color:var(--wood-dark);margin-top:8px;padding-top:8px;border-top:1px solid var(--border-kraft)}
+.ck-confirm{width:100%;padding:12px;border:none;font-family:var(--font-display);font-size:0.85rem;letter-spacing:3px;background:var(--coral);color:#fff;border-radius:var(--radius-sm);cursor:pointer;transition:background 0.2s}
+.ck-confirm:hover{background:var(--coral-dark)}
+.ck-back{width:100%;padding:8px;border:1px solid var(--border-kraft);font-family:var(--font-display);font-size:0.7rem;letter-spacing:2px;background:var(--cream);color:var(--wood-dark);border-radius:var(--radius-sm);cursor:pointer;margin-top:8px}
+
+/* ═══ ORDER CONFIRMATION ═══ */
+.order-confirm{display:none;text-align:center;padding:40px 20px}
+.order-confirm.active{display:block}
+.oc-icon{font-size:3rem;margin-bottom:12px}
+.oc-title{font-family:var(--font-display);font-size:1.2rem;letter-spacing:3px;color:var(--wood-dark);margin-bottom:6px}
+.oc-order{font-family:var(--font-display);font-size:0.8rem;letter-spacing:2px;color:var(--teal);margin-bottom:14px}
+.oc-msg{font-family:var(--font-serif);font-size:0.82rem;color:var(--text-body);line-height:1.5;margin-bottom:20px}
+.oc-wa{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:0.78rem;letter-spacing:2px;cursor:pointer;transition:background 0.2s}
+.oc-wa:hover{background:#20bd5a}
+
+/* ═══ WAVE DIVIDER ═══ */
+.wave-divider{height:24px;background:var(--sand-light);position:relative;overflow:hidden}
+.wave-divider svg{position:absolute;bottom:0;width:100%;height:24px}
+
+/* ═══ MICRO-INTERACTIONS ═══ */
+button,a{transition:transform 0.1s,color 0.2s,background 0.2s}
+button:active:not(.qty-btn){transform:scale(0.96)}
+
+/* ═══ ACTIVE NAV ═══ */
+.header-nav a.scroll-active,.subheader a.scroll-active{color:var(--teal)!important;text-decoration:underline;text-underline-offset:4px}
+
+/* ═══ CATEGORY FILTER ANIMATION ═══ */
+.product-card.filtered-out{opacity:0;transform:scale(0.8);pointer-events:none;position:absolute}
+.product-card{transition:opacity 0.3s,transform 0.3s,box-shadow 0.25s}
+
+/* ═══ RESPONSIVE NUEVAS SECCIONES ═══ */
+@media(max-width:767px){
+  .collections-grid{grid-template-columns:1fr;gap:12px}
+  .collection-card{height:180px}
+  .testimonials-grid{grid-template-columns:1fr;gap:14px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:20px}
+  .nl-form{flex-direction:column}
+  .search-box{margin-top:20px}
+  .whatsapp-float{bottom:16px;right:16px;width:48px;height:48px;font-size:1.4rem}
+  .back-top{right:72px;bottom:16px;width:36px;height:36px}
+}
+@media(min-width:768px) and (max-width:1023px){
+  .collections-grid{grid-template-columns:repeat(3,1fr)}
+  .testimonials-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr 1fr 1fr}
+}
+
+/* ═══ MOBILE 375px ═══ */
+@media(max-width:430px){
+  /* Header compacto para 375px */
+  .header{padding:0 10px}
+  .header-nav a{display:none}
+  .header-nav a:first-child{display:block;font-size:0.62rem;letter-spacing:1px}
+  .header-right a{display:none}
+  .header-logo h1{font-size:1.3rem;letter-spacing:3px}
+  /* Subheader: scroll horizontal si no caben */
+  .subheader{gap:6px;padding:0 6px;overflow-x:auto;justify-content:flex-start;scrollbar-width:none}
+  .subheader::-webkit-scrollbar{display:none}
+  .subheader a{font-size:0.6rem;letter-spacing:0.8px;white-space:nowrap}
+  /* Hero */
+  .hero-section{height:40vh;min-height:220px}
+  /* Cards en scroll horizontal: cards más anchas en 375px */
+  .product-card{flex:0 0 80vw}
+  /* Product info compacto */
+  .product-info{padding:10px 10px}
+  .product-name{font-size:0.7rem}
+  .product-price{font-size:0.9rem;margin-bottom:6px}
+  .btn-cart{padding:7px;font-size:0.68rem}
+  /* Popup modal compacto */
+  .pp-box{padding:14px;width:96vw}
+  .pp-preview{height:160px}
+  /* Cart full-width en mobile */
+  .cart-drawer{width:100vw}
+  /* Touch target OK */
+  .wishlist-btn{width:36px;height:36px}
+}
+
+/* ═══ PARALLAX HERO ═══ */
+.hero-img{will-change:transform}
+</style>
+</head>
+<body>
+<div class="watermark">Kanki Street</div>
+
+<!-- ═══ HEADER ═══ -->
+<header class="header">
+  <nav class="header-nav">
+    <a href="#" onclick="scrollToTop();return false" class="active">HOME</a>
+    <a href="#sCollections" onclick="smoothScroll('sCollections');return false">COLLECTIONS</a>
+    <a href="#sTestimonials" onclick="smoothScroll('sTestimonials');return false">JOURNAL</a>
+  </nav>
+  <div class="header-logo">
+    <h1>KANKI</h1>
+    <div class="subtitle">KANKI STREET</div>
+  </div>
+  <div class="header-right">
+    <a href="#sNewsletter" onclick="smoothScroll('sNewsletter');return false">ABOUT</a>
+    <a href="#sContact" onclick="smoothScroll('sContact');return false">CONTACT</a>
+    <div class="header-icons">
+      <button title="Carrito" id="headerCartBtn" onclick="openCart()">🛒<span class="badge-count" id="headerCartCount">0</span></button>
+      <button title="Búsqueda" onclick="openSearch()">🔍</button>
+      <button title="Mi cuenta" onclick="showInfoModal('cuenta')">👤</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ SUBHEADER ═══ -->
+<nav class="subheader" id="subNav">
+  <a href="#" class="active" data-filter="all" onclick="filterCategory('all');return false">TODOS</a>
+  <a href="#" data-filter="poleras" onclick="filterCategory('poleras');return false">POLERAS</a>
+  <a href="#" data-filter="polerones" onclick="filterCategory('polerones');return false">POLERONES</a>
+  <a href="#" data-filter="surfboards" onclick="filterCategory('surfboards');return false">SURFBOARDS</a>
+</nav>
+
+<!-- ═══ BRAND FILTER ═══ -->
+<div class="brand-filter" id="brandFilter">
+  <span class="brand-filter-label">MARCA</span>
+  <button class="brand-btn active" data-brand="all" onclick="filterBrand('all')">TODAS</button>
+  <button class="brand-btn" data-brand="fog" onclick="filterBrand('fog')">FOG ESSENTIALS</button>
+  <button class="brand-btn" data-brand="grizzly" onclick="filterBrand('grizzly')">GRIZZLY</button>
+</div>
+
+<!-- ═══ HERO + SIDEBAR FLOTANTE ═══ -->
+<section class="hero-section">
+  <img class="hero-img" src="kanki-brand-hero.jpg" alt="Kanki Street" onclick="openWP()">
+  <div class="hero-hint" onclick="openWP()">EXPLORA LA COLECCIÓN</div>
+
+  <!-- Sidebar FLOTA sobre el hero -->
+  <div class="sidebar-float" id="sidebar">
+    <ul id="sidebarNav">
+      <li><a href="#" class="active" data-filter="all" onclick="filterCategory('all');return false">TODOS</a></li>
+      <li><a href="#" data-filter="poleras" onclick="filterCategory('poleras');return false">POLERAS</a></li>
+      <li><a href="#" data-filter="polerones" onclick="filterCategory('polerones');return false">POLERONES</a></li>
+      <li><a href="#" data-filter="surfboards" onclick="filterCategory('surfboards');return false">SURFBOARDS</a></li>
+    </ul>
+    <div class="filter-label">FILTER BY:</div>
+    <select class="filter-sel"><option>Size</option><option>S</option><option>M</option><option>L</option><option>XL</option></select>
+    <select class="filter-sel"><option>Color</option><option>Arena</option><option>Teal</option><option>Madera</option><option>Coral</option></select>
+    <select class="filter-sel"><option>Price</option><option>$0 - $30</option><option>$30 - $80</option><option>$80+</option></select>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE / TICKER ═══ -->
+<div class="marquee-band">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="marquee-item">ENVÍO GRATIS SOBRE $50.000</span>
+    <span class="marquee-item">PAGO POR TRANSFERENCIA</span>
+    <span class="marquee-item">KANKI STREET CHILE</span>
+    <span class="marquee-item">ENVÍO GRATIS SOBRE $50.000</span>
+    <span class="marquee-item">PAGO POR TRANSFERENCIA</span>
+    <span class="marquee-item">KANKI STREET CHILE</span>
+  </div>
+</div>
+
+<!-- ═══ PRODUCTS — emerge del hero ═══ -->
+<section class="products-section">
+  <div class="products-inner">
+    <div class="section-title"><span>FEATURED PRODUCTS</span><span class="line"></span></div>
+
+    <!-- ── 7. Skeleton Loading (visible ~800ms al cargar) ── -->
+    <div class="skeleton-grid" id="skeletonGrid">
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line btn"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line btn"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line btn"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line btn"></div></div></div>
+    </div>
+
+    <div class="products-grid" id="productsGrid" style="display:none">
+
+      <!-- Catalog Feature Banner -->
+      <div class="catalog-feature-banner">
+        <img src="kanki-catalog-photo.jpg" alt="Kanki & Co. Ocean Canvas Collection">
+        <div class="catalog-feature-copy">
+          <div class="eyebrow">COLECCIÓN 2026</div>
+          <h3>OCEAN CANVAS</h3>
+          <p>Streetwear que nace del mar. Piezas clave para quienes viven entre el agua y el asfalto. Confeccionadas para durar más que una temporada.</p>
+          <a href="#" onclick="filterCategory('all');return false">VER TODO EL CATÁLOGO</a>
+        </div>
+      </div>
+
+
+      <!-- Marcas importadas separator -->
+      <div class="brands-row-label">
+        <span>MARCAS QUE TRAEMOS</span>
+      </div>
+
+      <!-- Grizzly Script Logo Negro Tee — AGOTADO -->
+      <div class="product-card" data-product="grizzly-script-negro" data-category="poleras" data-brand="grizzly" onclick="return false" style="cursor:default">
+        <div class="product-img" style="position:relative">
+          <span class="product-badge" style="background:#555">AGOTADO</span>
+          <img src="https://grizzlygriptape.cl/wp-content/uploads/2025/11/product.template-96096-image-copia.jpg" alt="Grizzly Print Script Logo Negro" loading="lazy" style="filter:grayscale(30%)">
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">GRIZZLY GRIPTAPE</div>
+          <div class="product-name">PRINT SCRIPT LOGO TEE</div>
+          <div class="product-price" style="color:#888">$27.990</div>
+          <div class="product-colors">
+            <div class="color-swatch active" style="background:#1a1a1a"></div>
+          </div>
+          <button class="btn-cart btn-add" disabled style="opacity:0.4;cursor:not-allowed">AGOTADO</button>
+        </div>
+      </div>
+
+      <!-- Grizzly OG Bear Basic Negro Hoodie -->
+      <div class="product-card" data-product="grizzly-og-black" data-category="polerones" data-brand="grizzly" onclick="openPP('grizzly-og-black')">
+        <div class="product-img">
+          <span class="product-badge badge-hot">HOT</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" aria-label="Favorito">♡</button>
+          <img src="https://grizzlygriptape.cl/wp-content/uploads/2025/11/product.template-96098-image.jpg" alt="Grizzly OG Bear Basic Negro Hoodie" loading="lazy">
+          <div class="product-overlay"><button class="qv-btn">QUICK VIEW</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">GRIZZLY GRIPTAPE</div>
+          <div class="product-name">OG BEAR BASIC HOODIE — NEGRO</div>
+          <div class="product-price">$48.990</div>
+          <div class="product-colors">
+            <div class="color-swatch active" style="background:#1a1a1a"></div>
+          </div>
+          <button class="btn-cart btn-add">ADD TO CART</button>
+        </div>
+      </div>
+
+      <!-- FOG Essentials — Fleece Hoodie FW24 Black -->
+      <div class="product-card" data-product="fog-black" data-category="polerones" data-brand="fog" onclick="openPP('fog-black')">
+        <div class="product-img">
+          <span class="product-badge badge-new">NUEVO</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" aria-label="Favorito">♡</button>
+          <img src="https://luked.cl/cdn/shop/files/fwafawwfawfa.webp?v=1750114347" alt="Fear of God Essentials Fleece Hoodie FW24 Black" loading="lazy">
+          <div class="product-overlay"><button class="qv-btn">QUICK VIEW</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">FEAR OF GOD ESSENTIALS</div>
+          <div class="product-name">FLEECE HOODIE FW24 — BLACK</div>
+          <div class="product-price">$120.000</div>
+          <div class="product-colors"><div class="color-swatch active" style="background:#1a1a1a"></div></div>
+          <button class="btn-cart btn-add">ADD TO CART</button>
+        </div>
+      </div>
+
+      <!-- FOG Essentials — Fleece Hoodie FW24 Light Heather Grey -->
+      <div class="product-card" data-product="fog-grey" data-category="polerones" data-brand="fog" onclick="openPP('fog-grey')">
+        <div class="product-img">
+          <span class="product-badge badge-new">NUEVO</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" aria-label="Favorito">♡</button>
+          <img src="https://luked.cl/cdn/shop/files/IMG-8874.webp?v=1756595907" alt="Fear of God Essentials Fleece Hoodie FW24 Light Heather Grey" loading="lazy">
+          <div class="product-overlay"><button class="qv-btn">QUICK VIEW</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">FEAR OF GOD ESSENTIALS</div>
+          <div class="product-name">FLEECE HOODIE FW24 — GREY</div>
+          <div class="product-price">$120.000</div>
+          <div class="product-colors"><div class="color-swatch active" style="background:#b8b0a8"></div></div>
+          <button class="btn-cart btn-add">ADD TO CART</button>
+        </div>
+      </div>
+
+      <!-- FOG Essentials — Dark Oatmeal -->
+      <div class="product-card" data-product="fog-dark-oatmeal" data-category="polerones" data-brand="fog" onclick="openPP('fog-dark-oatmeal')">
+        <div class="product-img">
+          <span class="product-badge badge-new">NUEVO</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" aria-label="Favorito">♡</button>
+          <img src="https://luked.cl/cdn/shop/files/IMG-4248.jpg?v=1750117064" alt="Fear of God Essentials Dark Oatmeal" loading="lazy">
+          <div class="product-overlay"><button class="qv-btn">QUICK VIEW</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">FEAR OF GOD ESSENTIALS</div>
+          <div class="product-name">DARK OATMEAL HOODIE</div>
+          <div class="product-price">$120.000</div>
+          <div class="product-colors"><div class="color-swatch active" style="background:#8b7d6b"></div></div>
+          <button class="btn-cart btn-add">ADD TO CART</button>
+        </div>
+      </div>
+
+      <!-- FOG Essentials — Light Oatmeal -->
+      <div class="product-card" data-product="fog-light-oatmeal" data-category="polerones" data-brand="fog" onclick="openPP('fog-light-oatmeal')">
+        <div class="product-img">
+          <span class="product-badge badge-new">NUEVO</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" aria-label="Favorito">♡</button>
+          <img src="https://luked.cl/cdn/shop/files/IMG-4252.jpg?v=1750117099" alt="Fear of God Essentials Light Oatmeal" loading="lazy">
+          <div class="product-overlay"><button class="qv-btn">QUICK VIEW</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">FEAR OF GOD ESSENTIALS</div>
+          <div class="product-name">LIGHT OATMEAL HOODIE</div>
+          <div class="product-price">$120.000</div>
+          <div class="product-colors"><div class="color-swatch active" style="background:#d4c5a9"></div></div>
+          <button class="btn-cart btn-add">ADD TO CART</button>
+        </div>
+      </div>
+
+      <!-- FOG Essentials — Stretch Limo -->
+      <div class="product-card" data-product="fog-stretch-limo" data-category="polerones" data-brand="fog" onclick="openPP('fog-stretch-limo')">
+        <div class="product-img">
+          <span class="product-badge badge-new">NUEVO</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" aria-label="Favorito">♡</button>
+          <img src="https://luked.cl/cdn/shop/files/IMG-4244.jpg?v=1750117132" alt="Fear of God Essentials Stretch Limo" loading="lazy">
+          <div class="product-overlay"><button class="qv-btn">QUICK VIEW</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">FEAR OF GOD ESSENTIALS</div>
+          <div class="product-name">STRETCH LIMO HOODIE</div>
+          <div class="product-price">$120.000</div>
+          <div class="product-colors"><div class="color-swatch active" style="background:#3d3d3d"></div></div>
+          <button class="btn-cart btn-add">ADD TO CART</button>
+        </div>
+      </div>
+
+      <!-- Grizzly Lowercase Fadeaway — AGOTADO -->
+      <div class="product-card" data-product="grizzly-hoodie" data-category="polerones" data-brand="grizzly" onclick="return false" style="cursor:default">
+        <div class="product-img" style="position:relative">
+          <span class="product-badge" style="background:#555">AGOTADO</span>
+          <img src="https://grizzlygriptape.cl/wp-content/uploads/2025/09/product_template_93367.jpg" alt="Grizzly Lowercase Fadeaway Hoodie Gris" loading="lazy" style="filter:grayscale(30%)">
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">GRIZZLY GRIPTAPE</div>
+          <div class="product-name">LOWERCASE FADEAWAY HOODIE</div>
+          <div class="product-price" style="color:#888">$44.990</div>
+          <div class="product-colors">
+            <div class="color-swatch active" style="background:#9e9e9e"></div>
+            <div class="color-swatch" style="background:#1a1a1a"></div>
+          </div>
+          <button class="btn-cart btn-add" disabled style="opacity:0.4;cursor:not-allowed">AGOTADO</button>
+        </div>
+      </div>
+
+      <!-- Grizzly OG Bear Basic Tee — NEGRO -->
+      <div class="product-card" data-product="grizzly-tee-negro" data-category="poleras" data-brand="grizzly" onclick="openPP('grizzly-tee-negro')">
+        <div class="product-img">
+          <span class="product-badge badge-hot">HOT</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" aria-label="Favorito">♡</button>
+          <img src="https://grizzlygriptape.cl/wp-content/uploads/2025/11/product.template-96096-image-copia.jpg" alt="Grizzly OG Bear Basic Tee Negro" loading="lazy">
+          <div class="product-overlay"><button class="qv-btn">QUICK VIEW</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">GRIZZLY GRIPTAPE</div>
+          <div class="product-name">OG BEAR BASIC TEE — NEGRO</div>
+          <div class="product-price">$24.990</div>
+          <div class="product-colors">
+            <div class="color-swatch active" style="background:#1a1a1a"></div>
+          </div>
+          <button class="btn-cart btn-add">ADD TO CART</button>
+        </div>
+      </div>
+
+      <!-- Grizzly OG Bear Basic Tee — BEIGE -->
+      <div class="product-card" data-product="grizzly-tee-beige" data-category="poleras" data-brand="grizzly" onclick="openPP('grizzly-tee-beige')">
+        <div class="product-img">
+          <span class="product-badge badge-hot">HOT</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" aria-label="Favorito">♡</button>
+          <img src="https://grizzlygriptape.cl/wp-content/uploads/2025/11/product.template-96087-image.jpg" alt="Grizzly OG Bear Basic Tee Beige" loading="lazy">
+          <div class="product-overlay"><button class="qv-btn">QUICK VIEW</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand-tag">GRIZZLY GRIPTAPE</div>
+          <div class="product-name">OG BEAR BASIC TEE — BEIGE</div>
+          <div class="product-price">$24.990</div>
+          <div class="product-colors">
+            <div class="color-swatch active" style="background:#d4c5a9"></div>
+          </div>
+          <button class="btn-cart btn-add">ADD TO CART</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LIFESTYLE ═══ -->
+<section class="lifestyle">
+  <h3>RAW SURF, REAL STREET</h3>
+  <p>since '68</p>
+  <div class="lifestyle-items">
+    <div class="lifestyle-item">
+      <svg viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="5" ry="18" fill="#c4a882" stroke="#a68b6b" stroke-width="0.5"/><path d="M20 35 L17 40 L23 40 Z" fill="#2d9da1"/></svg>
+    </div>
+    <div class="lifestyle-item">
+      <svg viewBox="0 0 40 40"><rect x="8" y="5" width="24" height="30" rx="2" fill="#d4c5a9" stroke="#a68b6b" stroke-width="0.5"/><line x1="12" y1="12" x2="28" y2="12" stroke="#8a7e72" stroke-width="0.5"/><line x1="12" y1="16" x2="24" y2="16" stroke="#8a7e72" stroke-width="0.5"/><line x1="12" y1="20" x2="26" y2="20" stroke="#8a7e72" stroke-width="0.5"/></svg>
+    </div>
+    <div class="lifestyle-item">
+      <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="none" stroke="#c4a882" stroke-width="1.5"/><circle cx="20" cy="20" r="2" fill="#c4a882"/><line x1="20" y1="20" x2="20" y2="10" stroke="#a68b6b" stroke-width="1"/><line x1="20" y1="20" x2="28" y2="22" stroke="#a68b6b" stroke-width="0.8"/></svg>
+    </div>
+    <div class="lifestyle-item">
+      <svg viewBox="0 0 40 40"><rect x="8" y="10" width="24" height="22" rx="4" fill="#6b4c3b" stroke="#3d2b1f" stroke-width="0.5"/><path d="M14 10 Q14 4 20 4 Q26 4 26 10" stroke="#3d2b1f" stroke-width="1" fill="none"/><rect x="16" y="16" width="8" height="5" rx="1" fill="#a68b6b"/></svg>
+    </div>
+    <div class="lifestyle-item">
+      <svg viewBox="0 0 40 40"><path d="M8 28 Q6 18 12 12 Q18 6 24 10 Q30 14 28 24 Q34 22 36 28" stroke="#c4a882" stroke-width="1.5" fill="none"/><circle cx="20" cy="34" r="3" fill="#2d9da1"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COLLECTIONS DESTACADAS ═══ -->
+<section class="collections-section reveal" id="sCollections">
+  <div class="section-title" style="padding:0 8px"><span>COLECCIONES</span><span class="line"></span></div>
+  <div class="collections-grid">
+    <div class="collection-card reveal" onclick="filterCategory('essentials')">
+      <div class="cc-bg" style="background:linear-gradient(135deg,var(--coral),var(--coral-dark))"></div>
+      <div class="cc-content">
+        <div class="cc-tag">ESENCIALES</div>
+        <div class="cc-name">ESSENTIALS</div>
+        <div class="cc-count">8 productos</div>
+        <button class="cc-btn">VER COLECCIÓN</button>
+      </div>
+    </div>
+    <div class="collection-card reveal" onclick="filterCategory('lookbook')">
+      <div class="cc-bg" style="background:linear-gradient(135deg,var(--wood),var(--wood-dark))"></div>
+      <div class="cc-content">
+        <div class="cc-tag">INSPIRACIÓN</div>
+        <div class="cc-name">LOOKBOOK</div>
+        <div class="cc-count">Temporada verano</div>
+        <button class="cc-btn">EXPLORAR</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIOS ═══ -->
+<section class="testimonials-section reveal" id="sTestimonials">
+  <div class="section-title" style="padding:0 8px"><span>LO QUE DICEN</span><span class="line"></span></div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal">
+      <div class="tc-stars">★★★★★</div>
+      <div class="tc-text">"El polerón Stoke Station es lo mejor que me he comprado. La calidad del algodón se siente premium y el diseño es único."</div>
+      <div class="tc-author">CATALINA R.</div>
+      <div class="tc-location">Santiago, Chile</div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="tc-stars">★★★★★</div>
+      <div class="tc-text">"Pedí la tabla Manai Street y llegó impecable. El shape retro es perfecto para las olas de Pichilemu. 100% recomendado."</div>
+      <div class="tc-author">MATÍAS G.</div>
+      <div class="tc-location">Valparaíso, Chile</div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="tc-stars">★★★★☆</div>
+      <div class="tc-text">"La chaqueta de pana es increíble para el otoño. Corte perfecto, los botones de madera son un detalle precioso. Envío rápido."</div>
+      <div class="tc-author">FRANCISCA L.</div>
+      <div class="tc-location">Concepción, Chile</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NEWSLETTER ═══ -->
+<section class="newsletter-section reveal" id="sNewsletter">
+  <div class="nl-title">ÚNETE A LA TRIBU</div>
+  <div class="nl-sub">Ofertas exclusivas y nuevas colecciones</div>
+  <form class="nl-form" onsubmit="event.preventDefault();subscribeNL(this)">
+    <input type="email" class="nl-input" placeholder="tu@email.com" required>
+    <button type="submit" class="nl-btn">SUSCRIBIRSE</button>
+  </form>
+</section>
+
+<!-- ═══ FOOTER COMPLETO ═══ -->
+<footer class="footer-full" id="sContact">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">KANKI</div>
+      <div class="footer-tagline">Where the sea meets the street</div>
+      <p>E-commerce de streetwear y surf chileno. Diseños originales inspirados en la costa del Pacífico.</p>
+      <div class="footer-social">
+        <a href="#" title="Instagram">📷</a>
+        <a href="#" title="TikTok">🎵</a>
+        <a href="#" title="YouTube">▶</a>
+        <a href="#" title="WhatsApp">💬</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>TIENDA</h4>
+      <a href="#" onclick="filterCategory('polerones');return false">Polerones</a>
+      <a href="#" onclick="filterCategory('surfboards');return false">Surfboards</a>
+      <a href="#" onclick="filterCategory('essentials');return false">Essentials</a>
+      <a href="#" onclick="filterCategory('lookbook');return false">Lookbook</a>
+    </div>
+    <div class="footer-col">
+      <h4>AYUDA</h4>
+      <a href="#" onclick="showInfoModal('envios');return false">Envíos y Entregas</a>
+      <a href="#" onclick="showInfoModal('devol');return false">Devoluciones</a>
+      <a href="#" onclick="showInfoModal('faq');return false">Preguntas Frecuentes</a>
+      <a href="#" onclick="showInfoModal('pago');return false">Medios de Pago</a>
+      <a href="#" onclick="showInfoModal('tallas');return false">Guía de Tallas</a>
+    </div>
+    <div class="footer-col">
+      <h4>CONTACTO</h4>
+      <p>📍 Santiago, Chile</p>
+      <p>📧 hola@kankistreet.cl</p>
+      <p>📱 +56 9 1234 5678</p>
+      <p>⏰ Lun-Vie 10:00 - 19:00</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 KANKI STREET — EST. 1968 — TODOS LOS DERECHOS RESERVADOS</div>
+</footer>
+
+<!-- ═══ WALLPAPER POPUP ═══ -->
+<div class="wp-popup" id="wpPopup" onclick="if(event.target===this)closeWP()">
+  <div class="wp-inner">
+    <button class="wp-close" onclick="closeWP()">✕</button>
+    <img src="kanki-brand-hero.jpg" alt="Kanki Street">
+    <div class="wp-caption"><h3>KANKI STREET</h3><p>Where the sea meets the street</p></div>
+  </div>
+</div>
+
+<!-- ═══ PRODUCT POPUP ═══ -->
+<div class="pp-overlay" id="ppOverlay" onclick="if(event.target===this)closePP()">
+  <div class="pp-box">
+    <button class="pp-x" onclick="closePP()">✕</button>
+    <div class="pp-layout">
+      <div class="pp-preview" id="ppPreview"></div>
+      <div class="pp-detail">
+        <div class="pp-name" id="ppName"></div>
+        <div class="pp-price" id="ppPrice"></div>
+        <div class="pp-desc" id="ppDesc"></div>
+        <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:2px;color:var(--wood-dark);margin-bottom:6px">SIZE:</div>
+        <div class="pp-sizes">
+          <div class="pp-sz">S</div><div class="pp-sz active">M</div><div class="pp-sz">L</div><div class="pp-sz">XL</div><div class="pp-sz">XXL</div>
+        </div>
+        <button class="pp-add">ADD TO CART</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CART DRAWER ═══ -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>🛒 YOUR CART <span class="cart-count" id="cartBadge">0</span></h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty" id="cartEmpty">
+      <div class="cart-empty-icon">🏄</div>
+      <div class="cart-empty-text">Tu carrito está vacío.<br>¡Explora la colección!</div>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">$0</span></div>
+    <div class="cart-subtotal"><span>Envío</span><span style="color:var(--teal)">Gratis sobre $50</span></div>
+    <div class="cart-total"><span>TOTAL</span><span id="cartTotal">$0</span></div>
+    <button class="cart-checkout" onclick="showCheckout()">CHECKOUT</button>
+    <button class="cart-continue" onclick="closeCart()">SEGUIR COMPRANDO</button>
+    <div class="cart-shipping">📦 Envío gratis en compras sobre $50 · Santiago 24-48h</div>
+  </div>
+  <!-- Checkout Form -->
+  <div class="checkout-form" id="checkoutForm">
+    <div class="ck-title">DATOS DE ENVÍO</div>
+    <div class="ck-row">
+      <div class="ck-field"><label>NOMBRE</label><input id="ckName" placeholder="Juan Pérez"></div>
+      <div class="ck-field"><label>TELÉFONO</label><input id="ckPhone" placeholder="+56 9 1234 5678"></div>
+    </div>
+    <div class="ck-field"><label>EMAIL</label><input id="ckEmail" type="email" placeholder="juan@email.com"></div>
+    <div class="ck-field"><label>DIRECCIÓN</label><input id="ckAddr" placeholder="Av. Providencia 1234, Depto 501"></div>
+    <div class="ck-row">
+      <div class="ck-field"><label>CIUDAD</label><input id="ckCity" placeholder="Santiago"></div>
+      <div class="ck-field"><label>COMUNA</label><input id="ckComuna" placeholder="Providencia"></div>
+    </div>
+    <div class="ck-title" style="margin-top:14px">MÉTODO DE PAGO</div>
+    <div class="ck-field">
+      <select id="ckPayment">
+        <option>Transferencia Bancaria</option>
+        <option>Depósito</option>
+      </select>
+    </div>
+    <div class="ck-summary" id="ckSummary"></div>
+    <button class="ck-confirm" onclick="confirmOrder()">CONFIRMAR PEDIDO</button>
+    <button class="ck-back" onclick="hideCheckout()">← VOLVER AL CARRITO</button>
+  </div>
+  <!-- Order Confirmation -->
+  <div class="order-confirm" id="orderConfirm">
+    <div class="oc-icon">🏄</div>
+    <div class="oc-title">¡PEDIDO CONFIRMADO!</div>
+    <div class="oc-order" id="ocOrderNum">PEDIDO #KS-20260401-001</div>
+    <div class="oc-msg">Te enviaremos los datos bancarios por WhatsApp para completar tu transferencia. Una vez confirmado el pago, despacharemos en 24-48 horas.</div>
+    <button class="oc-wa" onclick="window.open('https://wa.me/56912345678?text=Hola! Acabo de hacer el pedido '+document.getElementById('ocOrderNum').textContent)">💬 CONTACTAR POR WHATSAPP</button>
+    <br><br>
+    <button class="cart-continue" onclick="closeOrderAndReset()">SEGUIR COMPRANDO</button>
+  </div>
+</aside>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toastText">Agregado al carrito</span>
+  <div class="toast-wave"></div>
+</div>
+
+<!-- ═══ SEARCH OVERLAY ═══ -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <input class="search-input" id="searchInput" type="text" placeholder="Buscar productos..." oninput="liveSearch(this.value)" autofocus>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ═══ INFO MODAL (reutilizable) ═══ -->
+<div class="pp-overlay" id="infoModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="pp-box" style="max-width:520px">
+    <button class="pp-x" onclick="document.getElementById('infoModal').classList.remove('open')">✕</button>
+    <div id="infoContent"></div>
+  </div>
+</div>
+
+<!-- ═══ BOTONES FLOTANTES ═══ -->
+<button class="whatsapp-float" onclick="showInfoModal('whatsapp')" title="WhatsApp">💬</button>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">↑</button>
+
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu">☰</button>
+
+<script>
+/* ═══ WALLPAPER POPUP ═══ */
+function openWP(){document.getElementById('wpPopup').classList.add('open')}
+function closeWP(){document.getElementById('wpPopup').classList.remove('open')}
+
+/* ═══ PRODUCT DATA ═══ */
+const products={
+  'fog-black':{id:'fog-black',name:'FLEECE HOODIE FW24 — BLACK',price:120000,brand:'FEAR OF GOD ESSENTIALS',desc:'Polerón Fear of God Essentials FW24. Fleece pesado, capucha oversized, interior afelpado premium. Logo impreso al pecho. Stock limitado: tallas M · L · XL.'},
+  'fog-grey':{id:'fog-grey',name:'FLEECE HOODIE FW24 — HEATHER GREY',price:120000,brand:'FEAR OF GOD ESSENTIALS',desc:'Polerón Fear of God Essentials FW24 en gris jaspeado. Fleece pesado, corte relaxed, capucha estructurada. Logo impreso al pecho. Stock limitado: tallas L · XL.'},
+  'fog-dark-oatmeal':{id:'fog-dark-oatmeal',name:'DARK OATMEAL HOODIE',price:120000,brand:'FEAR OF GOD ESSENTIALS',desc:'Polerón Fear of God Essentials en dark oatmeal. Tono tierra oscuro, corte oversize, interior afelpado premium. Stock limitado: tallas L · XL.'},
+  'fog-light-oatmeal':{id:'fog-light-oatmeal',name:'LIGHT OATMEAL HOODIE',price:120000,brand:'FEAR OF GOD ESSENTIALS',desc:'Polerón Fear of God Essentials en light oatmeal. Beige neutro premium, corte oversize, logo bordado. Stock limitado: tallas L · XL.'},
+  'fog-stretch-limo':{id:'fog-stretch-limo',name:'STRETCH LIMO HOODIE',price:120000,brand:'FEAR OF GOD ESSENTIALS',desc:'Polerón Fear of God Essentials "Stretch Limo". Gris carbón profundo, silueta oversized, capucha de gran volumen. Stock limitado: tallas L · XL.'},
+  'grizzly-script-negro':{id:'grizzly-script-negro',name:'PRINT SCRIPT LOGO TEE',price:27990,brand:'GRIZZLY GRIPTAPE',soldOut:true,desc:'Polera Grizzly Print Script Logo. 100% algodón. Negro. Agotado.'},
+  'grizzly-og-black':{id:'grizzly-og-black',name:'OG BEAR BASIC HOODIE — NEGRO',price:48990,brand:'GRIZZLY GRIPTAPE',desc:'El polerón OG Bear de Grizzly en negro. Oso OG serigrafía frontal, capucha doble capa, bolsillo canguro. 80% algodón 20% poliéster. Tallas S · M · L · XL · XXL.'},
+  'grizzly-hoodie':{id:'grizzly-hoodie',name:'LOWERCASE FADEAWAY HOODIE',price:44990,brand:'GRIZZLY GRIPTAPE',soldOut:true,desc:'Polerón Lowercase Fadeaway. Agotado.'},
+  'grizzly-tee-negro':{id:'grizzly-tee-negro',name:'OG BEAR BASIC TEE — NEGRO',price:24990,brand:'GRIZZLY GRIPTAPE',desc:'La polera icónica de Grizzly. Oso OG Basic estampado al pecho, 100% algodón, corte regular. Negro. Tallas S · M · L · XL · XXL.'},
+  'grizzly-tee-beige':{id:'grizzly-tee-beige',name:'OG BEAR BASIC TEE — BEIGE',price:24990,brand:'GRIZZLY GRIPTAPE',desc:'La polera icónica de Grizzly. Oso OG Basic estampado al pecho, 100% algodón, corte regular. Beige. Tallas S · M · L · XL · XXL.'}
+};
+// Format price in CLP
+function fmtPrice(p){return'$'+p.toLocaleString('es-CL')}
+
+/* ═══ CART STATE ═══ */
+let cart=[];
+let currentProduct=null;
+let selectedSize='M';
+
+function getProductSvg(id){
+  const svg=document.querySelector(`[data-product="${id}"] .product-img svg`);
+  if(svg) return svg.outerHTML;
+  const img=document.querySelector(`[data-product="${id}"] .product-img img`);
+  if(img) return `<img src="${img.src}" alt="${img.alt||''}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">`;
+  return '';
+}
+
+/* ═══ PRODUCT POPUP ═══ */
+function openPP(id){
+  currentProduct=id;
+  const p=products[id];
+  document.getElementById('ppName').textContent=p.name;
+  document.getElementById('ppPrice').textContent=fmtPrice(p.price);
+  document.getElementById('ppDesc').textContent=p.desc;
+  // Show brand tag if present
+  let brandEl=document.getElementById('ppBrand');
+  if(!brandEl){
+    brandEl=document.createElement('div');
+    brandEl.id='ppBrand';
+    brandEl.style.cssText='font-family:var(--font-display);font-size:0.65rem;letter-spacing:3px;color:var(--gold,#C49A3A);margin-bottom:4px;font-weight:700';
+    const nameEl=document.getElementById('ppName');
+    nameEl.parentNode.insertBefore(brandEl,nameEl);
+  }
+  brandEl.textContent=p.brand||'';
+  // Preview: prefer real img over SVG
+  const preview=document.getElementById('ppPreview');
+  const cardImg=document.querySelector(`[data-product="${id}"] .product-img img`);
+  const cardSvg=document.querySelector(`[data-product="${id}"] .product-img svg`);
+  if(cardImg){
+    preview.innerHTML=`<img src="${cardImg.src}" alt="${cardImg.alt}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+  } else if(cardSvg){
+    preview.innerHTML=cardSvg.outerHTML;
+    preview.querySelector('svg').style.width='60%';
+    preview.querySelector('svg').style.height='auto';
+  } else {
+    preview.innerHTML='';
+  }
+  selectedSize='M';
+  document.querySelectorAll('.pp-sz').forEach(s=>{
+    s.classList.toggle('active',s.textContent==='M');
+  });
+  document.getElementById('ppOverlay').classList.add('open');
+}
+function closePP(){document.getElementById('ppOverlay').classList.remove('open')}
+
+/* Size selector */
+document.querySelectorAll('.pp-sz').forEach(s=>{
+  s.addEventListener('click',()=>{
+    document.querySelectorAll('.pp-sz').forEach(x=>x.classList.remove('active'));
+    s.classList.add('active');
+    selectedSize=s.textContent;
+  });
+});
+
+/* ═══ ADD TO CART ═══ */
+function addToCart(productId,size,fromPopup){
+  const p=products[productId];
+  if(!p)return;
+  const sz=size||selectedSize||'M';
+
+  // Check if already in cart
+  const existing=cart.find(i=>i.id===productId&&i.size===sz);
+  if(existing){
+    existing.qty++;
+  } else {
+    cart.push({id:productId,name:p.name,price:p.price,size:sz,qty:1,svg:getProductSvg(productId)});
+  }
+
+  updateCartUI();
+  showToast(p.name);
+
+  // Close popup if from popup
+  if(fromPopup) closePP();
+
+  // ⚡ Sergito: bounce the header cart icon
+  const headerCart=document.getElementById('headerCartBtn');
+  headerCart.style.animation='badge-bounce 0.4s ease';
+  setTimeout(()=>headerCart.style.animation='',400);
+
+  // Open cart drawer briefly
+  openCart();
+}
+
+function removeFromCart(index){
+  cart.splice(index,1);
+  updateCartUI();
+}
+
+function updateQty(index,delta){
+  cart[index].qty+=delta;
+  if(cart[index].qty<=0) cart.splice(index,1);
+  updateCartUI();
+}
+
+/* ═══ CART UI ═══ */
+function updateCartUI(){
+  const body=document.getElementById('cartBody');
+  const empty=document.getElementById('cartEmpty');
+  const footer=document.getElementById('cartFooter');
+  const badge=document.getElementById('cartBadge');
+  const headerBadge=document.getElementById('headerCartCount');
+
+  const totalItems=cart.reduce((s,i)=>s+i.qty,0);
+  const totalPrice=cart.reduce((s,i)=>s+i.price*i.qty,0);
+
+  badge.textContent=totalItems;
+  headerBadge.textContent=totalItems;
+
+  if(cart.length===0){
+    empty.style.display='block';
+    footer.style.display='none';
+    // Clear items but keep empty
+    body.querySelectorAll('.cart-item').forEach(el=>el.remove());
+    return;
+  }
+
+  empty.style.display='none';
+  footer.style.display='block';
+
+  // Rebuild items
+  body.querySelectorAll('.cart-item').forEach(el=>el.remove());
+  cart.forEach((item,i)=>{
+    const el=document.createElement('div');
+    el.className='cart-item';
+    el.innerHTML=`
+      <div class="cart-item-img">${item.svg}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-size">Talla: ${item.size}</div>
+        <div class="cart-item-price">${fmtPrice(item.price)}</div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="updateQty(${i},-1)">−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="updateQty(${i},1)">+</button>
+        </div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${i})">✕ Eliminar</button>
+    `;
+    // Scale SVG in cart
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.width='80%';svg.style.height='auto'}
+    body.appendChild(el);
+  });
+
+  document.getElementById('cartSubtotal').textContent=fmtPrice(totalPrice);
+  document.getElementById('cartTotal').textContent=fmtPrice(totalPrice);
+}
+
+/* ═══ CART DRAWER ═══ */
+function openCart(){
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+}
+function closeCart(){
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+}
+
+/* ═══ TOAST ═══ */
+let toastTimer;
+function showToast(name){
+  const toast=document.getElementById('toast');
+  document.getElementById('toastText').textContent=name+' agregado';
+  toast.classList.add('show');
+  // Reset wave animation
+  const wave=toast.querySelector('.toast-wave');
+  wave.style.animation='none';
+  wave.offsetHeight; // reflow
+  wave.style.animation='wave-fill 2s linear forwards';
+
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),2200);
+}
+
+/* ═══ BUTTON HANDLERS ═══ */
+// Intercept all cart buttons on product cards
+document.querySelectorAll('.btn-cart').forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    e.stopPropagation(); // Don't open product popup
+    const card=btn.closest('.product-card');
+    const productId=card.dataset.product;
+    addToCart(productId,'M',false);
+  });
+});
+
+// Popup add to cart
+document.querySelector('.pp-add').addEventListener('click',()=>{
+  if(currentProduct) addToCart(currentProduct,selectedSize,true);
+});
+
+/* ═══ ESC ═══ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeWP();closePP();closeCart();closeSearch();document.getElementById('sidebar').classList.remove('open');document.getElementById('infoModal').classList.remove('open')}
+});
+
+/* ═══ NAVIGATION ═══ */
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function smoothScroll(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+
+/* ═══ DUAL FILTER — Category × Brand ═══ */
+let activeCat='all', activeBrand='all';
+
+function applyFilters(){
+  const cards=document.querySelectorAll('.product-card');
+  cards.forEach(card=>{
+    const cats=(card.dataset.category||'').split(' ');
+    const brand=(card.dataset.brand||'').toLowerCase();
+    const catMatch = activeCat==='all' || cats.includes(activeCat);
+    const brandMatch = activeBrand==='all' || brand===activeBrand;
+    if(catMatch && brandMatch){
+      card.style.display='';card.style.opacity='1';card.style.transform='';
+    } else {
+      card.style.opacity='0';card.style.transform='scale(0.8)';
+      setTimeout(()=>{card.style.display='none'},300);
+    }
+  });
+}
+
+function filterCategory(cat){
+  activeCat=cat;
+  smoothScroll('productsGrid');
+  document.querySelectorAll('#subNav a, #sidebarNav a').forEach(a=>{
+    a.classList.toggle('active',a.dataset.filter===cat);
+  });
+  applyFilters();
+}
+
+function filterBrand(brand){
+  activeBrand=brand;
+  document.querySelectorAll('.brand-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.brand===brand);
+  });
+  applyFilters();
+}
+
+/* ═══ SEARCH ═══ */
+function openSearch(){document.getElementById('searchOverlay').classList.add('open');document.getElementById('searchInput').focus()}
+function closeSearch(){document.getElementById('searchOverlay').classList.remove('open');document.getElementById('searchInput').value='';document.getElementById('searchResults').innerHTML=''}
+function liveSearch(q){
+  const results=document.getElementById('searchResults');
+  if(!q.trim()){results.innerHTML='';return}
+  const matches=Object.values(products).filter(p=>p.name.toLowerCase().includes(q.toLowerCase())||p.desc.toLowerCase().includes(q.toLowerCase()));
+  if(matches.length===0){results.innerHTML='<div class="search-no-results">No se encontraron productos para "'+q+'"</div>';return}
+  results.innerHTML=matches.map(p=>'<div class="search-result-item" onclick="closeSearch();openPP(\''+p.id+'\')"><div><div class="sr-name">'+p.name+'</div><div class="sr-price">'+fmtPrice(p.price)+'</div></div></div>').join('');
+}
+
+/* ═══ WISHLIST ═══ */
+function toggleWish(btn){
+  btn.classList.toggle('liked');
+  btn.textContent=btn.classList.contains('liked')?'♥':'♡';
+  showToast(btn.classList.contains('liked')?'Agregado a favoritos':'Eliminado de favoritos');
+}
+
+/* ═══ CHECKOUT FLOW ═══ */
+function showCheckout(){
+  document.getElementById('cartBody').style.display='none';
+  document.getElementById('cartFooter').style.display='none';
+  document.getElementById('checkoutForm').classList.add('active');
+  // Build summary
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('ckSummary').innerHTML=
+    cart.map(i=>'<div class="ck-summary-row"><span>'+i.name+' ('+i.size+') x'+i.qty+'</span><span>'+fmtPrice(i.price*i.qty)+'</span></div>').join('')+
+    '<div class="ck-summary-row"><span>Envío</span><span style="color:var(--teal)">'+(total>=50000?'Gratis':'$2.990')+'</span></div>'+
+    '<div class="ck-summary-row total"><span>TOTAL</span><span>'+fmtPrice(total>=50000?total:total+2990)+'</span></div>';
+}
+function hideCheckout(){
+  document.getElementById('checkoutForm').classList.remove('active');
+  document.getElementById('cartBody').style.display='';
+  document.getElementById('cartFooter').style.display='';
+}
+function confirmOrder(){
+  const name=document.getElementById('ckName').value;
+  if(!name){showToast('Completa tu nombre');return}
+  document.getElementById('checkoutForm').classList.remove('active');
+  document.getElementById('orderConfirm').classList.add('active');
+  const orderNum='KS-'+Date.now().toString(36).toUpperCase();
+  document.getElementById('ocOrderNum').textContent='PEDIDO #'+orderNum;
+}
+function closeOrderAndReset(){
+  document.getElementById('orderConfirm').classList.remove('active');
+  document.getElementById('cartBody').style.display='';
+  document.getElementById('cartFooter').style.display='';
+  cart=[];updateCartUI();closeCart();
+}
+
+/* ═══ NEWSLETTER ═══ */
+function subscribeNL(form){
+  const email=form.querySelector('input').value;
+  form.querySelector('input').value='';
+  showToast('¡Bienvenido/a a la tribu! '+email);
+}
+
+/* ═══ INFO MODAL ═══ */
+const infoData={
+  envios:'<h3 style="font-family:var(--font-display);letter-spacing:3px;margin-bottom:12px">ENVÍOS Y ENTREGAS</h3><p style="font-family:var(--font-serif);line-height:1.7;font-size:0.85rem"><strong>Santiago:</strong> 24-48 horas hábiles<br><strong>Regiones:</strong> 3-5 días hábiles<br><strong>Envío gratis:</strong> en compras sobre $50<br><br>Trabajamos con Chilexpress y Starken. Recibirás un código de seguimiento por WhatsApp una vez despachado.</p>',
+  devol:'<h3 style="font-family:var(--font-display);letter-spacing:3px;margin-bottom:12px">DEVOLUCIONES</h3><p style="font-family:var(--font-serif);line-height:1.7;font-size:0.85rem">Tienes 30 días para devolver tu producto si no estás satisfecho. Debe estar sin uso y con etiquetas. Contacta por WhatsApp para coordinar la devolución.</p>',
+  faq:'<h3 style="font-family:var(--font-display);letter-spacing:3px;margin-bottom:12px">PREGUNTAS FRECUENTES</h3><p style="font-family:var(--font-serif);line-height:1.7;font-size:0.85rem"><strong>¿Cómo pago?</strong><br>Por transferencia bancaria. Te enviamos los datos después de confirmar tu pedido.<br><br><strong>¿Tienen tienda física?</strong><br>Somos 100% online, pero hacemos pop-ups en Santiago y Valparaíso.<br><br><strong>¿Las tallas son estándar?</strong><br>Sí, usamos tallaje chileno estándar. Revisa nuestra guía de tallas.</p>',
+  pago:'<h3 style="font-family:var(--font-display);letter-spacing:3px;margin-bottom:12px">MEDIOS DE PAGO</h3><p style="font-family:var(--font-serif);line-height:1.7;font-size:0.85rem"><strong>Transferencia Bancaria</strong><br>Banco Estado · Cuenta Corriente<br>Kanki Street SpA · RUT: 77.123.456-7<br><br><strong>Depósito</strong><br>Disponible en cualquier sucursal del Banco Estado.<br><br>Envía tu comprobante por WhatsApp para confirmar.</p>',
+  tallas:'<h3 style="font-family:var(--font-display);letter-spacing:3px;margin-bottom:12px">GUÍA DE TALLAS</h3><div style="font-family:var(--font-body);font-size:0.8rem;overflow-x:auto"><table style="width:100%;border-collapse:collapse"><tr style="background:var(--sand)"><th style="padding:8px;border:1px solid var(--border-kraft)">Talla</th><th style="padding:8px;border:1px solid var(--border-kraft)">Pecho</th><th style="padding:8px;border:1px solid var(--border-kraft)">Largo</th></tr><tr><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">S</td><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">96cm</td><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">68cm</td></tr><tr><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">M</td><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">102cm</td><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">72cm</td></tr><tr><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">L</td><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">108cm</td><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">76cm</td></tr><tr><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">XL</td><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">114cm</td><td style="padding:8px;border:1px solid var(--border-kraft);text-align:center">80cm</td></tr></table></div>',
+  whatsapp:'<div style="text-align:center"><div style="font-size:3rem;margin-bottom:12px">💬</div><h3 style="font-family:var(--font-display);letter-spacing:3px;margin-bottom:8px">ESCRÍBENOS</h3><p style="font-family:var(--font-serif);font-size:0.85rem;margin-bottom:16px;color:var(--text-body)">Estamos disponibles en WhatsApp de Lun-Vie 10:00 a 19:00</p><a href="https://wa.me/56912345678" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:#25D366;color:#fff;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:0.85rem;letter-spacing:2px;text-decoration:none">💬 ABRIR WHATSAPP</a></div>',
+  cuenta:'<div style="text-align:center"><div style="font-size:3rem;margin-bottom:12px">👤</div><h3 style="font-family:var(--font-display);letter-spacing:3px;margin-bottom:8px">MI CUENTA</h3><p style="font-family:var(--font-serif);font-size:0.85rem;margin-bottom:16px;color:var(--text-body)">El registro de cuentas estará disponible próximamente.</p><button onclick="document.getElementById(\'infoModal\').classList.remove(\'open\')" style="padding:10px 24px;background:var(--teal);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:0.78rem;letter-spacing:2px;cursor:pointer">ENTENDIDO</button></div>'
+};
+function showInfoModal(key){
+  document.getElementById('infoContent').innerHTML=infoData[key]||'<p>Contenido no disponible</p>';
+  document.getElementById('infoModal').classList.add('open');
+}
+
+/* ═══ BACK TO TOP ═══ */
+window.addEventListener('scroll',()=>{
+  document.getElementById('backTop').classList.toggle('visible',window.scrollY>500);
+});
+
+/* ═══════════════════════════════════════════════════
+   ✨ EFECTOS VISUALES v2 — 2026-04-01
+   ═══════════════════════════════════════════════════ */
+
+/* ── 7. Skeleton Loading: mostrar real tras ~800ms ── */
+(function(){
+  const skeleton = document.getElementById('skeletonGrid');
+  const grid     = document.getElementById('productsGrid');
+  setTimeout(()=>{
+    skeleton.style.transition = 'opacity 0.35s ease';
+    skeleton.style.opacity    = '0';
+    setTimeout(()=>{
+      skeleton.style.display = 'none';
+      grid.style.display     = '';
+      // Disparar reveal de las cards una vez visible
+      observeReveal();
+    }, 350);
+  }, 800);
+})();
+
+/* ── 1 & 2. Scroll Reveal + Stagger con IntersectionObserver ── */
+function observeReveal(){
+  // Marcar elementos revelables dinámicamente
+  const dynamic = [
+    ...document.querySelectorAll('.product-card'),
+    ...document.querySelectorAll('.lifestyle'),
+    document.querySelector('.products-inner')
+  ].filter(Boolean);
+  dynamic.forEach(el => el.classList.add('reveal'));
+
+  // Incluir todos los elementos con clase reveal (estáticos + dinámicos)
+  const allReveal = document.querySelectorAll('.reveal');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  allReveal.forEach(el => io.observe(el));
+}
+
+/* ── Quick View button: llamada explícita con stopPropagation ── */
+document.querySelectorAll('.qv-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const card = btn.closest('.product-card');
+    if(card && card.dataset.product && card.onclick && card.getAttribute('onclick') !== 'return false'){
+      openPP(card.dataset.product);
+    }
+  });
+});
+
+/* ── 5. Hover Tilt 3D en product cards ── */
+document.querySelectorAll('.product-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect   = card.getBoundingClientRect();
+    const cx     = rect.left + rect.width  / 2;
+    const cy     = rect.top  + rect.height / 2;
+    const dx     = (e.clientX - cx) / (rect.width  / 2); // -1 a 1
+    const dy     = (e.clientY - cy) / (rect.height / 2); // -1 a 1
+    const rotY   =  dx * 4;   // max 4deg
+    const rotX   = -dy * 3;   // max 3deg
+    card.style.transform = `perspective(1000px) rotateY(${rotY}deg) rotateX(${rotX}deg) translateY(-4px)`;
+    card.style.boxShadow = `${-rotY*1.5}px 12px 32px rgba(61,43,31,0.22)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.boxShadow = '';
+  });
+});
+
+/* ── 8. Parallax sutil en el hero ── */
+(function(){
+  const hero = document.querySelector('.hero-section');
+  if(!hero) return;
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if(!ticking){
+      requestAnimationFrame(()=>{
+        const scrollY  = window.scrollY;
+        const headerH  = 64 + 36; // header + subheader
+        const heroTop  = hero.offsetTop;
+        const offset   = (scrollY - heroTop + headerH) * 0.45;
+        // Solo en desktop (no en mobile donde el hero es más corto)
+        if(window.innerWidth > 767){
+          hero.querySelector('.hero-img') &&
+            (hero.querySelector('.hero-img').style.objectPosition = `center calc(20% + ${offset}px)`);
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+})();
+
+/* ── FLIP CARD — construye la estructura front/back en cada product-img con <img> ── */
+(function initFlip(){
+  document.querySelectorAll('.product-card .product-img').forEach(imgDiv => {
+    const img = imgDiv.querySelector('img');
+    if(!img) return; // skip SVG cards
+
+    const card = imgDiv.closest('.product-card');
+    if(!card) return;
+
+    const name    = card.querySelector('.product-name')?.textContent.trim() || '';
+    const price   = card.querySelector('.product-price')?.textContent.trim() || '';
+    const brand   = card.querySelector('.product-brand-tag')?.textContent.trim() || '';
+
+    // Sacar badge, wishlist y overlay del imgDiv
+    const badge   = imgDiv.querySelector('.product-badge');
+    const wishBtn = imgDiv.querySelector('.wishlist-btn');
+    const overlay = imgDiv.querySelector('.product-overlay');
+
+    // Crear flip-front
+    const front = document.createElement('div');
+    front.className = 'flip-front';
+    front.appendChild(img); // mover img original (no clon)
+    if(overlay) front.appendChild(overlay);
+
+    // Crear flip-back
+    const back = document.createElement('div');
+    back.className = 'flip-back';
+    back.innerHTML = `<div class="flip-back-content">
+      ${brand ? `<div class="flip-back-brand">${brand}</div>` : ''}
+      <div class="flip-back-name">${name}</div>
+      <div class="flip-back-price">${price}</div>
+      <div class="flip-back-cta">TAP TO VIEW DETAILS</div>
+    </div>`;
+
+    // Crear flip-inner
+    const inner = document.createElement('div');
+    inner.className = 'flip-inner';
+    inner.appendChild(front);
+    inner.appendChild(back);
+
+    // Limpiar imgDiv y reconstruir
+    imgDiv.innerHTML = '';
+    if(badge) imgDiv.appendChild(badge);
+    if(wishBtn) imgDiv.appendChild(wishBtn);
+    imgDiv.appendChild(inner);
+  });
+})();
+</script>
+</body>
+</html>

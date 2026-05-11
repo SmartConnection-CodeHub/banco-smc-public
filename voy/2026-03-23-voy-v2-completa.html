@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOY v2 — Maqueta Completa (Celia + Panchita)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; }
+
+  h1 { text-align: center; font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 8px; }
+  .meta { text-align: center; font-size: 11px; color: #475569; margin-bottom: 48px; }
+
+  /* Tabs navegación principal */
+  .main-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+  .main-tab { padding: 8px 16px; border-radius: 99px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid #334155; color: #94a3b8; background: transparent; transition: all 0.2s; }
+  .main-tab.active { background: #2563eb; color: white; border-color: #2563eb; }
+  .main-tab:hover { border-color: #60a5fa; color: #e2e8f0; }
+  .main-section { display: none; }
+  .main-section.active { display: block; }
+
+  .section { margin-bottom: 60px; }
+  .section-title { font-size: 18px; font-weight: 700; color: #60a5fa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .section-desc { color: #64748b; font-size: 13px; margin-bottom: 24px; }
+
+  .phones { display: flex; gap: 24px; overflow-x: auto; padding-bottom: 16px; scroll-snap-type: x mandatory; }
+  .phone { min-width: 375px; max-width: 375px; scroll-snap-align: start; background: #fff; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 4px solid #334155; }
+  .phone-label { text-align: center; color: #94a3b8; font-size: 11px; margin-top: 8px; font-weight: 600; }
+  .phone-new { border-color: #22c55e; }
+  .phone-new + .phone-label { color: #22c55e; }
+  .phone-new + .phone-label::after { content: ' ✨ NUEVO'; font-size: 9px; }
+
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #fff; border-bottom: 1px solid #e2e8f0; }
+  .header .logo { font-size: 20px; font-weight: 900; color: #0f172a; }
+  .header .user { display: flex; align-items: center; gap: 8px; }
+  .header .user span { font-size: 12px; color: #64748b; }
+  .header .bell { width: 20px; height: 20px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+  .bottom-nav { display: flex; background: #fff; border-top: 1px solid #e2e8f0; padding: 8px 0 20px; }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; color: #94a3b8; }
+  .nav-item.active { color: #2563eb; }
+  .nav-icon { font-size: 18px; }
+
+  .content { padding: 16px; background: #f8fafc; min-height: 600px; }
+
+  .card { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 12px; }
+  .card-green { background: #059669; color: white; border: none; }
+  .card-blue { background: #2563eb; color: white; border: none; }
+  .card-red { background: #dc2626; color: white; border: none; }
+  .card-dark { background: #0f172a; color: white; border: none; }
+  .card-purple { background: #7c3aed; color: white; border: none; }
+
+  .stat-label { font-size: 10px; opacity: 0.7; }
+  .stat-value { font-size: 22px; font-weight: 700; }
+  .stat-small { font-size: 16px; font-weight: 700; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+
+  .page-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 16px; }
+
+  .badge { font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 99px; display: inline-block; }
+  .badge-green { background: #dcfce7; color: #15803d; }
+  .badge-blue { background: #dbeafe; color: #1d4ed8; }
+  .badge-red { background: #fee2e2; color: #dc2626; }
+  .badge-amber { background: #fef3c7; color: #b45309; }
+  .badge-purple { background: #f3e8ff; color: #7c3aed; }
+
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #64748b; flex-shrink: 0; }
+  .avatar-sm { width: 32px; height: 32px; font-size: 12px; }
+  .avatar-green { background: #dcfce7; color: #15803d; }
+
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .flex-1 { flex: 1; }
+  .text-xs { font-size: 11px; }
+  .text-sm { font-size: 13px; }
+  .text-slate { color: #64748b; }
+  .text-dark { color: #0f172a; }
+  .font-bold { font-weight: 700; }
+  .font-medium { font-weight: 500; }
+  .mt-1 { margin-top: 4px; }
+  .mt-2 { margin-top: 8px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .btn { display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; border: none; cursor: pointer; gap: 6px; }
+  .btn-blue { background: #2563eb; color: white; }
+  .btn-green { background: #059669; color: white; }
+  .btn-red { background: #dc2626; color: white; }
+  .btn-purple { background: #7c3aed; color: white; }
+  .btn-outline { background: white; color: #0f172a; border: 1px solid #e2e8f0; }
+
+  .input { width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 13px; background: white; }
+
+  .progress-bar { height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; border-radius: 99px; }
+  .progress-green { background: #059669; }
+  .progress-blue { background: #2563eb; }
+
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 500; }
+  .chip-active { background: #2563eb; color: white; }
+  .chip-inactive { background: white; border: 1px solid #e2e8f0; color: #64748b; }
+
+  .separator { height: 1px; background: #f1f5f9; margin: 12px 0; }
+
+  .toggle { width: 44px; height: 24px; border-radius: 99px; position: relative; }
+  .toggle-on { background: #059669; }
+  .toggle-off { background: #e2e8f0; }
+  .toggle-dot { width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; }
+  .toggle-on .toggle-dot { right: 2px; }
+  .toggle-off .toggle-dot { left: 2px; }
+
+  .chart { display: flex; align-items: flex-end; gap: 6px; height: 100px; }
+  .chart-bar { flex: 1; border-radius: 6px; min-height: 4px; }
+  .chart-bar-active { background: #059669; }
+  .chart-bar-inactive { background: #e2e8f0; }
+  .chart-label { text-align: center; font-size: 8px; color: #94a3b8; margin-top: 4px; }
+
+  .worker-card { background: white; border-radius: 16px; padding: 14px; border: 1px solid #e2e8f0; margin-bottom: 10px; }
+
+  .map { background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 50%, #cffafe 100%); border-radius: 16px; height: 200px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; margin-bottom: 12px; }
+  .map-pin { width: 24px; height: 24px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); position: absolute; }
+  .map-pin-1 { background: #2563eb; top: 40px; left: 80px; }
+  .map-pin-2 { background: #059669; top: 90px; left: 200px; }
+  .map-pin-3 { background: #f59e0b; top: 60px; left: 280px; }
+  .map-pin-4 { background: #8b5cf6; top: 130px; left: 140px; }
+  .map-label { color: #3b82f6; font-size: 11px; font-weight: 600; z-index: 1; }
+
+  .timeline { display: flex; gap: 0; margin-bottom: 12px; }
+  .timeline-step { flex: 1; text-align: center; }
+  .timeline-dot { width: 28px; height: 28px; border-radius: 50%; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .timeline-dot-done { background: #dcfce7; color: #15803d; }
+  .timeline-dot-pending { background: #f1f5f9; color: #94a3b8; }
+  .timeline-label { font-size: 8px; color: #94a3b8; }
+  .timeline-label-done { color: #15803d; font-weight: 600; }
+
+  .stars { display: flex; gap: 2px; }
+  .star { font-size: 16px; }
+  .star-filled { color: #f59e0b; }
+  .star-empty { color: #e2e8f0; }
+
+  .upload-area { border: 2px dashed #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; color: #94a3b8; font-size: 12px; }
+
+  .urgent-card { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 16px; padding: 14px; margin-bottom: 10px; }
+
+  .chat-bubble { max-width: 70%; padding: 10px 14px; border-radius: 16px; font-size: 13px; margin-bottom: 6px; }
+  .chat-mine { background: #2563eb; color: white; border-bottom-right-radius: 4px; margin-left: auto; }
+  .chat-other { background: white; color: #0f172a; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; }
+  .chat-time { font-size: 9px; opacity: 0.6; margin-top: 2px; }
+  .chat-image { width: 180px; height: 120px; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border-radius: 12px; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+
+  .scroll-hint { text-align: center; color: #475569; font-size: 12px; margin-top: 4px; margin-bottom: 8px; }
+
+  /* Skeleton loading */
+  .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+  .skeleton-text { height: 12px; margin-bottom: 8px; }
+  .skeleton-title { height: 18px; width: 60%; margin-bottom: 12px; }
+  .skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; }
+  .skeleton-card { height: 80px; border-radius: 16px; margin-bottom: 12px; }
+
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* Report section */
+  .report { background: rgba(255,255,255,0.03); border: 1px solid #1e293b; border-radius: 16px; padding: 24px; margin-bottom: 32px; }
+  .report h3 { color: #60a5fa; font-size: 14px; margin-bottom: 12px; }
+  .report table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .report th { text-align: left; padding: 8px; color: #94a3b8; border-bottom: 1px solid #1e293b; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .report td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .report tr:hover { background: rgba(255,255,255,0.02); }
+
+  .tag-new { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; background: #22c55e; color: white; margin-left: 6px; }
+  .tag-exists { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; background: #3b82f6; color: white; margin-left: 6px; }
+  .tag-improved { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; background: #f59e0b; color: white; margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<h1>VOY v2</h1>
+<p class="subtitle">Marketplace de servicios para el hogar — Quinta Región, Chile</p>
+<p class="meta">Maqueta original: Celia 🔍 · Completada por: Panchita 🐕 · 23 marzo 2026 · Para fusión en voy-app-3</p>
+
+<!-- TABS PRINCIPALES -->
+<div class="main-tabs">
+  <button class="main-tab active" onclick="showSection('reporte')">📋 Reporte</button>
+  <button class="main-tab" onclick="showSection('landing')">🏠 Landing</button>
+  <button class="main-tab" onclick="showSection('registro')">📝 Registro</button>
+  <button class="main-tab" onclick="showSection('cliente')">👤 Cliente</button>
+  <button class="main-tab" onclick="showSection('profesional')">🔧 Profesional</button>
+  <button class="main-tab" onclick="showSection('admin')">⚙️ Admin</button>
+  <button class="main-tab" onclick="showSection('estados')">🔄 Estados</button>
+  <button class="main-tab" onclick="showSection('datos')">🗃️ Modelo Datos</button>
+  <button class="main-tab" onclick="showSection('checklist')">✅ Checklist</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- REPORTE                                            -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section active" id="sec-reporte">
+
+<div class="report">
+  <h3>📊 Comparación VOY v1 (actual) vs VOY v2 (propuesta)</h3>
+  <table>
+    <tr><th>Feature</th><th>VOY v1</th><th>VOY v2</th><th>Estado</th></tr>
+    <tr><td>Stack</td><td>Vanilla JS + Airtable</td><td>Vanilla JS + Airtable (mantener)</td><td><span class="tag-exists">MANTENER</span></td></tr>
+    <tr><td>Login/Registro</td><td>Login básico (email+pass en Airtable)</td><td>Login + Registro cliente + Registro profesional</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Dashboard Cliente</td><td>Explorar + mapa + favoritos</td><td>+ Buscador + servicios activos prominente</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Explorar + Mapa</td><td>Leaflet + filtros + radio</td><td>Igual + toggle lista/mapa mejorado</td><td><span class="tag-exists">MANTENER</span></td></tr>
+    <tr><td>Cotizaciones</td><td>Worker envía, client acepta/rechaza + PDF</td><td>+ Comparador visual lado a lado</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Booking detalle</td><td>Card básica con estado</td><td>+ Timeline 5 pasos visual</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Chat</td><td>Chat básico con polling</td><td>+ Enviar fotos + preview imágenes</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Reclamos</td><td>No existe</td><td>Sistema completo con evidencia</td><td><span class="tag-new">NUEVO</span></td></tr>
+    <tr><td>Solicitud urgente</td><td>No existe</td><td>Toggle urgente + notif push</td><td><span class="tag-new">NUEVO</span></td></tr>
+    <tr><td>Dashboard Worker</td><td>Stats + solicitudes + calendario</td><td>+ Gráfico 6 meses + trabajo activo card</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Ganancias</td><td>Básico en dashboard</td><td>Vista completa + niveles + rendimiento</td><td><span class="tag-new">NUEVO</span></td></tr>
+    <tr><td>Materiales guardados</td><td>No existe</td><td>Librería de materiales reutilizables</td><td><span class="tag-new">NUEVO</span></td></tr>
+    <tr><td>Verificación</td><td>Admin revisa docs</td><td>Wizard 4 pasos para worker</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Disponibilidad</td><td>Toggle on/off</td><td>+ Horario semanal + radio + vacaciones</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Admin panel</td><td>Stats + verificaciones + transacciones</td><td>+ Gestión usuarios + reclamos + suspender</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>Notificaciones</td><td>Lista básica</td><td>Centro de notificaciones completo</td><td><span class="tag-new">NUEVO</span></td></tr>
+    <tr><td>Perfil público worker</td><td>Modal detalle</td><td>Perfil con galería + reseñas + portafolio</td><td><span class="tag-new">NUEVO</span></td></tr>
+    <tr><td>Pagos/Escrow</td><td>No existe</td><td>Flow de pago con escrow (futuro)</td><td><span class="tag-new">NUEVO</span></td></tr>
+    <tr><td>Onboarding</td><td>No existe</td><td>Registro guiado para ambos roles</td><td><span class="tag-new">NUEVO</span></td></tr>
+    <tr><td>Estados UI</td><td>Loading + Error</td><td>+ Empty + Skeleton + Success</td><td><span class="tag-improved">MEJORAR</span></td></tr>
+    <tr><td>PDF cotizaciones</td><td>jsPDF 2.5.1</td><td>Mantener jsPDF 2.5.1</td><td><span class="tag-exists">MANTENER</span></td></tr>
+    <tr><td>Dev panel</td><td>Commits + PRs + Deploys + Tareas</td><td>Mantener sin cambios (solo voy-app-3)</td><td><span class="tag-exists">MANTENER</span></td></tr>
+  </table>
+</div>
+
+<div class="report">
+  <h3>🎯 User Stories principales</h3>
+  <table>
+    <tr><th>#</th><th>Como...</th><th>Quiero...</th><th>Para...</th><th>Prioridad</th></tr>
+    <tr><td>US-01</td><td>Visitante</td><td>Registrarme como cliente</td><td>Buscar profesionales</td><td><span class="badge badge-red">Alta</span></td></tr>
+    <tr><td>US-02</td><td>Visitante</td><td>Registrarme como profesional</td><td>Ofrecer mis servicios</td><td><span class="badge badge-red">Alta</span></td></tr>
+    <tr><td>US-03</td><td>Cliente</td><td>Crear solicitud urgente</td><td>Conseguir ayuda rápido</td><td><span class="badge badge-red">Alta</span></td></tr>
+    <tr><td>US-04</td><td>Cliente</td><td>Comparar cotizaciones lado a lado</td><td>Elegir al mejor profesional</td><td><span class="badge badge-red">Alta</span></td></tr>
+    <tr><td>US-05</td><td>Cliente</td><td>Levantar un reclamo con evidencia</td><td>Resolver problemas con el servicio</td><td><span class="badge badge-amber">Media</span></td></tr>
+    <tr><td>US-06</td><td>Profesional</td><td>Guardar mis materiales frecuentes</td><td>Cotizar más rápido</td><td><span class="badge badge-amber">Media</span></td></tr>
+    <tr><td>US-07</td><td>Profesional</td><td>Configurar mi horario semanal</td><td>Recibir solicitudes solo cuando trabajo</td><td><span class="badge badge-amber">Media</span></td></tr>
+    <tr><td>US-08</td><td>Profesional</td><td>Ver mi nivel y ganancias detalladas</td><td>Saber cuánto gano y motivarme</td><td><span class="badge badge-amber">Media</span></td></tr>
+    <tr><td>US-09</td><td>Admin</td><td>Gestionar reclamos con reembolsos</td><td>Resolver disputas entre usuarios</td><td><span class="badge badge-red">Alta</span></td></tr>
+    <tr><td>US-10</td><td>Admin</td><td>Suspender/activar usuarios</td><td>Mantener la calidad de la plataforma</td><td><span class="badge badge-amber">Media</span></td></tr>
+    <tr><td>US-11</td><td>Cliente</td><td>Ver notificaciones en tiempo real</td><td>Saber cuándo me responden</td><td><span class="badge badge-green">Baja</span></td></tr>
+    <tr><td>US-12</td><td>Cliente</td><td>Enviar fotos por chat</td><td>Mostrar el problema visualmente</td><td><span class="badge badge-green">Baja</span></td></tr>
+  </table>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- LANDING (de Celia, sin cambios)                    -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section" id="sec-landing">
+<div class="section">
+  <div class="section-title">Landing Page</div>
+  <div class="section-desc">Página principal para usuarios no autenticados</div>
+  <div class="phones">
+    <div>
+      <div class="phone">
+        <div style="padding: 48px 20px; background: linear-gradient(135deg, #0f172a, #1e293b); text-align: center;">
+          <div style="font-size: 48px; font-weight: 900; color: white; margin-bottom: 8px;">VOY</div>
+          <p style="color: #94a3b8; font-size: 14px; margin-bottom: 24px;">Profesionales de confianza<br>para tu hogar</p>
+          <button class="btn btn-blue" style="max-width: 260px; margin: 0 auto 12px;">Buscar profesional</button>
+          <button class="btn btn-outline" style="max-width: 260px; margin: 0 auto;">Soy profesional</button>
+          <div class="grid-4" style="margin-top: 32px;">
+            <div style="text-align: center;"><div style="font-size: 22px; font-weight: 800; color: white;">548+</div><div style="font-size: 9px; color: #64748b;">Profesionales</div></div>
+            <div style="text-align: center;"><div style="font-size: 22px; font-weight: 800; color: white;">3.2K</div><div style="font-size: 9px; color: #64748b;">Clientes</div></div>
+            <div style="text-align: center;"><div style="font-size: 22px; font-weight: 800; color: white;">4.8</div><div style="font-size: 9px; color: #64748b;">Rating</div></div>
+            <div style="text-align: center;"><div style="font-size: 22px; font-weight: 800; color: white;">12</div><div style="font-size: 9px; color: #64748b;">Categorías</div></div>
+          </div>
+        </div>
+        <div class="content">
+          <p class="text-sm text-slate mb-3" style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Categorías</p>
+          <div class="grid-4">
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🔧</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Gasfitería</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">⚡</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Electricidad</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🏠</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Limpieza</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🎨</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Pintura</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🔒</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Cerrajería</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">❄️</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Clima</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🌳</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Jardín</div></div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;"><div style="font-size: 24px;">🚛</div><div style="font-size: 9px; color: #64748b; margin-top: 2px;">Mudanzas</div></div>
+          </div>
+          <div class="card" style="background: #f0fdf4; border-color: #bbf7d0; text-align: center; margin-top: 16px;">
+            <div style="font-size: 28px; margin-bottom: 8px;">🔐</div>
+            <div style="font-size: 14px; font-weight: 700; color: #166534;">Pago seguro con escrow</div>
+            <div style="font-size: 11px; color: #15803d; margin-top: 4px;">Tu dinero está protegido hasta que confirmes el trabajo</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Landing</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- REGISTRO (NUEVO - Panchita)                        -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section" id="sec-registro">
+<div class="section">
+  <div class="section-title">Registro & Onboarding</div>
+  <div class="section-desc">Flujos de registro para cliente y profesional — NO existían en v1</div>
+  <p class="scroll-hint">&larr; Desliza para ver más &rarr;</p>
+  <div class="phones">
+
+    <!-- Login mejorado -->
+    <div>
+      <div class="phone phone-new">
+        <div style="padding: 48px 20px; background: linear-gradient(135deg, #0f172a, #1e293b); text-align: center; min-height: 700px;">
+          <div style="font-size: 48px; font-weight: 900; color: white; margin-bottom: 24px;">VOY</div>
+          <div class="card" style="text-align: left; margin: 0 auto; max-width: 320px;">
+            <div class="page-title" style="text-align: center;">Iniciar sesión</div>
+            <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Correo electrónico</div>
+            <div class="input mb-2" style="color: #0f172a;">sofia.mendoza@gmail.com</div>
+            <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Contraseña</div>
+            <div class="input mb-3" style="color: #0f172a;">••••••••</div>
+            <button class="btn btn-blue mb-2">Ingresar</button>
+            <div class="separator"></div>
+            <div style="text-align: center;">
+              <div class="text-xs text-slate mb-2">¿No tienes cuenta?</div>
+              <button class="btn btn-outline mb-2" style="font-size: 12px;">👤 Registrarme como cliente</button>
+              <button class="btn btn-outline" style="font-size: 12px; border-color: #059669; color: #059669;">🔧 Registrarme como profesional</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Login Mejorado</div>
+    </div>
+
+    <!-- Registro Cliente -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><span class="text-xs text-slate">Paso 1 de 2</span></div>
+        <div class="content">
+          <div class="page-title">Crear cuenta de cliente</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Nombre completo</div>
+          <div class="input mb-2" style="color: #0f172a;">Sofía Mendoza</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Correo electrónico</div>
+          <div class="input mb-2" style="color: #0f172a;">sofia@gmail.com</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Teléfono</div>
+          <div class="input mb-2" style="color: #0f172a;">+56 9 1234 5678</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Ciudad</div>
+          <div class="input mb-2" style="color: #0f172a;">Viña del Mar</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Contraseña</div>
+          <div class="input mb-2" style="color: #0f172a;">••••••••</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Confirmar contraseña</div>
+          <div class="input mb-3" style="color: #0f172a;">••••••••</div>
+
+          <div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 16px;">
+            <div style="width: 18px; height: 18px; border: 2px solid #2563eb; border-radius: 4px; background: #2563eb; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; flex-shrink: 0;">✓</div>
+            <span class="text-xs text-slate">Acepto los <span style="color: #2563eb; text-decoration: underline;">términos de servicio</span> y la <span style="color: #2563eb; text-decoration: underline;">política de privacidad</span></span>
+          </div>
+
+          <button class="btn btn-blue">Crear mi cuenta</button>
+          <div class="text-xs text-slate" style="text-align: center; margin-top: 8px;">¿Ya tienes cuenta? <span style="color: #2563eb;">Ingresar</span></div>
+        </div>
+      </div>
+      <div class="phone-label">Registro Cliente</div>
+    </div>
+
+    <!-- Registro Profesional paso 1 -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><span class="text-xs text-slate">Paso 1 de 3</span></div>
+        <div class="content">
+          <div class="page-title">Registro profesional</div>
+          <div class="text-xs text-slate mb-3">Datos personales</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Nombre completo</div>
+          <div class="input mb-2" style="color: #0f172a;">Carlos Muñoz</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Correo electrónico</div>
+          <div class="input mb-2" style="color: #0f172a;">carlos@gmail.com</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Teléfono</div>
+          <div class="input mb-2" style="color: #0f172a;">+56 9 8765 4321</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Ciudad</div>
+          <div class="input mb-2" style="color: #0f172a;">Valparaíso</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">Categoría principal</div>
+          <div class="grid-4" style="margin-top: 4px;">
+            <div style="text-align: center; padding: 8px; background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px;"><div style="font-size: 20px;">🔧</div><div style="font-size: 8px; color: #2563eb; font-weight: 600;">Gasfitería</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">⚡</div><div style="font-size: 8px; color: #64748b;">Electricidad</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">🎨</div><div style="font-size: 8px; color: #64748b;">Pintura</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">🏠</div><div style="font-size: 8px; color: #64748b;">Limpieza</div></div>
+          </div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 4px; margin-top: 12px;">Bio / Descripción</div>
+          <textarea class="input" style="min-height: 60px; resize: none; color: #0f172a;">Gasfíter con 10 años de experiencia en la zona de Valparaíso...</textarea>
+
+          <button class="btn btn-blue" style="margin-top: 16px;">Siguiente →</button>
+        </div>
+      </div>
+      <div class="phone-label">Registro Profesional 1/3</div>
+    </div>
+
+    <!-- Registro Profesional paso 2 -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><span class="text-xs text-slate">Paso 2 de 3</span></div>
+        <div class="content">
+          <div class="page-title">Datos de trabajo</div>
+
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Rango de precios (CLP)</div>
+            <div class="grid-2">
+              <div><div style="font-size: 9px; color: #94a3b8;">Mínimo</div><div class="input" style="margin-top: 4px;">10.000</div></div>
+              <div><div style="font-size: 9px; color: #94a3b8;">Máximo</div><div class="input" style="margin-top: 4px;">80.000</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Horario disponible</div>
+            <div style="font-size: 12px;">
+              <div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Lun-Vie</span><span class="text-xs text-slate">09:00 a 18:00</span></div>
+              <div class="flex items-center gap-2" style="padding: 6px 0;"><span style="color: #94a3b8;">☐</span><span style="width: 40px; color: #94a3b8;">Sáb-Dom</span><span class="text-xs text-slate">No disponible</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Radio de cobertura</div>
+            <div class="flex items-center" style="justify-content: space-between;">
+              <span class="text-xs text-slate">1 km</span>
+              <span class="text-sm font-bold" style="color: #2563eb;">15 km</span>
+              <span class="text-xs text-slate">50 km</span>
+            </div>
+            <div style="height: 6px; background: #e2e8f0; border-radius: 99px; margin-top: 4px;">
+              <div style="height: 6px; background: #2563eb; border-radius: 99px; width: 30%;"></div>
+            </div>
+          </div>
+
+          <div class="flex gap-2" style="margin-top: 16px;">
+            <button class="btn btn-outline" style="flex: 1;">← Anterior</button>
+            <button class="btn btn-blue" style="flex: 1;">Siguiente →</button>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Registro Profesional 2/3</div>
+    </div>
+
+    <!-- Registro Profesional paso 3 -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><span class="text-xs text-slate">Paso 3 de 3</span></div>
+        <div class="content">
+          <div class="page-title">Verificación</div>
+          <div class="text-xs text-slate mb-3">Sube tus documentos para verificar tu cuenta</div>
+
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 8px;">📄</div>
+            <div class="text-sm font-bold text-dark">Cédula de identidad</div>
+            <div class="text-xs text-slate mt-1">Foto frontal de tu CI</div>
+            <div class="upload-area" style="margin-top: 12px;">📤 Seleccionar archivo</div>
+          </div>
+
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 8px;">📸</div>
+            <div class="text-sm font-bold text-dark">Selfie con CI</div>
+            <div class="text-xs text-slate mt-1">Foto tuya sosteniendo tu cédula</div>
+            <div style="background: #f0fdf4; border-radius: 8px; padding: 8px; display: flex; align-items: center; gap: 6px; margin-top: 12px;">
+              <span style="font-size: 12px; color: #059669;">🖼️</span>
+              <span style="font-size: 11px; color: #15803d; flex: 1; text-align: left;">selfie_ci.jpg</span>
+              <span style="font-size: 12px; color: #059669;">✓</span>
+            </div>
+          </div>
+
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 8px;">🎓</div>
+            <div class="text-sm font-bold text-dark">Certificado (opcional)</div>
+            <div class="text-xs text-slate mt-1">Certificación, título o curso relevante</div>
+            <div class="upload-area" style="margin-top: 12px;">📤 Seleccionar archivo</div>
+          </div>
+
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; margin-top: 12px;">
+            <div class="text-xs" style="color: #1d4ed8;">ℹ️ Revisaremos tus documentos en 24-48 horas hábiles. Te notificaremos por email cuando estés verificado.</div>
+          </div>
+
+          <div class="flex gap-2" style="margin-top: 16px;">
+            <button class="btn btn-outline" style="flex: 1;">← Anterior</button>
+            <button class="btn btn-green" style="flex: 1;">✓ Completar registro</button>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Registro Profesional 3/3</div>
+    </div>
+
+    <!-- Bienvenida post-registro -->
+    <div>
+      <div class="phone phone-new">
+        <div style="padding: 80px 20px; background: linear-gradient(135deg, #0f172a, #1e293b); text-align: center; min-height: 700px;">
+          <div style="width: 80px; height: 80px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 36px;">✓</div>
+          <div style="font-size: 24px; font-weight: 900; color: white; margin-bottom: 8px;">¡Bienvenido a VOY!</div>
+          <div class="text-sm" style="color: #94a3b8; margin-bottom: 32px;">Tu cuenta ha sido creada exitosamente</div>
+
+          <div class="card" style="text-align: left; max-width: 300px; margin: 0 auto 16px;">
+            <div class="flex items-center gap-2 mb-2">
+              <span style="font-size: 18px;">📧</span>
+              <div class="flex-1"><div class="text-sm font-bold text-dark">Revisa tu email</div><div class="text-xs text-slate">Te enviamos un correo de bienvenida</div></div>
+            </div>
+          </div>
+
+          <div class="card" style="text-align: left; max-width: 300px; margin: 0 auto 16px;">
+            <div class="flex items-center gap-2 mb-2">
+              <span style="font-size: 18px;">📋</span>
+              <div class="flex-1"><div class="text-sm font-bold text-dark">Completa tu perfil</div><div class="text-xs text-slate">Agrega foto y más datos</div></div>
+            </div>
+          </div>
+
+          <button class="btn btn-blue" style="max-width: 300px; margin: 16px auto;">Ir a mi dashboard →</button>
+        </div>
+      </div>
+      <div class="phone-label">Bienvenida</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- CLIENTE (Celia original + nuevos de Panchita)      -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section" id="sec-cliente">
+<div class="section">
+  <div class="section-title">App del Cliente</div>
+  <div class="section-desc">Todas las pantallas del cliente — originales de Celia + nuevas de Panchita</div>
+  <p class="scroll-hint">&larr; Desliza para ver más &rarr;</p>
+  <div class="phones">
+
+    <!-- Dashboard (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>Sergio G.</span><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Hola, Sergio 👋</div>
+          <div style="margin-bottom: 16px;"><div class="input" style="padding-left: 36px; color: #94a3b8;">🔍 ¿Qué servicio necesitas?</div></div>
+          <p class="text-xs text-slate font-bold mb-2" style="text-transform: uppercase; letter-spacing: 0.5px;">Categorías</p>
+          <div style="display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px;">
+            <div class="chip chip-active">🔧 Gasfitería</div>
+            <div class="chip chip-inactive">⚡ Electricidad</div>
+            <div class="chip chip-inactive">🏠 Limpieza</div>
+            <div class="chip chip-inactive">🎨 Pintura</div>
+          </div>
+          <div class="card" style="border-left: 3px solid #2563eb;">
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm" style="background: #dbeafe; color: #2563eb;">JR</div>
+              <div class="flex-1"><div class="text-sm font-bold text-dark">Reparación llave cocina</div><div class="text-xs text-slate">Juan Rodríguez · En camino</div></div>
+              <span class="badge badge-blue">En curso</span>
+            </div>
+          </div>
+          <button class="btn btn-blue" style="margin-top: 12px;">➕ Nueva solicitud</button>
+          <p class="text-xs text-slate font-bold mt-2 mb-2" style="text-transform: uppercase; letter-spacing: 0.5px; margin-top: 20px;">Mis solicitudes recientes</p>
+          <div class="card">
+            <div class="flex items-center gap-2"><span style="font-size: 20px;">⚡</span><div class="flex-1"><div class="text-sm font-medium text-dark">Instalación enchufe exterior</div><div class="text-xs text-slate">📍 Viña del Mar · 2 cotizaciones</div></div><span class="badge badge-green">Abierta</span></div>
+          </div>
+          <div class="card">
+            <div class="flex items-center gap-2"><span style="font-size: 20px;">🎨</span><div class="flex-1"><div class="text-sm font-medium text-dark">Pintar dormitorio principal</div><div class="text-xs text-slate">📍 Reñaca · Completada</div></div><span class="badge badge-green" style="background: #f0fdf4;">✓ Lista</span></div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item active"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Reservas</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Dashboard Cliente</div>
+    </div>
+
+    <!-- Notificaciones (NUEVO) -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Notificaciones</div>
+          <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+            <div class="chip chip-active">Todas</div>
+            <div class="chip chip-inactive">Sin leer</div>
+            <div class="chip chip-inactive">Cotizaciones</div>
+            <div class="chip chip-inactive">Sistema</div>
+          </div>
+
+          <div class="card" style="border-left: 3px solid #2563eb; background: #f8fafc;">
+            <div class="flex items-center gap-2">
+              <div style="width: 8px; height: 8px; background: #2563eb; border-radius: 50%; flex-shrink: 0;"></div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-dark">Nueva cotización recibida</div>
+                <div class="text-xs text-slate">María Vargas cotizó tu solicitud "Reparar llave cocina" por $25.000</div>
+                <div class="text-xs" style="color: #94a3b8; margin-top: 4px;">Hace 5 minutos</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="border-left: 3px solid #059669; background: #f8fafc;">
+            <div class="flex items-center gap-2">
+              <div style="width: 8px; height: 8px; background: #059669; border-radius: 50%; flex-shrink: 0;"></div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-dark">Profesional en camino</div>
+                <div class="text-xs text-slate">Pedro López está en camino. Llegada estimada: 15 min</div>
+                <div class="text-xs" style="color: #94a3b8; margin-top: 4px;">Hace 20 minutos</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center gap-2">
+              <div style="width: 8px; height: 8px; background: #e2e8f0; border-radius: 50%; flex-shrink: 0;"></div>
+              <div class="flex-1">
+                <div class="text-sm font-medium text-dark">Trabajo completado</div>
+                <div class="text-xs text-slate">El servicio "Pintar dormitorio" ha sido marcado como completado. ¡Califica al profesional!</div>
+                <div class="text-xs" style="color: #94a3b8; margin-top: 4px;">Ayer 18:30</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center gap-2">
+              <div style="width: 8px; height: 8px; background: #e2e8f0; border-radius: 50%; flex-shrink: 0;"></div>
+              <div class="flex-1">
+                <div class="text-sm font-medium text-dark">Reclamo resuelto</div>
+                <div class="text-xs text-slate">Tu reclamo ha sido resuelto. Se aplicó reembolso total de $35.000</div>
+                <div class="text-xs" style="color: #94a3b8; margin-top: 4px;">20 mar 2026</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div>
+          <div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div>
+          <div class="nav-item"><span class="nav-icon">📋</span>Reservas</div>
+          <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+          <div class="nav-item active"><span class="nav-icon">👤</span>Perfil</div>
+        </div>
+      </div>
+      <div class="phone-label">Notificaciones</div>
+    </div>
+
+    <!-- Perfil público worker (NUEVO) -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="font-size: 18px; color: #94a3b8;">←</span>
+            <div class="text-sm font-bold text-dark">Perfil profesional</div>
+          </div>
+
+          <div style="text-align: center; margin-bottom: 16px;">
+            <div class="avatar" style="width: 64px; height: 64px; font-size: 24px; margin: 0 auto 8px; background: #dbeafe; color: #2563eb;">MV</div>
+            <div style="font-size: 16px; font-weight: 700; color: #0f172a;">María Vargas</div>
+            <div class="flex items-center gap-2" style="justify-content: center; margin-top: 4px;">
+              <span class="badge badge-blue">✓ Verificada</span>
+              <span class="badge" style="background: #f1f5f9; color: #475569;">🥈 Plata</span>
+            </div>
+            <div class="text-xs text-slate mt-1">⭐ 4.9 · 48 trabajos · 📍 Valparaíso</div>
+          </div>
+
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Sobre mí</div>
+            <div class="text-xs text-slate">Gasfíter con 10 años de experiencia. Especialista en reparaciones de cañerías, instalación de artefactos y mantención preventiva. Trabajo rápido y limpio.</div>
+          </div>
+
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Servicios</div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <div class="chip chip-inactive">🔧 Gasfitería</div>
+              <div class="chip chip-inactive">🔧 Cañerías</div>
+              <div class="chip chip-inactive">🔧 Calefón</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="text-sm font-bold text-dark mb-2">Galería de trabajos</div>
+            <div class="grid-3">
+              <div style="height: 80px; background: linear-gradient(135deg, #e2e8f0, #f1f5f9); border-radius: 8px; display: flex; align-items: center; justify-content: center;">📷</div>
+              <div style="height: 80px; background: linear-gradient(135deg, #dbeafe, #e0f2fe); border-radius: 8px; display: flex; align-items: center; justify-content: center;">📷</div>
+              <div style="height: 80px; background: linear-gradient(135deg, #dcfce7, #d1fae5); border-radius: 8px; display: flex; align-items: center; justify-content: center;">📷</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center" style="justify-content: space-between; margin-bottom: 8px;">
+              <div class="text-sm font-bold text-dark">Reseñas (24)</div>
+              <div class="text-xs" style="color: #f59e0b; font-weight: 600;">⭐ 4.9</div>
+            </div>
+            <div style="border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 8px;">
+              <div class="flex items-center gap-2"><div class="avatar avatar-sm">SG</div><div class="flex-1"><span class="text-xs font-bold text-dark">Sergio G.</span><span class="text-xs text-slate"> · ⭐⭐⭐⭐⭐</span></div></div>
+              <div class="text-xs text-slate mt-1">"Excelente trabajo, muy profesional. La reparación quedó perfecta."</div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2"><div class="avatar avatar-sm">AL</div><div class="flex-1"><span class="text-xs font-bold text-dark">Ana L.</span><span class="text-xs text-slate"> · ⭐⭐⭐⭐⭐</span></div></div>
+              <div class="text-xs text-slate mt-1">"Llegó puntual, trabajo impecable. 100% recomendable."</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <button class="btn btn-blue">📋 Solicitar servicio</button>
+            <button class="btn btn-outline">💬 Enviar mensaje</button>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Perfil Público Worker</div>
+    </div>
+
+    <!-- Comparador (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3"><span style="font-size: 18px; color: #94a3b8;">←</span><div><div class="text-sm font-bold text-dark">Reparar llave de cocina</div><span class="badge badge-amber">En cotización</span></div></div>
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 10px; text-align: center; margin-bottom: 12px;"><span class="text-xs" style="color: #1d4ed8; font-weight: 500;">Comparando 3 cotizaciones — mejor relación calidad/precio destacada</span></div>
+          <div style="font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 10px;">Cotizaciones (3)</div>
+          <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 16px; padding: 14px; margin-bottom: 10px;">
+            <div class="flex items-center gap-2 mb-2"><span style="font-size: 12px; color: #059669;">🏆</span><span style="font-size: 11px; font-weight: 700; color: #059669;">Mejor precio</span></div>
+            <div class="flex items-center gap-2"><div class="avatar avatar-sm avatar-green">MV</div><div class="flex-1"><div class="text-sm font-bold text-dark">María Vargas</div><div class="text-xs text-slate">⭐ 4.9 · ✓ Verificada</div></div><div style="font-size: 18px; font-weight: 800; color: #0f172a;">$25.000</div></div>
+            <div class="separator"></div>
+            <div class="flex gap-3 text-xs text-slate"><span>💼 48 trabajos</span><span>⏱ Responde en 1h</span><span style="color: #2563eb;">🛡️ Verificada</span></div>
+            <button class="btn btn-green" style="margin-top: 10px;">Aceptar</button>
+          </div>
+          <div class="card">
+            <div class="flex items-center gap-2"><div class="avatar avatar-sm">PL</div><div class="flex-1"><div class="text-sm font-bold text-dark">Pedro López</div><div class="text-xs text-slate">⭐ 4.7 · 32 trabajos</div></div><div style="font-size: 18px; font-weight: 800; color: #0f172a;">$28.000</div></div>
+            <button class="btn btn-blue" style="margin-top: 10px;">Aceptar</button>
+          </div>
+          <div class="card">
+            <div class="flex items-center gap-2"><div class="avatar avatar-sm">RG</div><div class="flex-1"><div class="text-sm font-bold text-dark">Roberto Gómez</div><div class="text-xs text-slate">⭐ 4.5 · 18 trabajos</div></div><div style="font-size: 18px; font-weight: 800; color: #0f172a;">$35.000</div></div>
+            <button class="btn btn-blue" style="margin-top: 10px;">Aceptar</button>
+          </div>
+        </div>
+        <div class="bottom-nav"><div class="nav-item active"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div><div class="nav-item"><span class="nav-icon">📋</span>Reservas</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Comparador Cotizaciones</div>
+    </div>
+
+    <!-- Booking + Timeline (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3"><span style="font-size: 18px; color: #94a3b8;">←</span><div class="text-sm font-bold text-dark">Detalle de reserva</div></div>
+          <div class="card">
+            <div class="timeline">
+              <div class="timeline-step"><div class="timeline-dot timeline-dot-done">✓</div><div class="timeline-label timeline-label-done">Confirmada</div></div>
+              <div class="timeline-step"><div class="timeline-dot timeline-dot-done">✓</div><div class="timeline-label timeline-label-done">Pagada</div></div>
+              <div class="timeline-step"><div class="timeline-dot timeline-dot-done">✓</div><div class="timeline-label timeline-label-done">En camino</div></div>
+              <div class="timeline-step"><div class="timeline-dot" style="background: #dbeafe; color: #2563eb;">●</div><div class="timeline-label" style="color: #2563eb; font-weight: 600;">En curso</div></div>
+              <div class="timeline-step"><div class="timeline-dot timeline-dot-pending">○</div><div class="timeline-label">Completada</div></div>
+            </div>
+          </div>
+          <div class="card"><div class="text-xs text-slate mb-2">👤 María Vargas</div><div class="text-xs text-slate">📍 Av. Libertad 1234, Viña del Mar</div><div class="text-xs text-slate mt-1">📅 Lunes 24 de marzo</div></div>
+          <div class="card"><div class="flex items-center" style="justify-content: space-between;"><span class="text-xs text-slate">Total</span><span style="font-size: 18px; font-weight: 800; color: #0f172a;">$25.000</span></div></div>
+          <button class="btn btn-outline" style="margin-bottom: 8px;">💬 Chat con María</button>
+          <button class="btn" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">⚠️ Reportar problema</button>
+          <div class="card" style="margin-top: 12px;"><div class="text-sm font-bold text-dark mb-2">Califica al profesional</div><div class="stars"><span class="star star-filled">★</span><span class="star star-filled">★</span><span class="star star-filled">★</span><span class="star star-filled">★</span><span class="star star-filled">★</span></div><textarea class="input" style="margin-top: 8px; min-height: 50px; resize: none;" placeholder="Cuéntanos cómo fue tu experiencia..."></textarea><button class="btn btn-blue" style="margin-top: 8px;">Enviar reseña</button></div>
+        </div>
+        <div class="bottom-nav"><div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div><div class="nav-item active"><span class="nav-icon">📋</span>Reservas</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Detalle Booking + Review</div>
+    </div>
+
+    <!-- Solicitud Urgente (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3"><span style="font-size: 18px; color: #94a3b8;">←</span><div class="text-sm font-bold text-dark">Nueva solicitud</div></div>
+          <div class="text-sm font-medium text-dark mb-2">Categoría</div>
+          <div class="grid-4" style="margin-bottom: 16px;">
+            <div style="text-align: center; padding: 8px; background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px;"><div style="font-size: 20px;">🔧</div><div style="font-size: 8px; color: #2563eb; font-weight: 600;">Gasfitería</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">⚡</div><div style="font-size: 8px; color: #64748b;">Electricidad</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">🏠</div><div style="font-size: 8px; color: #64748b;">Limpieza</div></div>
+            <div style="text-align: center; padding: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;"><div style="font-size: 20px;">🎨</div><div style="font-size: 8px; color: #64748b;">Pintura</div></div>
+          </div>
+          <div class="input mb-2" style="color: #0f172a;">Cañería rota en el baño</div>
+          <textarea class="input" style="min-height: 50px; resize: none; margin-bottom: 12px; color: #0f172a;">Hay una cañería rota y está saliendo agua, necesito ayuda urgente</textarea>
+          <div class="input mb-2" style="color: #0f172a;">📍 Av. San Martín 567, Viña del Mar</div>
+          <div style="border: 2px solid #fca5a5; background: #fef2f2; border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; flex-shrink: 0;">⚡</div>
+            <div class="flex-1"><div class="text-sm font-bold" style="color: #b91c1c;">Solicitud urgente</div><div class="text-xs" style="color: #dc2626;">Se notificará inmediatamente a los profesionales cercanos</div></div>
+            <div style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid #dc2626; background: #dc2626; display: flex; align-items: center; justify-content: center;"><div style="width: 8px; height: 8px; background: white; border-radius: 50%;"></div></div>
+          </div>
+          <button class="btn btn-red" style="height: 48px; font-size: 15px;">⚡ Publicar solicitud urgente</button>
+        </div>
+      </div>
+      <div class="phone-label">Solicitud Urgente</div>
+    </div>
+
+    <!-- Reclamo (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3"><span style="font-size: 18px; color: #94a3b8;">←</span><div class="text-sm font-bold text-dark">Reportar problema</div></div>
+          <div class="text-sm font-bold text-dark mb-2">¿Cuál es el problema?</div>
+          <div style="border: 2px solid #fca5a5; background: #fef2f2; border-radius: 12px; padding: 12px; margin-bottom: 8px;"><div class="text-sm font-medium" style="color: #b91c1c;">Mala calidad</div><div class="text-xs text-slate">El trabajo no cumple con lo acordado</div></div>
+          <div class="card" style="padding: 12px;"><div class="text-sm font-medium text-dark">No se presentó</div><div class="text-xs text-slate">El profesional no llegó a la cita</div></div>
+          <div class="card" style="padding: 12px;"><div class="text-sm font-medium text-dark">Trabajo incompleto</div><div class="text-xs text-slate">No se terminó lo que se pactó</div></div>
+          <div class="card" style="padding: 12px;"><div class="text-sm font-medium text-dark">Daños</div><div class="text-xs text-slate">Se produjeron daños en la propiedad</div></div>
+          <div class="text-sm font-bold text-dark mt-2 mb-2">Describe lo que pasó</div>
+          <textarea class="input" style="min-height: 70px; resize: none;" placeholder="Cuéntanos con detalle..."></textarea>
+          <div class="text-sm font-bold text-dark mt-2 mb-2">Evidencia fotográfica</div>
+          <div class="upload-area">📷 Agregar fotos</div>
+          <button class="btn btn-red" style="margin-top: 12px;">⚠️ Enviar reclamo</button>
+          <div class="text-xs text-slate" style="text-align: center; margin-top: 8px;">Revisaremos tu caso en máximo 48 horas hábiles</div>
+        </div>
+      </div>
+      <div class="phone-label">Reclamo / Disputa</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PROFESIONAL (Celia + Agenda nueva Panchita)        -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section" id="sec-profesional">
+<div class="section">
+  <div class="section-title">App del Profesional</div>
+  <div class="section-desc">Dashboard, solicitudes, ganancias, agenda, cotización, verificación, disponibilidad</div>
+  <p class="scroll-hint">&larr; Desliza para ver más &rarr;</p>
+  <div class="phones">
+
+    <!-- Worker Dashboard (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>María V.</span><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Buenas tardes, María ☀️</div>
+          <div class="grid-2">
+            <div class="card card-green"><div class="stat-label">💰 Ganancia mes</div><div class="stat-value">$285.000</div></div>
+            <div class="card"><div class="text-xs text-slate">📋 Trabajos mes</div><div class="stat-small text-dark">12</div></div>
+            <div class="card"><div class="text-xs text-slate">⭐ Reseñas</div><div class="stat-small text-dark">4.9</div></div>
+            <div class="card" style="position: relative;"><div class="text-xs text-slate">🔔 Solicitudes</div><div class="stat-small text-dark">3</div><div style="position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; background: #dc2626; border-radius: 50%; animation: pulse 1.5s infinite;"></div></div>
+          </div>
+          <div class="card"><div class="text-xs font-bold text-dark mb-2">Últimos 6 meses</div><div class="chart"><div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 25%;"></div><div class="chart-label">oct</div></div><div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 45%;"></div><div class="chart-label">nov</div></div><div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 60%;"></div><div class="chart-label">dic</div></div><div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 40%;"></div><div class="chart-label">ene</div></div><div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-inactive" style="height: 70%;"></div><div class="chart-label">feb</div></div><div style="flex: 1; text-align: center;"><div class="chart-bar chart-bar-active" style="height: 85%;"></div><div class="chart-label">mar</div></div></div></div>
+          <div class="card card-blue"><div class="text-xs" style="opacity: 0.7;">Trabajo activo</div><div class="text-sm font-bold">Reparar llave de cocina</div><div class="text-xs mt-1" style="opacity: 0.7;">📍 Av. Libertad 1234 · En progreso</div><div class="flex gap-2" style="margin-top: 10px;"><button class="btn btn-outline" style="flex: 1; padding: 8px; font-size: 11px; color: #2563eb;">💬 Chat</button><button class="btn" style="flex: 1; padding: 8px; font-size: 11px; background: white; color: #059669;">✓ Completar</button></div></div>
+        </div>
+        <div class="bottom-nav"><div class="nav-item active"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">📋</span>Solicitudes</div><div class="nav-item"><span class="nav-icon">📅</span>Agenda</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Dashboard Profesional</div>
+    </div>
+
+    <!-- Agenda/Calendario (NUEVO) -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>María V.</span><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Agenda</div>
+          <div class="card">
+            <div class="flex items-center" style="justify-content: space-between; margin-bottom: 12px;">
+              <span style="color: #94a3b8;">←</span>
+              <span class="text-sm font-bold text-dark">Marzo 2026</span>
+              <span style="color: #94a3b8;">→</span>
+            </div>
+            <div class="grid-4" style="gap: 4px; text-align: center; font-size: 10px; color: #94a3b8; margin-bottom: 4px;"><div>L</div><div>M</div><div>M</div><div>J</div></div>
+            <div class="grid-4" style="gap: 4px; text-align: center; font-size: 11px;">
+              <div style="padding: 6px; border-radius: 8px; color: #94a3b8;">17</div>
+              <div style="padding: 6px; border-radius: 8px; color: #94a3b8;">18</div>
+              <div style="padding: 6px; border-radius: 8px; color: #94a3b8;">19</div>
+              <div style="padding: 6px; border-radius: 8px; color: #94a3b8;">20</div>
+            </div>
+            <div class="grid-4" style="gap: 4px; text-align: center; font-size: 11px;">
+              <div style="padding: 6px; border-radius: 8px; color: #0f172a; font-weight: 600;">21</div>
+              <div style="padding: 6px; border-radius: 8px; color: #0f172a;">22</div>
+              <div style="padding: 6px; border-radius: 8px; background: #2563eb; color: white; font-weight: 700;">23</div>
+              <div style="padding: 6px; border-radius: 8px; background: #dcfce7; color: #15803d; font-weight: 600;">24</div>
+            </div>
+          </div>
+
+          <div class="text-xs font-bold text-dark mb-2" style="text-transform: uppercase; letter-spacing: 0.5px;">Hoy — Lunes 23 marzo</div>
+
+          <div class="card" style="border-left: 3px solid #2563eb;">
+            <div class="flex items-center gap-2">
+              <div style="text-align: center;"><div class="text-xs font-bold" style="color: #2563eb;">10:00</div><div style="font-size: 9px; color: #94a3b8;">12:00</div></div>
+              <div class="flex-1"><div class="text-sm font-bold text-dark">Reparar llave cocina</div><div class="text-xs text-slate">📍 Av. Libertad 1234 · Sergio G.</div></div>
+              <span class="badge badge-blue">En curso</span>
+            </div>
+          </div>
+
+          <div class="card" style="border-left: 3px solid #f59e0b;">
+            <div class="flex items-center gap-2">
+              <div style="text-align: center;"><div class="text-xs font-bold" style="color: #f59e0b;">15:00</div><div style="font-size: 9px; color: #94a3b8;">17:00</div></div>
+              <div class="flex-1"><div class="text-sm font-bold text-dark">Revisión calefón</div><div class="text-xs text-slate">📍 Calle Condell 890 · Ana M.</div></div>
+              <span class="badge badge-amber">Pendiente</span>
+            </div>
+          </div>
+
+          <div class="text-xs font-bold text-dark mb-2 mt-2" style="text-transform: uppercase; letter-spacing: 0.5px;">Mañana — Martes 24</div>
+          <div class="card" style="border-left: 3px solid #059669;">
+            <div class="flex items-center gap-2">
+              <div style="text-align: center;"><div class="text-xs font-bold" style="color: #059669;">09:00</div><div style="font-size: 9px; color: #94a3b8;">11:00</div></div>
+              <div class="flex-1"><div class="text-sm font-bold text-dark">Instalación enchufe</div><div class="text-xs text-slate">📍 Reñaca · Pedro S.</div></div>
+              <span class="badge badge-green">Confirmada</span>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav"><div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">📋</span>Solicitudes</div><div class="nav-item active"><span class="nav-icon">📅</span>Agenda</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Agenda / Calendario</div>
+    </div>
+
+    <!-- Cotización + Materiales (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="flex items-center gap-2 mb-3"><span style="font-size: 18px; color: #94a3b8;">←</span><div><div class="text-sm font-bold text-dark">Enviar cotización</div><div class="text-xs text-slate">Cañería rota en el baño</div></div></div>
+          <div class="card"><div class="text-sm font-bold text-dark mb-2">Mano de obra</div><div class="grid-2"><div><div style="font-size: 9px; color: #94a3b8;">Tarifa (CLP)</div><div class="input" style="margin-top: 4px;">15.000</div></div><div><div style="font-size: 9px; color: #94a3b8;">Horas</div><div class="input" style="margin-top: 4px;">2</div></div></div></div>
+          <div class="card"><div class="flex items-center" style="justify-content: space-between; margin-bottom: 8px;"><div class="text-sm font-bold text-dark">Materiales</div><div class="flex gap-2"><span style="font-size: 11px; color: #d97706; font-weight: 600;">📦 Mis materiales</span><span style="font-size: 11px; color: #2563eb; font-weight: 600;">+ Agregar</span></div></div>
+            <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 8px; margin-bottom: 10px;"><div style="font-size: 9px; color: #b45309; font-weight: 600; margin-bottom: 4px;">Selecciona un material:</div><div style="padding: 6px 8px; border-radius: 6px; display: flex; justify-content: space-between;"><span style="font-size: 11px; font-weight: 500; color: #0f172a;">Cañería PVC 1/2</span><span style="font-size: 11px; color: #64748b;">$2.500</span></div><div style="padding: 6px 8px; display: flex; justify-content: space-between;"><span style="font-size: 11px; color: #0f172a;">Llave de paso</span><span style="font-size: 11px; color: #64748b;">$4.500</span></div><div style="padding: 6px 8px; display: flex; justify-content: space-between;"><span style="font-size: 11px; color: #0f172a;">Teflón</span><span style="font-size: 11px; color: #64748b;">$800</span></div></div>
+            <div class="flex items-center gap-2" style="margin-bottom: 6px;"><div class="input" style="flex: 1;">Cañería PVC 1/2</div><div class="input" style="width: 50px;">2</div><div class="input" style="width: 70px;">2.500</div><span style="color: #ef4444;">🗑️</span></div></div>
+          <div class="card card-dark"><div class="text-sm font-bold mb-2">Resumen</div><div class="flex" style="justify-content: space-between; margin-bottom: 4px;"><span class="text-xs" style="color: #94a3b8;">Mano de obra</span><span class="text-xs">$30.000</span></div><div class="flex" style="justify-content: space-between; margin-bottom: 8px;"><span class="text-xs" style="color: #94a3b8;">Materiales</span><span class="text-xs">$5.000</span></div><div class="separator" style="background: #334155;"></div><div class="flex" style="justify-content: space-between; margin-bottom: 4px;"><span class="text-xs" style="color: #cbd5e1;">Total cliente paga</span><span style="font-size: 18px; font-weight: 800;">$35.000</span></div><div class="flex" style="justify-content: space-between; margin-bottom: 4px;"><span class="text-xs" style="color: #94a3b8;">ℹ️ Comisión VOY (12%)</span><span class="text-xs" style="color: #f87171;">-$4.200</span></div><div class="separator" style="background: #334155;"></div><div class="flex" style="justify-content: space-between;"><span class="text-sm font-bold" style="color: #34d399;">Tú recibes</span><span class="text-sm font-bold" style="color: #34d399;">$30.800</span></div></div>
+          <button class="btn btn-blue" style="margin-top: 12px; height: 48px;">Enviar cotización — $35.000</button>
+        </div>
+      </div>
+      <div class="phone-label">Cotización + Materiales</div>
+    </div>
+
+    <!-- Ganancias + Nivel (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Ganancias</div>
+          <div class="card"><div class="flex items-center gap-3"><span style="font-size: 28px;">🥈</span><div class="flex-1"><div class="flex items-center gap-2"><span class="badge" style="background: #f1f5f9; color: #475569; font-weight: 700;">Plata</span></div><div class="text-xs text-slate mt-1">48 trabajos completados</div><div style="margin-top: 6px;"><div class="flex items-center" style="justify-content: space-between;"><span style="font-size: 9px; color: #94a3b8;">Siguiente: 🥇 Oro</span><span style="font-size: 9px; color: #94a3b8;">50 trabajos</span></div><div class="progress-bar"><div class="progress-fill progress-blue" style="width: 96%;"></div></div></div></div></div></div>
+          <div class="grid-2"><div class="card card-green"><div class="stat-label">💰 Total recibido</div><div class="stat-value">$1.2M</div></div><div class="card"><div class="text-xs text-slate">⏳ Pendiente</div><div class="stat-small text-dark">$85.000</div></div></div>
+          <div class="card"><div class="text-sm font-bold text-dark mb-2">Rendimiento</div><div class="grid-2"><div class="flex items-center gap-2"><span>🎯</span><div><div class="font-bold text-dark">92%</div><div style="font-size: 9px; color: #94a3b8;">Tasa aceptación</div></div></div><div class="flex items-center gap-2"><span>📊</span><div><div class="font-bold text-dark">$25.000</div><div style="font-size: 9px; color: #94a3b8;">Precio promedio</div></div></div><div class="flex items-center gap-2"><span>📅</span><div><div class="font-bold text-dark">Viernes</div><div style="font-size: 9px; color: #94a3b8;">Mejor día</div></div></div><div class="flex items-center gap-2"><span>⚡</span><div><div class="font-bold text-dark">8</div><div style="font-size: 9px; color: #94a3b8;">Racha actual</div></div></div></div></div>
+        </div>
+        <div class="bottom-nav"><div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">📋</span>Solicitudes</div><div class="nav-item"><span class="nav-icon">📅</span>Agenda</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item active"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Ganancias + Nivel</div>
+    </div>
+
+    <!-- Disponibilidad (Celia) -->
+    <div>
+      <div class="phone">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Disponibilidad</div>
+          <div style="border: 2px solid #86efac; background: #f0fdf4; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;"><div><div class="text-sm font-bold text-dark">Disponible</div><div class="text-xs" style="color: #059669;">Recibirás solicitudes de clientes cercanos</div></div><div class="toggle toggle-on"><div class="toggle-dot"></div></div></div>
+          <div style="background: #eff6ff; border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;"><span style="font-size: 14px;">📍</span><span class="text-xs" style="color: #1d4ed8;">Ubicación activa — clientes pueden verte en el mapa</span></div>
+          <div class="card"><div class="flex items-center" style="justify-content: space-between; margin-bottom: 6px;"><span class="text-sm font-bold text-dark">Radio de cobertura</span><span class="text-sm font-bold" style="color: #2563eb;">15 km</span></div><div style="height: 6px; background: #e2e8f0; border-radius: 99px;"><div style="height: 6px; background: #2563eb; border-radius: 99px; width: 30%;"></div></div></div>
+          <div style="border: 2px solid #e2e8f0; background: white; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;"><div class="flex items-center gap-2"><span>🌴</span><div><div class="text-sm font-bold text-dark">Modo vacaciones</div><div class="text-xs text-slate">Pausa temporalmente todas las solicitudes</div></div></div><div class="toggle toggle-off"><div class="toggle-dot"></div></div></div>
+          <div class="card"><div class="text-sm font-bold text-dark mb-2">Horario semanal</div><div style="font-size: 12px;"><div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Lun</span><span class="text-xs text-slate">09:00 a 18:00</span></div><div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Mar</span><span class="text-xs text-slate">09:00 a 18:00</span></div><div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Mié-Jue</span><span class="text-xs text-slate">09:00 a 18:00</span></div><div class="flex items-center gap-2" style="padding: 6px 0; border-bottom: 1px solid #f1f5f9;"><span style="color: #2563eb;">☑</span><span style="width: 40px; font-weight: 500;">Vie</span><span class="text-xs text-slate">09:00 a 17:00</span></div><div class="flex items-center gap-2" style="padding: 6px 0;"><span style="color: #94a3b8;">☐</span><span style="width: 40px; color: #94a3b8;">Sáb-Dom</span><span class="text-xs text-slate">No disponible</span></div></div></div>
+          <button class="btn btn-blue" style="margin-top: 8px;">💾 Guardar configuración</button>
+        </div>
+        <div class="bottom-nav"><div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">📋</span>Solicitudes</div><div class="nav-item"><span class="nav-icon">📅</span>Agenda</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item active"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Disponibilidad + Geo</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- ADMIN (Celia original)                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section" id="sec-admin">
+<div class="section">
+  <div class="section-title">Panel Admin</div>
+  <div class="section-desc">Dashboard, usuarios, reclamos — de Celia</div>
+  <p class="scroll-hint">&larr; Desliza para ver más &rarr;</p>
+  <div class="phones">
+    <div><div class="phone"><div class="header"><span class="logo">VOY</span><div class="user"><span>Admin</span></div></div><div class="content"><div class="page-title">Panel de Administración</div><div class="grid-2"><div class="card card-blue"><div class="stat-label">👥 Usuarios</div><div class="stat-value">1,247</div></div><div class="card card-green"><div class="stat-label">💼 Trabajadores</div><div class="stat-value">548</div></div><div class="card card-purple"><div class="stat-label">💰 Comisiones</div><div class="stat-value">$2.1M</div></div><div class="card card-green"><div class="stat-label">✓ Completados</div><div class="stat-value">3,241</div></div></div><div class="card" style="display: flex; align-items: center; gap: 12px;"><div style="font-size: 28px;">🛡️</div><div class="flex-1"><div class="text-sm font-bold text-dark">Verificaciones pendientes</div><div class="text-xs text-slate">5 trabajador(es) esperando revisión</div></div><span class="badge badge-amber">5</span></div><div class="card" style="display: flex; align-items: center; gap: 12px;"><div style="font-size: 28px;">⚠️</div><div class="flex-1"><div class="text-sm font-bold text-dark">Reclamos</div><div class="text-xs text-slate">3 abiertos · 1 en revisión</div></div><span class="badge badge-red">3</span></div></div></div><div class="phone-label">Admin Dashboard</div></div>
+    <div><div class="phone"><div class="header"><span class="logo">VOY</span><div class="user"><span>Admin</span></div></div><div class="content"><div class="flex items-center gap-2 mb-3"><span style="font-size: 18px; color: #dc2626;">⚠️</span><div class="page-title" style="margin: 0;">Reclamos</div><span class="badge badge-red" style="margin-left: auto;">3 abiertos</span></div><div class="grid-3"><div style="background: #fef2f2; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #fecaca;"><div style="font-size: 16px; font-weight: 700; color: #dc2626;">3</div><div style="font-size: 9px; color: #ef4444;">Abiertos</div></div><div style="background: #fffbeb; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #fde68a;"><div style="font-size: 16px; font-weight: 700; color: #d97706;">1</div><div style="font-size: 9px; color: #f59e0b;">En revisión</div></div><div style="background: #f8fafc; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #e2e8f0;"><div style="font-size: 16px; font-weight: 700; color: #475569;">8</div><div style="font-size: 9px; color: #94a3b8;">Total</div></div></div><div class="card" style="border-left: 3px solid #dc2626;"><div class="flex items-center gap-2 mb-2"><span class="text-sm font-bold text-dark">Ana Muñoz</span><span class="badge badge-red">Abierto</span></div><div class="text-xs text-slate">Mala calidad · 20/03/2026 · $35.000</div><div class="separator"></div><textarea class="input" style="min-height: 40px; resize: none; margin-bottom: 8px; font-size: 11px;" placeholder="Nota interna del admin..."></textarea><div class="grid-3"><button class="btn btn-green" style="font-size: 10px; padding: 8px;">Reembolso total</button><button class="btn btn-blue" style="font-size: 10px; padding: 8px;">Parcial</button><button class="btn btn-outline" style="font-size: 10px; padding: 8px;">Sin reembolso</button></div></div></div></div><div class="phone-label">Admin Reclamos</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- ESTADOS UI (NUEVO - Panchita)                      -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section" id="sec-estados">
+<div class="section">
+  <div class="section-title">Estados UI</div>
+  <div class="section-desc">Loading, error, vacío, skeleton — para todos los componentes</div>
+  <p class="scroll-hint">&larr; Desliza para ver más &rarr;</p>
+  <div class="phones">
+
+    <!-- Loading Skeleton -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="skeleton skeleton-title"></div>
+          <div class="grid-2">
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+          </div>
+          <div class="skeleton skeleton-card" style="height: 120px;"></div>
+          <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 16px;">
+            <div class="skeleton skeleton-avatar"></div>
+            <div style="flex: 1;"><div class="skeleton skeleton-text" style="width: 70%;"></div><div class="skeleton skeleton-text" style="width: 50%;"></div></div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 16px;">
+            <div class="skeleton skeleton-avatar"></div>
+            <div style="flex: 1;"><div class="skeleton skeleton-text" style="width: 60%;"></div><div class="skeleton skeleton-text" style="width: 40%;"></div></div>
+          </div>
+          <div class="skeleton skeleton-card" style="height: 60px;"></div>
+        </div>
+        <div class="bottom-nav"><div class="nav-item active"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div><div class="nav-item"><span class="nav-icon">📋</span>Reservas</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Loading Skeleton</div>
+    </div>
+
+    <!-- Error -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <div style="width: 64px; height: 64px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px;">⚠️</div>
+          <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Error de conexión</div>
+          <div class="text-xs text-slate" style="text-align: center; margin-bottom: 16px;">No se pudo conectar con la base de datos.<br>Verifica tu conexión a internet.</div>
+          <button class="btn btn-blue" style="max-width: 200px;">🔄 Reintentar</button>
+        </div>
+        <div class="bottom-nav"><div class="nav-item active"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div><div class="nav-item"><span class="nav-icon">📋</span>Reservas</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Estado Error</div>
+    </div>
+
+    <!-- Empty -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><div class="user"><span>Sergio G.</span><div class="bell">🔔</div></div></div>
+        <div class="content">
+          <div class="page-title">Mis reservas</div>
+          <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 48px; margin-bottom: 12px;">📋</div>
+            <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Sin reservas aún</div>
+            <div class="text-xs text-slate" style="margin-bottom: 20px;">Cuando contrates un profesional, tus reservas aparecerán aquí</div>
+            <button class="btn btn-blue" style="max-width: 220px; margin: 0 auto;">🔍 Explorar profesionales</button>
+          </div>
+        </div>
+        <div class="bottom-nav"><div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div><div class="nav-item active"><span class="nav-icon">📋</span>Reservas</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Estado Vacío</div>
+    </div>
+
+    <!-- Success -->
+    <div>
+      <div class="phone phone-new">
+        <div class="header"><span class="logo">VOY</span><div class="user"><div class="bell">🔔</div></div></div>
+        <div class="content" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <div style="width: 80px; height: 80px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 16px;">✓</div>
+          <div style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">¡Solicitud publicada!</div>
+          <div class="text-xs text-slate" style="text-align: center; margin-bottom: 20px;">Los profesionales cercanos están recibiendo tu solicitud. Te notificaremos cuando lleguen cotizaciones.</div>
+          <button class="btn btn-blue" style="max-width: 220px;">Ver mis solicitudes</button>
+          <button class="btn btn-outline" style="max-width: 220px; margin-top: 8px;">Volver al inicio</button>
+        </div>
+        <div class="bottom-nav"><div class="nav-item"><span class="nav-icon">🏠</span>Inicio</div><div class="nav-item"><span class="nav-icon">🔍</span>Explorar</div><div class="nav-item"><span class="nav-icon">📋</span>Reservas</div><div class="nav-item"><span class="nav-icon">💬</span>Chat</div><div class="nav-item"><span class="nav-icon">👤</span>Perfil</div></div>
+      </div>
+      <div class="phone-label">Estado Success</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MODELO DE DATOS (NUEVO - Panchita)                 -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section" id="sec-datos">
+<div class="section">
+  <div class="section-title">Modelo de Datos — Airtable</div>
+  <div class="section-desc">Tablas existentes + nuevas para VOY v2. Compatible con el código actual.</div>
+
+  <div class="report">
+    <h3>📊 Tablas existentes (NO cambiar)</h3>
+    <table>
+      <tr><th>Tabla</th><th>Campos clave</th><th>Cambios v2</th></tr>
+      <tr><td><strong>Workers</strong></td><td>WorkerId, Name, Email, Category, Rating, Lat/Lng, Verified, Available, Bio, Skills, Gallery, Phone</td><td>+ Schedule (JSON), + CoverageRadius, + VacationMode, + Level</td></tr>
+      <tr><td><strong>Clients</strong></td><td>ClientId, Name, Email, City, Phone, Lat/Lng, MemberSince</td><td>Sin cambios</td></tr>
+      <tr><td><strong>Bookings</strong></td><td>BookingId, ClientId, WorkerId, Service, Status, Date, Time, Address, Price, Commission, Rating, Review</td><td>+ IsUrgent, + TimelineStatus</td></tr>
+      <tr><td><strong>Requests</strong></td><td>ReqId, ClientName, Service, Date, Time, Address, EstimatedPrice, Status, Distance</td><td>+ IsUrgent, + Photos (attachment)</td></tr>
+      <tr><td><strong>Quotations</strong></td><td>QuoteId, BookingRecordId, WorkerRecordId, ClientId, LaborRate, LaborHours, Materials (JSON), Commission, GrandTotal, Status, Notes</td><td>Sin cambios</td></tr>
+      <tr><td><strong>Messages</strong></td><td>ConversationId, From, Text, TimeStr</td><td>+ ImageUrl (attachment)</td></tr>
+      <tr><td><strong>Verifications</strong></td><td>VerifId, WorkerName, Category, Status, Documents</td><td>+ Step (1-4), + References</td></tr>
+      <tr><td><strong>Transactions</strong></td><td>TxId, Date, ClientName, WorkerName, Service, Gross, Status</td><td>Sin cambios</td></tr>
+    </table>
+  </div>
+
+  <div class="report">
+    <h3>🆕 Tablas nuevas para VOY v2</h3>
+    <table>
+      <tr><th>Tabla</th><th>Campos</th><th>Propósito</th></tr>
+      <tr><td><strong>Claims</strong></td><td>ClaimId, BookingRecordId, ClientRecordId, WorkerRecordId, Type (mala_calidad/no_show/incompleto/daños), Description, Photos (attachment), Status (open/reviewing/resolved), AdminNotes, RefundAmount, RefundType, CreatedAt, ResolvedAt</td><td>Sistema de reclamos y disputas</td></tr>
+      <tr><td><strong>Notifications</strong></td><td>NotifId, UserRecordId, UserType (client/worker), Type (quotation/booking/claim/system), Title, Body, Read (boolean), RelatedRecordId, CreatedAt</td><td>Centro de notificaciones</td></tr>
+      <tr><td><strong>SavedMaterials</strong></td><td>MatId, WorkerRecordId, Name, UnitPrice, Unit (unidad/metro/kg), Category</td><td>Materiales guardados del profesional</td></tr>
+      <tr><td><strong>WorkerSchedule</strong></td><td>ScheduleId, WorkerRecordId, DayOfWeek (0-6), StartTime, EndTime, IsActive</td><td>Horario semanal configurable</td></tr>
+    </table>
+  </div>
+
+  <div class="report">
+    <h3>🔗 Relaciones entre tablas</h3>
+    <table>
+      <tr><th>Relación</th><th>Tipo</th></tr>
+      <tr><td>Claims → Bookings</td><td>1 claim por booking (BookingRecordId)</td></tr>
+      <tr><td>Claims → Clients</td><td>1 claim por cliente-booking (ClientRecordId)</td></tr>
+      <tr><td>Claims → Workers</td><td>Referencia al worker del booking</td></tr>
+      <tr><td>Notifications → Users</td><td>N notificaciones por usuario (UserRecordId + UserType)</td></tr>
+      <tr><td>SavedMaterials → Workers</td><td>N materiales por worker (WorkerRecordId)</td></tr>
+      <tr><td>WorkerSchedule → Workers</td><td>7 registros por worker (uno por día)</td></tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- CHECKLIST (NUEVO - Panchita)                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="main-section" id="sec-checklist">
+<div class="section">
+  <div class="section-title">Checklist de Entrega</div>
+  <div class="section-desc">Para que Hoku implemente en orden</div>
+
+  <div class="report">
+    <h3>✅ Flujos cubiertos</h3>
+    <table>
+      <tr><th>Flujo</th><th>Estado</th></tr>
+      <tr><td>Landing → Login</td><td style="color: #22c55e;">✓ Maquetado</td></tr>
+      <tr><td>Login → Dashboard (ambos roles)</td><td style="color: #22c55e;">✓ Maquetado</td></tr>
+      <tr><td>Registro cliente (2 pasos)</td><td style="color: #22c55e;">✓ Maquetado (NUEVO)</td></tr>
+      <tr><td>Registro profesional (3 pasos)</td><td style="color: #22c55e;">✓ Maquetado (NUEVO)</td></tr>
+      <tr><td>Bienvenida post-registro</td><td style="color: #22c55e;">✓ Maquetado (NUEVO)</td></tr>
+      <tr><td>Explorar → Detalle worker → Solicitar</td><td style="color: #22c55e;">✓ Maquetado</td></tr>
+      <tr><td>Solicitud normal y urgente</td><td style="color: #22c55e;">✓ Maquetado</td></tr>
+      <tr><td>Recibir cotizaciones → Comparar → Aceptar</td><td style="color: #22c55e;">✓ Maquetado</td></tr>
+      <tr><td>Booking con timeline 5 estados</td><td style="color: #22c55e;">✓ Maquetado</td></tr>
+      <tr><td>Chat con fotos</td><td style="color: #f59e0b;">⚡ Ya existe (agregar fotos)</td></tr>
+      <tr><td>Calificar profesional</td><td style="color: #f59e0b;">⚡ Ya existe (mejorar UI)</td></tr>
+      <tr><td>Reclamo con evidencia</td><td style="color: #22c55e;">✓ Maquetado (NUEVO)</td></tr>
+      <tr><td>Worker: cotización con materiales</td><td style="color: #f59e0b;">⚡ Ya existe (agregar guardados)</td></tr>
+      <tr><td>Worker: ganancias y nivel</td><td style="color: #22c55e;">✓ Maquetado (NUEVO)</td></tr>
+      <tr><td>Worker: agenda/calendario</td><td style="color: #22c55e;">✓ Maquetado (NUEVO)</td></tr>
+      <tr><td>Worker: disponibilidad + geo + horario</td><td style="color: #22c55e;">✓ Maquetado</td></tr>
+      <tr><td>Admin: dashboard + reclamos + usuarios</td><td style="color: #22c55e;">✓ Maquetado</td></tr>
+      <tr><td>Notificaciones</td><td style="color: #22c55e;">✓ Maquetado (NUEVO)</td></tr>
+      <tr><td>Perfil público profesional</td><td style="color: #22c55e;">✓ Maquetado (NUEVO)</td></tr>
+    </table>
+  </div>
+
+  <div class="report">
+    <h3>🔄 Estados UI cubiertos</h3>
+    <table>
+      <tr><th>Estado</th><th>Cubierto</th></tr>
+      <tr><td>Loading (skeleton shimmer)</td><td style="color: #22c55e;">✓</td></tr>
+      <tr><td>Error (conexión fallida)</td><td style="color: #22c55e;">✓</td></tr>
+      <tr><td>Vacío (sin datos)</td><td style="color: #22c55e;">✓</td></tr>
+      <tr><td>Success (acción completada)</td><td style="color: #22c55e;">✓</td></tr>
+    </table>
+  </div>
+
+  <div class="report">
+    <h3>🎯 Prioridad de implementación para Hoku</h3>
+    <table>
+      <tr><th>Fase</th><th>Features</th><th>Prioridad</th></tr>
+      <tr><td><strong>Fase 1</strong></td><td>Registro cliente + profesional, estados UI (skeleton/error/vacío/success), notificaciones tabla Airtable</td><td><span class="badge badge-red">Alta</span></td></tr>
+      <tr><td><strong>Fase 2</strong></td><td>Reclamos (Claims tabla + UI admin + UI cliente), comparador cotizaciones mejorado, timeline booking</td><td><span class="badge badge-red">Alta</span></td></tr>
+      <tr><td><strong>Fase 3</strong></td><td>Materiales guardados, ganancias/niveles worker, agenda/calendario, perfil público worker</td><td><span class="badge badge-amber">Media</span></td></tr>
+      <tr><td><strong>Fase 4</strong></td><td>Chat con fotos, horario semanal, radio cobertura, modo vacaciones, solicitudes urgentes</td><td><span class="badge badge-green">Baja</span></td></tr>
+    </table>
+  </div>
+
+  <div class="report">
+    <h3>📦 Dependencias y APIs</h3>
+    <table>
+      <tr><th>Recurso</th><th>Estado</th></tr>
+      <tr><td>Airtable API (base existente)</td><td><span class="badge badge-green">Ya configurado</span></td></tr>
+      <tr><td>jsPDF 2.5.1 (CDN cdnjs)</td><td><span class="badge badge-green">Ya configurado</span></td></tr>
+      <tr><td>Leaflet (mapas)</td><td><span class="badge badge-green">Ya configurado</span></td></tr>
+      <tr><td>Resend (emails)</td><td><span class="badge badge-green">Ya configurado</span></td></tr>
+      <tr><td>Vercel (hosting)</td><td><span class="badge badge-green">Ya configurado</span></td></tr>
+      <tr><td>Nuevas tablas Airtable (Claims, Notifications, SavedMaterials, WorkerSchedule)</td><td><span class="badge badge-amber">Crear en Airtable</span></td></tr>
+      <tr><td>Upload de fotos (chat + reclamos)</td><td><span class="badge badge-amber">Usar Airtable attachments</span></td></tr>
+    </table>
+  </div>
+
+  <div class="report">
+    <h3>⚠️ Decisiones importantes</h3>
+    <table>
+      <tr><th>Decisión</th><th>Resolución</th></tr>
+      <tr><td>Stack</td><td>Mantener Vanilla JS + Airtable. NO migrar a Next.js + Supabase (contrario a lo que Celia propuso). El stack actual funciona y la fusión voy-app-3 depende de él.</td></tr>
+      <tr><td>Categorías</td><td>Mantener las 8 de VOY v1 (gasfitería, electricidad, pintura, mecánica, belleza, clases, baile, limpieza). Celia propuso categorías diferentes — usar las actuales.</td></tr>
+      <tr><td>Comisión</td><td>Mantener 15% como en v1 (Celia mostró 12% en la maqueta — usar la real).</td></tr>
+      <tr><td>Escrow/Pagos</td><td>No implementar ahora. Mantener como feature futuro. Primero consolidar las features nuevas.</td></tr>
+      <tr><td>Dev panel</td><td>Mantener sin cambios. Solo existe en voy-app-3 (fusión).</td></tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<div style="text-align: center; padding: 40px 0; color: #475569; font-size: 13px;">
+  <div style="font-size: 24px; font-weight: 900; color: white; margin-bottom: 8px;">VOY v2</div>
+  <p>Vanilla JS · Airtable · Leaflet · jsPDF 2.5.1 · Vercel</p>
+  <p style="color: #64748b; margin-top: 4px;">Maqueta: Celia 🔍 · Completada: Panchita 🐕 · Para: Hoku 🐾 (implementación)</p>
+  <p style="color: #475569; margin-top: 4px;">23 marzo 2026 · Smart Connection</p>
+</div>
+
+<script>
+function showSection(name) {
+  document.querySelectorAll('.main-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 200, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

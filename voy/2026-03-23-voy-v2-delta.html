@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOY v2 Delta — Lo que falta en la maqueta</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#06060a;--glass:rgba(255,255,255,0.04);--glass-b:rgba(255,255,255,0.08);--text:#e4e4e7;--muted:#71717a;--accent:#a855f7;--accent2:#f97316;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--blue:#3b82f6}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px}
+.container{max-width:1100px;margin:0 auto}
+.hero{text-align:center;padding:50px 20px 30px}
+.hero h1{font-size:2rem;font-weight:900}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{color:var(--muted);font-size:.85rem;margin-top:4px}
+
+.report{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;padding:20px;margin-bottom:20px;backdrop-filter:blur(12px)}
+.report h2{font-size:1rem;font-weight:800;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.report h3{font-size:.85rem;font-weight:700;color:var(--accent2);margin:16px 0 8px}
+.report table{width:100%;border-collapse:collapse;font-size:.75rem}
+.report th{text-align:left;padding:8px;color:var(--muted);border-bottom:1px solid var(--glass-b);font-size:.6rem;text-transform:uppercase;letter-spacing:.8px}
+.report td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.02)}
+.report tr:hover{background:rgba(255,255,255,0.02)}
+.report ul{list-style:none;padding:0}
+.report li{padding:4px 0;font-size:.78rem;color:var(--muted)}
+.report li::before{content:'›';color:var(--accent);font-weight:bold;margin-right:8px}
+
+.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:8px;font-weight:700}
+.tag-miss{background:var(--red);color:#fff}
+.tag-partial{background:var(--yellow);color:#fff}
+.tag-ok{background:var(--green);color:#fff}
+.tag-new{background:var(--blue);color:#fff}
+
+.scores{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:24px 0}
+.sc{background:var(--glass);border:1px solid var(--glass-b);border-radius:14px;padding:16px 22px;text-align:center;min-width:100px;backdrop-filter:blur(10px)}
+.sc-n{font-size:2rem;font-weight:900;line-height:1}
+.sc-l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+.footer{text-align:center;padding:40px 20px;border-top:1px solid var(--glass-b);margin-top:40px;color:var(--muted);font-size:.7rem}
+
+@media(max-width:640px){.hero h1{font-size:1.5rem}.sc{min-width:80px;padding:12px 14px}.sc-n{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>🐕 <span>VOY v2 — Delta Report</span></h1>
+  <div class="sub">Todo lo que tiene VOY v1 actual y FALTA en la maqueta de Celia</div>
+</div>
+
+<div class="scores">
+  <div class="sc"><div class="sc-n" style="color:var(--red)">18</div><div class="sc-l">Features faltantes</div></div>
+  <div class="sc"><div class="sc-n" style="color:var(--yellow)">7</div><div class="sc-l">Parcialmente cubiertos</div></div>
+  <div class="sc"><div class="sc-n" style="color:var(--green)">14</div><div class="sc-l">Bien cubiertos</div></div>
+  <div class="sc"><div class="sc-n" style="color:var(--accent)">Desktop</div><div class="sc-l">Formato que falta</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<div class="report">
+<h2>🚨 PROBLEMA PRINCIPAL: La maqueta es solo mobile</h2>
+<p style="font-size:.82rem;color:var(--text);margin-bottom:12px">
+VOY v1 es una <strong>app desktop-first con sidebar</strong>, topbar, modales, paneles laterales deslizantes, y layout de 2 columnas.
+La maqueta de Celia solo muestra phones de 375px. <strong>Falta toda la versión desktop.</strong>
+</p>
+<h3>Layout actual de VOY v1 (desktop)</h3>
+<ul>
+  <li><strong>Topbar</strong>: logo VOY + rol badge + buscador central + toggle disponibilidad + notif bell + chat icon + avatar con nombre + logout</li>
+  <li><strong>Sidebar 260px</strong>: navegación con iconos FontAwesome + badges de conteo + secciones "Gestión" y "Mi cuenta" + footer con logout</li>
+  <li><strong>Main area</strong>: vistas que se muestran/ocultan con showView() — NO es SPA con rutas, es DOM toggling</li>
+  <li><strong>Modales</strong>: booking, rating, cotización, chat, notificaciones — overlays con animación</li>
+  <li><strong>Panel lateral deslizante</strong>: worker-detail (420px, translateX) con header + body scrolleable + footer con botones</li>
+  <li><strong>Chat panel</strong>: panel fijo con header, messages y input</li>
+  <li><strong>Toast container</strong>: notificaciones toast animadas</li>
+</ul>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<div class="report">
+<h2>📱 CLIENTE — Lo que falta</h2>
+
+<table>
+<tr><th>Feature de VOY v1</th><th>En maqueta Celia</th><th>Detalle faltante</th></tr>
+<tr><td><strong>Sidebar completa</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Buscar servicio, Servicios activos (con badge), Historial, Favoritos, Pagos, Notificaciones, Mi perfil — con iconos FA</td></tr>
+<tr><td><strong>Topbar con buscador</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Buscador central con input, avatar con nombre+email, bell con dot, chat icon</td></tr>
+<tr><td><strong>Mapa Leaflet interactivo</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>Solo muestra placeholder estático. VOY v1 tiene mapa real con markers custom, clusters, popups</td></tr>
+<tr><td><strong>Filtros avanzados</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>Solo chips. Falta: radio slider, ordenar por (distancia/rating/precio), checkbox solo disponibles, checkbox solo verificados</td></tr>
+<tr><td><strong>Toggle lista/grid</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Vista lista vs grid con botones toggle</td></tr>
+<tr><td><strong>Worker detail panel (slide-in)</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>Perfil público OK pero en VOY v1 es un panel de 420px que desliza desde la derecha con: avatar, bio, skills tags, galería 3-col, reseñas, botones "Mensaje" + "Agendar"</td></tr>
+<tr><td><strong>Modal de booking completo</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Modal con: info worker, tipo servicio select, modalidad (inmediato/agendar), fecha, hora, dirección, descripción, resumen precio</td></tr>
+<tr><td><strong>Servicios activos (vista)</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>Solo card en dashboard. VOY v1 tiene vista dedicada con cards detalladas + badges cotización + botón cancelar + chat</td></tr>
+<tr><td><strong>Historial (tabla)</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Tabla data-table con todos los servicios pasados</td></tr>
+<tr><td><strong>Rating modal</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>En maqueta está inline. VOY v1 tiene modal dedicado con estrellas grandes clickeables + textarea + botones cancel/enviar</td></tr>
+<tr><td><strong>Favoritos (vista)</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Grid de workers favoritos con corazón toggle y persistencia en localStorage</td></tr>
+<tr><td><strong>Pagos (vista)</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Vista de métodos de pago</td></tr>
+<tr><td><strong>Perfil cliente editable</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Nombre, email, teléfono, ciudad, avatar upload, cambiar contraseña — con tabs</td></tr>
+<tr><td><strong>Quotation view modal</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Modal para ver cotización completa con desglose + botones aceptar/rechazar + descargar PDF</td></tr>
+<tr><td><strong>Layout 2 columnas</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>client-grid: 380px sidebar + 1fr mapa. Responsive a 1 col en mobile</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<div class="report">
+<h2>🔧 PROFESIONAL — Lo que falta</h2>
+
+<table>
+<tr><th>Feature de VOY v1</th><th>En maqueta Celia</th><th>Detalle faltante</th></tr>
+<tr><td><strong>Sidebar profesional</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Dashboard, Solicitudes (con badge), Agenda, Ganancias, Mi perfil, Verificación (con !), Reseñas</td></tr>
+<tr><td><strong>Toggle disponibilidad en topbar</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Switch con status-dot verde/rojo + label "Disponible"/"No disponible" en topbar Y en dashboard</td></tr>
+<tr><td><strong>Solicitud card con estados</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene .request-card con .new (borde azul + label "NUEVA"), botones Aceptar/Rechazar/Cotizar, info client con avatar+rating</td></tr>
+<tr><td><strong>Modal cotización completo</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene: info cliente/servicio, tarifa/hora con grid 3 cols, tabla materiales con agregar/eliminar filas, resumen con subtotales + comisión 15% + TOTAL, notas textarea, botón enviar</td></tr>
+<tr><td><strong>Calendario completo</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene calendar-grid 7 cols con .today, .has-job (dot verde), .busy (amarillo), .other-month, click para ver detalle del día</td></tr>
+<tr><td><strong>Agenda layout 2 cols</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Grid: calendario 1fr + detalle día 340px con timeline de trabajos</td></tr>
+<tr><td><strong>Ganancias vista completa</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene: 4 stat cards + gráfico de barras + comparativa mensual + detalle transacciones</td></tr>
+<tr><td><strong>Perfil profesional editable</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Nombre, bio, skills, galería, teléfono, ciudad, avatar upload + cambiar contraseña</td></tr>
+<tr><td><strong>Verificación wizard completo</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene: step-icon (done/pending/missing) con iconos, upload de docs con preview, estados por documento</td></tr>
+<tr><td><strong>Reseñas vista</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Lista de todas las reseñas recibidas con stars + texto + fecha</td></tr>
+<tr><td><strong>Chat modal</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene modal 460px con header + messages scrolleable + input con polling real</td></tr>
+<tr><td><strong>Dashboard stat cards</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene 4 cards con iconos FA, valor, label, trend (↑ % vs mes anterior) — más detallados que la maqueta</td></tr>
+<tr><td><strong>Active job card</strong></td><td><span class="tag tag-ok">OK</span></td><td>Cubierto en maqueta pero sin botón "Completar trabajo" con confirmación</td></tr>
+<tr><td><strong>PDF generation</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Botón para generar/descargar cotización en PDF (jsPDF) — no está en ninguna pantalla de la maqueta</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<div class="report">
+<h2>⚙️ ADMIN — Lo que falta</h2>
+
+<table>
+<tr><th>Feature de VOY v1</th><th>En maqueta Celia</th><th>Detalle faltante</th></tr>
+<tr><td><strong>Login admin separado</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Admin tiene login con contraseña especial (VOY_ADMIN_PASSWORD)</td></tr>
+<tr><td><strong>Admin dashboard completo</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene: stats grid (usuarios, workers, servicios, revenue, comisiones, verificaciones pendientes)</td></tr>
+<tr><td><strong>Verificaciones con acciones</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Lista de verificaciones pendientes con botones aprobar/rechazar + preview de documentos</td></tr>
+<tr><td><strong>Transacciones tabla</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Tabla completa de transacciones con filtros</td></tr>
+<tr><td><strong>Gestión usuarios detallada</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>En maqueta solo lista. VOY v1 tiene: cambiar estado (activo/suspendido), ver detalles, filtros por rol</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<div class="report">
+<h2>🎨 EFECTOS Y UI — Lo que falta</h2>
+
+<table>
+<tr><th>Efecto/Componente</th><th>En maqueta</th><th>Detalle</th></tr>
+<tr><td><strong>Design tokens (variables.css)</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>VOY v1 tiene sistema completo: colores semánticos, spacing scale, radius, shadows, transitions, typography — todo en CSS custom properties</td></tr>
+<tr><td><strong>Color scheme VERDE</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>VOY v1 usa verde (#059669) como color primario, NO azul. La maqueta usa azul en todo</td></tr>
+<tr><td><strong>Transiciones CSS</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>var(--transition) en hover, sidebar open/close, panel slide-in, modal fade-in</td></tr>
+<tr><td><strong>Badge pulsante "NUEVO"</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>.badge-new con gradiente indigo + animación pulseNew para features de cotización</td></tr>
+<tr><td><strong>Status dot animado</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>.status-dot.online con animación de pulso en la topbar</td></tr>
+<tr><td><strong>Chart bars con hover</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Barras del gráfico con transición height 0.5s + hover que cambia color</td></tr>
+<tr><td><strong>Calendar con estados</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>.cal-day.today (verde), .has-job (dot), .busy (amarillo), .other-month (gris)</td></tr>
+<tr><td><strong>Request card estados</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>.request-card.new con borde azul + pseudo-element "NUEVA" + animación</td></tr>
+<tr><td><strong>Worker card hover</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Hover con shadow elevación + border-color change</td></tr>
+<tr><td><strong>Toast notifications</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Toasts con iconos (💡✅❌⚠️) + auto-dismiss 3.5s + fadeOut animation</td></tr>
+<tr><td><strong>FontAwesome 6.5 icons</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>VOY v1 usa FA en todo: sidebar, stat-cards, buttons, badges. La maqueta usa emojis</td></tr>
+<tr><td><strong>Sidebar colapsible mobile</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Hamburger → sidebar slide-in + overlay backdrop</td></tr>
+<tr><td><strong>Modal con overlay</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>.modal-overlay + .modal con header/body/footer pattern</td></tr>
+<tr><td><strong>Skill tags</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>.skill-tag con blue-50 bg + blue-700 text</td></tr>
+<tr><td><strong>Gallery grid</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>Solo placeholders. VOY v1 tiene gallery-row con img aspect-ratio 4/3 + object-fit cover</td></tr>
+<tr><td><strong>Star rating interactivo</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>5 estrellas con onclick setRating(), hover effect, color transition 0.15s</td></tr>
+<tr><td><strong>Dev panel flotante</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Botón morado flotante bottom-right → panel con tabs (Commits, PRs, Deploys, Tareas, Tools)</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<div class="report">
+<h2>🔑 LOGIN — Lo que falta</h2>
+
+<table>
+<tr><th>Feature</th><th>En maqueta</th><th>Detalle</th></tr>
+<tr><td><strong>Tabs Login/Registro</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>VOY v1 tiene .auth-tabs con grid 2 cols: "Iniciar sesión" | "Registrarse" — con border-bottom active state</td></tr>
+<tr><td><strong>Selector de rol en registro</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Radio buttons: "🏠 Busco un servicio (Cliente)" / "🔧 Ofrezco mis servicios (Profesional)"</td></tr>
+<tr><td><strong>Campos de registro</strong></td><td><span class="tag tag-partial">PARCIAL</span></td><td>VOY v1 tiene: nombre, email, contraseña, confirmar contraseña, rol select, ciudad select — todo con validación en tiempo real</td></tr>
+<tr><td><strong>Auth card design</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>.auth-card con radius-2xl, shadow 32px, max-width 440px, logo centrado arriba</td></tr>
+<tr><td><strong>Field validation</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>.input.error con border rojo + mensaje de error debajo</td></tr>
+<tr><td><strong>Loading state en botones</strong></td><td><span class="tag tag-miss">FALTA</span></td><td>Spinner FA en botón mientras procesa login/registro</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<div class="report">
+<h2>🎯 Resumen de acción para Hoku</h2>
+
+<h3>Prioridad CRÍTICA (sin esto la v2 es un downgrade)</h3>
+<ul>
+  <li>Agregar versión DESKTOP de cada pantalla (sidebar + topbar + main area)</li>
+  <li>Usar color primario VERDE (#059669) en vez de azul</li>
+  <li>Incluir FontAwesome 6.5 en vez de emojis para iconos</li>
+  <li>Agregar todos los modales: booking, rating, cotización view, cotización create</li>
+  <li>Worker detail panel slide-in (420px desde la derecha)</li>
+  <li>Sidebar con todas las vistas y badges de conteo</li>
+  <li>Login con tabs Login/Registro y selector de rol</li>
+</ul>
+
+<h3>Prioridad ALTA (features existentes que se perderían)</h3>
+<ul>
+  <li>Filtros avanzados: radio slider, ordenar, checkboxes disponible/verificado</li>
+  <li>Historial (tabla completa)</li>
+  <li>Favoritos (grid con corazón toggle)</li>
+  <li>Perfil editable (cliente Y worker) con avatar upload</li>
+  <li>Reseñas vista dedicada del worker</li>
+  <li>PDF generation UI (botón descargar en cotización)</li>
+  <li>Toast notifications con auto-dismiss</li>
+</ul>
+
+<h3>Prioridad MEDIA (mejoras visuales)</h3>
+<ul>
+  <li>Transiciones CSS en todos los hover/toggle/slide</li>
+  <li>Badge "NUEVO" pulsante en features de cotización</li>
+  <li>Calendar con todos los estados (today, has-job, busy)</li>
+  <li>Chart bars con hover effect + transición height</li>
+  <li>Star rating interactivo con hover</li>
+  <li>Status dot animado en topbar</li>
+</ul>
+</div>
+
+<div class="footer">
+  <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:6px">VOY v2 — Delta Report</div>
+  <p>Inventario de features faltantes en la maqueta de Celia</p>
+  <p style="margin-top:4px">Generado por Panchita 🐕 · 23 marzo 2026</p>
+</div>
+
+</div>
+</body>
+</html>

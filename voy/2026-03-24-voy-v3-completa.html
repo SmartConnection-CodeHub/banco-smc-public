@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOY v3 — Maqueta Definitiva | Panchita 🐕</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   VOY v3 — MAQUETA COMPLETA CON DESIGN TOKENS REALES
+   Panchita 🐕 · 24 marzo 2026
+   ═══════════════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* Colores VOY reales — VERDE primario */
+  --primary:#059669;--primary-dark:#047857;--primary-light:#d1fae5;--primary-50:#ecfdf5;
+  --accent:#14b8a6;--navy:#064e3b;
+  --success:#10b981;--warning:#f59e0b;--danger:#ef4444;--info:#14b8a6;
+  /* Neutros */
+  --g900:#111827;--g800:#1f2937;--g700:#374151;--g600:#4b5563;--g500:#6b7280;--g400:#9ca3af;--g300:#d1d5db;--g200:#e5e7eb;--g100:#f3f4f6;--g50:#f9fafb;--white:#fff;
+  /* Spacing */
+  --sp1:.25rem;--sp2:.5rem;--sp3:.75rem;--sp4:1rem;--sp5:1.25rem;--sp6:1.5rem;--sp8:2rem;
+  /* Radius */
+  --r-sm:.375rem;--r-md:.5rem;--r-lg:.75rem;--r-xl:1rem;--r-2xl:1.5rem;--r-full:9999px;
+  /* Shadows */
+  --sh-sm:0 1px 3px rgba(0,0,0,.08);--sh-md:0 4px 6px rgba(0,0,0,.07);--sh-lg:0 10px 15px rgba(0,0,0,.07);--sh-blue:0 4px 16px rgba(5,150,105,.28);
+  /* Sizes */
+  --sidebar-w:260px;--header-h:64px;
+  /* Transitions */
+  --ease:cubic-bezier(.4,0,.2,1);--tr:all .2s var(--ease);
+  /* Panchita dark wrapper */
+  --pbg:#06060a;--pglass:rgba(255,255,255,.04);--pglass-b:rgba(255,255,255,.08);--ptext:#e4e4e7;--pmuted:#71717a;--paccent:#a855f7;--paccent2:#f97316;
+}
+body{font-family:'Inter',sans-serif;background:var(--pbg);color:var(--ptext);line-height:1.6;overflow-x:hidden}
+
+/* ── Panchita wrapper ── */
+.p-hero{text-align:center;padding:50px 20px 20px;background:radial-gradient(ellipse at 50% 0%,rgba(5,150,105,.12),transparent 70%)}
+.p-hero h1{font-size:2rem;font-weight:900}
+.p-hero h1 span{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.p-hero .sub{color:var(--pmuted);font-size:.85rem;margin-top:4px}
+.p-hero .meta{color:#3f3f46;font-size:.7rem;margin-top:6px}
+
+/* Scores */
+.p-scores{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:20px 0}
+.p-sc{background:var(--pglass);border:1px solid var(--pglass-b);border-radius:14px;padding:14px 20px;text-align:center;min-width:90px;backdrop-filter:blur(10px)}
+.p-sc-n{font-size:1.8rem;font-weight:900;line-height:1}
+.p-sc-l{font-size:.55rem;color:var(--pmuted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* Tabs */
+.p-tabs{display:flex;justify-content:center;gap:5px;padding:16px;flex-wrap:wrap;position:sticky;top:0;z-index:100;background:rgba(6,6,10,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--pglass-b)}
+.p-tab{padding:6px 12px;border-radius:99px;font-size:.65rem;font-weight:600;cursor:pointer;border:1px solid var(--pglass-b);color:var(--pmuted);background:transparent;transition:var(--tr);letter-spacing:.3px}
+.p-tab.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(5,150,105,.3)}
+.p-tab:hover{border-color:var(--primary);color:var(--ptext)}
+
+/* Sections */
+.p-sec{display:none;padding:20px 16px;max-width:1400px;margin:0 auto}
+.p-sec.active{display:block}
+.p-sec-title{font-size:1rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.p-sec-desc{color:var(--pmuted);font-size:.78rem;margin-bottom:16px}
+
+/* Desktop mockup */
+.desk-wrap{border:2px solid var(--pglass-b);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.5);margin-bottom:24px}
+.desk-wrap.new-feature{border-color:rgba(34,197,94,.3);box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 20px rgba(34,197,94,.06)}
+.desk-label{text-align:center;font-size:.6rem;font-weight:700;margin-top:6px;color:var(--pmuted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
+.desk-wrap.new-feature+.desk-label{color:var(--success)}
+.desk-wrap.new-feature+.desk-label::after{content:' ✨ NUEVO'}
+
+/* ── VOY APP SHELL (dentro del mockup) ── */
+.app-shell{display:flex;flex-direction:column;height:700px;overflow:hidden;font-family:'Inter',sans-serif}
+
+/* Topbar */
+.topbar{height:48px;background:#fff;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-logo{font-size:16px;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-role{padding:2px 8px;border-radius:99px;font-size:9px;font-weight:600}
+.topbar-role.client{background:#dbeafe;color:#1d4ed8}
+.topbar-role.worker{background:var(--primary-light);color:var(--navy)}
+.topbar-role.admin{background:#ede9fe;color:#5b21b6}
+.topbar-center{flex:1;max-width:300px;margin:0 12px}
+.topbar-search{display:flex;align-items:center;gap:6px;background:var(--g50);border:1px solid var(--g200);border-radius:99px;padding:4px 12px;font-size:11px;color:var(--g400)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-btn{width:30px;height:30px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;background:var(--g50);color:var(--g500);font-size:12px;cursor:pointer;border:none;position:relative}
+.topbar-btn .dot{position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--danger);border:1.5px solid #fff}
+.topbar-avatar{display:flex;align-items:center;gap:6px;cursor:pointer}
+.topbar-avatar img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid #fff;box-shadow:var(--sh-sm)}
+.topbar-avatar-name{font-size:10px;font-weight:600;color:var(--g900);line-height:1}
+.topbar-avatar-sub{font-size:8px;color:var(--g400)}
+
+/* Toggle disponibilidad */
+.toggle-wrap{display:flex;align-items:center;gap:6px}
+.toggle-sw{width:32px;height:18px;border-radius:99px;position:relative;cursor:pointer}
+.toggle-on{background:var(--primary)}
+.toggle-off{background:var(--g300)}
+.toggle-dot{width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;transition:var(--tr)}
+.toggle-on .toggle-dot{right:2px}
+.toggle-off .toggle-dot{left:2px}
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.status-dot.online{background:var(--success);animation:statusPulse 2s infinite}
+@keyframes statusPulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 4px rgba(16,185,129,0)}}
+
+/* Sidebar */
+.sb{width:200px;background:#fff;border-right:1px solid var(--g200);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.sb-nav{padding:8px 6px;flex:1}
+.sb-label{padding:8px 8px 2px;font-size:8px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.8px}
+.sb-link{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--r-lg);color:var(--g600);font-size:11px;font-weight:500;cursor:pointer;margin-bottom:1px;transition:var(--tr)}
+.sb-link i{width:14px;text-align:center;font-size:11px;color:var(--g400)}
+.sb-link:hover{background:var(--g50);color:var(--g900)}
+.sb-link:hover i{color:var(--primary)}
+.sb-link.active{background:var(--primary-50);color:var(--primary);font-weight:600}
+.sb-link.active i{color:var(--primary)}
+.sb-badge{margin-left:auto;padding:1px 6px;border-radius:99px;background:var(--primary);color:#fff;font-size:8px;font-weight:700}
+.sb-footer{padding:8px;border-top:1px solid var(--g100)}
+
+/* Main area */
+.main{flex:1;overflow-y:auto;background:var(--g50);padding:16px}
+
+/* Page header */
+.pg-title{font-size:16px;font-weight:800;color:var(--g900);letter-spacing:-.02em}
+.pg-sub{font-size:10px;color:var(--g500);margin-top:2px}
+
+/* Stats grid */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.stat{background:#fff;border-radius:var(--r-xl);padding:10px;border:1px solid var(--g200);display:flex;gap:8px;align-items:flex-start;transition:var(--tr)}
+.stat:hover{box-shadow:var(--sh-md)}
+.stat-icon{width:32px;height:32px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.stat-val{font-size:16px;font-weight:800;color:var(--g900);line-height:1}
+.stat-lbl{font-size:9px;color:var(--g500);margin-top:2px}
+.stat-trend{font-size:8px;font-weight:600;margin-top:3px;display:flex;align-items:center;gap:2px}
+.stat-trend.up{color:var(--success)}
+
+/* Cards */
+.card{background:#fff;border-radius:var(--r-xl);box-shadow:var(--sh-sm);border:1px solid var(--g200);overflow:hidden;transition:var(--tr);margin-bottom:8px}
+.card:hover{box-shadow:var(--sh-lg);transform:translateY(-1px)}
+.card-hdr{padding:8px 12px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:700;color:var(--g900)}
+.card-body{padding:12px}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:600}
+.badge-green{background:#d1fae5;color:#065f46}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-yellow{background:#fef3c7;color:#92400e}
+.badge-gray{background:var(--g100);color:var(--g600)}
+
+/* Badge NUEVO pulsante */
+.badge-new{display:inline-block;padding:1px 5px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-size:7px;font-weight:800;border-radius:99px;letter-spacing:.4px;vertical-align:middle;margin-left:3px;animation:pulseNew 2s infinite}
+@keyframes pulseNew{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:6px 12px;border-radius:var(--r-lg);font-weight:600;font-size:10px;cursor:pointer;border:none;transition:var(--tr);white-space:nowrap}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:var(--sh-blue)}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.btn-outline:hover{background:var(--primary-50)}
+.btn-ghost{background:transparent;color:var(--g600);padding:4px 8px}
+.btn-ghost:hover{background:var(--g100)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sm{padding:3px 8px;font-size:9px}
+
+/* Chart bars */
+.chart-bars{display:flex;align-items:flex-end;gap:4px;height:80px;padding:8px 0}
+.chart-bar{flex:1;border-radius:var(--r-sm) var(--r-sm) 0 0;transition:height .5s var(--ease);cursor:pointer}
+.chart-bar:hover{opacity:.8}
+.chart-bar.current{background:var(--primary)}
+.chart-bar.past{background:var(--primary-light)}
+.chart-lbl{text-align:center;font-size:7px;color:var(--g400);margin-top:2px}
+
+/* Calendar */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-hdr{text-align:center;font-size:8px;font-weight:600;color:var(--g400);padding:4px}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:var(--r-md);font-size:10px;cursor:pointer;transition:var(--tr);position:relative}
+.cal-day:hover{background:var(--g100)}
+.cal-day.today{background:var(--primary);color:#fff;font-weight:700}
+.cal-day.has-job::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--success)}
+.cal-day.today.has-job::after{background:#fff}
+.cal-day.other{color:var(--g300)}
+
+/* Request card */
+.req-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r-xl);padding:10px;margin-bottom:6px;transition:var(--tr)}
+.req-card.new{border-color:var(--primary);background:var(--primary-50)}
+.req-card.new::before{content:'NUEVA';display:inline-block;padding:1px 6px;background:var(--primary);color:#fff;font-size:7px;font-weight:700;border-radius:99px;margin-bottom:4px}
+
+/* Worker card */
+.w-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r-xl);padding:10px;display:flex;gap:8px;cursor:pointer;transition:var(--tr);margin-bottom:6px}
+.w-card:hover{border-color:var(--primary);box-shadow:var(--sh-md)}
+
+/* Worker detail panel */
+.w-detail{width:320px;background:#fff;border-left:1px solid var(--g200);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.w-detail-hdr{padding:8px 12px;border-bottom:1px solid var(--g100);display:flex;align-items:center;gap:8px}
+.w-detail-body{flex:1;overflow-y:auto;padding:12px}
+.w-detail-foot{padding:8px 12px;border-top:1px solid var(--g100);display:flex;gap:6px}
+
+/* Modal overlay */
+.modal-ov{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:50}
+.modal-box{background:#fff;border-radius:var(--r-2xl);box-shadow:0 20px 60px rgba(0,0,0,.15);width:90%;max-width:420px;max-height:80%;display:flex;flex-direction:column;overflow:hidden}
+.modal-hdr{padding:10px 14px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+.modal-hdr h3{font-size:12px;font-weight:700;color:var(--g900)}
+.modal-body{padding:14px;flex:1;overflow-y:auto}
+.modal-foot{padding:10px 14px;border-top:1px solid var(--g100);display:flex;gap:6px;justify-content:flex-end}
+
+/* Input */
+.input{width:100%;padding:6px 10px;border:1.5px solid var(--g200);border-radius:var(--r-lg);font-size:11px;outline:none;transition:var(--tr);font-family:inherit}
+.input:focus{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)}
+.input-label{display:block;font-size:9px;font-weight:600;color:var(--g600);margin-bottom:2px}
+
+/* Skill tags */
+.skill-tag{display:inline-block;padding:2px 7px;background:var(--primary-50);color:var(--primary-dark);font-size:9px;font-weight:500;border-radius:var(--r-full);margin:1px}
+
+/* Gallery */
+.gallery-row{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}
+.gallery-img{aspect-ratio:4/3;background:linear-gradient(135deg,var(--g100),var(--g200));border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--g400)}
+
+/* Stars interactive */
+.stars-i{display:flex;gap:2px;font-size:18px;color:var(--g300)}
+.stars-i span{cursor:pointer;transition:color .15s}
+.stars-i span.filled{color:var(--warning)}
+.stars-i:hover span{color:var(--warning)}
+
+/* Chat panel */
+.chat-p{width:280px;background:#fff;border-left:1px solid var(--g200);display:flex;flex-direction:column;flex-shrink:0}
+.chat-msgs{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px;background:var(--g50)}
+.chat-bubble{max-width:75%;padding:6px 10px;border-radius:12px;font-size:10px;line-height:1.4}
+.chat-sent{align-self:flex-end;background:var(--primary);color:#fff;border-bottom-right-radius:3px}
+.chat-recv{background:#fff;color:var(--g800);border:1px solid var(--g200);border-bottom-left-radius:3px}
+.chat-time{font-size:7px;color:var(--g400);margin-top:1px}
+.chat-input-bar{padding:6px 8px;border-top:1px solid var(--g100);display:flex;gap:4px}
+.chat-input-bar input{flex:1;padding:5px 10px;border:1px solid var(--g200);border-radius:99px;font-size:10px;outline:none}
+.chat-send-btn{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:10px}
+
+/* Toast */
+.toast{position:absolute;bottom:12px;right:12px;background:#fff;border-radius:var(--r-xl);padding:8px 14px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:flex;align-items:center;gap:8px;font-size:10px;font-weight:500;color:var(--g900);border-left:3px solid var(--success);z-index:60;animation:toastIn .3s var(--ease)}
+@keyframes toastIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* Verification steps */
+.verif-step{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--g100)}
+.verif-step:last-child{border-bottom:none}
+.step-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px}
+.step-done{background:#d1fae5;color:#059669}
+.step-pending{background:#fef3c7;color:#d97706}
+.step-miss{background:#fee2e2;color:#dc2626}
+
+/* Report glass (Panchita) */
+.report{background:var(--pglass);border:1px solid var(--pglass-b);border-radius:16px;padding:18px;margin-bottom:16px;backdrop-filter:blur(12px)}
+.report h3{font-size:.8rem;font-weight:700;color:var(--paccent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.report table{width:100%;border-collapse:collapse;font-size:.72rem}
+.report th{text-align:left;padding:6px;color:var(--pmuted);border-bottom:1px solid var(--pglass-b);font-size:.58rem;text-transform:uppercase;letter-spacing:.7px}
+.report td{padding:6px;border-bottom:1px solid rgba(255,255,255,.02)}
+.tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:7px;font-weight:700}
+.tag-n{background:var(--success);color:#fff}
+.tag-e{background:#3b82f6;color:#fff}
+.tag-b{background:var(--warning);color:#fff}
+
+/* Scroll hint */
+.scroll-h{text-align:center;color:#3f3f46;font-size:.65rem;margin-bottom:6px}
+
+/* Avatar */
+.av{border-radius:50%;object-fit:cover;border:1.5px solid #fff;box-shadow:var(--sh-sm)}
+
+/* Flex utils */
+.fx{display:flex}.fxc{display:flex;flex-direction:column}.ac{align-items:center}.jb{justify-content:space-between}.g2{gap:8px}.g3{gap:12px}.f1{flex:1}
+
+/* Empty state */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center}
+.empty i{font-size:2rem;color:var(--g300);margin-bottom:8px}
+.empty h3{font-size:12px;font-weight:600;color:var(--g600);margin-bottom:4px}
+.empty p{color:var(--g400);font-size:10px}
+
+.footer{text-align:center;padding:40px 20px;border-top:1px solid var(--pglass-b);margin-top:40px;color:var(--pmuted);font-size:.7rem}
+
+/* Map placeholder */
+.map-ph{background:linear-gradient(135deg,#dbeafe,#e0f2fe,#cffafe);border-radius:var(--r-xl);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;color:var(--primary);font-size:10px;font-weight:600}
+.map-pin{width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);position:absolute}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="p-hero">
+  <h1>🐕 <span>VOY v3 — Maqueta Definitiva</span></h1>
+  <div class="sub">Desktop + Mobile · Features v1 completas + nuevas v2 · Efectos reales · Color VERDE</div>
+  <div class="meta">Celia 🔍 (original) + Panchita 🐕 (completada) · 24 marzo 2026 · Para fusión voy-app-3</div>
+</div>
+
+<div class="p-scores">
+  <div class="p-sc"><div class="p-sc-n" style="color:var(--primary)">28</div><div class="p-sc-l">Pantallas</div></div>
+  <div class="p-sc"><div class="p-sc-n" style="color:var(--success)">Desktop</div><div class="p-sc-l">+ Mobile</div></div>
+  <div class="p-sc"><div class="p-sc-n" style="color:var(--paccent2)">Verde</div><div class="p-sc-l">Color real</div></div>
+  <div class="p-sc"><div class="p-sc-n" style="color:var(--paccent)">FA 6.5</div><div class="p-sc-l">Iconos</div></div>
+  <div class="p-sc"><div class="p-sc-n" style="color:var(--warning)">12</div><div class="p-sc-l">Efectos CSS</div></div>
+</div>
+
+<!-- TABS -->
+<div class="p-tabs">
+  <button class="p-tab active" onclick="go('login',this)">🔑 Login</button>
+  <button class="p-tab" onclick="go('client',this)">👤 Cliente Desktop</button>
+  <button class="p-tab" onclick="go('worker',this)">🔧 Worker Desktop</button>
+  <button class="p-tab" onclick="go('modals',this)">📦 Modales</button>
+  <button class="p-tab" onclick="go('admin',this)">⚙️ Admin</button>
+  <button class="p-tab" onclick="go('new',this)">✨ Nuevas v2</button>
+  <button class="p-tab" onclick="go('effects',this)">🎨 Efectos</button>
+  <button class="p-tab" onclick="go('data',this)">🗃️ Datos</button>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- LOGIN                                  -->
+<!-- ═══════════════════════════════════════ -->
+<div class="p-sec active" id="s-login">
+<div class="p-sec-title">Login & Registro</div>
+<div class="p-sec-desc">Auth card con tabs Login/Registro + selector de rol — como VOY v1 pero mejorado</div>
+
+<div class="desk-wrap">
+<div style="background:var(--g50);display:flex;align-items:center;justify-content:center;min-height:600px;padding:40px">
+  <!-- Auth card -->
+  <div style="background:#fff;border-radius:var(--r-2xl);box-shadow:0 4px 32px rgba(0,0,0,.08);width:100%;max-width:420px;overflow:hidden">
+    <!-- Logo -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:24px 24px 16px">
+      <span style="font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">VOY</span>
+      <span style="font-size:10px;color:var(--g400);margin-top:4px">Servicios para el hogar</span>
+    </div>
+    <!-- Tabs -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:2px solid var(--g100)">
+      <div style="padding:10px;text-align:center;font-size:12px;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);margin-bottom:-2px;cursor:pointer">Iniciar sesión</div>
+      <div style="padding:10px;text-align:center;font-size:12px;font-weight:500;color:var(--g400);cursor:pointer">Registrarse</div>
+    </div>
+    <!-- Form login -->
+    <div style="padding:24px">
+      <div style="margin-bottom:14px"><label class="input-label">Correo electrónico</label><input class="input" value="maria.vargas@gmail.com" style="margin-top:2px"></div>
+      <div style="margin-bottom:14px"><label class="input-label">Contraseña</label><input class="input" type="password" value="••••••••" style="margin-top:2px"></div>
+      <button class="btn btn-primary" style="width:100%;padding:10px;font-size:12px"><i class="fa-solid fa-right-to-bracket"></i> Ingresar</button>
+      <p style="text-align:center;font-size:10px;color:var(--g400);margin-top:12px">¿Olvidaste tu contraseña?</p>
+    </div>
+  </div>
+</div>
+</div>
+<div class="desk-label">Login — Auth Card con tabs (v1 real)</div>
+
+<!-- Registro con selector de rol -->
+<div class="desk-wrap new-feature">
+<div style="background:var(--g50);display:flex;align-items:center;justify-content:center;min-height:700px;padding:40px">
+  <div style="background:#fff;border-radius:var(--r-2xl);box-shadow:0 4px 32px rgba(0,0,0,.08);width:100%;max-width:420px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:24px 24px 16px">
+      <span style="font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">VOY</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:2px solid var(--g100)">
+      <div style="padding:10px;text-align:center;font-size:12px;font-weight:500;color:var(--g400);cursor:pointer">Iniciar sesión</div>
+      <div style="padding:10px;text-align:center;font-size:12px;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);margin-bottom:-2px;cursor:pointer">Registrarse</div>
+    </div>
+    <div style="padding:24px">
+      <div style="margin-bottom:14px"><label class="input-label">Nombre completo</label><input class="input" value="Carlos Muñoz" style="margin-top:2px"></div>
+      <div style="margin-bottom:14px"><label class="input-label">Correo electrónico</label><input class="input" value="carlos@gmail.com" style="margin-top:2px"></div>
+      <div style="margin-bottom:14px"><label class="input-label">Contraseña</label><input class="input" type="password" value="••••••••" style="margin-top:2px"></div>
+      <div style="margin-bottom:14px"><label class="input-label">Confirmar contraseña</label><input class="input" type="password" value="••••••••" style="margin-top:2px"></div>
+      <!-- Selector de rol -->
+      <div style="margin-bottom:14px">
+        <label class="input-label">¿Qué quieres hacer?</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+          <div style="padding:12px;border:2px solid var(--g200);border-radius:var(--r-xl);text-align:center;cursor:pointer;transition:var(--tr)">
+            <div style="font-size:20px;margin-bottom:4px">🏠</div>
+            <div style="font-size:10px;font-weight:600;color:var(--g700)">Busco un servicio</div>
+            <div style="font-size:8px;color:var(--g400)">Cliente</div>
+          </div>
+          <div style="padding:12px;border:2px solid var(--primary);border-radius:var(--r-xl);text-align:center;cursor:pointer;background:var(--primary-50)">
+            <div style="font-size:20px;margin-bottom:4px">🔧</div>
+            <div style="font-size:10px;font-weight:600;color:var(--primary-dark)">Ofrezco servicios</div>
+            <div style="font-size:8px;color:var(--primary)">Profesional</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px"><label class="input-label">Ciudad</label><select class="input" style="margin-top:2px"><option>Viña del Mar</option><option>Valparaíso</option><option>Concón</option><option>Quilpué</option><option>Villa Alemana</option></select></div>
+      <button class="btn btn-primary" style="width:100%;padding:10px;font-size:12px"><i class="fa-solid fa-user-plus"></i> Crear cuenta</button>
+    </div>
+  </div>
+</div>
+</div>
+<div class="desk-label">Registro con selector de rol</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- CLIENTE DESKTOP                        -->
+<!-- ═══════════════════════════════════════ -->
+<div class="p-sec" id="s-client">
+<div class="p-sec-title">Cliente — Desktop completo</div>
+<div class="p-sec-desc">Topbar + sidebar + main area + mapa + worker detail + chat panel — como VOY v1</div>
+
+<!-- Dashboard Cliente con explorar -->
+<div class="desk-wrap">
+<div class="app-shell">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left"><span class="topbar-logo">VOY</span><span class="topbar-role client">Cliente</span></div>
+    <div class="topbar-center"><div class="topbar-search"><i class="fa-solid fa-search"></i><span>¿Qué servicio necesitas?</span></div></div>
+    <div class="topbar-right">
+      <div class="topbar-btn"><i class="fa-solid fa-bell"></i><span class="dot"></span></div>
+      <div class="topbar-btn"><i class="fa-solid fa-comment-dots"></i></div>
+      <div class="topbar-avatar"><img src="https://i.pravatar.cc/40?img=32" class="av"><div><div class="topbar-avatar-name">Sergio Gómez</div><div class="topbar-avatar-sub">sergio@gmail.com</div></div></div>
+      <div class="topbar-btn" style="color:var(--g400)"><i class="fa-solid fa-right-from-bracket"></i></div>
+    </div>
+  </div>
+  <!-- Body -->
+  <div style="display:flex;flex:1;overflow:hidden">
+    <!-- Sidebar -->
+    <div class="sb">
+      <nav class="sb-nav">
+        <span class="sb-label">Explorar</span>
+        <a class="sb-link active"><i class="fa-solid fa-search"></i> Buscar servicio</a>
+        <a class="sb-link"><i class="fa-solid fa-bolt"></i> Servicios activos <span class="sb-badge">1</span></a>
+        <a class="sb-link"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
+        <span class="sb-label">Mi cuenta</span>
+        <a class="sb-link"><i class="fa-solid fa-heart"></i> Favoritos</a>
+        <a class="sb-link"><i class="fa-solid fa-credit-card"></i> Pagos</a>
+        <a class="sb-link"><i class="fa-solid fa-bell"></i> Notificaciones</a>
+        <a class="sb-link"><i class="fa-solid fa-user-circle"></i> Mi perfil</a>
+      </nav>
+      <div class="sb-footer">
+        <a class="sb-link" style="color:var(--g400)"><i class="fa-solid fa-arrow-left"></i> Volver al inicio</a>
+        <a class="sb-link" style="color:var(--danger)"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a>
+      </div>
+    </div>
+    <!-- Main: 2 columnas (lista + mapa) -->
+    <div class="main" style="display:flex;gap:12px;padding:12px">
+      <!-- Col izquierda: filtros + lista -->
+      <div style="width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto">
+        <!-- Filtros -->
+        <div class="card"><div class="card-body" style="padding:10px">
+          <div style="display:flex;gap:4px;overflow-x:auto;margin-bottom:8px">
+            <span style="padding:4px 10px;border-radius:99px;font-size:9px;font-weight:600;background:var(--primary);color:#fff;cursor:pointer"><i class="fa-solid fa-grid-2"></i> Todos</span>
+            <span style="padding:4px 10px;border-radius:99px;font-size:9px;font-weight:500;background:var(--g100);color:var(--g600);cursor:pointer">🔧 Gasfitería</span>
+            <span style="padding:4px 10px;border-radius:99px;font-size:9px;font-weight:500;background:var(--g100);color:var(--g600);cursor:pointer">⚡ Electricidad</span>
+            <span style="padding:4px 10px;border-radius:99px;font-size:9px;font-weight:500;background:var(--g100);color:var(--g600);cursor:pointer">🎨 Pintura</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div style="flex:1"><div class="input-label"><i class="fa-solid fa-location-dot" style="color:var(--primary)"></i> Radio</div><div style="display:flex;align-items:center;gap:4px"><input type="range" min="1" max="30" value="10" style="flex:1;accent-color:var(--primary)"><span style="font-size:10px;font-weight:600;color:var(--primary)">10 km</span></div></div>
+            <div><div class="input-label">Ordenar</div><select class="input" style="min-width:80px;font-size:9px"><option>Distancia</option><option>Rating</option><option>Precio</option></select></div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:6px">
+            <label style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--g600);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--primary)"> Solo disponibles</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--g600);cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> Verificados</label>
+          </div>
+        </div></div>
+        <!-- Count + view toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px">
+          <span style="font-size:10px;color:var(--g500)">8 profesionales encontrados</span>
+          <div style="display:flex;gap:2px"><button class="btn-ghost" style="padding:3px 6px;font-size:9px;background:var(--primary-50);color:var(--primary);border-radius:var(--r-md)"><i class="fa-solid fa-list"></i></button><button class="btn-ghost" style="padding:3px 6px;font-size:9px;border-radius:var(--r-md)"><i class="fa-solid fa-grip"></i></button></div>
+        </div>
+        <!-- Worker cards -->
+        <div class="w-card">
+          <img src="https://i.pravatar.cc/40?img=11" class="av" style="width:36px;height:36px">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:4px"><span style="font-size:11px;font-weight:700;color:var(--g900)">María Vargas</span><span class="badge badge-green" style="font-size:7px"><i class="fa-solid fa-shield-check"></i> Verificada</span></div>
+            <div style="font-size:9px;color:var(--g500)">🔧 Gasfitería · ⭐ 4.9 (48) · 📍 2.3 km</div>
+            <div style="display:flex;gap:2px;margin-top:4px"><span class="skill-tag">Cañerías</span><span class="skill-tag">Calefón</span><span class="skill-tag">Llaves</span></div>
+          </div>
+          <div style="text-align:right"><div style="font-size:12px;font-weight:800;color:var(--g900)">$15k</div><div style="font-size:8px;color:var(--g400)">/hora</div><span class="status-dot online" style="margin-top:4px"></span></div>
+        </div>
+        <div class="w-card">
+          <img src="https://i.pravatar.cc/40?img=14" class="av" style="width:36px;height:36px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11px;font-weight:700;color:var(--g900)">Pedro López</div>
+            <div style="font-size:9px;color:var(--g500)">⚡ Electricidad · ⭐ 4.7 (32) · 📍 3.1 km</div>
+            <div style="display:flex;gap:2px;margin-top:4px"><span class="skill-tag">Enchufes</span><span class="skill-tag">Tableros</span></div>
+          </div>
+          <div style="text-align:right"><div style="font-size:12px;font-weight:800;color:var(--g900)">$18k</div><div style="font-size:8px;color:var(--g400)">/hora</div><span class="status-dot online"></span></div>
+        </div>
+        <div class="w-card">
+          <img src="https://i.pravatar.cc/40?img=22" class="av" style="width:36px;height:36px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11px;font-weight:700;color:var(--g900)">Roberto Gómez</div>
+            <div style="font-size:9px;color:var(--g500)">🎨 Pintura · ⭐ 4.5 (18) · 📍 5.7 km</div>
+          </div>
+          <div style="text-align:right"><div style="font-size:12px;font-weight:800;color:var(--g900)">$12k</div><div style="font-size:8px;color:var(--g400)">/hora</div></div>
+        </div>
+      </div>
+      <!-- Mapa Leaflet placeholder -->
+      <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+        <div class="map-ph" style="flex:1;min-height:300px">
+          <div class="map-pin" style="background:var(--primary);top:30%;left:25%"></div>
+          <div class="map-pin" style="background:var(--warning);top:50%;left:60%"></div>
+          <div class="map-pin" style="background:#8b5cf6;top:35%;left:75%"></div>
+          <div class="map-pin" style="background:var(--danger);top:65%;left:40%"></div>
+          <span>Leaflet Map · Viña del Mar · 10 km</span>
+        </div>
+      </div>
+      <!-- Worker detail panel (slide-in) -->
+      <div class="w-detail">
+        <div class="w-detail-hdr">
+          <button class="btn-ghost" style="padding:4px"><i class="fa-solid fa-arrow-left"></i></button>
+          <span style="font-weight:600;color:var(--g900);flex:1;font-size:11px">Perfil</span>
+          <button class="btn-ghost" style="padding:4px;color:var(--danger)"><i class="fa-regular fa-heart"></i></button>
+        </div>
+        <div class="w-detail-body">
+          <div style="text-align:center;margin-bottom:12px">
+            <img src="https://i.pravatar.cc/80?img=11" class="av" style="width:60px;height:60px;margin-bottom:6px">
+            <div style="font-size:14px;font-weight:800;color:var(--g900)">María Vargas</div>
+            <div style="font-size:10px;color:var(--g500)">🔧 Gasfitería · ⭐ 4.9 · 📍 Valparaíso</div>
+            <div style="display:flex;gap:4px;justify-content:center;margin-top:6px"><span class="badge badge-green"><i class="fa-solid fa-shield-check"></i> Verificada</span><span class="badge badge-gray">🥈 Plata</span></div>
+          </div>
+          <div style="font-size:10px;color:var(--g600);margin-bottom:12px">Gasfíter con 10 años de experiencia. Especialista en reparaciones de cañerías, instalación de artefactos y mantención preventiva.</div>
+          <div style="margin-bottom:8px"><span style="font-size:10px;font-weight:700;color:var(--g900)">Habilidades</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:12px"><span class="skill-tag">Cañerías</span><span class="skill-tag">Calefón</span><span class="skill-tag">Llaves</span><span class="skill-tag">WC</span><span class="skill-tag">Duchas</span></div>
+          <div style="font-size:10px;font-weight:700;color:var(--g900);margin-bottom:6px">Galería</div>
+          <div class="gallery-row"><div class="gallery-img"><i class="fa-solid fa-image"></i></div><div class="gallery-img"><i class="fa-solid fa-image"></i></div><div class="gallery-img"><i class="fa-solid fa-image"></i></div></div>
+          <div style="font-size:10px;font-weight:700;color:var(--g900);margin-bottom:6px;margin-top:8px">Reseñas (48)</div>
+          <div style="border-bottom:1px solid var(--g100);padding-bottom:6px;margin-bottom:6px"><div class="fx ac g2"><img src="https://i.pravatar.cc/24?img=32" class="av" style="width:20px;height:20px"><span style="font-size:9px;font-weight:600;color:var(--g900)">Sergio G.</span><span style="font-size:9px;color:var(--warning)">★★★★★</span></div><div style="font-size:9px;color:var(--g500);margin-top:2px">"Excelente trabajo, muy profesional."</div></div>
+          <div><div class="fx ac g2"><img src="https://i.pravatar.cc/24?img=44" class="av" style="width:20px;height:20px"><span style="font-size:9px;font-weight:600;color:var(--g900)">Ana L.</span><span style="font-size:9px;color:var(--warning)">★★★★★</span></div><div style="font-size:9px;color:var(--g500);margin-top:2px">"Puntual y trabajo impecable."</div></div>
+        </div>
+        <div class="w-detail-foot">
+          <button class="btn btn-outline" style="flex:1"><i class="fa-solid fa-comment-dots"></i> Mensaje</button>
+          <button class="btn btn-primary" style="flex:1"><i class="fa-solid fa-calendar-check"></i> Agendar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="desk-label">Cliente — Explorar + Mapa + Worker Detail Panel (layout v1 completo)</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- WORKER DESKTOP                         -->
+<!-- ═══════════════════════════════════════ -->
+<div class="p-sec" id="s-worker">
+<div class="p-sec-title">Profesional — Desktop completo</div>
+<div class="p-sec-desc">Dashboard con stats, gráfico, trabajo activo, calendario 2 columnas — todo v1 + mejoras v2</div>
+
+<div class="desk-wrap">
+<div class="app-shell">
+  <!-- Topbar Worker -->
+  <div class="topbar">
+    <div class="topbar-left"><span class="topbar-logo">VOY</span><span class="topbar-role worker">Profesional</span></div>
+    <div class="topbar-center">
+      <div class="toggle-wrap">
+        <div class="toggle-sw toggle-on"><div class="toggle-dot"></div></div>
+        <span style="font-size:10px;font-weight:600;color:var(--success)"><span class="status-dot online"></span> Disponible</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-btn"><i class="fa-solid fa-bell"></i><span class="dot"></span></div>
+      <div class="topbar-btn"><i class="fa-solid fa-comment-dots"></i></div>
+      <div class="topbar-avatar"><img src="https://i.pravatar.cc/40?img=11" class="av"><div><div class="topbar-avatar-name">María Vargas</div><div class="topbar-avatar-sub">maria@gmail.com</div></div></div>
+      <div class="topbar-btn" style="color:var(--g400)"><i class="fa-solid fa-right-from-bracket"></i></div>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <!-- Sidebar Worker -->
+    <div class="sb">
+      <nav class="sb-nav">
+        <span class="sb-label">Gestión</span>
+        <a class="sb-link active"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a class="sb-link"><i class="fa-solid fa-inbox"></i> Solicitudes <span class="sb-badge">3</span></a>
+        <a class="sb-link"><i class="fa-solid fa-calendar-days"></i> Agenda</a>
+        <a class="sb-link"><i class="fa-solid fa-chart-line"></i> Ganancias</a>
+        <span class="sb-label">Mi cuenta</span>
+        <a class="sb-link"><i class="fa-solid fa-user-circle"></i> Mi perfil</a>
+        <a class="sb-link"><i class="fa-solid fa-shield-halved"></i> Verificación <span class="sb-badge" style="background:var(--warning)">!</span></a>
+        <a class="sb-link"><i class="fa-solid fa-star"></i> Reseñas</a>
+      </nav>
+      <div class="sb-footer">
+        <a class="sb-link" style="color:var(--g400)"><i class="fa-solid fa-arrow-left"></i> Volver al inicio</a>
+        <a class="sb-link" style="color:var(--danger)"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a>
+      </div>
+    </div>
+    <!-- Main -->
+    <div class="main">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div><div class="pg-title">Bienvenida, María 👋</div><div class="pg-sub">Lunes 24 de marzo, 2026</div></div>
+        <div class="toggle-wrap"><div class="toggle-sw toggle-on"><div class="toggle-dot"></div></div><span style="font-size:10px;font-weight:600;color:var(--success)">● Disponible</span></div>
+      </div>
+      <!-- Stats 4 cards -->
+      <div class="stats">
+        <div class="stat"><div class="stat-icon" style="background:#dbeafe;color:var(--primary)"><i class="fa-solid fa-wallet"></i></div><div><div class="stat-val">$312.000</div><div class="stat-lbl">Ganancias este mes</div><div class="stat-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +18% vs mes anterior</div></div></div>
+        <div class="stat"><div class="stat-icon" style="background:#d1fae5;color:var(--success)"><i class="fa-solid fa-check-circle"></i></div><div><div class="stat-val">23</div><div class="stat-lbl">Trabajos este mes</div><div class="stat-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +5 vs anterior</div></div></div>
+        <div class="stat"><div class="stat-icon" style="background:#fef3c7;color:var(--warning)"><i class="fa-solid fa-star"></i></div><div><div class="stat-val">4.9 ★</div><div class="stat-lbl">Calificación promedio</div><div class="stat-trend up"><i class="fa-solid fa-arrow-trend-up"></i> 187 reseñas</div></div></div>
+        <div class="stat"><div class="stat-icon" style="background:#ede9fe;color:#7c3aed"><i class="fa-solid fa-inbox"></i></div><div><div class="stat-val">3</div><div class="stat-lbl">Solicitudes nuevas</div><div class="stat-trend"><button class="btn btn-primary btn-sm">Ver ahora</button></div></div></div>
+      </div>
+      <!-- 2 columnas: trabajo activo + gráfico -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="card"><div class="card-hdr"><strong>Trabajo activo</strong><span class="badge badge-green">● En curso</span></div><div class="card-body"><div class="fx ac g2"><img src="https://i.pravatar.cc/32?img=32" class="av" style="width:28px;height:28px"><div><div style="font-size:11px;font-weight:700;color:var(--g900)">Reparar llave cocina</div><div style="font-size:9px;color:var(--g500)">Sergio Gómez · 📍 Av. Libertad 1234</div></div></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-outline btn-sm"><i class="fa-solid fa-comment-dots"></i> Chat</button><button class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Completar</button></div></div></div>
+        <div class="card"><div class="card-hdr"><strong>Ganancias — Marzo 2026</strong><span style="font-size:10px;color:var(--success);font-weight:600">$312.000</span></div><div class="card-body"><div class="chart-bars"><div style="flex:1;text-align:center"><div class="chart-bar past" style="height:25%"></div><div class="chart-lbl">Oct</div></div><div style="flex:1;text-align:center"><div class="chart-bar past" style="height:45%"></div><div class="chart-lbl">Nov</div></div><div style="flex:1;text-align:center"><div class="chart-bar past" style="height:60%"></div><div class="chart-lbl">Dic</div></div><div style="flex:1;text-align:center"><div class="chart-bar past" style="height:40%"></div><div class="chart-lbl">Ene</div></div><div style="flex:1;text-align:center"><div class="chart-bar past" style="height:70%"></div><div class="chart-lbl">Feb</div></div><div style="flex:1;text-align:center"><div class="chart-bar current" style="height:85%"></div><div class="chart-lbl">Mar</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px"><div style="text-align:center;padding:6px;background:var(--g50);border-radius:var(--r-lg)"><div style="font-weight:700;color:var(--g900);font-size:11px">$312k</div><div style="font-size:8px;color:var(--g400)">Este mes</div></div><div style="text-align:center;padding:6px;background:var(--g50);border-radius:var(--r-lg)"><div style="font-weight:700;color:var(--g900);font-size:11px">$264k</div><div style="font-size:8px;color:var(--g400)">Anterior</div></div><div style="text-align:center;padding:6px;background:var(--g50);border-radius:var(--r-lg)"><div style="font-weight:700;color:var(--success);font-size:11px">+18%</div><div style="font-size:8px;color:var(--g400)">Variación</div></div></div></div></div>
+      </div>
+      <!-- Solicitudes recientes -->
+      <div class="card"><div class="card-hdr"><strong>Solicitudes recientes</strong><button class="btn btn-ghost btn-sm">Ver todas</button></div><div class="card-body" style="padding:8px">
+        <div class="req-card new"><div class="fx ac g2"><img src="https://i.pravatar.cc/28?img=44" class="av" style="width:24px;height:24px"><div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--g900)">Reparar cañería baño</div><div style="font-size:9px;color:var(--g500)">Ana Muñoz · 📍 Concón · Hace 15 min</div></div><span style="font-size:12px;font-weight:800;color:var(--g900)">$25k</span></div><div style="display:flex;gap:4px;margin-top:6px"><button class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Aceptar</button><button class="btn btn-ghost btn-sm"><i class="fa-solid fa-file-invoice-dollar"></i> Cotizar <span class="badge-new">NUEVO</span></button><button class="btn btn-ghost btn-sm" style="color:var(--danger)"><i class="fa-solid fa-xmark"></i></button></div></div>
+        <div class="req-card"><div class="fx ac g2"><img src="https://i.pravatar.cc/28?img=55" class="av" style="width:24px;height:24px"><div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--g900)">Revisión calefón</div><div style="font-size:9px;color:var(--g500)">Pedro Soto · 📍 Reñaca · Hace 2h</div></div><span style="font-size:12px;font-weight:800;color:var(--g900)">$20k</span></div></div>
+      </div></div>
+    </div>
+  </div>
+  <!-- Toast -->
+  <div class="toast"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> Cotización enviada exitosamente</div>
+</div>
+</div>
+<div class="desk-label">Worker Dashboard — Stats + Gráfico + Trabajo activo + Solicitudes + Toast</div>
+
+<!-- Agenda 2 columnas -->
+<div class="desk-wrap">
+<div class="app-shell">
+  <div class="topbar"><div class="topbar-left"><span class="topbar-logo">VOY</span><span class="topbar-role worker">Profesional</span></div><div class="topbar-center"><div class="toggle-wrap"><div class="toggle-sw toggle-on"><div class="toggle-dot"></div></div><span style="font-size:10px;font-weight:600;color:var(--success)"><span class="status-dot online"></span> Disponible</span></div></div><div class="topbar-right"><div class="topbar-btn"><i class="fa-solid fa-bell"></i><span class="dot"></span></div><div class="topbar-avatar"><img src="https://i.pravatar.cc/40?img=11" class="av"><div><div class="topbar-avatar-name">María Vargas</div></div></div></div></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="sb"><nav class="sb-nav"><span class="sb-label">Gestión</span><a class="sb-link"><i class="fa-solid fa-house"></i> Dashboard</a><a class="sb-link"><i class="fa-solid fa-inbox"></i> Solicitudes <span class="sb-badge">3</span></a><a class="sb-link active"><i class="fa-solid fa-calendar-days"></i> Agenda</a><a class="sb-link"><i class="fa-solid fa-chart-line"></i> Ganancias</a><span class="sb-label">Mi cuenta</span><a class="sb-link"><i class="fa-solid fa-user-circle"></i> Mi perfil</a><a class="sb-link"><i class="fa-solid fa-shield-halved"></i> Verificación</a><a class="sb-link"><i class="fa-solid fa-star"></i> Reseñas</a></nav></div>
+    <div class="main">
+      <div style="margin-bottom:12px"><div class="pg-title">Agenda</div><div class="pg-sub">Marzo 2026</div></div>
+      <div style="display:grid;grid-template-columns:1fr 280px;gap:10px">
+        <!-- Calendario -->
+        <div class="card"><div class="card-hdr"><strong>Marzo 2026</strong><div style="display:flex;gap:4px"><button class="btn-ghost btn-sm"><i class="fa-solid fa-chevron-left"></i></button><button class="btn-ghost btn-sm"><i class="fa-solid fa-chevron-right"></i></button></div></div><div class="card-body">
+          <div class="cal-grid" style="margin-bottom:4px"><div class="cal-hdr">Dom</div><div class="cal-hdr">Lun</div><div class="cal-hdr">Mar</div><div class="cal-hdr">Mié</div><div class="cal-hdr">Jue</div><div class="cal-hdr">Vie</div><div class="cal-hdr">Sáb</div></div>
+          <div class="cal-grid">
+            <div class="cal-day other">23</div><div class="cal-day other">24</div><div class="cal-day other">25</div><div class="cal-day other">26</div><div class="cal-day other">27</div><div class="cal-day other">28</div><div class="cal-day">1</div>
+            <div class="cal-day">2</div><div class="cal-day has-job">3</div><div class="cal-day">4</div><div class="cal-day has-job">5</div><div class="cal-day">6</div><div class="cal-day has-job">7</div><div class="cal-day">8</div>
+            <div class="cal-day">9</div><div class="cal-day has-job">10</div><div class="cal-day">11</div><div class="cal-day has-job">12</div><div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day">15</div>
+            <div class="cal-day">16</div><div class="cal-day has-job">17</div><div class="cal-day">18</div><div class="cal-day has-job">19</div><div class="cal-day">20</div><div class="cal-day has-job">21</div><div class="cal-day">22</div>
+            <div class="cal-day">23</div><div class="cal-day today has-job">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day">29</div>
+            <div class="cal-day">30</div><div class="cal-day">31</div><div class="cal-day other">1</div><div class="cal-day other">2</div><div class="cal-day other">3</div><div class="cal-day other">4</div><div class="cal-day other">5</div>
+          </div>
+        </div></div>
+        <!-- Detalle día -->
+        <div class="card"><div class="card-hdr"><strong>Hoy — 24 Mar</strong></div><div class="card-body" style="display:flex;flex-direction:column;gap:6px">
+          <div style="padding:8px;background:var(--primary-50);border-radius:var(--r-lg);border-left:3px solid var(--primary)"><div style="font-size:10px;font-weight:700;color:var(--primary)">10:00 - 12:00</div><div style="font-size:10px;font-weight:600;color:var(--g900)">Reparar llave cocina</div><div style="font-size:9px;color:var(--g500)">📍 Av. Libertad · Sergio G.</div><span class="badge badge-green" style="margin-top:4px">En curso</span></div>
+          <div style="padding:8px;background:var(--g50);border-radius:var(--r-lg);border-left:3px solid var(--warning)"><div style="font-size:10px;font-weight:700;color:var(--warning)">15:00 - 17:00</div><div style="font-size:10px;font-weight:600;color:var(--g900)">Revisión calefón</div><div style="font-size:9px;color:var(--g500)">📍 Calle Condell · Ana M.</div><span class="badge badge-yellow" style="margin-top:4px">Pendiente</span></div>
+          <div style="padding:8px;background:var(--g50);border-radius:var(--r-lg);border-left:3px solid var(--g300)"><div style="font-size:10px;font-weight:700;color:var(--g500)">Libre</div><div style="font-size:9px;color:var(--g400)">12:00 - 15:00 · 17:00+</div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="desk-label">Agenda — Calendario 7 cols con estados (today, has-job) + detalle día</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODALES                                -->
+<!-- ═══════════════════════════════════════ -->
+<div class="p-sec" id="s-modals">
+<div class="p-sec-title">Modales & Paneles</div>
+<div class="p-sec-desc">Booking, cotización crear/ver, rating, verificación — todos los modales de v1</div>
+
+<!-- Booking Modal -->
+<div class="desk-wrap">
+<div style="background:var(--g50);min-height:600px;position:relative">
+  <div class="modal-ov">
+    <div class="modal-box" style="max-width:480px">
+      <div class="modal-hdr"><h3><i class="fa-solid fa-calendar-check" style="color:var(--primary)"></i> Agendar servicio</h3><button class="btn-ghost" style="font-size:14px">✕</button></div>
+      <div class="modal-body">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--g50);border-radius:var(--r-xl);margin-bottom:14px"><img src="https://i.pravatar.cc/40?img=11" class="av" style="width:32px;height:32px"><div><div style="font-size:11px;font-weight:700;color:var(--g900)">María Vargas</div><div style="font-size:9px;color:var(--g500)">🔧 Gasfitería · ⭐ 4.9</div></div><div style="margin-left:auto;font-size:12px;font-weight:800;color:var(--primary)">$15k/h</div></div>
+        <div style="margin-bottom:10px"><label class="input-label">Tipo de servicio</label><select class="input"><option>Reparación de cañería</option><option>Instalación de artefacto</option><option>Mantención preventiva</option></select></div>
+        <div style="margin-bottom:10px"><label class="input-label">Modalidad</label><select class="input"><option value="inmediato">Inmediato (hoy)</option><option value="agendar" selected>Agendar para después</option></select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><div><label class="input-label">Fecha</label><input type="date" class="input" value="2026-03-25"></div><div><label class="input-label">Hora</label><input type="time" class="input" value="10:00"></div></div>
+        <div style="margin-bottom:10px"><label class="input-label">Dirección del servicio</label><input class="input" value="Av. 15 Norte 845, Viña del Mar"></div>
+        <div style="margin-bottom:10px"><label class="input-label">Descripción del problema</label><textarea class="input" rows="2" placeholder="Describe el servicio que necesitas...">Cañería del lavaplatos gotea constantemente</textarea></div>
+        <div style="padding:10px;background:var(--primary-50);border-radius:var(--r-xl);font-size:10px"><div class="fx jb"><span>Tarifa estimada (2h)</span><span style="font-weight:700">$30.000</span></div><div class="fx jb" style="color:var(--g400);margin-top:2px"><span>Materiales</span><span>Por cotizar</span></div></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost">Cancelar</button><button class="btn btn-primary"><i class="fa-solid fa-check"></i> Confirmar reserva</button></div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="desk-label">Modal Booking — Campos completos (servicio, modalidad, fecha, hora, dirección, precio)</div>
+
+<!-- Cotización Crear Modal -->
+<div class="desk-wrap">
+<div style="background:var(--g50);min-height:650px;position:relative">
+  <div class="modal-ov">
+    <div class="modal-box" style="max-width:560px;max-height:90%">
+      <div class="modal-hdr"><h3><i class="fa-solid fa-file-invoice-dollar" style="color:#4f46e5"></i> Crear Cotización <span class="badge-new">NUEVO</span></h3><button class="btn-ghost" style="font-size:14px">✕</button></div>
+      <div class="modal-body">
+        <div style="display:flex;gap:10px;padding:8px;background:var(--g50);border-radius:var(--r-xl);margin-bottom:12px;font-size:10px"><div><strong>Cliente:</strong> Ana Muñoz</div><div><strong>Servicio:</strong> Reparar cañería</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--g700);margin-bottom:6px">Mano de obra</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px"><div><label class="input-label">Tarifa/hora (CLP)</label><input class="input" type="number" value="15000"></div><div><label class="input-label">Horas estimadas</label><input class="input" type="number" value="2"></div><div><label class="input-label">Total mano de obra</label><div style="font-weight:700;color:var(--primary);padding:6px;background:var(--primary-50);border-radius:var(--r-lg);text-align:center;font-size:11px">$30.000</div></div></div>
+        <div class="fx ac jb" style="margin-bottom:6px"><span style="font-size:10px;font-weight:700;color:var(--g700)">Materiales</span><button class="btn btn-ghost btn-sm" style="color:#4f46e5"><i class="fa-solid fa-plus"></i> Agregar</button></div>
+        <div style="font-size:9px;margin-bottom:12px">
+          <div class="fx g2 ac" style="padding:4px 0;border-bottom:1px solid var(--g100)"><span style="flex:2">Cañería PVC 1/2</span><span style="width:40px;text-align:center">2</span><span style="width:60px;text-align:right">$2.500</span><span style="width:50px;text-align:right;font-weight:600">$5.000</span><span style="color:var(--danger);cursor:pointer">🗑️</span></div>
+          <div class="fx g2 ac" style="padding:4px 0"><span style="flex:2">Llave de paso</span><span style="width:40px;text-align:center">1</span><span style="width:60px;text-align:right">$4.500</span><span style="width:50px;text-align:right;font-weight:600">$4.500</span><span style="color:var(--danger);cursor:pointer">🗑️</span></div>
+        </div>
+        <div style="background:#f5f3ff;border-radius:var(--r-xl);padding:10px;font-size:10px">
+          <div class="fx jb"><span>Subtotal materiales</span><span style="font-weight:600">$9.500</span></div>
+          <div class="fx jb" style="margin-top:2px"><span>Subtotal general</span><span style="font-weight:600">$39.500</span></div>
+          <div class="fx jb" style="color:var(--g500);margin-top:2px"><span>Comisión VOY (15%)</span><span>$5.925</span></div>
+          <div style="border-top:1px solid #c4b5fd;margin-top:6px;padding-top:6px" class="fx jb"><span style="font-size:14px;font-weight:800;color:#4f46e5">TOTAL</span><span style="font-size:14px;font-weight:800;color:#4f46e5">$39.500</span></div>
+        </div>
+        <div style="margin-top:10px"><label class="input-label">Notas para el cliente</label><textarea class="input" rows="2" placeholder="Observaciones, tiempos..."></textarea></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost">Cancelar</button><button class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Enviar cotización <span class="badge-new">NUEVO</span></button></div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="desk-label">Modal Cotización — Tarifa + materiales + comisión 15% + badge NUEVO pulsante</div>
+
+<!-- Rating Modal -->
+<div class="desk-wrap">
+<div style="background:var(--g50);min-height:450px;position:relative">
+  <div class="modal-ov">
+    <div class="modal-box" style="max-width:380px">
+      <div class="modal-hdr"><h3><i class="fa-solid fa-star" style="color:var(--warning)"></i> Calificar servicio</h3><button class="btn-ghost" style="font-size:14px">✕</button></div>
+      <div class="modal-body" style="text-align:center">
+        <p style="color:var(--g500);margin-bottom:12px;font-size:11px">¿Cómo calificarías este servicio?</p>
+        <div class="stars-i" style="justify-content:center;margin-bottom:16px;font-size:28px"><span class="filled">★</span><span class="filled">★</span><span class="filled">★</span><span class="filled">★</span><span class="filled">★</span></div>
+        <div style="text-align:left"><label class="input-label">Comentario (opcional)</label><textarea class="input" rows="3" placeholder="Cuéntanos sobre tu experiencia..."></textarea></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost">Cancelar</button><button class="btn btn-primary"><i class="fa-solid fa-star"></i> Enviar calificación</button></div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="desk-label">Modal Rating — Estrellas interactivas + comentario</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- ADMIN                                  -->
+<!-- ═══════════════════════════════════════ -->
+<div class="p-sec" id="s-admin">
+<div class="p-sec-title">Panel Admin — Desktop</div>
+<div class="p-sec-desc">Dashboard + verificaciones + reclamos + usuarios</div>
+
+<div class="desk-wrap">
+<div class="app-shell">
+  <div class="topbar"><div class="topbar-left"><span class="topbar-logo">VOY</span><span class="topbar-role admin">Admin</span></div><div class="topbar-right"><div class="topbar-btn"><i class="fa-solid fa-bell"></i></div><div class="topbar-avatar"><img src="https://i.pravatar.cc/40?img=60" class="av"><div><div class="topbar-avatar-name">Administrador</div></div></div></div></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="sb"><nav class="sb-nav"><span class="sb-label">Panel</span><a class="sb-link active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a><a class="sb-link"><i class="fa-solid fa-users"></i> Usuarios</a><a class="sb-link"><i class="fa-solid fa-shield-halved"></i> Verificaciones <span class="sb-badge" style="background:var(--warning)">5</span></a><a class="sb-link"><i class="fa-solid fa-triangle-exclamation"></i> Reclamos <span class="sb-badge" style="background:var(--danger)">3</span></a><a class="sb-link"><i class="fa-solid fa-money-bill-transfer"></i> Transacciones</a></nav></div>
+    <div class="main">
+      <div class="pg-title">Panel de Administración</div>
+      <div class="pg-sub" style="margin-bottom:12px">Vista general del marketplace</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px">
+        <div class="stat" style="flex-direction:column;align-items:center;text-align:center"><div class="stat-icon" style="background:#dbeafe;color:#2563eb;margin-bottom:4px"><i class="fa-solid fa-users"></i></div><div class="stat-val">1,247</div><div class="stat-lbl">Usuarios</div></div>
+        <div class="stat" style="flex-direction:column;align-items:center;text-align:center"><div class="stat-icon" style="background:#d1fae5;color:var(--primary);margin-bottom:4px"><i class="fa-solid fa-wrench"></i></div><div class="stat-val">548</div><div class="stat-lbl">Workers</div></div>
+        <div class="stat" style="flex-direction:column;align-items:center;text-align:center"><div class="stat-icon" style="background:#fef3c7;color:var(--warning);margin-bottom:4px"><i class="fa-solid fa-briefcase"></i></div><div class="stat-val">3,241</div><div class="stat-lbl">Servicios</div></div>
+        <div class="stat" style="flex-direction:column;align-items:center;text-align:center"><div class="stat-icon" style="background:#ede9fe;color:#7c3aed;margin-bottom:4px"><i class="fa-solid fa-coins"></i></div><div class="stat-val">$2.1M</div><div class="stat-lbl">Revenue</div></div>
+        <div class="stat" style="flex-direction:column;align-items:center;text-align:center"><div class="stat-icon" style="background:#d1fae5;color:var(--success);margin-bottom:4px"><i class="fa-solid fa-percent"></i></div><div class="stat-val">$315K</div><div class="stat-lbl">Comisiones</div></div>
+        <div class="stat" style="flex-direction:column;align-items:center;text-align:center"><div class="stat-icon" style="background:#fee2e2;color:var(--danger);margin-bottom:4px"><i class="fa-solid fa-shield-halved"></i></div><div class="stat-val">5</div><div class="stat-lbl">Verif. pend.</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <!-- Verificaciones -->
+        <div class="card"><div class="card-hdr"><strong><i class="fa-solid fa-shield-halved"></i> Verificaciones pendientes</strong><span class="badge badge-yellow">5</span></div><div class="card-body">
+          <div class="verif-step"><div class="step-icon step-pending"><i class="fa-solid fa-clock"></i></div><div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--g900)">Carlos Muñoz</div><div style="font-size:9px;color:var(--g500)">🔧 Gasfitería · Enviado hace 2 días</div><div style="display:flex;gap:4px;margin-top:4px"><button class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Aprobar</button><button class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> Rechazar</button><button class="btn btn-ghost btn-sm"><i class="fa-solid fa-eye"></i> Ver docs</button></div></div></div>
+          <div class="verif-step"><div class="step-icon step-pending"><i class="fa-solid fa-clock"></i></div><div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--g900)">Andrea Soto</div><div style="font-size:9px;color:var(--g500)">🏠 Limpieza · Enviado hace 5 días</div></div></div>
+        </div></div>
+        <!-- Reclamos -->
+        <div class="card"><div class="card-hdr"><strong><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i> Reclamos abiertos</strong><span class="badge badge-red">3</span></div><div class="card-body">
+          <div style="border-left:3px solid var(--danger);padding:8px;background:var(--g50);border-radius:0 var(--r-lg) var(--r-lg) 0;margin-bottom:6px">
+            <div class="fx ac jb"><span style="font-size:11px;font-weight:600;color:var(--g900)">Ana Muñoz</span><span class="badge badge-red">Abierto</span></div>
+            <div style="font-size:9px;color:var(--g500)">Mala calidad · $35.000 · 20/03/2026</div>
+            <div style="margin-top:6px"><textarea class="input" style="min-height:24px;resize:none;font-size:9px" placeholder="Nota admin..."></textarea></div>
+            <div style="display:flex;gap:4px;margin-top:4px"><button class="btn btn-primary btn-sm" style="background:var(--success)">Reembolso total</button><button class="btn btn-primary btn-sm">Parcial</button><button class="btn btn-ghost btn-sm">Sin reembolso</button></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="desk-label">Admin — Dashboard + verificaciones con acciones + reclamos con reembolso</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- NUEVAS FEATURES v2                     -->
+<!-- ═══════════════════════════════════════ -->
+<div class="p-sec" id="s-new">
+<div class="p-sec-title">Features nuevas v2</div>
+<div class="p-sec-desc">Todo lo que NO existía en v1 y se agrega para v3</div>
+
+<div class="report"><h3>✨ Features nuevas agregadas</h3><table>
+<tr><th>Feature</th><th>Rol</th><th>Detalle</th></tr>
+<tr><td><strong>Registro con selector de rol</strong></td><td>Todos</td><td>Cards "Busco servicio" / "Ofrezco servicios" en el formulario de registro</td></tr>
+<tr><td><strong>Solicitud urgente</strong></td><td>Cliente</td><td>Toggle rojo con notificación inmediata a workers cercanos</td></tr>
+<tr><td><strong>Comparador de cotizaciones</strong></td><td>Cliente</td><td>Vista lado a lado de cotizaciones con "mejor precio" destacado</td></tr>
+<tr><td><strong>Timeline booking 5 pasos</strong></td><td>Cliente</td><td>Confirmada → Pagada → En camino → En curso → Completada</td></tr>
+<tr><td><strong>Sistema de reclamos</strong></td><td>Cliente + Admin</td><td>Mala calidad / No show / Incompleto / Daños + evidencia foto + reembolso admin</td></tr>
+<tr><td><strong>Centro de notificaciones</strong></td><td>Todos</td><td>Lista con filtros (todas/sin leer/cotizaciones/sistema) + dot de no leída</td></tr>
+<tr><td><strong>Perfil público profesional</strong></td><td>Cliente</td><td>Galería, reseñas, bio, skills, nivel, badge verificada</td></tr>
+<tr><td><strong>Materiales guardados</strong></td><td>Worker</td><td>Librería reutilizable de materiales frecuentes en cotizaciones</td></tr>
+<tr><td><strong>Sistema de niveles</strong></td><td>Worker</td><td>Bronce → Plata → Oro con progress bar y rendimiento</td></tr>
+<tr><td><strong>Horario semanal configurable</strong></td><td>Worker</td><td>Lun-Dom con horarios individuales + toggle por día</td></tr>
+<tr><td><strong>Radio de cobertura</strong></td><td>Worker</td><td>Slider 1-50km para definir zona de trabajo</td></tr>
+<tr><td><strong>Modo vacaciones</strong></td><td>Worker</td><td>Toggle que pausa todas las solicitudes temporalmente</td></tr>
+<tr><td><strong>Estados UI completos</strong></td><td>Todos</td><td>Skeleton shimmer, error con retry, vacío con CTA, success con confetti</td></tr>
+<tr><td><strong>PDF cotización</strong></td><td>Worker + Cliente</td><td>Botón descargar PDF en modal de cotización (jsPDF 2.5.1)</td></tr>
+</table></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- EFECTOS CSS                            -->
+<!-- ═══════════════════════════════════════ -->
+<div class="p-sec" id="s-effects">
+<div class="p-sec-title">Efectos & Animaciones CSS</div>
+<div class="p-sec-desc">Todos los efectos que tiene VOY v1 y deben mantenerse en v3</div>
+
+<div class="report"><h3>🎨 Catálogo de efectos</h3><table>
+<tr><th>Efecto</th><th>CSS</th><th>Dónde se usa</th></tr>
+<tr><td>Card hover elevación</td><td><code>:hover { box-shadow: var(--sh-lg); transform: translateY(-2px) }</code></td><td>Todas las cards, stat-cards, worker-cards</td></tr>
+<tr><td>Botón primary hover</td><td><code>:hover { transform: translateY(-1px); box-shadow: var(--sh-blue-lg) }</code></td><td>Botón principal verde</td></tr>
+<tr><td>Input focus ring</td><td><code>:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light) }</code></td><td>Todos los inputs y selects</td></tr>
+<tr><td>Sidebar link hover</td><td><code>:hover { background: var(--g50) } :hover i { color: var(--primary) }</code></td><td>Links del sidebar</td></tr>
+<tr><td>Status dot pulse</td><td><code>@keyframes statusPulse { box-shadow: 0 0 0 4px transparent }</code></td><td>Dot verde en topbar y worker cards</td></tr>
+<tr><td>Badge NUEVO pulse</td><td><code>@keyframes pulseNew { opacity: 1 → 0.7 }</code></td><td>Badge indigo en features de cotización</td></tr>
+<tr><td>Chart bar transition</td><td><code>transition: height 0.5s var(--ease)</code></td><td>Barras del gráfico de ganancias</td></tr>
+<tr><td>Chart bar hover</td><td><code>:hover { background: var(--primary) }</code></td><td>Barras pasadas se vuelven verdes</td></tr>
+<tr><td>Worker detail slide-in</td><td><code>transform: translateX(0) ← translateX(100%)</code></td><td>Panel lateral de 420px</td></tr>
+<tr><td>Modal overlay fade-in</td><td><code>background: rgba(0,0,0,0.4) con opacity transition</code></td><td>Todos los modales</td></tr>
+<tr><td>Toast slide-in</td><td><code>@keyframes toastIn { from translateX(100%) to translateX(0) }</code></td><td>Notificaciones toast</td></tr>
+<tr><td>Request card NEW</td><td><code>.new { border-color: primary; background: primary-50 } ::before { content: 'NUEVA' }</code></td><td>Solicitudes nuevas del worker</td></tr>
+<tr><td>Calendar today</td><td><code>.today { background: primary; color: white; font-weight: 700 }</code></td><td>Día actual en calendario</td></tr>
+<tr><td>Calendar has-job dot</td><td><code>::after { width:4px; height:4px; border-radius:50%; background: success }</code></td><td>Días con trabajo agendado</td></tr>
+<tr><td>Topbar search focus</td><td><code>:focus-within { border-color: primary; box-shadow: 0 0 0 3px primary-light }</code></td><td>Barra de búsqueda</td></tr>
+<tr><td>Skeleton shimmer</td><td><code>background-size: 200% 100%; animation: shimmer 1.5s infinite</code></td><td>Loading states</td></tr>
+</table></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODELO DATOS                           -->
+<!-- ═══════════════════════════════════════ -->
+<div class="p-sec" id="s-data">
+<div class="p-sec-title">Modelo de Datos & Checklist</div>
+<div class="p-sec-desc">Tablas Airtable + fases de implementación</div>
+
+<div class="report"><h3>📊 Tablas Airtable — existentes + nuevas</h3><table>
+<tr><th>Tabla</th><th>Campos clave</th><th></th></tr>
+<tr><td>Workers</td><td>WorkerId, Name, Email, Category, Rating, Lat/Lng, Verified, Available, Bio, Skills, Gallery, Phone + Schedule, CoverageRadius, VacationMode, Level</td><td><span class="tag tag-b">MEJORAR</span></td></tr>
+<tr><td>Clients</td><td>ClientId, Name, Email, City, Phone, Lat/Lng, MemberSince</td><td><span class="tag tag-e">OK</span></td></tr>
+<tr><td>Bookings</td><td>BookingId, ClientId, WorkerId, Service, Status, Date, Price, Commission + IsUrgent, TimelineStatus</td><td><span class="tag tag-b">MEJORAR</span></td></tr>
+<tr><td>Requests</td><td>ReqId, ClientName, Service, Status, Distance + IsUrgent, Photos</td><td><span class="tag tag-b">MEJORAR</span></td></tr>
+<tr><td>Quotations</td><td>QuoteId, LaborRate, LaborHours, Materials(JSON), Commission, GrandTotal, Status</td><td><span class="tag tag-e">OK</span></td></tr>
+<tr><td>Messages</td><td>ConversationId, From, Text, TimeStr + ImageUrl</td><td><span class="tag tag-b">MEJORAR</span></td></tr>
+<tr><td>Verifications</td><td>VerifId, WorkerName, Status, Documents + Step(1-4)</td><td><span class="tag tag-b">MEJORAR</span></td></tr>
+<tr><td>Transactions</td><td>TxId, Date, ClientName, WorkerName, Gross, Status</td><td><span class="tag tag-e">OK</span></td></tr>
+<tr><td><strong>Claims</strong></td><td>ClaimId, BookingId, ClientId, WorkerId, Type, Description, Photos, Status, AdminNotes, RefundAmount</td><td><span class="tag tag-n">NUEVO</span></td></tr>
+<tr><td><strong>Notifications</strong></td><td>NotifId, UserId, UserType, Type, Title, Body, Read, RelatedId, CreatedAt</td><td><span class="tag tag-n">NUEVO</span></td></tr>
+<tr><td><strong>SavedMaterials</strong></td><td>MatId, WorkerId, Name, UnitPrice, Unit, Category</td><td><span class="tag tag-n">NUEVO</span></td></tr>
+<tr><td><strong>WorkerSchedule</strong></td><td>ScheduleId, WorkerId, DayOfWeek, StartTime, EndTime, IsActive</td><td><span class="tag tag-n">NUEVO</span></td></tr>
+</table></div>
+
+<div class="report"><h3>🎯 Fases de implementación para Hoku</h3><table>
+<tr><th>Fase</th><th>Features</th><th>Prioridad</th></tr>
+<tr><td><strong>1</strong></td><td>Registro con selector de rol, estados UI (skeleton/error/vacío/success), tabla Notifications, tabla Claims</td><td><span class="badge badge-red">ALTA</span></td></tr>
+<tr><td><strong>2</strong></td><td>Sistema reclamos (admin + cliente), comparador cotizaciones, timeline booking, solicitud urgente</td><td><span class="badge badge-red">ALTA</span></td></tr>
+<tr><td><strong>3</strong></td><td>SavedMaterials, ganancias/niveles, perfil público worker, centro notificaciones mejorado</td><td><span class="badge badge-yellow">MEDIA</span></td></tr>
+<tr><td><strong>4</strong></td><td>WorkerSchedule, radio cobertura, modo vacaciones, chat con fotos, PDF en cotización view</td><td><span class="badge badge-green">BAJA</span></td></tr>
+</table></div>
+
+<div class="report"><h3>⚠️ Reglas para Hoku</h3>
+<ul style="list-style:none;padding:0">
+<li style="padding:4px 0;font-size:.78rem;color:var(--ptext)"><span style="color:var(--primary);font-weight:bold;margin-right:6px">›</span> <strong>Stack</strong>: Vanilla JS + Airtable — NO migrar a Next.js/Supabase</li>
+<li style="padding:4px 0;font-size:.78rem;color:var(--ptext)"><span style="color:var(--primary);font-weight:bold;margin-right:6px">›</span> <strong>Color</strong>: Verde #059669 primario — NO azul</li>
+<li style="padding:4px 0;font-size:.78rem;color:var(--ptext)"><span style="color:var(--primary);font-weight:bold;margin-right:6px">›</span> <strong>Iconos</strong>: FontAwesome 6.5 — NO emojis en la app</li>
+<li style="padding:4px 0;font-size:.78rem;color:var(--ptext)"><span style="color:var(--primary);font-weight:bold;margin-right:6px">›</span> <strong>Comisión</strong>: 15% como en el código actual</li>
+<li style="padding:4px 0;font-size:.78rem;color:var(--ptext)"><span style="color:var(--primary);font-weight:bold;margin-right:6px">›</span> <strong>Layout</strong>: Desktop-first con sidebar 260px + responsive a mobile</li>
+<li style="padding:4px 0;font-size:.78rem;color:var(--ptext)"><span style="color:var(--primary);font-weight:bold;margin-right:6px">›</span> <strong>Variables CSS</strong>: Usar las de variables.css — NO hardcodear colores</li>
+<li style="padding:4px 0;font-size:.78rem;color:var(--ptext)"><span style="color:var(--primary);font-weight:bold;margin-right:6px">›</span> <strong>Efectos</strong>: Mantener TODOS los 16 efectos CSS catalogados</li>
+<li style="padding:4px 0;font-size:.78rem;color:var(--ptext)"><span style="color:var(--primary);font-weight:bold;margin-right:6px">›</span> <strong>Dev panel</strong>: No tocar — ya funciona en voy-app-3</li>
+</ul>
+</div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">VOY v3</div>
+  <p>Vanilla JS · Airtable · Leaflet · jsPDF 2.5.1 · FontAwesome 6.5 · Vercel</p>
+  <p style="margin-top:4px">Celia 🔍 (original) → Panchita 🐕 (completada con delta v1) → Hoku 🐾 (implementar)</p>
+  <p style="margin-top:4px">24 marzo 2026 · Smart Connection</p>
+</div>
+
+<script>
+function go(id,el){
+  document.querySelectorAll('.p-sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.p-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:document.querySelector('.p-tabs').offsetTop+50,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

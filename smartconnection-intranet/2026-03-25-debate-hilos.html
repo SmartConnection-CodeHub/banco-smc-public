@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartConnection Intranet — Debate Multi-Agente con Hilos</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   PANCHITA — Spec + Maqueta: Debate Multi-Agente con Hilos
+   Proyecto: SmartConnection Intranet
+   Fecha: 2026-03-25
+   Actualizado: Ideas Sergito (Director, Tensiones, Temporalidad)
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Tokens de color */
+  --bg-base: #060912;
+  --bg-surface: #0a0d14;
+  --bg-elevated: #0f1520;
+  --bg-glass: rgba(15, 22, 35, 0.85);
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-active: rgba(255,255,255,0.12);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --text-dim: #334155;
+
+  /* Agentes IA */
+  --hoku: #ff6b6b;
+  --groq: #f59e0b;
+  --claude: #00e5b0;
+  --grok: #8b5cf6;
+  --deepseek: #0ea5e9;
+  --mistral: #f97316;
+  --openai: #10b981;
+  --cohere: #1e3a5f;
+  --openrouter: #6366f1;
+  --bedrock: #f97316;
+  --gemini: #22c55e;
+
+  /* Equipo personas */
+  --panchita: #d97706;
+  --camilita: #ec4899;
+  --arielito: #3b82f6;
+  --sergito: #a855f7;
+
+  /* Acciones */
+  --accent: #00e5b0;
+  --approve: #22c55e;
+  --reject: #ef4444;
+  --warning: #f59e0b;
+  --tension: #f97316;
+
+  /* Espaciado */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* Tipografia */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* Layout principal */
+.app { display: flex; height: 100vh; }
+.sidebar { width: 64px; flex-shrink: 0; background: var(--bg-surface); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 6px; }
+.sidebar-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: all 0.15s; font-size: 1.1rem; }
+.sidebar-icon:hover { background: rgba(255,255,255,0.04); color: var(--text-secondary); }
+.sidebar-icon.active { background: rgba(0,229,176,0.08); color: var(--accent); }
+
+.main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+/* Breadcrumb */
+.breadcrumb { height: 48px; display: flex; align-items: center; padding: 0 1.5rem; font-size: 0.82rem; color: var(--text-secondary); background: var(--bg-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
+.breadcrumb span.sep { margin: 0 8px; color: var(--text-muted); }
+.breadcrumb span.current { color: var(--text-primary); font-weight: 600; }
+
+/* Workspace */
+.workspace { flex: 1; display: flex; min-height: 0; overflow: hidden; }
+
+/* ═══ PANEL IZQUIERDO: Debate ═══ */
+.debate-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--border-subtle); }
+
+/* Debate header */
+.debate-header { padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); flex-shrink: 0; }
+.debate-title { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.debate-title h2 { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+.debate-badge { font-size: 0.55rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: rgba(0,229,176,0.1); color: var(--accent); border: 1px solid rgba(0,229,176,0.2); }
+.debate-meta { display: flex; align-items: center; gap: 12px; font-size: 0.7rem; color: var(--text-muted); }
+.debate-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); }
+
+/* ═══ DIRECTOR DE ORQUESTA ═══ */
+.orchestrator-bar { display: flex; align-items: center; gap: 8px; padding: 8px 20px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); flex-shrink: 0; flex-wrap: wrap; }
+.orchestrator-label { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 4px; }
+.orchestrator-modes { display: flex; gap: 4px; margin-right: 8px; }
+.orch-mode-btn { padding: 3px 10px; border-radius: 12px; font-size: 0.6rem; font-weight: 700; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.15s; font-family: var(--font-sans); }
+.orch-mode-btn:hover { background: rgba(255,255,255,0.04); color: var(--text-secondary); }
+.orch-mode-btn.active { background: rgba(0,229,176,0.1); color: var(--accent); border-color: rgba(0,229,176,0.3); }
+.orch-divider { width: 1px; height: 20px; background: var(--border-subtle); margin: 0 4px; }
+
+/* Participantes con toggle */
+.participants { display: flex; align-items: center; gap: 4px; padding: 8px 20px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); flex-shrink: 0; flex-wrap: wrap; }
+.participants-label { font-size: 0.6rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px; }
+.participant-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 12px; font-size: 0.6rem; font-weight: 600; cursor: pointer; transition: all 0.15s; position: relative; }
+.participant-chip:hover { filter: brightness(1.3); }
+.participant-chip.disabled { opacity: 0.3; text-decoration: line-through; }
+.participant-chip .toggle-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; transition: all 0.15s; }
+.participant-chip.disabled .toggle-dot { background: var(--text-dim); }
+
+/* Mensajes */
+.messages-area { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 2px; }
+
+.message { padding: 12px 16px; border-radius: var(--radius-md); transition: background 0.15s; position: relative; }
+.message:hover { background: rgba(255,255,255,0.02); }
+.message:hover .msg-actions { opacity: 1; }
+
+/* Mensaje con tension */
+.message.has-tension { border-left: 3px solid var(--tension); background: rgba(249, 115, 22, 0.03); }
+
+.msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.msg-avatar { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: #fff; flex-shrink: 0; }
+.msg-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.msg-name { font-size: 0.78rem; font-weight: 700; }
+.msg-role { font-size: 0.6rem; color: var(--text-muted); font-family: var(--font-mono); }
+.msg-time { font-size: 0.55rem; color: var(--text-dim); margin-left: auto; }
+
+/* Badge horizonte temporal */
+.time-horizon-badge { font-size: 0.5rem; font-weight: 700; padding: 1px 7px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary); white-space: nowrap; }
+
+/* Badge tension */
+.tension-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 0.55rem; font-weight: 700; padding: 2px 8px; border-radius: 8px; background: rgba(249,115,22,0.1); color: var(--tension); border: 1px solid rgba(249,115,22,0.2); cursor: pointer; transition: all 0.15s; }
+.tension-badge:hover { background: rgba(249,115,22,0.2); }
+
+.msg-body { font-size: 0.82rem; line-height: 1.65; color: var(--text-secondary); padding-left: 32px; }
+.msg-body strong { color: var(--text-primary); font-weight: 600; }
+.msg-body code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
+
+/* Acciones hover del mensaje */
+.msg-actions { position: absolute; top: 8px; right: 12px; display: flex; gap: 2px; opacity: 0; transition: opacity 0.15s; }
+.msg-action-btn { width: 28px; height: 28px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--bg-elevated); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.7rem; transition: all 0.12s; }
+.msg-action-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+.msg-action-btn.thread-btn:hover { background: rgba(0,229,176,0.1); color: var(--accent); border-color: rgba(0,229,176,0.3); }
+
+/* Thread indicator */
+.thread-indicator { display: flex; align-items: center; gap: 6px; padding: 6px 12px; margin: 2px 0 2px 32px; border-radius: var(--radius-sm); background: rgba(0,229,176,0.04); border: 1px solid rgba(0,229,176,0.1); cursor: pointer; transition: all 0.15s; }
+.thread-indicator:hover { background: rgba(0,229,176,0.08); border-color: rgba(0,229,176,0.2); }
+.thread-indicator .thread-count { font-size: 0.7rem; font-weight: 700; color: var(--accent); }
+.thread-indicator .thread-text { font-size: 0.65rem; color: var(--text-muted); }
+.thread-indicator .thread-avatars { display: flex; margin-left: auto; }
+.thread-indicator .thread-avatars span { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; font-weight: 800; color: #fff; margin-left: -4px; border: 2px solid var(--bg-base); }
+
+/* Typing indicator */
+.typing-bar { padding: 8px 20px; border-top: 1px solid var(--border-subtle); background: var(--bg-surface); flex-shrink: 0; display: flex; align-items: center; gap: 8px; min-height: 36px; }
+.typing-dots { display: inline-flex; gap: 3px; }
+.typing-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--text-muted); animation: typingPulse 1.4s infinite; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingPulse {
+  0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1); }
+}
+.typing-label { font-size: 0.65rem; color: var(--text-muted); }
+
+/* ═══ MAPA DE TENSIONES (resumen) ═══ */
+.tension-summary { padding: 10px 20px; border-top: 1px solid var(--border-subtle); background: rgba(249,115,22,0.03); flex-shrink: 0; display: none; }
+.tension-summary.visible { display: block; }
+.tension-summary-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.tension-summary-title { font-size: 0.7rem; font-weight: 700; color: var(--tension); }
+.tension-summary-count { font-size: 0.55rem; padding: 1px 6px; border-radius: 8px; background: rgba(249,115,22,0.15); color: var(--tension); font-weight: 700; }
+.tension-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: 0.7rem; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.03); }
+.tension-item:last-child { border-bottom: none; }
+.tension-agents { display: flex; gap: 2px; flex-shrink: 0; }
+.tension-agents span { font-size: 0.55rem; font-weight: 700; padding: 1px 5px; border-radius: 6px; }
+
+/* Input area debate */
+.debate-input { padding: 12px 20px; border-top: 1px solid var(--border-subtle); background: var(--bg-surface); flex-shrink: 0; }
+.debate-input-row { display: flex; gap: 8px; align-items: flex-end; }
+.debate-textarea { flex: 1; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 10px 14px; color: var(--text-primary); font-size: 0.82rem; font-family: var(--font-sans); line-height: 1.5; resize: none; outline: none; min-height: 42px; max-height: 120px; transition: border-color 0.15s; }
+.debate-textarea:focus { border-color: rgba(0,229,176,0.3); }
+.debate-textarea::placeholder { color: var(--text-dim); }
+.send-btn { width: 42px; height: 42px; border-radius: var(--radius-md); border: none; background: linear-gradient(135deg, var(--accent), #00c49a); color: var(--bg-base); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+.send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(0,229,176,0.3); }
+.input-hint { font-size: 0.55rem; color: var(--text-dim); margin-top: 6px; }
+
+/* ═══ PANEL DERECHO: Hilo ═══ */
+.thread-panel { width: 420px; flex-shrink: 0; display: flex; flex-direction: column; background: var(--bg-surface); border-left: 1px solid var(--border-subtle); transition: width 0.3s; }
+.thread-panel.collapsed { width: 0; overflow: hidden; border-left: none; }
+
+.thread-header { padding: 12px 16px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.thread-header h3 { font-size: 0.85rem; font-weight: 700; flex: 1; }
+.thread-close { width: 28px; height: 28px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; transition: all 0.12s; }
+.thread-close:hover { background: rgba(239,68,68,0.1); color: var(--reject); border-color: rgba(239,68,68,0.3); }
+
+/* Mensaje citado */
+.thread-quoted { margin: 12px 12px 0; padding: 10px 12px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent); }
+.thread-quoted .tq-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.thread-quoted .tq-avatar { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; font-weight: 800; color: #fff; }
+.thread-quoted .tq-name { font-size: 0.7rem; font-weight: 700; }
+.thread-quoted .tq-body { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; }
+
+/* Respuestas del hilo */
+.thread-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+
+.thread-msg { padding: 10px 12px; border-radius: var(--radius-sm); }
+.thread-msg:hover { background: rgba(255,255,255,0.02); }
+
+/* Botones aprobar/rechazar */
+.thread-actions { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border-subtle); flex-shrink: 0; }
+.action-btn { flex: 1; padding: 10px; border-radius: var(--radius-md); border: none; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s; font-family: var(--font-sans); }
+.action-btn.approve { background: rgba(34,197,94,0.1); color: var(--approve); border: 1px solid rgba(34,197,94,0.2); }
+.action-btn.approve:hover { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.4); }
+.action-btn.reject { background: rgba(239,68,68,0.1); color: var(--reject); border: 1px solid rgba(239,68,68,0.2); }
+.action-btn.reject:hover { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.4); }
+
+/* Thread input */
+.thread-input { padding: 12px; border-top: 1px solid var(--border-subtle); flex-shrink: 0; }
+.thread-input-row { display: flex; gap: 6px; align-items: flex-end; }
+.thread-textarea { flex: 1; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--text-primary); font-size: 0.78rem; font-family: var(--font-sans); resize: none; outline: none; min-height: 36px; }
+.thread-textarea:focus { border-color: rgba(0,229,176,0.3); }
+.thread-send { width: 36px; height: 36px; border-radius: var(--radius-sm); border: none; background: var(--accent); color: var(--bg-base); font-size: 0.85rem; cursor: pointer; flex-shrink: 0; }
+
+/* ═══ TABS HILOS ABIERTOS ═══ */
+.threads-tabs { display: flex; gap: 4px; padding: 6px 12px; overflow-x: auto; flex-shrink: 0; border-bottom: 1px solid var(--border-subtle); }
+.thread-tab { display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: var(--radius-sm); font-size: 0.6rem; color: var(--text-muted); background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); cursor: pointer; white-space: nowrap; transition: all 0.12s; }
+.thread-tab:hover { background: rgba(255,255,255,0.06); }
+.thread-tab.active { background: rgba(0,229,176,0.08); color: var(--accent); border-color: rgba(0,229,176,0.2); }
+.thread-tab .tab-dot { width: 6px; height: 6px; border-radius: 50%; }
+.thread-tab .tab-close { margin-left: 4px; opacity: 0.5; cursor: pointer; }
+.thread-tab .tab-close:hover { opacity: 1; }
+.thread-tab .tab-unread { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-left: 2px; }
+
+/* ═══ MODAL: Nuevo Debate ═══ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 100; }
+.modal-overlay.show { display: flex; }
+.modal { width: 560px; max-width: 90vw; background: var(--bg-elevated); border: 1px solid var(--border-active); border-radius: var(--radius-xl); padding: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.4); max-height: 90vh; overflow-y: auto; }
+.modal h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+.modal-field { margin-bottom: 14px; }
+.modal-label { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; display: block; }
+.modal-input { width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 10px 12px; color: var(--text-primary); font-size: 0.82rem; font-family: var(--font-sans); outline: none; }
+.modal-input:focus { border-color: rgba(0,229,176,0.3); }
+.modal-input::placeholder { color: var(--text-dim); }
+textarea.modal-input { resize: vertical; min-height: 80px; line-height: 1.5; }
+.modal-agents { display: flex; flex-wrap: wrap; gap: 6px; }
+.modal-agent-chip { padding: 5px 10px; border-radius: 14px; font-size: 0.65rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-muted); transition: all 0.12s; }
+.modal-agent-chip:hover { background: rgba(255,255,255,0.04); }
+.modal-agent-chip.selected { border-color: currentColor; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.modal-btn { padding: 8px 18px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: var(--font-sans); border: none; transition: all 0.15s; }
+.modal-btn.cancel { background: transparent; color: var(--text-muted); border: 1px solid var(--border-subtle); }
+.modal-btn.cancel:hover { background: rgba(255,255,255,0.04); }
+.modal-btn.primary { background: linear-gradient(135deg, var(--accent), #00c49a); color: var(--bg-base); font-weight: 700; }
+.modal-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,229,176,0.3); }
+
+/* Modal: Modo orquesta selector */
+.modal-mode-selector { display: flex; gap: 8px; margin-bottom: 6px; }
+.modal-mode-option { flex: 1; padding: 10px 8px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: transparent; cursor: pointer; text-align: center; transition: all 0.15s; }
+.modal-mode-option:hover { background: rgba(255,255,255,0.03); }
+.modal-mode-option.selected { border-color: rgba(0,229,176,0.3); background: rgba(0,229,176,0.05); }
+.modal-mode-option .mode-icon { font-size: 1.2rem; margin-bottom: 4px; }
+.modal-mode-option .mode-name { font-size: 0.7rem; font-weight: 700; color: var(--text-primary); }
+.modal-mode-option .mode-desc { font-size: 0.55rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ═══ SPEC SECTION ═══ */
+.spec-section { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+.spec-section h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--accent), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.spec-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border-subtle); }
+.spec-section h3 { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin: 18px 0 8px; }
+.spec-section p, .spec-section li { font-size: 0.82rem; line-height: 1.7; color: var(--text-secondary); }
+.spec-section ul, .spec-section ol { padding-left: 18px; margin: 6px 0; }
+.spec-section table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.78rem; }
+.spec-section th { text-align: left; padding: 8px 10px; background: var(--bg-elevated); color: var(--accent); font-weight: 700; border-bottom: 1px solid var(--border-subtle); }
+.spec-section td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-secondary); }
+.spec-section code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
+.spec-section pre { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; overflow-x: auto; margin: 10px 0; }
+.spec-section pre code { background: none; padding: 0; font-size: 0.72rem; line-height: 1.6; }
+.spec-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.6rem; font-weight: 700; margin-right: 4px; }
+.given { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.when { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.then { background: rgba(34,197,94,0.1); color: #22c55e; }
+.er-diagram { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; margin: 16px 0; overflow-x: auto; }
+.new-tag { display: inline-block; padding: 1px 6px; border-radius: 6px; font-size: 0.5rem; font-weight: 800; background: rgba(168,85,247,0.15); color: var(--sergito); border: 1px solid rgba(168,85,247,0.25); margin-left: 6px; vertical-align: middle; }
+
+/* Tab navigation spec/mockup */
+.view-tabs { display: flex; gap: 2px; padding: 16px 24px 0; background: var(--bg-base); position: sticky; top: 0; z-index: 50; }
+.view-tab { padding: 10px 20px; border-radius: var(--radius-md) var(--radius-md) 0 0; font-size: 0.82rem; font-weight: 600; cursor: pointer; color: var(--text-muted); background: var(--bg-surface); border: 1px solid var(--border-subtle); border-bottom: none; transition: all 0.15s; }
+.view-tab:hover { color: var(--text-secondary); }
+.view-tab.active { color: var(--accent); background: var(--bg-elevated); border-color: rgba(0,229,176,0.2); }
+
+.view-content { display: none; }
+.view-content.active { display: block; }
+.mockup-container { display: none; height: calc(100vh - 50px); }
+.mockup-container.active { display: flex; }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.animate-in { animation: fadeIn 0.3s ease-out; }
+@keyframes tensionPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+.tension-pulse { animation: tensionPulse 2s ease-in-out infinite; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .thread-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 100vw; z-index: 90; }
+  .thread-panel.collapsed { width: 0; }
+  .sidebar { width: 48px; }
+  .participants { flex-wrap: wrap; }
+  .orchestrator-bar { flex-wrap: wrap; }
+  .modal-mode-selector { flex-wrap: wrap; }
+  .modal-mode-option { min-width: 45%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     VISTA 1: ESPECIFICACION FUNCIONAL
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="view-tabs">
+  <div class="view-tab active" onclick="switchView('spec')">Especificacion</div>
+  <div class="view-tab" onclick="switchView('mockup')">Maqueta interactiva</div>
+</div>
+
+<div id="spec-view" class="view-content active" style="overflow-y: auto; height: calc(100vh - 50px); background: var(--bg-base);">
+<div class="spec-section">
+
+<h1>Debate Multi-Agente con Hilos</h1>
+<p style="color: var(--text-muted); margin-bottom: 24px;">Panchita &rarr; Hoku &mdash; Handoff 2026-03-25 &middot; SmartConnection Intranet<br><span style="color: var(--sergito);">Actualizado con ideas de Sergito: Director de Orquesta + Mapa de Tensiones + Perspectivas Temporales</span></p>
+
+<!-- ═══ BENCHMARK ═══ -->
+<h2>1. Benchmark competitivo</h2>
+<table>
+  <tr><th>Producto</th><th>Chat multi-agente</th><th>Hilos</th><th>Debate entre agentes</th><th>Orquestacion</th><th>Tensiones</th></tr>
+  <tr><td>Slack</td><td>No (solo personas)</td><td>Si, panel lateral</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>ChatGPT Teams</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>Anthropic Console</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>OpenRouter Playground</td><td>Si (A/B testing)</td><td>No</td><td>No (paralelo, no debate)</td><td>No</td><td>No</td></tr>
+  <tr><td>Cursor IDE</td><td>Si (multi-model)</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+</table>
+<p><strong>Oportunidad:</strong> Ninguna plataforma combina debates entre agentes IA con sistema de hilos, orquestacion en tiempo real, deteccion de tensiones y perspectivas temporales. SmartConnection seria la primera intranet con debate multi-agente controlable + mapa de tensiones para decisiones humanas.</p>
+
+<!-- ═══ USER STORIES ═══ -->
+<h2>2. User Stories</h2>
+
+<h3>US-1: Iniciar debate multi-agente</h3>
+<p><em>"Como Guillermo, quiero lanzar un tema para que multiples agentes IA debatan entre ellos, para obtener perspectivas diversas sin consultar uno por uno."</em></p>
+<ul>
+  <li><span class="spec-tag given">DADO</span> que estoy en /dashboard/agents y selecciono modo "Debate"</li>
+  <li><span class="spec-tag when">CUANDO</span> escribo "Mejor stack para landing de conversion en Chile 2026" y selecciono Hoku, Groq, Claude, DeepSeek</li>
+  <li><span class="spec-tag then">ENTONCES</span> los 4 agentes responden secuencialmente en el chat grupal, cada uno con su color e icono, respondiendo al tema y reaccionando a lo que dijeron los anteriores</li>
+</ul>
+<p><strong>Edge cases:</strong> Un agente falla &rarr; se muestra error inline y el debate continua con los demas. Timeout de 30s por agente.</p>
+
+<h3>US-2: Ver debate en tiempo real con streaming</h3>
+<p><em>"Como Guillermo, quiero ver las respuestas de los agentes aparecer en streaming, para no esperar a que todos terminen."</em></p>
+<ul>
+  <li><span class="spec-tag given">DADO</span> que un debate esta en curso con 4 agentes</li>
+  <li><span class="spec-tag when">CUANDO</span> el primer agente comienza a responder</li>
+  <li><span class="spec-tag then">ENTONCES</span> veo el texto aparecer token por token con indicador de "escribiendo", y cuando termina, el siguiente agente comienza automaticamente</li>
+</ul>
+
+<h3>US-3: Abrir hilo desde un mensaje</h3>
+<p><em>"Como Guillermo, quiero abrir un hilo lateral desde cualquier mensaje del debate, para profundizar en un punto especifico sin interrumpir la conversacion principal."</em></p>
+<ul>
+  <li><span class="spec-tag given">DADO</span> que un agente dijo "Astro es superior para SEO estatico"</li>
+  <li><span class="spec-tag when">CUANDO</span> hago clic en el icono de hilo del mensaje</li>
+  <li><span class="spec-tag then">ENTONCES</span> se abre un panel lateral derecho con el mensaje citado, un campo para escribir, y puedo pedir a cualquier agente que profundice</li>
+</ul>
+<p><strong>Edge cases:</strong> Multiples hilos abiertos &rarr; pestanas para navegar. Hilo sin respuestas &rarr; se muestra estado vacio con CTA.</p>
+
+<h3>US-4: Aprobar o rechazar propuestas en hilos</h3>
+<p><em>"Como Guillermo, quiero aprobar o rechazar propuestas que surjan en los hilos, para tomar decisiones ejecutivas sobre lo que se implementa."</em></p>
+<ul>
+  <li><span class="spec-tag given">DADO</span> que en un hilo, Claude propuso migrar el hero a Astro con View Transitions</li>
+  <li><span class="spec-tag when">CUANDO</span> hago clic en "Aprobar"</li>
+  <li><span class="spec-tag then">ENTONCES</span> el hilo se marca como "Aprobado", se registra en Supabase, y opcionalmente se genera una tarea para el agente correspondiente</li>
+</ul>
+
+<h3>US-5: Continuar debate con intervencion humana</h3>
+<p><em>"Como Guillermo, quiero intervenir en medio de un debate para redirigir la discusion, para que los agentes no se desvien del tema."</em></p>
+<ul>
+  <li><span class="spec-tag given">DADO</span> que un debate sobre "estrategia de pricing" se desvio a temas tecnicos</li>
+  <li><span class="spec-tag when">CUANDO</span> escribo "Enfoquense en el pricing de competidores chilenos, no en stack"</li>
+  <li><span class="spec-tag then">ENTONCES</span> mi mensaje aparece destacado como intervencion del usuario, y los agentes ajustan sus proximas respuestas al nuevo enfoque</li>
+</ul>
+
+<h3>US-6: Director de Orquesta &mdash; controlar participantes por ronda <span class="new-tag">SERGITO</span></h3>
+<p><em>"Como Guillermo, quiero controlar que agentes participan en cada ronda del debate, para enfocar la discusion entre voces especificas."</em></p>
+<ul>
+  <li><span class="spec-tag given">DADO</span> que un debate esta en curso con 4 agentes</li>
+  <li><span class="spec-tag when">CUANDO</span> selecciono modo "Dueto" y activo solo Hoku y Claude</li>
+  <li><span class="spec-tag then">ENTONCES</span> la siguiente ronda solo incluye a Hoku y Claude, los demas aparecen desactivados (pero pueden reactivarse en cualquier momento)</li>
+</ul>
+<p><strong>Modos disponibles:</strong></p>
+<ul>
+  <li><strong>Tutti</strong> &mdash; todos los agentes seleccionados debaten (modo por defecto)</li>
+  <li><strong>Dueto</strong> &mdash; seleccionar exactamente 2 agentes para confrontar posiciones</li>
+  <li><strong>Solo</strong> &mdash; un agente profundiza (los demas escuchan pero no responden)</li>
+</ul>
+<p><strong>Edge cases:</strong> Cambiar modo mid-debate &rarr; aplica desde la siguiente ronda. Toggle de agente individual siempre disponible. Si quedan 0 agentes activos &rarr; warning "Selecciona al menos 1 agente".</p>
+
+<h3>US-7: Mapa de Tensiones &mdash; visualizar desacuerdos <span class="new-tag">SERGITO</span></h3>
+<p><em>"Como Guillermo, quiero ver donde los agentes no se ponen de acuerdo, para identificar los puntos de decision real."</em></p>
+<ul>
+  <li><span class="spec-tag given">DADO</span> que Hoku dice "Astro gana por goleada" y Claude dice "Next.js ofrece mejor DX para formularios complejos"</li>
+  <li><span class="spec-tag when">CUANDO</span> el sistema detecta posiciones contradictorias entre agentes</li>
+  <li><span class="spec-tag then">ENTONCES</span> el mensaje se marca con badge "Tension" naranja, y al final del debate aparece un resumen de puntos de tension con los agentes involucrados</li>
+</ul>
+<p><strong>Deteccion:</strong> El backend analiza semanticamente cada respuesta contra las anteriores. Si detecta contradiccion, oposicion o matiz fuerte, marca el mensaje con <code>tension_with: ['agent_id']</code>. Umbral configurable.</p>
+<p><strong>Edge cases:</strong> Debate sin tensiones &rarr; no se muestra el resumen. Tension resuelta en rondas posteriores &rarr; se marca como "resuelta". Click en tension &rarr; scroll al mensaje conflictivo.</p>
+
+<h3>US-8: Perspectivas Temporales &mdash; cada agente habla desde un horizonte <span class="new-tag">SERGITO</span></h3>
+<p><em>"Como Guillermo, quiero que cada agente analice desde un horizonte temporal diferente, para obtener vision completa: desde la implementacion inmediata hasta el impacto a 3 anos."</em></p>
+<ul>
+  <li><span class="spec-tag given">DADO</span> que inicio un debate con perspectivas temporales activadas</li>
+  <li><span class="spec-tag when">CUANDO</span> los agentes responden</li>
+  <li><span class="spec-tag then">ENTONCES</span> cada agente responde desde su horizonte asignado, y su mensaje muestra un badge con el horizonte temporal</li>
+</ul>
+<p><strong>Horizontes por defecto (agentes IA + equipo):</strong></p>
+<table>
+  <tr><th>Agente</th><th>Horizonte</th><th>Enfoque</th></tr>
+  <tr><td style="color:var(--hoku);">Hoku</td><td>1 sprint despues</td><td>Implementacion inmediata, viabilidad tecnica, esfuerzo</td></tr>
+  <tr><td style="color:var(--panchita);">Panchita</td><td>6 meses despues</td><td>Arquitectura, escalabilidad, mantenibilidad</td></tr>
+  <tr><td style="color:var(--camilita);">Camilita</td><td>El dia del incidente</td><td>Que se rompe, puntos de falla, disaster recovery</td></tr>
+  <tr><td style="color:var(--arielito);">Arielito</td><td>Auditoria anual</td><td>Compliance, deuda tecnica, documentacion</td></tr>
+  <tr><td style="color:var(--sergito);">Sergito</td><td>3 anos despues</td><td>Oportunidad perdida/ganada, mercado, vision</td></tr>
+  <tr><td style="color:var(--claude);">Claude</td><td>Configurable</td><td>Se asigna el horizonte que el usuario elija</td></tr>
+  <tr><td style="color:var(--groq);">Groq</td><td>Configurable</td><td>Se asigna el horizonte que el usuario elija</td></tr>
+</table>
+<p><strong>Edge cases:</strong> Perspectivas temporales es opcional (toggle on/off al crear debate). Si esta desactivado, los agentes debaten libremente. Agentes IA sin horizonte fijo pueden recibir uno asignado por el usuario.</p>
+
+<!-- ═══ MODELO DE DATOS ═══ -->
+<h2>3. Modelo de datos (Supabase)</h2>
+
+<div class="er-diagram">
+<pre><code>
+  debates                     debate_messages                threads                    thread_messages
+  ┌─────────────────────┐    ┌──────────────────────┐       ┌──────────────────────┐   ┌──────────────────────┐
+  │ id (uuid) PK        │───┐│ id (uuid) PK         │──┐    │ id (uuid) PK         │   │ id (uuid) PK         │
+  │ title               │   ││ debate_id (uuid) FK   │  │    │ debate_id (uuid) FK  │   │ thread_id (uuid) FK  │
+  │ topic               │   └│ author_type           │  └───>│ parent_msg_id (uuid) │   │ author_type          │
+  │ agent_ids (text[])  │    │ author_id             │       │ title                │   │ author_id            │
+  │ status              │    │ content               │       │ status               │   │ content              │
+  │ orchestration_mode  │    │ tokens_used           │       │ decision             │   │ tokens_used          │
+  │ temporal_enabled    │    │ duration_ms           │       │ decision_note        │   │ created_at           │
+  │ created_by          │    │ status                │       │ created_by           │   └──────────────────────┘
+  │ created_at          │    │ metadata (jsonb)      │       │ created_at           │
+  │ updated_at          │    │ time_horizon          │       │ updated_at           │
+  └─────────────────────┘    │ tension_with (text[]) │       └──────────────────────┘
+                             │ thread_count          │
+                             │ created_at            │       debate_tensions
+                             └──────────────────────┘       ┌──────────────────────┐
+                                                            │ id (uuid) PK         │
+                                                            │ debate_id (uuid) FK  │
+                                                            │ msg_a_id (uuid) FK   │
+                                                            │ msg_b_id (uuid) FK   │
+                                                            │ agent_a              │
+                                                            │ agent_b              │
+                                                            │ description          │
+                                                            │ resolved             │
+                                                            │ created_at           │
+                                                            └──────────────────────┘
+</code></pre>
+</div>
+
+<h3>Tabla: <code>debates</code> (actualizada)</h3>
+<table>
+  <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>id</code></td><td>uuid, PK, default gen_random_uuid()</td><td>Identificador unico</td></tr>
+  <tr><td><code>title</code></td><td>text, NOT NULL</td><td>Titulo del debate, ej: "Stack para landing Chile 2026"</td></tr>
+  <tr><td><code>topic</code></td><td>text, NOT NULL</td><td>Prompt/tema completo que inicia el debate</td></tr>
+  <tr><td><code>agent_ids</code></td><td>text[], NOT NULL</td><td>IDs de agentes participantes: ['hoku','claude','groq']</td></tr>
+  <tr><td><code>status</code></td><td>text, default 'active'</td><td>active | paused | completed | archived</td></tr>
+  <tr><td><code>orchestration_mode</code> <span class="new-tag">NUEVO</span></td><td>text, default 'tutti'</td><td>tutti | dueto | solo &mdash; Modo Director de Orquesta</td></tr>
+  <tr><td><code>active_agent_ids</code> <span class="new-tag">NUEVO</span></td><td>text[], default '{}'</td><td>Agentes activos en la ronda actual (subconjunto de agent_ids)</td></tr>
+  <tr><td><code>temporal_enabled</code> <span class="new-tag">NUEVO</span></td><td>boolean, default false</td><td>Si las perspectivas temporales estan activadas</td></tr>
+  <tr><td><code>temporal_config</code> <span class="new-tag">NUEVO</span></td><td>jsonb</td><td>Mapeo agente&rarr;horizonte: {"hoku":"1_sprint","claude":"6_meses",...}</td></tr>
+  <tr><td><code>created_by</code></td><td>text, NOT NULL</td><td>Usuario que inicio: 'guillermo'</td></tr>
+  <tr><td><code>created_at</code></td><td>timestamptz, default now()</td><td>Fecha de creacion</td></tr>
+  <tr><td><code>updated_at</code></td><td>timestamptz, default now()</td><td>Ultima actualizacion</td></tr>
+</table>
+
+<h3>Tabla: <code>debate_messages</code> (actualizada)</h3>
+<table>
+  <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>id</code></td><td>uuid, PK</td><td>Identificador unico</td></tr>
+  <tr><td><code>debate_id</code></td><td>uuid, FK &rarr; debates.id, ON DELETE CASCADE</td><td>Debate al que pertenece</td></tr>
+  <tr><td><code>author_type</code></td><td>text, NOT NULL</td><td>'agent' | 'user'</td></tr>
+  <tr><td><code>author_id</code></td><td>text, NOT NULL</td><td>ID del agente ('hoku','claude') o del usuario ('guillermo')</td></tr>
+  <tr><td><code>content</code></td><td>text, NOT NULL</td><td>Contenido del mensaje</td></tr>
+  <tr><td><code>tokens_used</code></td><td>integer, default 0</td><td>Tokens consumidos por este mensaje</td></tr>
+  <tr><td><code>duration_ms</code></td><td>integer, default 0</td><td>Tiempo de generacion en ms</td></tr>
+  <tr><td><code>status</code></td><td>text, default 'completed'</td><td>streaming | completed | error</td></tr>
+  <tr><td><code>metadata</code></td><td>jsonb</td><td>Modelo usado, temperatura, extras</td></tr>
+  <tr><td><code>time_horizon</code> <span class="new-tag">NUEVO</span></td><td>text</td><td>Horizonte temporal: '1_sprint' | '6_meses' | 'incidente' | 'auditoria' | '3_anos' | null</td></tr>
+  <tr><td><code>tension_with</code> <span class="new-tag">NUEVO</span></td><td>text[]</td><td>IDs de agentes con los que hay tension/desacuerdo: ['hoku','groq']</td></tr>
+  <tr><td><code>thread_count</code></td><td>integer, default 0</td><td>Cantidad de hilos que nacen de este mensaje</td></tr>
+  <tr><td><code>created_at</code></td><td>timestamptz, default now()</td><td>Timestamp</td></tr>
+</table>
+
+<h3>Tabla: <code>debate_tensions</code> <span class="new-tag">NUEVA</span></h3>
+<table>
+  <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>id</code></td><td>uuid, PK</td><td>Identificador unico</td></tr>
+  <tr><td><code>debate_id</code></td><td>uuid, FK &rarr; debates.id, ON DELETE CASCADE</td><td>Debate al que pertenece</td></tr>
+  <tr><td><code>msg_a_id</code></td><td>uuid, FK &rarr; debate_messages.id</td><td>Primer mensaje de la tension</td></tr>
+  <tr><td><code>msg_b_id</code></td><td>uuid, FK &rarr; debate_messages.id</td><td>Segundo mensaje (el que contradice)</td></tr>
+  <tr><td><code>agent_a</code></td><td>text, NOT NULL</td><td>ID del primer agente</td></tr>
+  <tr><td><code>agent_b</code></td><td>text, NOT NULL</td><td>ID del segundo agente</td></tr>
+  <tr><td><code>description</code></td><td>text</td><td>Descripcion de la tension: "Hoku dice Astro, Claude matiza con Next.js"</td></tr>
+  <tr><td><code>resolved</code></td><td>boolean, default false</td><td>Si la tension se resolvio en rondas posteriores</td></tr>
+  <tr><td><code>created_at</code></td><td>timestamptz, default now()</td><td>Timestamp</td></tr>
+</table>
+
+<h3>Tabla: <code>threads</code></h3>
+<table>
+  <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>id</code></td><td>uuid, PK</td><td>Identificador unico</td></tr>
+  <tr><td><code>debate_id</code></td><td>uuid, FK &rarr; debates.id</td><td>Debate padre</td></tr>
+  <tr><td><code>parent_msg_id</code></td><td>uuid, FK &rarr; debate_messages.id</td><td>Mensaje que origina el hilo</td></tr>
+  <tr><td><code>title</code></td><td>text</td><td>Titulo auto-generado del hilo, ej: "Profundizar: Astro vs Next.js para SEO"</td></tr>
+  <tr><td><code>status</code></td><td>text, default 'open'</td><td>open | closed</td></tr>
+  <tr><td><code>decision</code></td><td>text</td><td>approved | rejected | null</td></tr>
+  <tr><td><code>decision_note</code></td><td>text</td><td>Nota de Guillermo al aprobar/rechazar</td></tr>
+  <tr><td><code>created_by</code></td><td>text, NOT NULL</td><td>Quien abrio el hilo</td></tr>
+  <tr><td><code>created_at</code></td><td>timestamptz, default now()</td><td>Fecha creacion</td></tr>
+  <tr><td><code>updated_at</code></td><td>timestamptz, default now()</td><td>Ultima actividad</td></tr>
+</table>
+
+<h3>Tabla: <code>thread_messages</code></h3>
+<table>
+  <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>id</code></td><td>uuid, PK</td><td>Identificador unico</td></tr>
+  <tr><td><code>thread_id</code></td><td>uuid, FK &rarr; threads.id, ON DELETE CASCADE</td><td>Hilo al que pertenece</td></tr>
+  <tr><td><code>author_type</code></td><td>text, NOT NULL</td><td>'agent' | 'user'</td></tr>
+  <tr><td><code>author_id</code></td><td>text, NOT NULL</td><td>ID del agente o usuario</td></tr>
+  <tr><td><code>content</code></td><td>text, NOT NULL</td><td>Contenido</td></tr>
+  <tr><td><code>tokens_used</code></td><td>integer, default 0</td><td>Tokens consumidos</td></tr>
+  <tr><td><code>created_at</code></td><td>timestamptz, default now()</td><td>Timestamp</td></tr>
+</table>
+
+<h3>Indices</h3>
+<pre><code>CREATE INDEX idx_debate_messages_debate_id ON debate_messages(debate_id, created_at);
+CREATE INDEX idx_threads_debate_id ON threads(debate_id);
+CREATE INDEX idx_threads_parent_msg ON threads(parent_msg_id);
+CREATE INDEX idx_thread_messages_thread_id ON thread_messages(thread_id, created_at);
+CREATE INDEX idx_debates_status ON debates(status, created_at DESC);
+CREATE INDEX idx_debate_tensions_debate ON debate_tensions(debate_id);
+CREATE INDEX idx_debate_messages_tension ON debate_messages(debate_id) WHERE tension_with IS NOT NULL;</code></pre>
+
+<h3>RLS Policies</h3>
+<pre><code>-- Todas las tablas: solo usuarios autenticados via getSession()
+-- Se controla a nivel de API Route, no RLS directo (patron actual de la intranet)
+-- Si se activa RLS futuro:
+ALTER TABLE debates ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "authenticated_read" ON debates FOR SELECT USING (true);
+CREATE POLICY "authenticated_insert" ON debates FOR INSERT WITH CHECK (true);
+-- Mismo patron para las 5 tablas (incluye debate_tensions)</code></pre>
+
+<!-- ═══ FLUJO DE USUARIO ═══ -->
+<h2>4. Flujo de usuario</h2>
+
+<h3>Flujo 1: Iniciar debate (actualizado con Director de Orquesta)</h3>
+<ol>
+  <li>Usuario hace clic en "Nuevo debate" en la barra superior</li>
+  <li>Se abre modal: titulo, tema/prompt, seleccion de agentes (chips clicables)</li>
+  <li><strong>NUEVO:</strong> Selector de modo Director de Orquesta (Tutti / Dueto / Solo) con iconos</li>
+  <li><strong>NUEVO:</strong> Toggle "Perspectivas temporales" &mdash; si se activa, muestra config de horizonte por agente</li>
+  <li>Minimo 2 agentes, maximo 6 para mantener coherencia (en modo Solo: minimo 1)</li>
+  <li>Click "Iniciar debate" &rarr; se crea registro en <code>debates</code> con <code>orchestration_mode</code> y <code>temporal_config</code></li>
+  <li>Backend lanza agentes segun modo: Tutti=todos, Dueto=par, Solo=uno</li>
+  <li>Streaming SSE muestra cada respuesta token por token</li>
+  <li>Si temporal_enabled, cada agente recibe instruccion de horizonte en su system prompt</li>
+</ol>
+
+<h3>Flujo 2: Respuesta de agentes (backend, actualizado)</h3>
+<ol>
+  <li>Primer agente recibe: system prompt + tema del debate + horizonte temporal (si aplica)</li>
+  <li>Segundo agente recibe: system prompt + tema + respuesta del agente 1 + su horizonte</li>
+  <li>N-esimo agente recibe: tema + resumen de respuestas anteriores (max 2000 tokens de contexto)</li>
+  <li>Cada respuesta se guarda en <code>debate_messages</code> con <code>time_horizon</code></li>
+  <li><strong>NUEVO:</strong> Despues de cada respuesta, el backend analiza semanticamente contra respuestas previas para detectar tensiones. Si detecta contradiccion &rarr; guarda en <code>debate_tensions</code> y actualiza <code>tension_with</code> en el mensaje</li>
+  <li>Al terminar todos, status del debate pasa a "completed"</li>
+</ol>
+
+<h3>Flujo 3: Director de Orquesta en tiempo real</h3>
+<ol>
+  <li>Barra de orquestacion visible debajo del header del debate</li>
+  <li>Botones de modo: Tutti / Dueto / Solo (el activo se resalta)</li>
+  <li>Toggle individual en cada chip de agente: click para activar/desactivar</li>
+  <li>Agente desactivado aparece con opacidad reducida y texto tachado</li>
+  <li>Cambio de modo aplica a la siguiente ronda &mdash; no interrumpe la ronda en curso</li>
+  <li>PATCH a <code>/api/debates/:id</code> actualiza <code>orchestration_mode</code> y <code>active_agent_ids</code></li>
+</ol>
+
+<h3>Flujo 4: Mapa de Tensiones</h3>
+<ol>
+  <li>Mensajes con tension se marcan con borde izquierdo naranja + badge "Tension"</li>
+  <li>Badge muestra con quien es la tension (ej: "Tension con Hoku")</li>
+  <li>Click en badge &rarr; scroll al mensaje contradictorio</li>
+  <li>Al completar debate (o en cualquier momento), barra colapsable de "Mapa de tensiones" aparece arriba del input</li>
+  <li>Resumen lista cada tension: agentes involucrados + descripcion breve</li>
+  <li>Tensiones resueltas en rondas posteriores se marcan como "Resuelta"</li>
+</ol>
+
+<h3>Flujo 5: Abrir hilo</h3>
+<ol>
+  <li>Hover sobre mensaje &rarr; aparecen acciones: [hilo] [copiar] [citar]</li>
+  <li>Click en [hilo] &rarr; se abre panel lateral derecho (420px)</li>
+  <li>Panel muestra: mensaje citado arriba, respuestas debajo, input abajo</li>
+  <li>Se crea registro en <code>threads</code> con parent_msg_id</li>
+  <li>Se incrementa thread_count en el mensaje padre</li>
+  <li>El mensaje en la conversacion principal muestra indicador "3 respuestas en hilo"</li>
+</ol>
+
+<h3>Flujo 6: Navegar entre hilos</h3>
+<ol>
+  <li>Multiples hilos abiertos se muestran como pestanas en la parte superior del panel</li>
+  <li>Click en pestana &rarr; cambia el contenido del panel</li>
+  <li>Pestana con punto verde = mensajes nuevos sin leer</li>
+  <li>Click en X &rarr; cierra la pestana (no elimina el hilo)</li>
+</ol>
+
+<h3>Flujo 7: Aprobar/Rechazar</h3>
+<ol>
+  <li>En cada hilo, botones "Aprobar" y "Rechazar" visibles</li>
+  <li>Click en "Aprobar" &rarr; actualiza <code>threads.decision = 'approved'</code></li>
+  <li>Opcionalmente agrega nota de decision</li>
+  <li>El hilo se marca visualmente como aprobado/rechazado</li>
+  <li>Se puede revertir la decision</li>
+</ol>
+
+<h3>Estados de UI</h3>
+<table>
+  <tr><th>Estado</th><th>Que se muestra</th></tr>
+  <tr><td>Sin debates</td><td>Pantalla vacia con CTA "Inicia tu primer debate multi-agente"</td></tr>
+  <tr><td>Debate en curso</td><td>Mensajes con streaming, indicador de "escribiendo", boton pausa</td></tr>
+  <tr><td>Debate completado</td><td>Todos los mensajes, boton "Continuar debate", mapa de tensiones visible</td></tr>
+  <tr><td>Modo Dueto activo</td><td>Solo 2 agentes resaltados, resto con opacidad baja en chips</td></tr>
+  <tr><td>Modo Solo activo</td><td>1 agente resaltado, badge "Solo" en la barra</td></tr>
+  <tr><td>Mensaje con tension</td><td>Borde izquierdo naranja + badge "Tension con [agente]"</td></tr>
+  <tr><td>Resumen tensiones</td><td>Barra colapsable con lista de conflictos y agentes</td></tr>
+  <tr><td>Horizonte temporal visible</td><td>Badge al lado del nombre del agente con su horizonte</td></tr>
+  <tr><td>Hilo abierto</td><td>Panel lateral 420px con mensaje citado + respuestas</td></tr>
+  <tr><td>Hilo aprobado</td><td>Badge verde "Aprobado" en header, botones desactivados</td></tr>
+  <tr><td>Hilo rechazado</td><td>Badge rojo "Rechazado" en header, botones desactivados</td></tr>
+  <tr><td>Error de agente</td><td>Mensaje de error inline con boton "Reintentar"</td></tr>
+  <tr><td>Cargando debate anterior</td><td>Skeleton con pulso</td></tr>
+</table>
+
+<!-- ═══ CONTRATOS API ═══ -->
+<h2>5. Contratos API</h2>
+
+<h3><code>POST /api/debates</code> &mdash; Crear debate (actualizado)</h3>
+<pre><code>// Request
+{
+  "title": "Stack para landing de conversion Chile 2026",
+  "topic": "Comparen Astro vs Next.js vs Remix para una landing de conversion...",
+  "agent_ids": ["hoku", "claude", "groq", "deepseek"],
+  "orchestration_mode": "tutti",
+  "temporal_enabled": true,
+  "temporal_config": {
+    "hoku": "1_sprint",
+    "claude": "6_meses",
+    "groq": "incidente",
+    "deepseek": "3_anos"
+  }
+}
+
+// Response 201
+{
+  "id": "uuid-debate",
+  "title": "Stack para landing de conversion Chile 2026",
+  "agent_ids": ["hoku", "claude", "groq", "deepseek"],
+  "orchestration_mode": "tutti",
+  "temporal_enabled": true,
+  "status": "active",
+  "created_at": "2026-03-25T14:30:00Z"
+}</code></pre>
+
+<h3><code>PATCH /api/debates/:id</code> &mdash; Actualizar orquestacion en tiempo real <span class="new-tag">NUEVO</span></h3>
+<pre><code>// Request — cambiar modo
+{
+  "orchestration_mode": "dueto",
+  "active_agent_ids": ["hoku", "claude"]
+}
+
+// Response 200
+{
+  "id": "uuid-debate",
+  "orchestration_mode": "dueto",
+  "active_agent_ids": ["hoku", "claude"],
+  "updated_at": "2026-03-25T14:35:00Z"
+}</code></pre>
+
+<h3><code>GET /api/debates</code> &mdash; Listar debates</h3>
+<pre><code>// Query params: ?status=active&limit=20&offset=0
+// Response 200
+{
+  "debates": [...],
+  "total": 42
+}</code></pre>
+
+<h3><code>GET /api/debates/:id</code> &mdash; Detalle con mensajes y tensiones</h3>
+<pre><code>// Response 200
+{
+  "debate": { "id": "...", "title": "...", "status": "active", "orchestration_mode": "tutti", "temporal_enabled": true, ... },
+  "messages": [
+    { "id": "msg-1", "author_type": "agent", "author_id": "hoku", "content": "...", "time_horizon": "1_sprint", "tension_with": [], "thread_count": 2, "created_at": "..." },
+    { "id": "msg-2", "author_type": "agent", "author_id": "claude", "content": "...", "time_horizon": "6_meses", "tension_with": ["hoku"], "thread_count": 0, "created_at": "..." }
+  ],
+  "tensions": [
+    { "id": "t-1", "agent_a": "hoku", "agent_b": "claude", "description": "Hoku recomienda solo Astro, Claude matiza con Next.js para formularios", "resolved": false }
+  ]
+}</code></pre>
+
+<h3><code>POST /api/debates/:id/stream</code> &mdash; Ejecutar ronda de debate (SSE, actualizado)</h3>
+<pre><code>// Request
+{ "continuation": false }
+
+// Response: SSE stream
+data: {"agent":"hoku","type":"start","time_horizon":"1_sprint"}
+data: {"agent":"hoku","type":"token","content":"En mi"}
+data: {"agent":"hoku","type":"token","content":" opinion"}
+data: {"agent":"hoku","type":"done","tokens":342,"duration_ms":2100}
+data: {"agent":"claude","type":"start","time_horizon":"6_meses"}
+data: {"agent":"claude","type":"token","content":"Coincido"}
+...
+data: {"type":"tension_detected","agent_a":"hoku","agent_b":"claude","description":"..."}
+data: {"type":"debate_done","tensions_count":2}</code></pre>
+
+<h3><code>GET /api/debates/:id/tensions</code> &mdash; Listar tensiones del debate <span class="new-tag">NUEVO</span></h3>
+<pre><code>// Response 200
+{
+  "tensions": [
+    {
+      "id": "t-uuid",
+      "agent_a": "hoku", "agent_b": "claude",
+      "msg_a_id": "msg-1", "msg_b_id": "msg-2",
+      "description": "Hoku recomienda solo Astro vs Claude que matiza con Next.js",
+      "resolved": false,
+      "created_at": "2026-03-25T14:32:00Z"
+    }
+  ],
+  "total": 2,
+  "resolved": 0
+}</code></pre>
+
+<h3><code>POST /api/debates/:id/messages</code> &mdash; Intervencion del usuario</h3>
+<pre><code>// Request
+{ "content": "Enfoquense en el mercado chileno, no global" }
+
+// Response 201
+{ "id": "msg-uuid", "author_type": "user", "author_id": "guillermo", ... }</code></pre>
+
+<h3><code>POST /api/debates/:id/threads</code> &mdash; Crear hilo</h3>
+<pre><code>// Request
+{ "parent_msg_id": "msg-uuid-del-mensaje" }
+
+// Response 201
+{
+  "id": "thread-uuid",
+  "title": "Hilo: Astro es superior para SEO estatico",
+  "parent_message": { "author_id": "claude", "content": "Astro es superior..." },
+  "status": "open"
+}</code></pre>
+
+<h3><code>POST /api/threads/:id/messages</code> &mdash; Escribir en hilo</h3>
+<pre><code>// Request
+{ "content": "Profundiza en los benchmarks de Astro vs Next.js para LCP", "target_agent": "claude" }
+
+// Response: SSE stream (mismo formato que debate)</code></pre>
+
+<h3><code>PATCH /api/threads/:id</code> &mdash; Aprobar/Rechazar hilo</h3>
+<pre><code>// Request
+{ "decision": "approved", "decision_note": "Implementar con Astro para el hero" }
+
+// Response 200
+{ "id": "...", "decision": "approved", "decision_note": "...", "updated_at": "..." }</code></pre>
+
+<!-- ═══ SQL DE CREACION ═══ -->
+<h2>6. SQL de creacion</h2>
+<pre><code>-- Tabla debates (actualizada)
+CREATE TABLE IF NOT EXISTS debates (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title text NOT NULL,
+  topic text NOT NULL,
+  agent_ids text[] NOT NULL DEFAULT '{}',
+  status text NOT NULL DEFAULT 'active' CHECK (status IN ('active','paused','completed','archived')),
+  orchestration_mode text NOT NULL DEFAULT 'tutti' CHECK (orchestration_mode IN ('tutti','dueto','solo')),
+  active_agent_ids text[] DEFAULT '{}',
+  temporal_enabled boolean DEFAULT false,
+  temporal_config jsonb DEFAULT '{}',
+  created_by text NOT NULL DEFAULT 'guillermo',
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Tabla debate_messages (actualizada)
+CREATE TABLE IF NOT EXISTS debate_messages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  debate_id uuid NOT NULL REFERENCES debates(id) ON DELETE CASCADE,
+  author_type text NOT NULL CHECK (author_type IN ('agent','user')),
+  author_id text NOT NULL,
+  content text NOT NULL,
+  tokens_used integer DEFAULT 0,
+  duration_ms integer DEFAULT 0,
+  status text DEFAULT 'completed' CHECK (status IN ('streaming','completed','error')),
+  metadata jsonb DEFAULT '{}',
+  time_horizon text,
+  tension_with text[] DEFAULT '{}',
+  thread_count integer DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Tabla debate_tensions (NUEVA)
+CREATE TABLE IF NOT EXISTS debate_tensions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  debate_id uuid NOT NULL REFERENCES debates(id) ON DELETE CASCADE,
+  msg_a_id uuid NOT NULL REFERENCES debate_messages(id) ON DELETE CASCADE,
+  msg_b_id uuid NOT NULL REFERENCES debate_messages(id) ON DELETE CASCADE,
+  agent_a text NOT NULL,
+  agent_b text NOT NULL,
+  description text,
+  resolved boolean DEFAULT false,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Tabla threads
+CREATE TABLE IF NOT EXISTS threads (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  debate_id uuid NOT NULL REFERENCES debates(id) ON DELETE CASCADE,
+  parent_msg_id uuid NOT NULL REFERENCES debate_messages(id) ON DELETE CASCADE,
+  title text,
+  status text NOT NULL DEFAULT 'open' CHECK (status IN ('open','closed')),
+  decision text CHECK (decision IN ('approved','rejected')),
+  decision_note text,
+  created_by text NOT NULL DEFAULT 'guillermo',
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Tabla thread_messages
+CREATE TABLE IF NOT EXISTS thread_messages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  thread_id uuid NOT NULL REFERENCES threads(id) ON DELETE CASCADE,
+  author_type text NOT NULL CHECK (author_type IN ('agent','user')),
+  author_id text NOT NULL,
+  content text NOT NULL,
+  tokens_used integer DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Indices
+CREATE INDEX idx_debate_messages_debate ON debate_messages(debate_id, created_at);
+CREATE INDEX idx_threads_debate ON threads(debate_id);
+CREATE INDEX idx_threads_parent ON threads(parent_msg_id);
+CREATE INDEX idx_thread_messages_thread ON thread_messages(thread_id, created_at);
+CREATE INDEX idx_debates_status ON debates(status, created_at DESC);
+CREATE INDEX idx_debate_tensions_debate ON debate_tensions(debate_id);
+CREATE INDEX idx_debate_messages_tension ON debate_messages(debate_id) WHERE tension_with != '{}';
+
+-- Trigger updated_at
+CREATE OR REPLACE FUNCTION update_updated_at() RETURNS TRIGGER AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER debates_updated_at BEFORE UPDATE ON debates
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER threads_updated_at BEFORE UPDATE ON threads
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();</code></pre>
+
+<!-- ═══ CHECKLIST HANDOFF ═══ -->
+<h2>7. Checklist de handoff para Hoku</h2>
+
+<h3>Prioridad 1 (critico)</h3>
+<ul>
+  <li>[ ] Crear 5 tablas en Supabase (debates, debate_messages, debate_tensions, threads, thread_messages)</li>
+  <li>[ ] API Route <code>POST /api/debates</code> con SSE streaming + campos orquestacion y temporal</li>
+  <li>[ ] API Route <code>POST /api/debates/:id/stream</code> con orquestacion secuencial + deteccion tensiones</li>
+  <li>[ ] Componente DebateView con chat multi-agente y colores por agente</li>
+  <li>[ ] Streaming SSE en frontend con indicador "escribiendo"</li>
+  <li>[ ] Modal "Nuevo debate" con seleccion de agentes + modo Director + toggle temporal</li>
+</ul>
+
+<h3>Prioridad 2 (siguiente)</h3>
+<ul>
+  <li>[ ] Director de Orquesta: barra con Tutti/Dueto/Solo + toggles de agentes <span class="new-tag">SERGITO</span></li>
+  <li>[ ] PATCH <code>/api/debates/:id</code> para cambiar modo y agentes activos en tiempo real</li>
+  <li>[ ] Mapa de Tensiones: badge en mensajes + barra resumen colapsable <span class="new-tag">SERGITO</span></li>
+  <li>[ ] GET <code>/api/debates/:id/tensions</code> para listar tensiones</li>
+  <li>[ ] Perspectivas Temporales: badge de horizonte en cada mensaje + system prompt por agente <span class="new-tag">SERGITO</span></li>
+  <li>[ ] Sistema de hilos: abrir panel lateral al hacer clic en icono hilo</li>
+  <li>[ ] API Routes para threads (crear, listar mensajes, escribir)</li>
+  <li>[ ] Pestanas de hilos abiertos con indicador de no leidos</li>
+  <li>[ ] Botones Aprobar/Rechazar con PATCH a threads</li>
+  <li>[ ] Intervencion del usuario en medio del debate</li>
+</ul>
+
+<h3>Prioridad 3 (nice to have)</h3>
+<ul>
+  <li>[ ] Historial de debates anteriores</li>
+  <li>[ ] Exportar debate como Markdown (incluir mapa de tensiones en export)</li>
+  <li>[ ] Resumen automatico del debate al completar</li>
+  <li>[ ] Deteccion semantica avanzada de tensiones (NLP via Groq/Claude)</li>
+  <li>[ ] Integracion con hoku_knowledge (ML feedback loop)</li>
+  <li>[ ] Notificaciones de hilo con nuevos mensajes</li>
+  <li>[ ] Horizontes temporales custom (el usuario define sus propios horizontes)</li>
+</ul>
+
+<h3>Estados UI a implementar</h3>
+<ul>
+  <li>[ ] Vacio (sin debates)</li>
+  <li>[ ] Debate en curso (streaming)</li>
+  <li>[ ] Debate completado</li>
+  <li>[ ] Modo Tutti (todos activos)</li>
+  <li>[ ] Modo Dueto (2 agentes resaltados, resto dim)</li>
+  <li>[ ] Modo Solo (1 agente, resto dim)</li>
+  <li>[ ] Mensaje con tension (borde naranja + badge)</li>
+  <li>[ ] Resumen tensiones (barra colapsable)</li>
+  <li>[ ] Horizonte temporal visible (badge por mensaje)</li>
+  <li>[ ] Hilo abierto</li>
+  <li>[ ] Hilo aprobado/rechazado</li>
+  <li>[ ] Error de agente (con retry)</li>
+  <li>[ ] Loading/skeleton</li>
+</ul>
+
+<h3>Breakpoints</h3>
+<ul>
+  <li>[ ] Mobile (375px): thread panel full-width overlay, orchestrator bar stacked</li>
+  <li>[ ] Tablet (768px): thread panel 320px</li>
+  <li>[ ] Desktop (1024px): thread panel 420px</li>
+  <li>[ ] Wide (1440px): thread panel 480px</li>
+</ul>
+
+<h3>Accesibilidad</h3>
+<ul>
+  <li>[ ] Roles ARIA: role="log" para mensajes, role="complementary" para panel hilos</li>
+  <li>[ ] aria-live="polite" en area de mensajes para lectores de pantalla</li>
+  <li>[ ] Focus management al abrir/cerrar panel de hilos</li>
+  <li>[ ] Contraste WCAG AA en todos los colores de agentes sobre fondo oscuro</li>
+  <li>[ ] Navegacion por teclado: Tab entre mensajes, Enter para abrir hilo</li>
+  <li>[ ] Touch targets 44x44px minimo en botones</li>
+  <li>[ ] aria-label en botones de Director de Orquesta</li>
+  <li>[ ] Tension badges con role="status" para lectores de pantalla</li>
+</ul>
+
+<h3>Tokens CSS a usar (copiar de la maqueta)</h3>
+<ul>
+  <li>[ ] Colores: usar variables CSS de la maqueta (--hoku, --claude, --tension, etc.)</li>
+  <li>[ ] Border radius: --radius-sm (6px), --radius-md (10px), --radius-lg (14px)</li>
+  <li>[ ] Fuentes: Inter para UI, JetBrains Mono para codigo/metadata</li>
+  <li>[ ] Glassmorphism: backdrop-filter blur(12px) en headers</li>
+  <li>[ ] Tension color: --tension (#f97316) para bordes, badges, highlights</li>
+</ul>
+
+<h3>Variables de entorno necesarias</h3>
+<ul>
+  <li>Ninguna nueva. Usa las existentes: SUPABASE_URL, SUPABASE_SERVICE_KEY, GROQ_API_KEY, ANTHROPIC_API_KEY, etc.</li>
+</ul>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     VISTA 2: MAQUETA INTERACTIVA
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div id="mockup-view" class="mockup-container">
+
+<!-- Sidebar 64px -->
+<div class="sidebar">
+  <div class="sidebar-icon" title="Dashboard" style="margin-bottom: 12px;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+  </div>
+  <div class="sidebar-icon active" title="Agentes IA">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M16 14H8a4 4 0 0 0-4 4v2h16v-2a4 4 0 0 0-4-4z"/></svg>
+  </div>
+  <div class="sidebar-icon" title="Proyectos">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+  </div>
+  <div class="sidebar-icon" title="Leads">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+  </div>
+  <div style="flex:1"></div>
+  <div class="sidebar-icon" title="Config">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main-content">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span>Intranet</span>
+    <span class="sep">/</span>
+    <span>Agentes IA</span>
+    <span class="sep">/</span>
+    <span class="current">Debate Multi-Agente</span>
+    <div style="flex:1"></div>
+    <button onclick="toggleModal()" style="background: linear-gradient(135deg, var(--accent), #00c49a); color: var(--bg-base); border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.72rem; font-weight: 700; cursor: pointer; font-family: var(--font-sans); display: flex; align-items: center; gap: 5px;">+ Nuevo debate</button>
+  </div>
+
+  <!-- Workspace: Debate + Thread -->
+  <div class="workspace">
+
+    <!-- ═══ PANEL IZQUIERDO: Debate ═══ -->
+    <div class="debate-panel">
+      <!-- Debate header -->
+      <div class="debate-header">
+        <div class="debate-title">
+          <h2>Stack para landing de conversion Chile 2026</h2>
+          <span class="debate-badge">En curso</span>
+        </div>
+        <div class="debate-meta">
+          <span>Iniciado por Guillermo</span>
+          <span class="dot"></span>
+          <span>14:30</span>
+          <span class="dot"></span>
+          <span>4 agentes</span>
+          <span class="dot"></span>
+          <span>1.284 tokens</span>
+          <span class="dot"></span>
+          <span style="color: var(--tension);">2 tensiones</span>
+        </div>
+      </div>
+
+      <!-- ═══ DIRECTOR DE ORQUESTA ═══ -->
+      <div class="orchestrator-bar">
+        <span class="orchestrator-label">Director</span>
+        <div class="orchestrator-modes">
+          <button class="orch-mode-btn active" onclick="setOrchMode(this,'tutti')" aria-label="Modo Tutti: todos debaten">Tutti</button>
+          <button class="orch-mode-btn" onclick="setOrchMode(this,'dueto')" aria-label="Modo Dueto: 2 agentes debaten">Dueto</button>
+          <button class="orch-mode-btn" onclick="setOrchMode(this,'solo')" aria-label="Modo Solo: 1 agente profundiza">Solo</button>
+        </div>
+        <div class="orch-divider"></div>
+        <span class="orchestrator-label">Temporal</span>
+        <button class="orch-mode-btn active" onclick="this.classList.toggle('active')" aria-label="Toggle perspectivas temporales" style="font-size:0.65rem;">ON</button>
+      </div>
+
+      <!-- Participantes con toggle -->
+      <div class="participants">
+        <span class="participants-label">Agentes</span>
+        <span class="participant-chip" onclick="toggleAgent(this)" style="background: rgba(255,107,107,0.1); color: var(--hoku); border: 1px solid rgba(255,107,107,0.2);"><span class="toggle-dot"></span> Hoku</span>
+        <span class="participant-chip" onclick="toggleAgent(this)" style="background: rgba(0,229,176,0.1); color: var(--claude); border: 1px solid rgba(0,229,176,0.2);"><span class="toggle-dot"></span> Claude</span>
+        <span class="participant-chip" onclick="toggleAgent(this)" style="background: rgba(245,158,11,0.1); color: var(--groq); border: 1px solid rgba(245,158,11,0.2);"><span class="toggle-dot"></span> Groq</span>
+        <span class="participant-chip" onclick="toggleAgent(this)" style="background: rgba(14,165,233,0.1); color: var(--deepseek); border: 1px solid rgba(14,165,233,0.2);"><span class="toggle-dot"></span> DeepSeek</span>
+        <span class="participant-chip" style="background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid var(--border-subtle);">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        </span>
+      </div>
+
+      <!-- Mensajes del debate -->
+      <div class="messages-area" role="log" aria-live="polite">
+
+        <!-- Mensaje del usuario (tema) -->
+        <div class="message animate-in">
+          <div class="msg-header">
+            <div class="msg-avatar" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">G</div>
+            <span class="msg-name" style="color: #f1f5f9;">Guillermo</span>
+            <span class="msg-role">usuario</span>
+            <span class="msg-time">14:30</span>
+          </div>
+          <div class="msg-body">
+            Comparen <strong>Astro vs Next.js vs Remix</strong> para una landing de conversion en Chile 2026. Consideren: velocidad de carga, SEO, facilidad de integracion con Supabase, y costo de hosting. El publico son PyMEs chilenas que buscan servicios digitales.
+          </div>
+        </div>
+
+        <!-- Respuesta Hoku -->
+        <div class="message animate-in">
+          <div class="msg-header">
+            <div class="msg-avatar" style="background: var(--hoku);">H</div>
+            <span class="msg-name" style="color: var(--hoku);">Hoku</span>
+            <span class="msg-role">fusion 9 agentes</span>
+            <span class="time-horizon-badge">1 sprint despues</span>
+            <span class="msg-time">14:31</span>
+          </div>
+          <div class="msg-body">
+            Voy directo al grano. Para una <strong>landing de conversion</strong> en Chile, <strong>Astro</strong> gana por goleada. Con Islands Architecture manda solo el JS necesario &mdash; estamos hablando de <strong>LCP bajo 1.5s</strong> en conexiones chilenas promedio (50-80 Mbps). Next.js arrastra runtime de React completo incluso para paginas estaticas. Remix es bueno pero overkill para una landing. El hosting en Vercel para Astro sale <strong>gratis en el tier hobby</strong> y en S3+CloudFront por centavos. Para Supabase, <code>@supabase/supabase-js</code> funciona identico en los tres.
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn thread-btn" onclick="openThread('hoku')" title="Abrir hilo" aria-label="Abrir hilo desde este mensaje">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="msg-action-btn" title="Copiar" aria-label="Copiar mensaje">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Respuesta Claude — CON TENSION -->
+        <div class="message animate-in has-tension">
+          <div class="msg-header">
+            <div class="msg-avatar" style="background: var(--claude);">C</div>
+            <span class="msg-name" style="color: var(--claude);">Claude</span>
+            <span class="msg-role">claude-haiku-4.5</span>
+            <span class="time-horizon-badge">6 meses despues</span>
+            <span class="tension-badge tension-pulse" role="status" onclick="scrollToTension('hoku')">Tension con Hoku</span>
+            <span class="msg-time">14:32</span>
+          </div>
+          <div class="msg-body">
+            Coincido con Hoku en que Astro es la opcion mas eficiente para una landing, pero quiero matizar. Si la landing necesita <strong>formularios interactivos complejos</strong> (cotizador, wizard multi-paso), Next.js ofrece mejor DX con Server Actions y React Server Components. Para PyMEs chilenas, el factor critico es el <strong>tiempo de primera carga en 4G</strong> &mdash; muchos acceden desde celulares prepago. Astro con <code>@astrojs/preact</code> para islas interactivas seria el sweet spot: contenido estatico ultra rapido + interactividad donde se necesita.
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn thread-btn" onclick="openThread('claude')" title="Abrir hilo" aria-label="Abrir hilo desde este mensaje">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="msg-action-btn" title="Copiar" aria-label="Copiar mensaje">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+          <!-- Thread indicator -->
+          <div class="thread-indicator" onclick="openThread('claude')">
+            <span class="thread-count">3 respuestas</span>
+            <span class="thread-text">Ultimo: Hoku hace 2 min</span>
+            <div class="thread-avatars">
+              <span style="background: var(--hoku);">H</span>
+              <span style="background: var(--deepseek);">D</span>
+              <span style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">G</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Respuesta Groq — CON TENSION -->
+        <div class="message animate-in has-tension">
+          <div class="msg-header">
+            <div class="msg-avatar" style="background: var(--groq);">G</div>
+            <span class="msg-name" style="color: var(--groq);">Groq</span>
+            <span class="msg-role">llama-3.3-70b</span>
+            <span class="time-horizon-badge">El dia del incidente</span>
+            <span class="tension-badge tension-pulse" role="status" onclick="scrollToTension('hoku')">Tension con Hoku</span>
+            <span class="msg-time">14:32</span>
+          </div>
+          <div class="msg-body">
+            Los datos duros: segun WebPageTest Chile (via Santiago), las landings en <strong>Astro tienen un TTI promedio de 0.8s</strong> vs 2.1s en Next.js (con App Router). Pero ojo: Next.js 16 con Turbopack mejoro bastante. El tema real para PyMEs chilenas no es solo velocidad &mdash; es <strong>costo total de propiedad</strong>. Astro en Vercel = gratis. Next.js en Amplify = USD$7/mes minimo. Para una empresa que gasta 50 lucas en hosting, eso importa. Mi recomendacion: <strong>Astro para landing + Next.js para la app/intranet</strong>. Dual stack como ya tiene Smart Connection.
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn thread-btn" onclick="openThread('groq')" title="Abrir hilo" aria-label="Abrir hilo desde este mensaje">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="msg-action-btn" title="Copiar" aria-label="Copiar mensaje">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Respuesta DeepSeek (streaming) -->
+        <div class="message animate-in" id="streaming-msg">
+          <div class="msg-header">
+            <div class="msg-avatar" style="background: var(--deepseek);">D</div>
+            <span class="msg-name" style="color: var(--deepseek);">DeepSeek</span>
+            <span class="msg-role">deepseek-chat</span>
+            <span class="time-horizon-badge">3 anos despues</span>
+            <span class="msg-time">14:33</span>
+          </div>
+          <div class="msg-body" id="streaming-content">
+            Analizando el codigo de smconnection.cl actual: ya usan Astro con Tailwind y S3+CloudFront. La migracion seria minima. Pero quiero plantear algo que nadie menciono: <strong>View Transitions API</strong>. Astro lo soporta nativamente y da esa sensacion de SPA sin JS adicional. Para conversion, las transiciones suaves entre secciones <span id="cursor" style="display:inline-block;width:2px;height:14px;background:var(--deepseek);animation:blink 1s infinite;vertical-align:text-bottom;"></span>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn thread-btn" onclick="openThread('deepseek')" title="Abrir hilo" aria-label="Abrir hilo desde este mensaje">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="msg-action-btn" title="Copiar" aria-label="Copiar mensaje">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="typing-bar">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+        <span class="typing-label"><strong style="color: var(--deepseek);">DeepSeek</strong> esta escribiendo...</span>
+      </div>
+
+      <!-- ═══ MAPA DE TENSIONES (resumen colapsable) ═══ -->
+      <div class="tension-summary visible" id="tension-summary">
+        <div class="tension-summary-header" onclick="document.getElementById('tension-list').style.display = document.getElementById('tension-list').style.display === 'none' ? 'block' : 'none';" style="cursor:pointer;">
+          <span style="font-size:0.85rem;">&#9889;</span>
+          <span class="tension-summary-title">Mapa de tensiones</span>
+          <span class="tension-summary-count">2 activas</span>
+          <span style="font-size:0.55rem; color: var(--text-dim); margin-left: auto;">click para expandir</span>
+        </div>
+        <div id="tension-list">
+          <div class="tension-item">
+            <div class="tension-agents">
+              <span style="background: rgba(255,107,107,0.15); color: var(--hoku);">Hoku</span>
+              <span style="color: var(--text-dim);">vs</span>
+              <span style="background: rgba(0,229,176,0.15); color: var(--claude);">Claude</span>
+            </div>
+            <div>Hoku recomienda <strong style="color:var(--text-primary);">solo Astro</strong>, Claude matiza que para <strong style="color:var(--text-primary);">formularios complejos Next.js ofrece mejor DX</strong>. &rarr; Aqui el humano decide.</div>
+          </div>
+          <div class="tension-item">
+            <div class="tension-agents">
+              <span style="background: rgba(255,107,107,0.15); color: var(--hoku);">Hoku</span>
+              <span style="color: var(--text-dim);">vs</span>
+              <span style="background: rgba(245,158,11,0.15); color: var(--groq);">Groq</span>
+            </div>
+            <div>Hoku dice <strong style="color:var(--text-primary);">Astro gana por goleada</strong>, Groq propone <strong style="color:var(--text-primary);">dual stack Astro+Next.js</strong> en vez de uno solo. &rarr; Costo vs simplicidad.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input debate -->
+      <div class="debate-input">
+        <div class="debate-input-row">
+          <textarea class="debate-textarea" placeholder="Intervenir en el debate o lanzar nueva ronda..." rows="1" aria-label="Escribir mensaje en el debate"></textarea>
+          <button class="send-btn" title="Enviar" aria-label="Enviar mensaje">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+          </button>
+        </div>
+        <div class="input-hint">Enter para enviar &middot; Shift+Enter nueva linea &middot; Tu mensaje redirige la discusion &middot; Modo: <strong style="color:var(--accent);">Tutti</strong></div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL DERECHO: Hilo ═══ -->
+    <div class="thread-panel" id="thread-panel">
+
+      <!-- Tabs de hilos abiertos -->
+      <div class="threads-tabs">
+        <div class="thread-tab active" onclick="switchThread(0)">
+          <span class="tab-dot" style="background: var(--claude);"></span>
+          Astro vs Next.js SEO
+          <span class="tab-close" onclick="event.stopPropagation();">x</span>
+        </div>
+        <div class="thread-tab" onclick="switchThread(1)">
+          <span class="tab-dot" style="background: var(--groq);"></span>
+          Costos hosting
+          <span class="tab-unread"></span>
+          <span class="tab-close" onclick="event.stopPropagation();">x</span>
+        </div>
+      </div>
+
+      <!-- Header hilo -->
+      <div class="thread-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <h3>Hilo: Astro vs Next.js para SEO</h3>
+        <button class="thread-close" onclick="closeThread()" title="Cerrar hilo" aria-label="Cerrar panel de hilo">x</button>
+      </div>
+
+      <!-- Mensaje citado -->
+      <div class="thread-quoted">
+        <div class="tq-header">
+          <div class="tq-avatar" style="background: var(--claude);">C</div>
+          <span class="tq-name" style="color: var(--claude);">Claude</span>
+          <span class="time-horizon-badge" style="font-size:0.45rem;">6 meses despues</span>
+          <span style="font-size:0.55rem; color: var(--text-dim);">14:32</span>
+        </div>
+        <div class="tq-body">
+          Si la landing necesita formularios interactivos complejos, Next.js ofrece mejor DX con Server Actions y React Server Components...
+        </div>
+      </div>
+
+      <!-- Mensajes del hilo -->
+      <div class="thread-messages">
+
+        <div class="thread-msg animate-in">
+          <div class="msg-header">
+            <div class="msg-avatar" style="width:20px;height:20px;font-size:0.55rem;background:linear-gradient(135deg, #3b82f6, #8b5cf6);">G</div>
+            <span class="msg-name" style="color: #f1f5f9; font-size: 0.72rem;">Guillermo</span>
+            <span class="msg-time">14:34</span>
+          </div>
+          <div class="msg-body" style="padding-left: 28px; font-size: 0.78rem;">
+            Claude, profundiza en esto. Nuestras landings actuales tienen formulario de contacto + cotizador de 3 pasos. Es suficiente para justificar Next.js o Astro con islas lo resuelve?
+          </div>
+        </div>
+
+        <div class="thread-msg animate-in">
+          <div class="msg-header">
+            <div class="msg-avatar" style="width:20px;height:20px;font-size:0.55rem;background: var(--claude);">C</div>
+            <span class="msg-name" style="color: var(--claude); font-size: 0.72rem;">Claude</span>
+            <span class="msg-role" style="font-size:0.55rem;">claude-haiku-4.5</span>
+            <span class="time-horizon-badge" style="font-size:0.45rem;">6 meses despues</span>
+            <span class="msg-time">14:34</span>
+          </div>
+          <div class="msg-body" style="padding-left: 28px; font-size: 0.78rem;">
+            Para un cotizador de 3 pasos, <strong>Astro con una isla Preact es perfecto</strong>. El formulario seria un componente <code>&lt;Cotizador client:visible /&gt;</code> que solo carga JS cuando el usuario scrollea hasta el. El resto de la landing (hero, beneficios, testimonios) es 0 JS. En Next.js, incluso con RSC, el formulario arrastra mas runtime. Mi recomendacion concreta: Astro + isla Preact para el cotizador + Supabase para guardar leads.
+          </div>
+        </div>
+
+        <div class="thread-msg animate-in">
+          <div class="msg-header">
+            <div class="msg-avatar" style="width:20px;height:20px;font-size:0.55rem;background: var(--hoku);">H</div>
+            <span class="msg-name" style="color: var(--hoku); font-size: 0.72rem;">Hoku</span>
+            <span class="msg-role" style="font-size:0.55rem;">fusion</span>
+            <span class="time-horizon-badge" style="font-size:0.45rem;">1 sprint despues</span>
+            <span class="msg-time">14:35</span>
+          </div>
+          <div class="msg-body" style="padding-left: 28px; font-size: 0.78rem;">
+            Confirmo. Ya implementamos ese patron en smconnection.cl: Astro + isla Preact para el formulario de contacto. <strong>Bundle del formulario: 8KB gzipped</strong>. En Next.js el mismo componente pesaba 34KB. La diferencia es brutal en 4G.
+          </div>
+        </div>
+
+        <div class="thread-msg animate-in">
+          <div class="msg-header">
+            <div class="msg-avatar" style="width:20px;height:20px;font-size:0.55rem;background: var(--deepseek);">D</div>
+            <span class="msg-name" style="color: var(--deepseek); font-size: 0.72rem;">DeepSeek</span>
+            <span class="msg-role" style="font-size:0.55rem;">deepseek-chat</span>
+            <span class="time-horizon-badge" style="font-size:0.45rem;">3 anos despues</span>
+            <span class="msg-time">14:36</span>
+          </div>
+          <div class="msg-body" style="padding-left: 28px; font-size: 0.78rem;">
+            Dato adicional: con <code>@astrojs/preact</code> + <code>nanostores</code> para estado del wizard, el cotizador no necesita Context ni Redux. Tres archivos: <code>CotizadorIsla.tsx</code>, <code>cotizadorStore.ts</code>, <code>cotizadorApi.ts</code>. Minimalista y mantenible.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Botones Aprobar/Rechazar -->
+      <div class="thread-actions">
+        <button class="action-btn approve" onclick="approveThread()" aria-label="Aprobar propuesta del hilo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Aprobar
+        </button>
+        <button class="action-btn reject" onclick="rejectThread()" aria-label="Rechazar propuesta del hilo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          Rechazar
+        </button>
+      </div>
+
+      <!-- Input hilo -->
+      <div class="thread-input">
+        <div class="thread-input-row">
+          <textarea class="thread-textarea" placeholder="Profundizar en este punto..." rows="1" aria-label="Escribir en el hilo"></textarea>
+          <button class="thread-send" title="Enviar en hilo" aria-label="Enviar mensaje en el hilo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<!-- ═══ MODAL: Nuevo Debate (actualizado) ═══ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal animate-in">
+    <h3>Nuevo debate multi-agente</h3>
+
+    <div class="modal-field">
+      <label class="modal-label">Titulo del debate</label>
+      <input class="modal-input" type="text" placeholder="Ej: Mejor estrategia de pricing para SaaS Chile" aria-label="Titulo del debate">
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Tema / Prompt inicial</label>
+      <textarea class="modal-input" placeholder="Describe el tema que quieres que los agentes debatan. Se especifico para obtener mejores resultados." aria-label="Tema del debate"></textarea>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Modo Director de Orquesta <span class="new-tag">SERGITO</span></label>
+      <div class="modal-mode-selector">
+        <div class="modal-mode-option selected" onclick="selectMode(this)">
+          <div class="mode-icon">&#127931;</div>
+          <div class="mode-name">Tutti</div>
+          <div class="mode-desc">Todos debaten</div>
+        </div>
+        <div class="modal-mode-option" onclick="selectMode(this)">
+          <div class="mode-icon">&#127928;</div>
+          <div class="mode-name">Dueto</div>
+          <div class="mode-desc">2 agentes se confrontan</div>
+        </div>
+        <div class="modal-mode-option" onclick="selectMode(this)">
+          <div class="mode-icon">&#127908;</div>
+          <div class="mode-name">Solo</div>
+          <div class="mode-desc">1 agente profundiza</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Agentes participantes (min. 2, max. 6)</label>
+      <div class="modal-agents">
+        <span class="modal-agent-chip selected" style="color: var(--hoku); border-color: var(--hoku);" onclick="this.classList.toggle('selected')">Hoku</span>
+        <span class="modal-agent-chip selected" style="color: var(--claude); border-color: var(--claude);" onclick="this.classList.toggle('selected')">Claude</span>
+        <span class="modal-agent-chip selected" style="color: var(--groq); border-color: var(--groq);" onclick="this.classList.toggle('selected')">Groq</span>
+        <span class="modal-agent-chip" style="color: var(--grok);" onclick="this.classList.toggle('selected')">Grok</span>
+        <span class="modal-agent-chip selected" style="color: var(--deepseek); border-color: var(--deepseek);" onclick="this.classList.toggle('selected')">DeepSeek</span>
+        <span class="modal-agent-chip" style="color: var(--mistral);" onclick="this.classList.toggle('selected')">Mistral</span>
+        <span class="modal-agent-chip" style="color: var(--openai);" onclick="this.classList.toggle('selected')">OpenAI</span>
+        <span class="modal-agent-chip" style="color: var(--cohere);" onclick="this.classList.toggle('selected')">Cohere</span>
+        <span class="modal-agent-chip" style="color: var(--openrouter);" onclick="this.classList.toggle('selected')">OpenRouter</span>
+        <span class="modal-agent-chip" style="color: var(--bedrock);" onclick="this.classList.toggle('selected')">Bedrock</span>
+        <span class="modal-agent-chip" style="color: var(--gemini);" onclick="this.classList.toggle('selected')">Gemini</span>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label" style="display: flex; align-items: center; gap: 8px;">
+        Perspectivas temporales <span class="new-tag">SERGITO</span>
+        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 0.65rem; color: var(--accent);">
+          <input type="checkbox" id="temporal-toggle" checked onchange="document.getElementById('temporal-config').style.display = this.checked ? 'block' : 'none';" style="accent-color: var(--accent);"> Activar
+        </label>
+      </label>
+      <div id="temporal-config" style="margin-top: 8px;">
+        <table style="font-size: 0.7rem; width: 100%;">
+          <tr><th style="padding: 4px 6px;">Agente</th><th style="padding: 4px 6px;">Horizonte</th><th style="padding: 4px 6px;">Enfoque</th></tr>
+          <tr><td style="color:var(--hoku); padding: 4px 6px;">Hoku</td><td style="padding: 4px 6px;">1 sprint despues</td><td style="padding: 4px 6px; color: var(--text-muted);">Implementacion inmediata</td></tr>
+          <tr><td style="color:var(--claude); padding: 4px 6px;">Claude</td><td style="padding: 4px 6px;">6 meses despues</td><td style="padding: 4px 6px; color: var(--text-muted);">Arquitectura, escalabilidad</td></tr>
+          <tr><td style="color:var(--groq); padding: 4px 6px;">Groq</td><td style="padding: 4px 6px;">El dia del incidente</td><td style="padding: 4px 6px; color: var(--text-muted);">Que se rompe, puntos de falla</td></tr>
+          <tr><td style="color:var(--deepseek); padding: 4px 6px;">DeepSeek</td><td style="padding: 4px 6px;">3 anos despues</td><td style="padding: 4px 6px; color: var(--text-muted);">Oportunidad perdida/ganada</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-btn cancel" onclick="toggleModal()">Cancelar</button>
+      <button class="modal-btn primary" onclick="toggleModal()">Iniciar debate</button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<script>
+// ═══ Interactividad de la maqueta ═══
+
+function switchView(view) {
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view-content, .mockup-container').forEach(c => c.classList.remove('active'));
+
+  if (view === 'spec') {
+    document.querySelectorAll('.view-tab')[0].classList.add('active');
+    document.getElementById('spec-view').classList.add('active');
+  } else {
+    document.querySelectorAll('.view-tab')[1].classList.add('active');
+    document.getElementById('mockup-view').classList.add('active');
+  }
+}
+
+function toggleModal() {
+  const m = document.getElementById('modal-overlay');
+  m.classList.toggle('show');
+}
+
+function openThread(agentId) {
+  const panel = document.getElementById('thread-panel');
+  panel.classList.remove('collapsed');
+  panel.querySelector('h3').textContent = 'Hilo: ' + {
+    hoku: 'Astro gana por goleada',
+    claude: 'Astro vs Next.js para SEO',
+    groq: 'Costos reales hosting Chile',
+    deepseek: 'View Transitions API'
+  }[agentId];
+}
+
+function closeThread() {
+  document.getElementById('thread-panel').classList.add('collapsed');
+}
+
+function switchThread(idx) {
+  document.querySelectorAll('.thread-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+}
+
+function approveThread() {
+  const actions = document.querySelector('.thread-actions');
+  actions.innerHTML = '<div style="flex:1;text-align:center;padding:8px;border-radius:var(--radius-md);background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:var(--approve);font-size:0.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Aprobado por Guillermo</div>';
+}
+
+function rejectThread() {
+  const actions = document.querySelector('.thread-actions');
+  actions.innerHTML = '<div style="flex:1;text-align:center;padding:8px;border-radius:var(--radius-md);background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reject);font-size:0.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> Rechazado por Guillermo</div>';
+}
+
+// ═══ Director de Orquesta ═══
+function setOrchMode(btn, mode) {
+  document.querySelectorAll('.orch-mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Actualizar hint del input
+  const hint = document.querySelector('.input-hint strong');
+  if (hint) hint.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+}
+
+function toggleAgent(chip) {
+  chip.classList.toggle('disabled');
+}
+
+function selectMode(option) {
+  document.querySelectorAll('.modal-mode-option').forEach(o => o.classList.remove('selected'));
+  option.classList.add('selected');
+}
+
+function scrollToTension(agentId) {
+  // En produccion, scroll al mensaje del agente en tension
+  const summary = document.getElementById('tension-summary');
+  if (summary) summary.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Simular streaming del ultimo mensaje
+const extraText = ' aumentan la tasa de conversion en un 12% segun datos de Google Chrome Labs. Para smconnection.cl recomiendo: migrar a Astro 5 con View Transitions + isla Preact para el cotizador. Costo: 0 hosting adicional.';
+let charIdx = 0;
+const streamInterval = setInterval(() => {
+  if (charIdx < extraText.length) {
+    const content = document.getElementById('streaming-content');
+    const cursor = document.getElementById('cursor');
+    content.insertBefore(document.createTextNode(extraText[charIdx]), cursor);
+    charIdx++;
+  } else {
+    clearInterval(streamInterval);
+    const cursor = document.getElementById('cursor');
+    if (cursor) cursor.remove();
+  }
+}, 40);
+</script>
+
+</body>
+</html>

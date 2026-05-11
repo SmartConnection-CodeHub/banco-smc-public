@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Connection — SaaS Factory con IA</title>
+<style>
+:root{--bg:#060912;--s:#0a0d14;--e:#0f1520;--g:rgba(15,22,35,0.85);--b:rgba(255,255,255,0.06);--bh:rgba(255,255,255,0.15);--t:#f1f5f9;--t2:#94a3b8;--m:#475569;--a:#00e5b0;--a2:#00c49a;--ag:rgba(0,229,176,0.12);--blue:#4a9eff;--purple:#a855f7;--orange:#f59e0b;--pink:#ec4899;--cyan:#06b6d4;--red:#ef4444;--lime:#84cc16}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden;line-height:1.6}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 0;backdrop-filter:blur(20px);background:rgba(6,9,18,0.85);border-bottom:1px solid var(--b)}
+.ni{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:1.15rem;color:var(--t);text-decoration:none}.logo span{color:var(--a)}
+.nl{display:flex;gap:28px;align-items:center}
+.nl a{color:var(--t2);text-decoration:none;font-size:0.85rem;transition:color 0.3s}.nl a:hover{color:var(--a)}
+.nc{background:var(--a);color:var(--bg);padding:9px 22px;border-radius:8px;font-weight:700;font-size:0.82rem;text-decoration:none;transition:all 0.3s}.nc:hover{background:var(--a2)}
+
+section{padding:100px 24px}.cx{max-width:1200px;margin:0 auto}
+.sl{font-size:0.72rem;text-transform:uppercase;letter-spacing:3px;color:var(--a);margin-bottom:10px;font-weight:600}
+.st{font-size:2.4rem;font-weight:800;line-height:1.15;margin-bottom:14px}
+.sd{font-size:1.05rem;color:var(--t2);max-width:620px;line-height:1.7}
+.hl{background:linear-gradient(135deg,var(--a),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;position:relative}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 15%,rgba(0,229,176,0.07) 0%,transparent 50%),radial-gradient(ellipse at 75% 85%,rgba(74,158,255,0.05) 0%,transparent 50%)}
+.hero-c{position:relative;z-index:1;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center}
+.hero h1{font-size:3.2rem;font-weight:800;line-height:1.08;margin-bottom:20px}
+.hero p{font-size:1.15rem;color:var(--t2);margin-bottom:32px;line-height:1.7;max-width:520px}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.bp{background:var(--a);color:var(--bg);padding:13px 28px;border-radius:10px;font-weight:700;font-size:0.95rem;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer}.bp:hover{background:var(--a2);transform:translateY(-2px);box-shadow:0 8px 30px var(--ag)}
+.bs{background:transparent;color:var(--t);padding:13px 28px;border-radius:10px;font-weight:600;font-size:0.95rem;text-decoration:none;border:1px solid var(--b);transition:all 0.3s}.bs:hover{border-color:var(--a);color:var(--a)}
+.hero-right{background:var(--g);border:1px solid var(--b);border-radius:20px;padding:32px;backdrop-filter:blur(10px)}
+.factory-visual{text-align:center}
+.factory-visual .fv-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--a);margin-bottom:16px}
+.factory-flow{display:flex;flex-direction:column;gap:8px}
+.ff-row{display:flex;align-items:center;justify-content:center;gap:8px}
+.ff-node{background:rgba(255,255,255,0.04);border:1px solid var(--b);border-radius:10px;padding:8px 14px;font-size:0.75rem;display:flex;align-items:center;gap:6px;transition:all 0.3s;white-space:nowrap}
+.ff-node:hover{border-color:var(--a);background:var(--ag)}
+.ff-arrow{color:var(--m);font-size:0.8rem}
+.ff-parallel{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+
+/* CONCEPTO */
+.concept{background:var(--s)}
+.concept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}
+.cc{background:rgba(255,255,255,0.03);border:1px solid var(--b);border-radius:16px;padding:28px;transition:all 0.3s;position:relative;overflow:hidden}
+.cc:hover{border-color:var(--bh);transform:translateY(-3px)}
+.cc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),var(--blue));opacity:0;transition:opacity 0.3s}.cc:hover::before{opacity:1}
+.cc .icon{font-size:2rem;margin-bottom:12px;display:block}
+.cc h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.cc p{font-size:0.82rem;color:var(--t2);line-height:1.6}
+
+/* METODOLOGÍAS */
+.meth-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:32px}
+.mg{background:rgba(255,255,255,0.02);border:1px solid var(--b);border-radius:10px;padding:16px;transition:all 0.3s;cursor:default}
+.mg:hover{border-color:var(--bh);background:rgba(255,255,255,0.04)}
+.mg h4{font-size:0.82rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.mg p{font-size:0.72rem;color:var(--m);line-height:1.5}
+.mg .tag{font-size:0.6rem;padding:2px 8px;border-radius:4px;font-weight:600;display:inline-block;margin-bottom:6px}
+.tag-gestion{background:rgba(245,158,11,0.15);color:var(--orange)}
+.tag-producto{background:rgba(6,182,212,0.15);color:var(--cyan)}
+.tag-tecnica{background:rgba(74,158,255,0.15);color:var(--blue)}
+.tag-ia{background:rgba(168,85,247,0.15);color:var(--purple)}
+.tag-calidad{background:rgba(34,197,94,0.15);color:#22c55e}
+.tag-innovacion{background:rgba(168,85,247,0.15);color:var(--purple)}
+.tag-comercial{background:rgba(236,72,153,0.15);color:var(--pink)}
+.tag-devops{background:rgba(239,68,68,0.15);color:var(--red)}
+
+/* TECH */
+.tech{background:var(--s)}
+.tech-categories{display:flex;flex-direction:column;gap:32px;margin-top:40px}
+.tech-cat h3{font-size:0.95rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.tech-cat h3 .tc-icon{font-size:1.2rem}
+.tech-pills{display:flex;flex-wrap:wrap;gap:8px}
+.tp{background:rgba(255,255,255,0.04);border:1px solid var(--b);border-radius:8px;padding:8px 16px;font-size:0.8rem;color:var(--t2);transition:all 0.3s;display:flex;align-items:center;gap:6px}
+.tp:hover{border-color:var(--a);color:var(--a);background:var(--ag)}
+.tp .dot{width:6px;height:6px;border-radius:50%}
+
+/* SERVICIOS */
+.srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}
+.srv{background:rgba(255,255,255,0.03);border:1px solid var(--b);border-radius:16px;padding:28px;transition:all 0.4s}
+.srv:hover{border-color:var(--bh);transform:translateY(-3px)}
+.srv .si{font-size:2rem;margin-bottom:12px;display:block}
+.srv h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.srv p{font-size:0.82rem;color:var(--t2);line-height:1.6;margin-bottom:10px}
+.srv .stag{font-size:0.68rem;background:var(--ag);color:var(--a);padding:3px 10px;border-radius:5px}
+
+/* CTA */
+.cta-f{background:linear-gradient(135deg,rgba(0,229,176,0.06),rgba(74,158,255,0.06));border-top:1px solid var(--b);border-bottom:1px solid var(--b);text-align:center}
+.cta-f h2{font-size:2.4rem;font-weight:800;margin-bottom:14px}
+.cta-f p{font-size:1.05rem;color:var(--t2);max-width:500px;margin:0 auto 28px}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* PROOF */
+.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px}
+.pc{background:rgba(255,255,255,0.03);border:1px solid var(--b);border-radius:14px;padding:28px;text-align:center;transition:all 0.3s}
+.pc:hover{border-color:var(--bh);transform:translateY(-2px)}
+.pn{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,var(--a),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pl{font-size:0.82rem;color:var(--t2);margin-top:4px}
+
+footer{background:var(--bg);border-top:1px solid var(--b);padding:48px 24px 20px;text-align:center;color:var(--m);font-size:0.8rem}
+
+@media(max-width:768px){
+  .hero-c,.concept-grid,.srv-grid{grid-template-columns:1fr}
+  .hero h1{font-size:2rem}.st{font-size:1.7rem}
+  section{padding:72px 24px}
+  .proof{grid-template-columns:1fr 1fr}
+  .nl{display:none}
+  .meth-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="ni">
+  <a href="#" class="logo">Smart<span>Connection</span></a>
+  <div class="nl">
+    <a href="#concepto">SaaS Factory</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#metodologias">Metodologías</a>
+    <a href="#tecnologias">Tecnologías</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#agendar" class="nc">Agendar Reunión</a>
+  </div>
+</div></nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="cx hero-c">
+    <div>
+      <div class="sl">SaaS Factory con Inteligencia Artificial</div>
+      <h1>Un equipo completo de <span class="hl">especialistas IA</span> trabajando en tu proyecto</h1>
+      <p>No somos un desarrollador freelance ni una consultora genérica. Somos una fábrica de software con un equipo multidisciplinario potenciado por IA que cubre cada ángulo: estrategia, diseño, arquitectura, desarrollo, calidad e innovación.</p>
+      <div class="hero-ctas">
+        <a href="#contacto" class="bp">Cuéntanos tu desafío →</a>
+        <a href="#concepto" class="bs">Cómo funciona</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="factory-visual">
+        <div class="fv-title">Así trabajamos cada proyecto</div>
+        <div class="factory-flow">
+          <div class="ff-row"><div class="ff-node">📊 Estrategia</div><span class="ff-arrow">→</span><div class="ff-node">💼 Validación</div></div>
+          <div class="ff-row"><span class="ff-arrow">↓</span></div>
+          <div class="ff-row"><div class="ff-node">🐕 Diseño UX + Procesos</div></div>
+          <div class="ff-row"><span class="ff-arrow">↓</span></div>
+          <div class="ff-row"><div class="ff-node">🏗️ Arquitectura Cross</div></div>
+          <div class="ff-row"><span class="ff-arrow">↓ en paralelo</span></div>
+          <div class="ff-parallel">
+            <div class="ff-node">🤖 IA</div>
+            <div class="ff-node">🔧 Backend</div>
+            <div class="ff-node">🎨 Frontend</div>
+            <div class="ff-node">🔌 Integraciones</div>
+          </div>
+          <div class="ff-row"><span class="ff-arrow">↓</span></div>
+          <div class="ff-row"><div class="ff-node">🛠️ Deploy</div><span class="ff-arrow">→</span><div class="ff-node">✅ QA</div><span class="ff-arrow">→</span><div class="ff-node">🎧 Soporte</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPTO SAAS FACTORY -->
+<section id="concepto" class="concept">
+  <div class="cx">
+    <div class="sl">Nuestro diferenciador</div>
+    <div class="st">¿Qué es una <span class="hl">SaaS Factory con IA</span>?</div>
+    <div class="sd">No construimos software de la manera tradicional. Operamos como una fábrica inteligente donde cada especialidad tiene un responsable dedicado — potenciado por inteligencia artificial.</div>
+
+    <div class="concept-grid">
+      <div class="cc">
+        <span class="icon">⚡</span>
+        <h3>Velocidad × Paralelismo</h3>
+        <p>Backend, frontend e IA se desarrollan simultáneamente contra contratos de API predefinidos. Lo que otros hacen en 3 meses, lo entregamos en semanas.</p>
+      </div>
+      <div class="cc">
+        <span class="icon">🧠</span>
+        <h3>IA en cada capa</h3>
+        <p>No solo construimos CON IA — usamos IA para diseñar, desarrollar, testear, optimizar prompts, evaluar calidad y monitorear en producción. Es IA de punta a punta.</p>
+      </div>
+      <div class="cc">
+        <span class="icon">🏗️</span>
+        <h3>Arquitectura Cross</h3>
+        <p>Un arquitecto define estándares, contratos y decisiones técnicas que todos siguen. Nada se improvisa — cada pieza encaja por diseño, no por casualidad.</p>
+      </div>
+      <div class="cc">
+        <span class="icon">🔌</span>
+        <h3>+25 Integraciones Gobernadas</h3>
+        <p>APIs de negocio y 10+ providers de IA bajo un solo gobierno: catálogo, monitoreo, fallbacks, costos. Tus sistemas hablan entre sí sin fricciones.</p>
+      </div>
+      <div class="cc">
+        <span class="icon">🔍</span>
+        <h3>Calidad como usuario real</h3>
+        <p>Cada feature se testea como 6 personas distintas: el novato, el impaciente, el desconfiado. Si confunde a un usuario real, no sale a producción.</p>
+      </div>
+      <div class="cc">
+        <span class="icon">📊</span>
+        <h3>Decisiones con datos</h3>
+        <p>Priorizamos con métricas reales (RICE scoring, AARRR). No construimos lo que "suena bien" — construimos lo que mueve tu negocio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METODOLOGÍAS -->
+<section id="metodologias">
+  <div class="cx">
+    <div class="sl">+50 metodologías activas</div>
+    <div class="st">Cómo pensamos y <span class="hl">entregamos valor</span></div>
+    <div class="sd">Cada área del equipo opera con metodologías probadas. No improvisamos — ejecutamos con frameworks que garantizan resultados.</div>
+
+    <div class="meth-grid">
+      <div class="mg"><span class="tag tag-gestion">Gestión</span><h4>📊 RICE Scoring</h4><p>Priorizamos por Reach × Impact × Confidence / Effort. Solo construimos lo que mueve métricas.</p></div>
+      <div class="mg"><span class="tag tag-gestion">Gestión</span><h4>🏴‍☠️ Pirate Metrics</h4><p>AARRR: Acquisition, Activation, Retention, Revenue, Referral. Medimos el funnel completo.</p></div>
+      <div class="mg"><span class="tag tag-comercial">Comercial</span><h4>🎯 Challenger Sale</h4><p>No vendemos lo que pides — te enseñamos lo que necesitas con insights de mercado.</p></div>
+      <div class="mg"><span class="tag tag-comercial">Comercial</span><h4>🔍 SPIN Selling</h4><p>Situación → Problema → Implicación → Necesidad. Diagnosticamos antes de proponer.</p></div>
+      <div class="mg"><span class="tag tag-comercial">Comercial</span><h4>💰 Value-Based Pricing</h4><p>Cobramos por el valor que generamos, no por las horas que trabajamos.</p></div>
+      <div class="mg"><span class="tag tag-comercial">Comercial</span><h4>🏔️ Land & Expand</h4><p>Empezamos con un proyecto acotado, crecemos dentro del cliente con resultados probados.</p></div>
+      <div class="mg"><span class="tag tag-producto">Producto</span><h4>💡 Design Thinking</h4><p>Empatizar → Definir → Idear → Prototipar → Testear. El usuario al centro siempre.</p></div>
+      <div class="mg"><span class="tag tag-producto">Producto</span><h4>🎯 Jobs to Be Done</h4><p>"¿Para qué contrata este feature?" Si no hay job concreto, no lo construimos.</p></div>
+      <div class="mg"><span class="tag tag-producto">Producto</span><h4>🗺️ Wardley Mapping</h4><p>¿Build, buy o skip? Mapeamos madurez de componentes para decidir dónde invertir.</p></div>
+      <div class="mg"><span class="tag tag-producto">Producto</span><h4>📋 BPMN 2.0</h4><p>Procesos de negocio mapeados end-to-end antes de escribir código. Reglas claras, SLAs definidos.</p></div>
+      <div class="mg"><span class="tag tag-tecnica">Arquitectura</span><h4>🔄 Kaizen</h4><p>Mejora continua cada 3 días. Auditoría 360° del sistema completo automáticamente.</p></div>
+      <div class="mg"><span class="tag tag-tecnica">Arquitectura</span><h4>🔍 OODA Loop</h4><p>Observe → Orient → Decide → Act. Cada decisión técnica documentada y revisable.</p></div>
+      <div class="mg"><span class="tag tag-tecnica">Arquitectura</span><h4>👀 Gemba</h4><p>No decidimos leyendo código — verificamos producción real. Si el código dice una cosa y prod otra, prod manda.</p></div>
+      <div class="mg"><span class="tag tag-tecnica">Arquitectura</span><h4>🏛️ Conway's Law</h4><p>La arquitectura refleja al equipo. Repos separados, APIs como contratos, deploys independientes.</p></div>
+      <div class="mg"><span class="tag tag-ia">IA</span><h4>🧪 Eval-Driven Dev</h4><p>Como TDD pero para IA. Criterios de calidad definidos ANTES del prompt. Si el eval no pasa, no se deploya.</p></div>
+      <div class="mg"><span class="tag tag-ia">IA</span><h4>📝 Prompt Versioning</h4><p>Cada prompt versionado en código. Changelog, rollback, métricas comparadas v1 vs v2.</p></div>
+      <div class="mg"><span class="tag tag-ia">IA</span><h4>🛡️ Guardrails Pattern</h4><p>Validación de input Y output en cada llamada IA. Pre-guard + post-guard. Seguridad de punta a punta.</p></div>
+      <div class="mg"><span class="tag tag-ia">IA</span><h4>👤 Human-in-the-Loop</h4><p>Umbral de confianza: la IA decide sola lo rutinario, escala a humano lo crítico.</p></div>
+      <div class="mg"><span class="tag tag-ia">IA</span><h4>📊 LLMOps</h4><p>Cada llamada IA logueada: tokens, costo, latencia, calidad. Dashboards de uso y optimización.</p></div>
+      <div class="mg"><span class="tag tag-ia">IA</span><h4>🔎 Retrieval Engineering</h4><p>RAG optimizado: chunking, embeddings, hybrid search, reranking. No solo "hacer RAG" — hacerlo bien.</p></div>
+      <div class="mg"><span class="tag tag-tecnica">Backend</span><h4>🔒 Poka-Yoke</h4><p>Validaciones que hacen IMPOSIBLE el bug. Types estrictos, guards, exhaustive checks.</p></div>
+      <div class="mg"><span class="tag tag-tecnica">Backend</span><h4>🛑 Jidoka</h4><p>Build falla = NO deploy. Sin excepciones. La línea se para ante cualquier error.</p></div>
+      <div class="mg"><span class="tag tag-tecnica">Frontend</span><h4>📱 Mobile-First</h4><p>Diseñamos para 375px primero. Touch targets 44px. Lighthouse >90. Sin excusas.</p></div>
+      <div class="mg"><span class="tag tag-tecnica">Frontend</span><h4>🎯 Pixel-Perfect</h4><p>La maqueta se implementa exactamente. Tokens CSS, no valores hardcodeados.</p></div>
+      <div class="mg"><span class="tag tag-devops">DevOps</span><h4>🔄 GitOps</h4><p>Infra declarativa en repo. Push a main = producción. Rollback en <15 min.</p></div>
+      <div class="mg"><span class="tag tag-devops">DevOps</span><h4>📈 SRE</h4><p>SLOs, error budgets, postmortems. 99.9% uptime no es un slogan — es un objetivo medido.</p></div>
+      <div class="mg"><span class="tag tag-calidad">QA</span><h4>⬅️ Shift Left</h4><p>Testear antes, no al final. Validamos specs ANTES de implementar. 10x más barato.</p></div>
+      <div class="mg"><span class="tag tag-calidad">QA</span><h4>💥 Chaos Engineering</h4><p>¿Qué pasa si la API cae? ¿Si hay 0 datos? ¿1000? Rompemos a propósito para que no rompa en prod.</p></div>
+      <div class="mg"><span class="tag tag-innovacion">Innovación</span><h4>🔧 TRIZ</h4><p>40 principios de invención para resolver contradicciones técnicas que parecen imposibles.</p></div>
+      <div class="mg"><span class="tag tag-innovacion">Innovación</span><h4>🔄 SCAMPER</h4><p>Sustituir, Combinar, Adaptar, Modificar, Poner otro uso, Eliminar, Reversar. 7 lentes creativos.</p></div>
+      <div class="mg"><span class="tag tag-innovacion">Innovación</span><h4>🌊 Blue Ocean</h4><p>¿Qué eliminar? ¿Reducir? ¿Elevar? ¿Crear? Encontramos espacios donde no hay competencia.</p></div>
+      <div class="mg"><span class="tag tag-innovacion">Innovación</span><h4>🧱 First Principles</h4><p>Descomponemos hasta los fundamentos. Eliminamos suposiciones heredadas. Reconstruimos desde cero.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="concept">
+  <div class="cx">
+    <div class="sl">Servicios</div>
+    <div class="st">Lo que construimos para ti</div>
+    <div class="sd">Desde consultoría SAP enterprise hasta apps inteligentes para PYMES.</div>
+    <div class="srv-grid">
+      <div class="srv"><span class="si">🏗️</span><h3>SAP BTP & Cloud</h3><p>Extensiones e integraciones en la nube SAP. Tu ERP al siguiente nivel.</p><span class="stag">Enterprise</span></div>
+      <div class="srv"><span class="si">🔄</span><h3>Migraciones S/4HANA</h3><p>Migraciones ágiles con rollback garantizado. Sin sorpresas.</p><span class="stag">Enterprise</span></div>
+      <div class="srv"><span class="si">💻</span><h3>ABAP & FIORI</h3><p>Desarrollo a medida en SAP con interfaces que los usuarios quieren usar.</p><span class="stag">Enterprise</span></div>
+      <div class="srv"><span class="si">🔌</span><h3>Integraciones PI/PO & CPI</h3><p>Conectamos tu SAP con todo tu ecosistema: ERPs, CRMs, eCommerce, APIs.</p><span class="stag">Enterprise</span></div>
+      <div class="srv"><span class="si">🤖</span><h3>Apps con IA</h3><p>Chatbots, RAG, agentes inteligentes, análisis de documentos, automatización con IA.</p><span class="stag">Empresas + PYMES</span></div>
+      <div class="srv"><span class="si">📊</span><h3>Analytics & BI</h3><p>Dashboards ejecutivos y Business Intelligence. Decisiones con datos, no intuición.</p><span class="stag">Empresas + PYMES</span></div>
+      <div class="srv"><span class="si">🌐</span><h3>Desarrollo Web & eCommerce</h3><p>Sitios de alta conversión, tiendas online, marketplaces. Mobile-first, Lighthouse >90.</p><span class="stag">Empresas + PYMES</span></div>
+      <div class="srv"><span class="si">📱</span><h3>Apps Móviles & PWA</h3><p>Progressive Web Apps instalables, offline, push notifications. Como app nativa, sin app store.</p><span class="stag">Empresas + PYMES</span></div>
+      <div class="srv"><span class="si">🛡️</span><h3>Soporte Continuo AMS</h3><p>No desaparecemos. Monitoreo 24/7, mejoras incrementales, Kaizen cada 3 días.</p><span class="stag">Todos</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TECNOLOGÍAS -->
+<section id="tecnologias" class="tech">
+  <div class="cx">
+    <div class="sl">Stack tecnológico</div>
+    <div class="st">Las herramientas detrás de la <span class="hl">magia</span></div>
+    <div class="sd">Elegimos cada tecnología por mérito, no por moda. Benchmarks reales, no marketing.</div>
+
+    <div class="tech-categories">
+      <div class="tech-cat">
+        <h3><span class="tc-icon">🧠</span> Inteligencia Artificial (10 providers)</h3>
+        <div class="tech-pills">
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> Anthropic Claude</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> OpenAI GPT</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> Groq (Llama)</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> Google Gemini</div>
+          <div class="tp"><span class="dot" style="background:var(--cyan)"></span> DeepSeek</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> Mistral</div>
+          <div class="tp"><span class="dot" style="background:var(--purple)"></span> xAI Grok</div>
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> Cohere</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> OpenRouter</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> AWS Bedrock</div>
+        </div>
+      </div>
+      <div class="tech-cat">
+        <h3><span class="tc-icon">🏢</span> SAP</h3>
+        <div class="tech-pills">
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> SAP BTP</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> S/4HANA</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> ABAP</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> FIORI / UI5</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> PI/PO</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> CPI</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> BW/4HANA</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> Workflow</div>
+        </div>
+      </div>
+      <div class="tech-cat">
+        <h3><span class="tc-icon">⚡</span> Desarrollo</h3>
+        <div class="tech-pills">
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> Next.js 16</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> Astro</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> TypeScript</div>
+          <div class="tp"><span class="dot" style="background:var(--cyan)"></span> Tailwind CSS v4</div>
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> Node.js</div>
+          <div class="tp"><span class="dot" style="background:var(--purple)"></span> Python</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> Vanilla JS</div>
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> React</div>
+        </div>
+      </div>
+      <div class="tech-cat">
+        <h3><span class="tc-icon">☁️</span> Cloud & Infraestructura</h3>
+        <div class="tech-pills">
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> AWS (S3, CloudFront, Amplify, Bedrock, Route 53)</div>
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> Supabase</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> Vercel</div>
+          <div class="tp"><span class="dot" style="background:var(--purple)"></span> GitHub Actions</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> Google Cloud</div>
+        </div>
+      </div>
+      <div class="tech-cat">
+        <h3><span class="tc-icon">🔌</span> Integraciones & APIs</h3>
+        <div class="tech-pills">
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> Google Workspace (Calendar, Gmail, Drive)</div>
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> WhatsApp Business</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> Airtable</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> Resend + React Email</div>
+          <div class="tp"><span class="dot" style="background:var(--purple)"></span> MercadoLibre API</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> Bsale</div>
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> Jumpseller</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> Transbank WebPay</div>
+          <div class="tp"><span class="dot" style="background:var(--pink)"></span> Flow.cl</div>
+          <div class="tp"><span class="dot" style="background:var(--cyan)"></span> jsPDF</div>
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> Cal.com</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> Helium 10</div>
+          <div class="tp"><span class="dot" style="background:var(--purple)"></span> PostHog</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> GA4 + GTM</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> Meta Pixel</div>
+        </div>
+      </div>
+      <div class="tech-cat">
+        <h3><span class="tc-icon">🛡️</span> Seguridad & Calidad</h3>
+        <div class="tech-pills">
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> RLS (Row Level Security)</div>
+          <div class="tp"><span class="dot" style="background:var(--blue)"></span> CSP Headers</div>
+          <div class="tp"><span class="dot" style="background:var(--orange)"></span> Rate Limiting</div>
+          <div class="tp"><span class="dot" style="background:var(--red)"></span> CORS Restrictivo</div>
+          <div class="tp"><span class="dot" style="background:var(--a)"></span> WCAG AA Accesibilidad</div>
+          <div class="tp"><span class="dot" style="background:var(--purple)"></span> Lighthouse CI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section>
+  <div class="cx">
+    <div class="sl">Resultados</div>
+    <div class="st">Números reales</div>
+    <div class="proof">
+      <div class="pc"><div class="pn">+7</div><div class="pl">Años experiencia SAP</div></div>
+      <div class="pc"><div class="pn">99.9%</div><div class="pl">Uptime en producción</div></div>
+      <div class="pc"><div class="pn">50+</div><div class="pl">Metodologías activas</div></div>
+      <div class="pc"><div class="pn">10</div><div class="pl">Providers IA integrados</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-f" id="contacto">
+  <div class="cx">
+    <div class="sl">¿Listo para empezar?</div>
+    <h2>Tu proyecto merece un <span class="hl">equipo completo</span></h2>
+    <p>30 minutos. Sin compromiso. Diagnosticamos tu desafío y te decimos honestamente si podemos ayudarte.</p>
+    <div class="cta-btns">
+      <a href="#agendar" class="bp">Agendar reunión gratuita →</a>
+      <a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20más%20sobre%20Smart%20Connection" class="bs" target="_blank">💬 WhatsApp directo</a>
+    </div>
+  </div>
+</section>
+
+<!-- WhatsApp flotante -->
+<a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20más" target="_blank" style="position:fixed;bottom:24px;right:24px;z-index:999;width:60px;height:60px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 4px 20px rgba(37,211,102,0.4);transition:transform 0.3s;text-decoration:none" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">💬</a>
+
+<footer>
+  <div class="cx">
+    <a href="#" class="logo" style="justify-content:center;display:flex;margin-bottom:12px">Smart<span>Connection</span></a>
+    <p>Consultoría SAP · Desarrollo con IA · SaaS Factory — Santiago, Chile</p>
+    <p style="margin-top:8px">contacto@smconnection.cl · +56 9 5536 1419</p>
+    <p style="margin-top:16px">© 2026 Smart Connection. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{document.querySelector('nav').style.borderBottomColor=window.scrollY>50?'rgba(255,255,255,0.06)':'transparent'})
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})})})
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.style.opacity='1';x.target.style.transform='translateY(0)'}})},{threshold:0.1})
+document.querySelectorAll('.cc,.srv,.mg,.pc,.ff-node').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(15px)';el.style.transition='all 0.5s ease';obs.observe(el)})
+</script>
+</body>
+</html>

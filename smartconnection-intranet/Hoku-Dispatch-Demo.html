@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Hoku Dispatch — SMConnection</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07090f;--s1:#0d1220;--s2:#131c30;--s3:#1a2540;
+  --b1:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.12);
+  --teal:#00e5b0;--teal2:rgba(0,229,176,0.13);--teal3:rgba(0,229,176,0.06);
+  --blue:#3b82f6;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;
+  --violet:#a78bfa;--orange:#fb923c;
+  --text:#e8edf5;--muted:#7c8fa8;--dim:#3a4f68;
+  --font:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+  --display:'Syne',sans-serif;
+}
+
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* ── LAYOUT: lado a lado desktop, stack mobile ── */
+.app{display:flex;min-height:100vh;gap:0}
+
+/* ── DESKTOP PANEL ───────────────────────────── */
+.desktop-panel{flex:1;background:var(--bg);border-right:1px solid var(--b1);display:flex;flex-direction:column;min-height:100vh}
+.dp-header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 20px;gap:10px}
+.dp-logo{font-family:var(--display);font-size:14px;font-weight:800;color:var(--teal)}
+.dp-badge{font-size:10px;background:var(--s2);border:1px solid var(--b1);border-radius:4px;padding:2px 7px;color:var(--muted);font-family:var(--mono)}
+.dp-status{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green)}
+.dp-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+.dp-body{flex:1;display:flex;overflow:hidden}
+
+/* SIDEBAR */
+.dp-sidebar{width:200px;background:var(--s1);border-right:1px solid var(--b1);padding:12px 8px;display:flex;flex-direction:column;gap:3px}
+.ds-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:all .15s;color:var(--dim);font-size:12px;font-weight:500}
+.ds-item:hover{background:var(--s2);color:var(--muted)}
+.ds-item.on{background:var(--teal2);color:var(--teal)}
+.ds-ico{font-size:14px;width:18px;text-align:center}
+.ds-lbl{flex:1}
+.ds-badge{font-size:9px;background:var(--teal);color:#000;border-radius:10px;padding:1px 5px;font-weight:700}
+
+/* MAIN CONTENT */
+.dp-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* AGENT STATUS CARDS */
+.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px}
+.ag-card{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:12px;position:relative;overflow:hidden}
+.ag-card.active{border-color:rgba(0,229,176,.25);box-shadow:0 0 15px rgba(0,229,176,.06)}
+.ag-card.running::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,229,176,.04),transparent);animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.ag-top{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.ag-ico{font-size:16px}
+.ag-name{font-size:12px;font-weight:700}
+.ag-status{margin-left:auto;font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px}
+.st-ok{background:rgba(34,197,94,.12);color:var(--green)}
+.st-run{background:rgba(0,229,176,.12);color:var(--teal);animation:pulse 1s infinite}
+.st-wait{background:rgba(71,85,105,.2);color:var(--dim)}
+.ag-task{font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.ag-progress{height:2px;background:var(--s3);border-radius:1px;overflow:hidden}
+.ag-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--blue));border-radius:1px;transition:width .5s}
+
+/* TERMINAL */
+.dp-terminal{height:220px;background:#060a12;border-top:1px solid var(--b1);display:flex;flex-direction:column}
+.term-bar{height:30px;display:flex;align-items:center;padding:0 14px;gap:6px;border-bottom:1px solid rgba(255,255,255,.04)}
+.term-lbl{font-size:11px;font-weight:700;color:var(--muted);font-family:var(--mono);letter-spacing:.06em;margin-right:auto}
+.term-tab{font-size:11px;color:var(--dim);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:4px;padding:2px 8px;cursor:pointer;font-family:var(--mono)}
+.term-tab.on{background:rgba(0,229,176,.08);color:var(--teal);border-color:rgba(0,229,176,.25)}
+.term-body{flex:1;overflow-y:auto;padding:8px 14px;font-family:var(--mono);font-size:11px;line-height:1.9}
+.term-body::-webkit-scrollbar{width:3px}
+.term-body::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+.tl{display:flex;gap:8px}
+.ts{color:#1a2d45;flex-shrink:0;width:56px}
+.tag{border-radius:3px;padding:1px 5px;font-size:9px;font-weight:700;flex-shrink:0;min-width:52px;text-align:center}
+.t-d{background:rgba(167,139,250,.15);color:var(--violet)}
+.t-g{background:rgba(0,229,176,.12);color:var(--teal)}
+.t-ok{background:rgba(34,197,94,.12);color:var(--green)}
+.t-a{background:rgba(251,146,60,.12);color:var(--orange)}
+.t-s{background:rgba(71,85,105,.2);color:#64748b}
+.t-e{background:rgba(239,68,68,.12);color:var(--red)}
+.tm{color:#5a7a9a;flex:1}
+
+/* ── MOBILE PANEL ────────────────────────────── */
+.mobile-panel{width:375px;flex-shrink:0;background:var(--bg);display:flex;flex-direction:column;position:relative}
+
+/* PHONE FRAME */
+.phone-frame{flex:1;background:#0a0e1a;border-left:1px solid var(--b1);display:flex;flex-direction:column;position:relative;overflow:hidden}
+
+/* STATUS BAR */
+.status-bar{height:44px;background:var(--s1);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
+.sb-time{font-size:15px;font-weight:700;font-family:var(--display)}
+.sb-icons{display:flex;align-items:center;gap:5px;font-size:12px}
+
+/* APP HEADER */
+.app-header{background:var(--s1);border-bottom:1px solid var(--b1);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ah-back{font-size:13px;color:var(--teal);cursor:pointer}
+.ah-title{font-family:var(--display);font-size:16px;font-weight:800;flex:1}
+.ah-badge{font-size:10px;background:linear-gradient(135deg,var(--violet),var(--blue));color:#fff;border-radius:20px;padding:3px 10px;font-weight:600}
+.ah-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
+
+/* QUICK ACTIONS */
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;flex-shrink:0}
+.qa{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s;text-align:center}
+.qa:hover,.qa:active{border-color:var(--teal);background:var(--teal2);transform:scale(.97)}
+.qa-ico{font-size:22px;margin-bottom:5px}
+.qa-lbl{font-size:11px;font-weight:600;color:var(--text)}
+.qa-sub{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* CHAT AREA */
+.chat-area{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.chat-area::-webkit-scrollbar{width:3px}
+.chat-area::-webkit-scrollbar-thumb{background:var(--s2)}
+
+/* MESSAGES */
+.msg{display:flex;flex-direction:column;gap:3px}
+.msg.user{align-items:flex-end}
+.msg.bot{align-items:flex-start}
+.msg-bubble{max-width:82%;border-radius:16px;padding:10px 14px;font-size:13px;line-height:1.5}
+.msg.user .msg-bubble{background:var(--teal);color:#000;border-radius:16px 16px 4px 16px;font-weight:500}
+.msg.bot .msg-bubble{background:var(--s2);color:var(--text);border-radius:16px 16px 16px 4px;border:1px solid var(--b1)}
+.msg-meta{font-size:10px;color:var(--dim);font-family:var(--mono);padding:0 4px}
+
+/* PIPELINE STATUS (in chat) */
+.pipeline-msg{background:var(--s2);border:1px solid rgba(0,229,176,.2);border-radius:14px;padding:12px;font-size:12px}
+.pip-title{font-weight:700;color:var(--teal);margin-bottom:8px;display:flex;align-items:center;gap:5px;font-family:var(--display)}
+.pip-steps{display:flex;flex-direction:column;gap:5px}
+.pip-step{display:flex;align-items:center;gap:8px;font-size:11px;font-family:var(--mono)}
+.pip-dot{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.pip-done{background:var(--green);color:#000}
+.pip-act{background:var(--teal);color:#000;animation:pulse 1s infinite}
+.pip-wait{background:var(--s3);color:var(--dim);border:1px solid var(--b2)}
+.pip-txt-d{color:var(--green)}
+.pip-txt-a{color:var(--teal)}
+.pip-txt-w{color:var(--dim)}
+.pip-bar{height:3px;background:var(--s3);border-radius:2px;overflow:hidden;margin-top:8px}
+.pip-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--blue));border-radius:2px;transition:width .5s}
+
+/* AGENT RESULT */
+.result-card{background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:12px;font-size:12px}
+.rc-header{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.rc-agent{font-weight:700;font-size:12px}
+.rc-badge{font-size:9px;background:var(--teal2);color:var(--teal);border-radius:4px;padding:1px 6px;font-family:var(--mono)}
+.rc-content{color:var(--muted);line-height:1.6}
+.rc-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.rc-btn{font-size:11px;color:var(--teal);background:var(--teal2);border:1px solid rgba(0,229,176,.2);border-radius:8px;padding:5px 10px;cursor:pointer;font-weight:600;transition:all .15s}
+.rc-btn:hover{background:rgba(0,229,176,.2)}
+.rc-btn.primary{background:var(--teal);color:#000;border-color:var(--teal)}
+
+/* TYPING INDICATOR */
+.typing{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--s2);border-radius:16px 16px 16px 4px;border:1px solid var(--b1);width:fit-content}
+.typing-dots{display:flex;gap:4px}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bounce 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* INPUT AREA */
+.input-area{padding:10px 14px 20px;background:var(--s1);border-top:1px solid var(--b1);flex-shrink:0}
+.input-row{display:flex;align-items:flex-end;gap:8px}
+.msg-input{flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:22px;padding:10px 16px;font-family:var(--font);font-size:13px;color:var(--text);outline:none;resize:none;min-height:42px;max-height:120px;transition:border-color .2s;line-height:1.4}
+.msg-input::placeholder{color:var(--dim)}
+.msg-input:focus{border-color:var(--teal)}
+.send-btn{width:42px;height:42px;border-radius:50%;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;flex-shrink:0}
+.send-btn:hover{background:#00ffc4;transform:scale(1.05)}
+.send-btn:disabled{background:var(--s3);color:var(--dim);cursor:not-allowed;transform:none}
+
+/* SUGGESTED PROMPTS */
+.suggestions{display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;padding-bottom:2px}
+.suggestions::-webkit-scrollbar{display:none}
+.sug{font-size:11px;color:var(--teal);background:var(--teal2);border:1px solid rgba(0,229,176,.2);border-radius:20px;padding:5px 12px;white-space:nowrap;cursor:pointer;transition:all .15s;flex-shrink:0}
+.sug:hover{background:rgba(0,229,176,.2)}
+
+/* NOTIFICATION */
+.notif{position:absolute;top:54px;left:50%;transform:translateX(-50%);width:calc(100% - 28px);background:var(--s2);border:1px solid rgba(0,229,176,.3);border-radius:14px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;z-index:100;animation:slideDown .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.6);display:none}
+.notif.show{display:flex}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.notif-ico{font-size:20px;flex-shrink:0}
+.notif-body{flex:1}
+.notif-title{font-size:12px;font-weight:700;color:var(--teal);margin-bottom:2px}
+.notif-msg{font-size:11px;color:var(--muted)}
+.notif-actions{display:flex;gap:6px;margin-top:6px}
+.notif-btn{font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;font-weight:600;border:none}
+.nb-primary{background:var(--teal);color:#000}
+.nb-secondary{background:var(--s3);color:var(--muted)}
+
+/* CONNECTED INDICATOR */
+.connected-bar{background:linear-gradient(90deg,rgba(0,229,176,.1),rgba(59,130,246,.1));border-bottom:1px solid rgba(0,229,176,.15);padding:6px 14px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--teal);font-weight:600;flex-shrink:0}
+.cb-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 5px var(--teal)}
+.cb-device{margin-left:auto;color:var(--dim);font-family:var(--mono)}
+
+/* ── RESPONSIVE ──────────────────────────────── */
+@media (max-width: 768px) {
+  .app{flex-direction:column}
+  .desktop-panel{display:none}
+  .mobile-panel{width:100%;min-height:100vh}
+  .phone-frame{min-height:100vh}
+  .agent-grid{grid-template-columns:1fr 1fr}
+}
+
+/* ── DEMO LABEL ──────────────────────────────── */
+.demo-label{position:fixed;top:10px;right:10px;background:rgba(0,229,176,.15);border:1px solid rgba(0,229,176,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--teal);font-weight:600;z-index:1000;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="demo-label">🎮 DEMO INTERACTIVO</div>
+
+<div class="app">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- DESKTOP PANEL                          -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="desktop-panel">
+    <div class="dp-header">
+      <div class="dp-logo">SMConnection Intranet</div>
+      <div class="dp-badge">Hoku 9in1</div>
+      <div class="dp-status">
+        <div class="dp-dot"></div>
+        <span>Dispatch activo · Mac conectada</span>
+      </div>
+    </div>
+
+    <div class="dp-body">
+      <!-- Sidebar -->
+      <div class="dp-sidebar">
+        <div class="ds-item on"><span class="ds-ico">⚡</span><span class="ds-lbl">Agentes</span><span class="ds-badge">9</span></div>
+        <div class="ds-item"><span class="ds-ico">🚀</span><span class="ds-lbl">Deploy</span></div>
+        <div class="ds-item"><span class="ds-ico">☁</span><span class="ds-lbl">AWS Panel</span></div>
+        <div class="ds-item"><span class="ds-ico">📊</span><span class="ds-lbl">Analytics</span></div>
+        <div class="ds-item"><span class="ds-ico">👥</span><span class="ds-lbl">Leads</span></div>
+        <div class="ds-item"><span class="ds-ico">🏗</span><span class="ds-lbl">SAP Esp.</span></div>
+        <div class="ds-item"><span class="ds-ico">📋</span><span class="ds-lbl">Proyectos</span></div>
+      </div>
+
+      <!-- Main content -->
+      <div class="dp-main">
+        <!-- Agent cards -->
+        <div class="agent-grid">
+          <div class="ag-card" id="card-groq">
+            <div class="ag-top"><span class="ag-ico">⚡</span><span class="ag-name">Groq</span><span class="ag-status st-ok">● Activo</span></div>
+            <div class="ag-task" id="task-groq">En espera de tarea...</div>
+            <div class="ag-progress"><div class="ag-fill" id="prog-groq" style="width:0%"></div></div>
+          </div>
+          <div class="ag-card" id="card-claude">
+            <div class="ag-top"><span class="ag-ico">🤖</span><span class="ag-name">Claude</span><span class="ag-status st-ok">● Activo</span></div>
+            <div class="ag-task" id="task-claude">En espera de tarea...</div>
+            <div class="ag-progress"><div class="ag-fill" id="prog-claude" style="width:0%"></div></div>
+          </div>
+          <div class="ag-card" id="card-openai">
+            <div class="ag-top"><span class="ag-ico">🟢</span><span class="ag-name">OpenAI</span><span class="ag-status st-ok">● Activo</span></div>
+            <div class="ag-task" id="task-openai">En espera de tarea...</div>
+            <div class="ag-progress"><div class="ag-fill" id="prog-openai" style="width:0%"></div></div>
+          </div>
+          <div class="ag-card" id="card-deepseek">
+            <div class="ag-top"><span class="ag-ico">🔷</span><span class="ag-name">DeepSeek</span><span class="ag-status st-wait">○ Standby</span></div>
+            <div class="ag-task" id="task-deepseek">En espera de tarea...</div>
+            <div class="ag-progress"><div class="ag-fill" id="prog-deepseek" style="width:0%"></div></div>
+          </div>
+          <div class="ag-card" id="card-mistral">
+            <div class="ag-top"><span class="ag-ico">🟠</span><span class="ag-name">Mistral</span><span class="ag-status st-wait">○ Standby</span></div>
+            <div class="ag-task" id="task-mistral">En espera de tarea...</div>
+            <div class="ag-progress"><div class="ag-fill" id="prog-mistral" style="width:0%"></div></div>
+          </div>
+          <div class="ag-card" id="card-bedrock">
+            <div class="ag-top"><span class="ag-ico">☁</span><span class="ag-name">Bedrock</span><span class="ag-status st-ok">● AWS</span></div>
+            <div class="ag-task" id="task-bedrock">En espera de tarea...</div>
+            <div class="ag-progress"><div class="ag-fill" id="prog-bedrock" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Terminal -->
+        <div class="dp-terminal">
+          <div class="term-bar">
+            <span class="term-lbl">TERMINAL</span>
+            <div class="term-tab on">hoku</div>
+            <div class="term-tab">deploy</div>
+            <div class="term-tab">aws</div>
+          </div>
+          <div class="term-body" id="terminal">
+            <div class="tl"><span class="ts">07:26:35</span><span class="tag t-s">system</span><span class="tm">Hoku Dispatch iniciado · 9 providers conectados</span></div>
+            <div class="tl"><span class="ts">07:26:35</span><span class="tag t-s">system</span><span class="tm">Esperando instrucciones desde iPhone...</span></div>
+            <div class="tl"><span class="ts">07:26:36</span><span class="tag t-ok">dispatch</span><span class="tm">✓ Conexión establecida con dispositivo móvil</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- MOBILE PANEL (iPhone)                 -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="mobile-panel">
+    <div class="phone-frame">
+
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span class="sb-time" id="clock">7:26</span>
+        <div class="sb-icons">📶 🔋</div>
+      </div>
+
+      <!-- Connected Bar -->
+      <div class="connected-bar">
+        <div class="cb-dot"></div>
+        <span>Dispatch · Mac conectada</span>
+        <span class="cb-device">MacBook Pro ●</span>
+      </div>
+
+      <!-- App Header -->
+      <div class="app-header">
+        <span class="ah-back">←</span>
+        <span class="ah-title">Hoku Dispatch</span>
+        <span class="ah-badge">9in1</span>
+        <div class="ah-dot"></div>
+      </div>
+
+      <!-- Notification (oculta por defecto) -->
+      <div class="notif" id="notif">
+        <div class="notif-ico">⚡</div>
+        <div class="notif-body">
+          <div class="notif-title" id="notif-title">Tarea completada</div>
+          <div class="notif-msg" id="notif-msg">Groq completó el análisis UX</div>
+          <div class="notif-actions">
+            <button class="notif-btn nb-primary" onclick="hideNotif()">Ver resultado</button>
+            <button class="notif-btn nb-secondary" onclick="hideNotif()">Descartar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <div class="qa" onclick="sendQuick('Analiza la UX de smconnection.cl y dame el top 3 mejoras')">
+          <div class="qa-ico">🔍</div>
+          <div class="qa-lbl">Análisis UX</div>
+          <div class="qa-sub">Groq · gratis</div>
+        </div>
+        <div class="qa" onclick="sendQuick('Haz deploy a AWS S3 y invalida CloudFront ahora')">
+          <div class="qa-ico">🚀</div>
+          <div class="qa-lbl">Deploy AWS</div>
+          <div class="qa-sub">OpenAI · rápido</div>
+        </div>
+        <div class="qa" onclick="sendQuick('¿Cuántos leads nuevos hoy y cuál es el status?')">
+          <div class="qa-ico">👥</div>
+          <div class="qa-lbl">Ver Leads</div>
+          <div class="qa-sub">DeepSeek · análisis</div>
+        </div>
+        <div class="qa" onclick="sendQuick('Genera una propuesta SAP para cliente retail Chile en UF')">
+          <div class="qa-ico">💼</div>
+          <div class="qa-lbl">Propuesta SAP</div>
+          <div class="qa-sub">Grok · ventas</div>
+        </div>
+      </div>
+
+      <!-- Chat Area -->
+      <div class="chat-area" id="chat">
+
+        <!-- Bot welcome -->
+        <div class="msg bot">
+          <div class="msg-bubble">
+            👋 Hola Guillermo. Estoy ejecutándome en tu Mac. Puedes darme tareas desde aquí y las ejecuto en segundo plano. ¿Qué necesitas?
+          </div>
+          <div class="msg-meta">07:26 · Hoku 9in1</div>
+        </div>
+
+      </div>
+
+      <!-- Input -->
+      <div class="input-area">
+        <div class="suggestions">
+          <div class="sug" onclick="setSug('Analiza conversión del sitio')">📊 Ver conversión</div>
+          <div class="sug" onclick="setSug('Status del último deploy')">🚀 Estado deploy</div>
+          <div class="sug" onclick="setSug('¿Qué tokens usé hoy?')">⚡ Tokens hoy</div>
+          <div class="sug" onclick="setSug('Crea componente NavBar en Astro')">💻 Generar código</div>
+          <div class="sug" onclick="setSug('T-code para crear OC en SAP MM')">🏗 SAP MM</div>
+        </div>
+        <div class="input-row">
+          <textarea class="msg-input" id="msg-input" placeholder="Escribe una tarea..." rows="1"
+            onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CLOCK ─────────────────────────────────────
+function updateClock() {
+  const now = new Date()
+  const h = now.getHours()
+  const m = String(now.getMinutes()).padStart(2,'0')
+  document.getElementById('clock').textContent = h + ':' + m
+}
+updateClock()
+setInterval(updateClock, 10000)
+
+// ── TERMINAL ──────────────────────────────────
+let termLines = 3
+function addTermLine(tag, tagClass, msg, delay=0) {
+  setTimeout(() => {
+    const t = document.getElementById('terminal')
+    const now = new Date()
+    const ts = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0')
+    const div = document.createElement('div')
+    div.className = 'tl'
+    div.innerHTML = `<span class="ts">${ts}</span><span class="tag ${tagClass}">${tag}</span><span class="tm">${msg}</span>`
+    t.appendChild(div)
+    t.scrollTop = t.scrollHeight
+    termLines++
+  }, delay)
+}
+
+// ── AGENT CARDS ───────────────────────────────
+function setAgent(id, task, progress, status='running') {
+  const card = document.getElementById('card-'+id)
+  const taskEl = document.getElementById('task-'+id)
+  const progEl = document.getElementById('prog-'+id)
+  const statusEl = card.querySelector('.ag-status')
+  if(taskEl) taskEl.textContent = task
+  if(progEl) progEl.style.width = progress+'%'
+  if(statusEl) {
+    if(status==='running') { statusEl.className='ag-status st-run'; statusEl.textContent='⟳ Ejecutando' }
+    else if(status==='done') { statusEl.className='ag-status st-ok'; statusEl.textContent='✓ Completado' }
+    else { statusEl.className='ag-status st-ok'; statusEl.textContent='● Activo' }
+  }
+  if(status==='running') card.classList.add('running','active')
+  else { card.classList.remove('running'); card.classList.add('active') }
+}
+
+// ── CHAT ─────────────────────────────────────
+function addMsg(text, type='bot', meta='') {
+  const chat = document.getElementById('chat')
+  const div = document.createElement('div')
+  div.className = 'msg '+type
+  const now = new Date()
+  const ts = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')
+  div.innerHTML = `
+    <div class="msg-bubble">${text}</div>
+    <div class="msg-meta">${ts}${meta ? ' · '+meta : ''}</div>
+  `
+  chat.appendChild(div)
+  chat.scrollTop = chat.scrollHeight
+  return div
+}
+
+function addPipeline() {
+  const chat = document.getElementById('chat')
+  const div = document.createElement('div')
+  div.className = 'msg bot'
+  div.innerHTML = `
+    <div class="pipeline-msg">
+      <div class="pip-title">⚡ Pipeline ejecutándose</div>
+      <div class="pip-steps">
+        <div class="pip-step"><div class="pip-dot pip-act" id="ps1">⟳</div><span class="pip-txt-a" id="pt1">Groq analizando tarea...</span></div>
+        <div class="pip-step"><div class="pip-dot pip-wait" id="ps2">2</div><span class="pip-txt-w" id="pt2">Guardando en Supabase</span></div>
+        <div class="pip-step"><div class="pip-dot pip-wait" id="ps3">3</div><span class="pip-txt-w" id="pt3">Notificación a móvil</span></div>
+      </div>
+      <div class="pip-bar"><div class="pip-fill" id="pip-fill" style="width:15%"></div></div>
+    </div>
+    <div class="msg-meta" id="pip-meta">En proceso...</div>
+  `
+  chat.appendChild(div)
+  chat.scrollTop = chat.scrollHeight
+  return div
+}
+
+function addResult(agent, model, content) {
+  const chat = document.getElementById('chat')
+  const div = document.createElement('div')
+  div.className = 'msg bot'
+  div.innerHTML = `
+    <div class="result-card">
+      <div class="rc-header">
+        <span class="rc-agent">✓ ${agent}</span>
+        <span class="rc-badge">${model}</span>
+      </div>
+      <div class="rc-content">${content}</div>
+      <div class="rc-actions">
+        <button class="rc-btn primary" onclick="deployAction()">🚀 Deploy mejora</button>
+        <button class="rc-btn" onclick="copyResult(this)">📋 Copiar</button>
+        <button class="rc-btn" onclick="saveResult()">💾 Guardar</button>
+      </div>
+    </div>
+  `
+  chat.appendChild(div)
+  chat.scrollTop = chat.scrollHeight
+}
+
+function addTyping() {
+  const chat = document.getElementById('chat')
+  const div = document.createElement('div')
+  div.className = 'msg bot'
+  div.id = 'typing-indicator'
+  div.innerHTML = `
+    <div class="typing">
+      <span style="font-size:11px;color:var(--muted)">Hoku procesando</span>
+      <div class="typing-dots">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+  `
+  chat.appendChild(div)
+  chat.scrollTop = chat.scrollHeight
+  return div
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator')
+  if(t) t.remove()
+}
+
+// ── NOTIFICATION ──────────────────────────────
+function showNotif(title, msg) {
+  document.getElementById('notif-title').textContent = title
+  document.getElementById('notif-msg').textContent = msg
+  const n = document.getElementById('notif')
+  n.classList.add('show')
+  setTimeout(() => n.classList.remove('show'), 5000)
+}
+function hideNotif() {
+  document.getElementById('notif').classList.remove('show')
+}
+
+// ── TASK RESPONSES ────────────────────────────
+const RESPONSES = {
+  ux: {
+    agent: 'Groq', model: 'llama-3.3-70b · $0.00',
+    content: `<strong>Top 3 mejoras UX smconnection.cl:</strong><br><br>
+    1. 🎯 <strong>Navbar glassmorphism</strong> — backdrop-filter al scroll → +5% engagement<br>
+    2. 💬 <strong>WhatsApp Quick Reply</strong> — opciones SAP/IA/PYMES → +30% respuesta<br>
+    3. 📈 <strong>SEO structured data</strong> — FAQ en secciones → +40% CTR Google`,
+    termActions: [
+      ['hoku', 't-d', 'Enrutando → Groq (análisis UX · free tier)'],
+      ['groq', 't-g', 'Analizando smconnection.cl...'],
+      ['groq', 't-g', '→ 3 insights de alta prioridad detectados'],
+      ['groq', 't-g', '→ Impacto estimado: +$2,400 MRR'],
+      ['ok', 't-ok', '✓ Análisis completado · 1,247 tok · 0.8s · $0.00'],
+      ['supabase', 't-s', 'Guardando en improvements_log...'],
+      ['dispatch', 't-ok', '✓ Notificación enviada a iPhone'],
+    ],
+    agentId: 'groq',
+    notif: ['✓ Análisis UX listo', 'Groq encontró 3 mejoras de alto impacto']
+  },
+  deploy: {
+    agent: 'OpenAI', model: 'gpt-4o-mini · ~$0.001',
+    content: `<strong>Deploy a AWS iniciado:</strong><br><br>
+    <code style="font-family:var(--mono);font-size:11px;color:var(--teal)">
+    aws s3 sync dist/ s3://smartconnetion25 --delete<br>
+    ✓ 847 archivos · 12.4 MB<br>
+    aws cloudfront create-invalidation E304YBX3RKHQUL<br>
+    ✓ smconnection.cl → 200 OK · 18ms</code>`,
+    termActions: [
+      ['hoku', 't-d', 'Enrutando → OpenAI gpt-4o-mini (deploy · AWS)'],
+      ['openai', 't-g', 'Generando comandos AWS CLI exactos...'],
+      ['aws', 't-a', 'aws s3 sync dist/ s3://smartconnetion25 --delete'],
+      ['aws', 't-a', '▶ Uploading 847 files... 100%'],
+      ['aws', 't-a', 'aws cloudfront create-invalidation E304YBX3RKHQUL'],
+      ['aws', 't-ok', '✓ CDN invalidado · smconnection.cl → 200 OK · 18ms'],
+      ['ok', 't-ok', '✓ Deploy completado · 13.2s total'],
+    ],
+    agentId: 'openai',
+    notif: ['🚀 Deploy completado', 'smconnection.cl actualizado · 847 archivos · 18ms']
+  },
+  leads: {
+    agent: 'DeepSeek', model: 'deepseek-chat · ~$0.0003',
+    content: `<strong>Leads hoy — 22 marzo 2026:</strong><br><br>
+    📥 <strong>2 nuevos leads</strong><br>
+    • Empresa retail Santiago · SAP MM interesado<br>
+    • PYME logística Valparaíso · Módulo básico<br><br>
+    📅 <strong>2 reuniones agendadas</strong> esta semana<br>
+    💰 Valor pipeline estimado: <strong>180 UF</strong>`,
+    termActions: [
+      ['hoku', 't-d', 'Enrutando → DeepSeek (análisis leads · CRM)'],
+      ['deepseek', 't-g', 'Consultando Supabase tabla leads...'],
+      ['deepseek', 't-g', '→ 2 leads hoy · 2 reuniones esta semana'],
+      ['deepseek', 't-g', '→ Pipeline: 180 UF estimado'],
+      ['ok', 't-ok', '✓ Análisis CRM · 0.9s · $0.0003'],
+    ],
+    agentId: 'deepseek',
+    notif: ['👥 2 leads nuevos hoy', 'Pipeline: 180 UF · 2 reuniones agendadas']
+  },
+  propuesta: {
+    agent: 'Grok', model: 'grok-3-mini · ~$0.0002',
+    content: `<strong>Propuesta SAP — Retail Chile:</strong><br><br>
+    <strong>Alcance:</strong> SAP B1 + MM + WM<br>
+    <strong>Timeline:</strong> 16 semanas (4 fases ASAP)<br>
+    <strong>Precio:</strong> 420 UF + mantenimiento 35 UF/mes<br>
+    <strong>ROI estimado:</strong> 8 meses payback<br><br>
+    ✓ <em>Propuesta completa generada en Supabase</em>`,
+    termActions: [
+      ['hoku', 't-d', 'Enrutando → Grok grok-3-mini (ventas · propuestas)'],
+      ['grok', 't-g', 'Generando propuesta SAP retail Chile...'],
+      ['grok', 't-g', '→ Módulos: B1 + MM + WM · Timeline: 16 semanas'],
+      ['grok', 't-g', '→ Precio: 420 UF + 35 UF/mes mantenimiento'],
+      ['ok', 't-ok', '✓ Propuesta generada · 1.1s · $0.0002'],
+      ['supabase', 't-s', 'Guardando en tabla proposals...'],
+    ],
+    agentId: 'grok',
+    notif: ['💼 Propuesta SAP lista', '420 UF · 16 semanas · ROI 8 meses']
+  }
+}
+
+// ── SEND MESSAGE ──────────────────────────────
+let isProcessing = false
+
+function sendMessage() {
+  if(isProcessing) return
+  const input = document.getElementById('msg-input')
+  const text = input.value.trim()
+  if(!text) return
+  input.value = ''
+  input.style.height = 'auto'
+  processTask(text)
+}
+
+function sendQuick(text) {
+  if(isProcessing) return
+  processTask(text)
+}
+
+function setSug(text) {
+  document.getElementById('msg-input').value = text
+  document.getElementById('msg-input').focus()
+}
+
+function getResponse(text) {
+  const t = text.toLowerCase()
+  if(/ux|análisis|mejora|conversión|sitio|analiza/.test(t)) return RESPONSES.ux
+  if(/deploy|aws|s3|cloudfront|cdn/.test(t)) return RESPONSES.deploy
+  if(/lead|cliente|status|cuántos/.test(t)) return RESPONSES.leads
+  if(/propuesta|sap|oferta|cotiz/.test(t)) return RESPONSES.propuesta
+  return RESPONSES.ux // default
+}
+
+function processTask(text) {
+  isProcessing = true
+  document.getElementById('send-btn').disabled = true
+
+  // Add user message
+  addMsg(text, 'user')
+
+  // Add typing
+  setTimeout(() => {
+    const typing = addTyping()
+
+    const response = getResponse(text)
+
+    // Add terminal lines
+    addTermLine('dispatch', 't-d', 'Instrucción recibida desde iPhone: "'+text.slice(0,40)+'"', 300)
+    
+    response.termActions.forEach((action, i) => {
+      addTermLine(action[0], action[1], action[2], 600 + i * 500)
+    })
+
+    // Update agent card
+    setAgent(response.agentId, text.slice(0,35)+'...', 30)
+    
+    setTimeout(() => setAgent(response.agentId, text.slice(0,35)+'...', 65), 1500)
+    setTimeout(() => setAgent(response.agentId, text.slice(0,35)+'...', 100, 'done'), 2800)
+
+    // Show pipeline
+    const pip = addPipeline()
+    
+    // Animate pipeline
+    setTimeout(() => {
+      const f = document.getElementById('pip-fill')
+      const ps1 = document.getElementById('ps1')
+      const pt1 = document.getElementById('pt1')
+      if(f) f.style.width = '50%'
+      if(ps1) { ps1.className='pip-dot pip-done'; ps1.textContent='✓' }
+      if(pt1) { pt1.className='pip-txt-d'; pt1.textContent='Tarea completada' }
+      const ps2 = document.getElementById('ps2')
+      const pt2 = document.getElementById('pt2')
+      if(ps2) ps2.className='pip-dot pip-act'
+      if(pt2) pt2.className='pip-txt-a'
+    }, 1200)
+    
+    setTimeout(() => {
+      const f = document.getElementById('pip-fill')
+      const ps2 = document.getElementById('ps2')
+      const pt2 = document.getElementById('pt2')
+      const ps3 = document.getElementById('ps3')
+      const pt3 = document.getElementById('pt3')
+      if(f) f.style.width = '80%'
+      if(ps2) { ps2.className='pip-dot pip-done'; ps2.textContent='✓' }
+      if(pt2) { pt2.className='pip-txt-d'; pt2.textContent='✓ Guardado en Supabase' }
+      if(ps3) ps3.className='pip-dot pip-act'
+      if(pt3) pt3.className='pip-txt-a'
+    }, 2000)
+    
+    setTimeout(() => {
+      const f = document.getElementById('pip-fill')
+      const ps3 = document.getElementById('ps3')
+      const pt3 = document.getElementById('pt3')
+      const meta = document.getElementById('pip-meta')
+      if(f) f.style.width = '100%'
+      if(ps3) { ps3.className='pip-dot pip-done'; ps3.textContent='✓' }
+      if(pt3) { pt3.className='pip-txt-d'; pt3.textContent='✓ Notificación enviada' }
+      if(meta) meta.textContent = '✓ Completado en 2.8s'
+    }, 2800)
+
+    // Remove typing, show result
+    setTimeout(() => {
+      removeTyping()
+      addResult(response.agent, response.model, response.content)
+      showNotif(response.notif[0], response.notif[1])
+      
+      isProcessing = false
+      document.getElementById('send-btn').disabled = false
+      
+      const chat = document.getElementById('chat')
+      chat.scrollTop = chat.scrollHeight
+    }, 3200)
+
+  }, 400)
+}
+
+// ── ACTIONS ───────────────────────────────────
+function deployAction() {
+  if(isProcessing) return
+  processTask('Haz deploy a AWS S3 y invalida CloudFront ahora')
+}
+
+function copyResult(btn) {
+  btn.textContent = '✓ Copiado'
+  setTimeout(() => btn.textContent = '📋 Copiar', 1500)
+}
+
+function saveResult() {
+  addMsg('💾 Resultado guardado en Supabase → tabla improvements_log', 'bot', 'Sistema')
+}
+
+// ── INPUT HANDLERS ────────────────────────────
+function handleKey(e) {
+  if(e.key==='Enter' && !e.shiftKey) {
+    e.preventDefault()
+    sendMessage()
+  }
+}
+function autoResize(el) {
+  el.style.height = 'auto'
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px'
+}
+
+// ── TERMINAL SCROLL ───────────────────────────
+document.getElementById('terminal').scrollTop = 9999
+</script>
+</body>
+</html>

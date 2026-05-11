@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Editor
+.vscode/
+.idea/
+
+# Temp
+*.tmp
+*.bak
+*.log
+
+# Privados local
+.env
+.env.local
+*.key
+*.pem
+
+# Carpeta misc (legacy · puede tener basura)
+_misc/temp/
+
+# NDA · excluido del público (vive en repo privado banco-smc)
+cencosud-cem/
+sap-cpi/
+valmer-murex/

@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motor Discovery — Smart Connection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── WHITE PREMIUM — Token Set v1.0 ─── */
+:root {
+  --wp-bg-base:         #F7F8FA;
+  --wp-bg-surface:      #FFFFFF;
+  --wp-bg-muted:        #F0F2F5;
+  --wp-bg-hero:         #0F1117;
+
+  --wp-text-primary:    #0F1117;
+  --wp-text-secondary:  #4B5463;
+  --wp-text-muted:      #8B95A5;
+
+  --wp-border:          rgba(15,17,23,0.09);
+  --wp-border-strong:   rgba(15,17,23,0.16);
+  --wp-border-accent:   rgba(43,95,232,0.25);
+
+  --wp-accent:          #2B5FE8;
+  --wp-accent-hover:    #1E4ED8;
+  --wp-accent-subtle:   #EEF2FD;
+  --wp-accent-text:     #1A3FAF;
+
+  --wp-amber:           #D97706;
+  --wp-amber-subtle:    rgba(217,119,6,0.09);
+  --wp-amber-border:    rgba(217,119,6,0.22);
+
+  --wp-shadow-sm:       0 1px 3px rgba(15,17,23,0.06), 0 1px 2px rgba(15,17,23,0.04);
+  --wp-shadow-md:       0 4px 14px rgba(15,17,23,0.08), 0 2px 4px rgba(15,17,23,0.04);
+  --wp-shadow-lg:       0 12px 32px rgba(15,17,23,0.10), 0 4px 8px rgba(15,17,23,0.04);
+  --wp-shadow-float:    0 8px 28px rgba(15,17,23,0.10), 0 2px 6px rgba(15,17,23,0.06);
+  --wp-shadow-btn:      0 0 0 1px var(--wp-accent), rgba(43,95,232,0.14) 0px 2px 8px;
+
+  --wp-font:            'Inter', -apple-system, 'SF Pro Display', system-ui, sans-serif;
+
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  14px;
+  --r-xl:  20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--wp-font);
+  background: var(--wp-bg-base);
+  color: var(--wp-text-primary);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* ─── TOP NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 52px;
+  background: rgba(15,17,23,0.97);
+  backdrop-filter: blur(16px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 600;
+  color: #FFFFFF; letter-spacing: -0.02em;
+}
+.nav-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--wp-accent);
+  box-shadow: 0 0 0 2px rgba(43,95,232,0.30);
+}
+.nav-badge {
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 5px;
+  padding: 2px 7px; letter-spacing: 0.5px;
+}
+
+.nav-links { display: flex; gap: 2px; }
+.nav-link {
+  font-size: 13px; color: rgba(255,255,255,0.50);
+  padding: 6px 12px; border-radius: 7px;
+  cursor: pointer; border: none; background: none;
+  font-family: var(--wp-font); font-weight: 500;
+  transition: color 0.15s, background 0.15s;
+  letter-spacing: -0.01em;
+}
+.nav-link:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
+.nav-link.active { color: #FFFFFF; background: rgba(255,255,255,0.09); }
+
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+
+.btn-nav-ghost {
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  background: none; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 7px; padding: 6px 14px; cursor: pointer;
+  font-family: var(--wp-font);
+  transition: all 0.15s; letter-spacing: -0.01em;
+}
+.btn-nav-ghost:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
+
+.btn-nav-primary {
+  font-size: 13px; font-weight: 600;
+  color: #FFFFFF; background: var(--wp-accent);
+  border: none; border-radius: 7px; padding: 7px 16px; cursor: pointer;
+  font-family: var(--wp-font);
+  transition: all 0.15s; letter-spacing: -0.01em;
+  box-shadow: var(--wp-shadow-btn);
+}
+.btn-nav-primary:hover { background: var(--wp-accent-hover); }
+
+/* ─── HERO ─── */
+.hero {
+  background: var(--wp-bg-hero);
+  padding: 96px 40px 52px;
+  position: relative; overflow: hidden;
+}
+
+#hero-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle noise grain */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: 0.5;
+}
+
+/* Accent glow bottom-right */
+.hero::after {
+  content: '';
+  position: absolute; bottom: -100px; right: -60px;
+  width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(43,95,232,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 40px; align-items: center;
+  position: relative; z-index: 1;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+  margin-bottom: 16px;
+}
+.hero-eyebrow-line {
+  width: 20px; height: 1px; background: rgba(255,255,255,0.20);
+}
+
+.hero-title {
+  font-size: 44px; font-weight: 300; letter-spacing: -0.04em; line-height: 1.05;
+  color: #FFFFFF; margin-bottom: 12px;
+}
+.hero-title strong { font-weight: 700; }
+
+.hero-sub {
+  font-size: 15px; color: rgba(255,255,255,0.42);
+  line-height: 1.65; max-width: 460px; letter-spacing: -0.01em;
+}
+
+/* Hero KPIs */
+.hero-kpis {
+  display: flex; flex-direction: column; gap: 10px;
+  min-width: 260px;
+}
+
+.kpi-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.15s;
+}
+.kpi-card:hover { background: rgba(255,255,255,0.06); }
+
+.kpi-label { font-size: 11px; color: rgba(255,255,255,0.38); font-weight: 500; letter-spacing: 0.2px; }
+
+.kpi-value {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.04em;
+  color: #FFFFFF;
+}
+.kpi-value.accent { color: var(--wp-accent); }
+.kpi-value.amber  { color: #F59E0B; }
+
+.kpi-delta {
+  font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 5px;
+}
+.kpi-delta.up     { color: #34D399; background: rgba(52,211,153,0.12); }
+.kpi-delta.accent { color: #93C5FD; background: rgba(147,197,253,0.12); }
+
+/* ─── SECTION NAV (sticky below hero) ─── */
+.section-nav {
+  position: sticky; top: 52px; z-index: 100;
+  background: rgba(247,248,250,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--wp-border);
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.section-tabs { display: flex; }
+
+.section-tab {
+  font-size: 13px; font-weight: 500;
+  color: var(--wp-text-muted);
+  padding: 14px 18px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer; border: none; background: none;
+  font-family: var(--wp-font);
+  transition: all 0.15s;
+  white-space: nowrap; letter-spacing: -0.01em;
+}
+.section-tab:hover { color: var(--wp-text-secondary); }
+.section-tab.active { color: var(--wp-text-primary); border-bottom-color: var(--wp-accent); }
+
+.section-actions { display: flex; gap: 8px; }
+
+/* ─── MAIN CONTENT ─── */
+main { max-width: 1100px; margin: 0 auto; padding: 36px 40px 80px; }
+
+/* ─── SECTION HEADINGS ─── */
+.section-block { margin-bottom: 40px; }
+.section-block + .section-block { padding-top: 40px; border-top: 1px solid var(--wp-border); }
+
+.section-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 20px; gap: 16px;
+}
+
+.section-title {
+  font-size: 21px; font-weight: 600; letter-spacing: -0.03em;
+  color: var(--wp-text-primary);
+}
+
+.section-count {
+  font-size: 12px; color: var(--wp-text-muted); font-weight: 500;
+  background: var(--wp-bg-muted); border-radius: 5px; padding: 3px 8px;
+}
+
+.section-link {
+  font-size: 13px; color: var(--wp-accent); font-weight: 500;
+  cursor: pointer; border: none; background: none;
+  font-family: var(--wp-font);
+}
+
+/* ─── PIPELINE KANBAN ─── */
+.kanban {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.kanban-col {
+  background: var(--wp-bg-muted);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  min-height: 300px;
+}
+
+.kanban-col-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.kanban-col-dot { width: 7px; height: 7px; border-radius: 50%; }
+.kanban-col-title {
+  font-size: 11px; font-weight: 600;
+  color: var(--wp-text-muted); letter-spacing: 0.5px; text-transform: uppercase;
+  flex: 1;
+}
+.kanban-col-num {
+  font-size: 11px; font-weight: 600;
+  color: var(--wp-text-muted);
+  background: var(--wp-bg-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: 5px; padding: 2px 7px;
+}
+
+.kanban-card {
+  background: var(--wp-bg-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+  box-shadow: var(--wp-shadow-sm);
+}
+.kanban-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--wp-shadow-float);
+}
+.kanban-card:last-child { margin-bottom: 0; }
+
+.kc-company {
+  font-size: 13.5px; font-weight: 600;
+  color: var(--wp-text-primary); margin-bottom: 3px; letter-spacing: -0.02em;
+}
+.kc-name { font-size: 12px; color: var(--wp-text-muted); margin-bottom: 10px; }
+.kc-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+
+.kc-tag {
+  font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 5px;
+}
+.tag-teal  { background: var(--wp-accent-subtle); color: var(--wp-accent-text); border: 1px solid var(--wp-border-accent); }
+.tag-gold  { background: var(--wp-amber-subtle);  color: var(--wp-amber);       border: 1px solid var(--wp-amber-border); }
+.tag-navy  { background: var(--wp-bg-muted);      color: var(--wp-text-secondary); border: 1px solid var(--wp-border); }
+.tag-red   { background: rgba(220,50,50,0.07);    color: #C13030;                  border: 1px solid rgba(220,50,50,0.15); }
+
+.kc-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 8px; border-top: 1px solid var(--wp-border);
+}
+.kc-uf {
+  font-size: 13px; font-weight: 700;
+  color: var(--wp-text-primary); letter-spacing: -0.02em;
+}
+.kc-date { font-size: 11px; color: var(--wp-text-muted); }
+.kc-score {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 600;
+  color: var(--wp-accent);
+}
+
+/* ─── DOCUMENTS GRID ─── */
+.docs-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.doc-card {
+  background: var(--wp-bg-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+  box-shadow: var(--wp-shadow-sm);
+  position: relative; overflow: hidden;
+}
+.doc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--wp-shadow-float);
+}
+
+/* top accent line */
+.doc-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 3px 3px 0 0;
+}
+.doc-card.type-diagnostico::before  { background: var(--wp-accent); }
+.doc-card.type-propuesta::before    { background: #F59E0B; }
+.doc-card.type-reporte::before      { background: #6B7280; }
+.doc-card.type-infografia::before   { background: #AF52DE; }
+.doc-card.type-spin::before         { background: #FF9500; }
+.doc-card.type-plan::before         { background: var(--wp-accent); }
+
+.doc-card-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.doc-icon {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+
+.doc-status {
+  font-size: 10px; font-weight: 600;
+  padding: 3px 8px; border-radius: 5px; letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.status-ready  { background: rgba(52,211,153,0.10); color: #059669; }
+.status-draft  { background: var(--wp-amber-subtle); color: var(--wp-amber); }
+.status-new    { background: var(--wp-accent-subtle); color: var(--wp-accent); }
+
+.doc-title {
+  font-size: 13.5px; font-weight: 600;
+  color: var(--wp-text-primary); margin-bottom: 4px; letter-spacing: -0.02em;
+}
+.doc-client { font-size: 12px; color: var(--wp-text-muted); margin-bottom: 14px; }
+
+.doc-footer { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.doc-action {
+  font-size: 11px; font-weight: 500;
+  padding: 5px 10px; border-radius: 6px;
+  border: 1px solid var(--wp-border);
+  color: var(--wp-text-secondary); background: none;
+  cursor: pointer; font-family: var(--wp-font);
+  transition: all 0.15s; letter-spacing: -0.01em;
+}
+.doc-action:hover {
+  background: var(--wp-bg-muted);
+  color: var(--wp-text-primary); border-color: var(--wp-border-strong);
+}
+.doc-action.primary {
+  background: var(--wp-text-primary); color: #FFFFFF;
+  border-color: transparent;
+}
+.doc-action.primary:hover { background: #1A2130; }
+
+/* ─── AI ENGINE SECTION ─── */
+.engine-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+
+.engine-card {
+  background: var(--wp-bg-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--r-md);
+  padding: 22px 24px;
+  box-shadow: var(--wp-shadow-sm);
+}
+.engine-card.wide { grid-column: 1 / -1; }
+.engine-card.dark { background: var(--wp-bg-hero); border-color: rgba(255,255,255,0.07); }
+
+.engine-card-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase;
+  color: var(--wp-text-muted); margin-bottom: 12px;
+}
+.engine-card.dark .engine-card-label { color: rgba(255,255,255,0.35); }
+
+.engine-card-title {
+  font-size: 15px; font-weight: 600; letter-spacing: -0.02em;
+  color: var(--wp-text-primary); margin-bottom: 6px;
+}
+.engine-card.dark .engine-card-title { color: #FFFFFF; }
+
+.engine-card-desc {
+  font-size: 13px; color: var(--wp-text-muted); line-height: 1.5; margin-bottom: 16px;
+}
+.engine-card.dark .engine-card-desc { color: rgba(255,255,255,0.38); }
+
+.engine-prompt {
+  background: var(--wp-bg-muted);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--r-sm);
+  padding: 14px;
+  font-size: 12px; font-family: 'Menlo', 'Monaco', monospace;
+  color: var(--wp-text-secondary); line-height: 1.7;
+  max-height: 160px; overflow-y: auto;
+}
+
+.engine-provider-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--wp-border);
+}
+.engine-provider-row:last-child { border-bottom: none; }
+
+.provider-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.provider-name { font-size: 13px; font-weight: 600; color: var(--wp-text-primary); flex: 1; letter-spacing: -0.01em; }
+.provider-model { font-size: 11px; color: var(--wp-text-muted); }
+
+.provider-status {
+  font-size: 10px; font-weight: 600;
+  padding: 3px 8px; border-radius: 5px; letter-spacing: 0.3px;
+}
+.ps-active   { background: rgba(52,211,153,0.10); color: #059669; }
+.ps-fallback { background: var(--wp-amber-subtle); color: var(--wp-amber); }
+.ps-inactive { background: var(--wp-bg-muted); color: var(--wp-text-muted); }
+
+/* ─── NEW LEAD — pill input section ─── */
+.lead-intake {
+  background: var(--wp-bg-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--r-lg);
+  padding: 28px;
+  box-shadow: var(--wp-shadow-sm);
+}
+
+.lead-intake-title {
+  font-size: 15px; font-weight: 600; letter-spacing: -0.02em;
+  color: var(--wp-text-primary); margin-bottom: 6px;
+}
+.lead-intake-sub {
+  font-size: 13px; color: var(--wp-text-muted); margin-bottom: 20px; line-height: 1.6;
+}
+
+.pill-input-wrap {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--wp-bg-base);
+  border: 1.5px solid var(--wp-border-strong);
+  border-radius: 9999px;
+  padding: 10px 10px 10px 20px;
+  box-shadow: var(--wp-shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.pill-input-wrap:focus-within {
+  border-color: var(--wp-accent);
+  box-shadow: var(--wp-shadow-sm), 0 0 0 3px rgba(43,95,232,0.09);
+}
+.pill-input-wrap input {
+  flex: 1; border: none; outline: none;
+  background: transparent; font-family: var(--wp-font);
+  font-size: 14px; color: var(--wp-text-primary); min-width: 0;
+  letter-spacing: -0.01em;
+}
+.pill-input-wrap input::placeholder { color: var(--wp-text-muted); }
+
+.pill-send {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--wp-accent); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: white; font-size: 14px;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: var(--wp-shadow-btn);
+}
+.pill-send:hover { background: var(--wp-accent-hover); transform: scale(1.05); }
+
+.lead-quick-tags { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+.lead-tag {
+  font-size: 12px; color: var(--wp-text-secondary);
+  background: var(--wp-bg-muted); border: 1px solid var(--wp-border);
+  border-radius: 20px; padding: 4px 12px; cursor: pointer;
+  transition: all 0.15s; letter-spacing: -0.01em;
+}
+.lead-tag:hover {
+  background: var(--wp-accent-subtle);
+  color: var(--wp-accent-text); border-color: var(--wp-border-accent);
+}
+
+/* ─── ACTIVITY FEED ─── */
+.activity-feed { display: flex; flex-direction: column; gap: 0; }
+
+.activity-item {
+  display: flex; gap: 12px; padding: 13px 0;
+  border-bottom: 1px solid var(--wp-border);
+}
+.activity-item:last-child { border-bottom: none; }
+
+.activity-icon {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0; margin-top: 1px;
+}
+.activity-body { flex: 1; }
+.activity-text {
+  font-size: 13px; color: var(--wp-text-primary); line-height: 1.5; letter-spacing: -0.01em;
+}
+.activity-text strong { font-weight: 600; }
+.activity-time { font-size: 11px; color: var(--wp-text-muted); margin-top: 2px; }
+
+/* ─── SUMMARY ROW ─── */
+.summary-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 28px;
+}
+
+.summary-card {
+  background: var(--wp-bg-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--r-md);
+  padding: 18px 20px;
+  box-shadow: var(--wp-shadow-sm);
+}
+.summary-label { font-size: 11px; color: var(--wp-text-muted); font-weight: 500; margin-bottom: 6px; }
+.summary-val {
+  font-size: 26px; font-weight: 700;
+  letter-spacing: -0.04em; color: var(--wp-text-primary);
+}
+.summary-val.accent { color: var(--wp-accent); }
+.summary-val.amber  { color: var(--wp-amber); }
+.summary-sub { font-size: 11px; color: var(--wp-text-muted); margin-top: 4px; }
+
+/* ─── TWO-COL LAYOUT ─── */
+.two-col { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+
+/* ─── EXPAND MODAL ─── */
+.expand-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(15,17,23,0.40);
+  backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.expand-overlay.open { display: flex; }
+
+.expand-modal {
+  background: var(--wp-bg-surface);
+  border-radius: var(--r-xl);
+  padding: 32px;
+  max-width: 680px; width: 100%;
+  box-shadow: var(--wp-shadow-lg);
+  border: 1px solid var(--wp-border);
+  position: relative;
+  animation: expandIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes expandIn {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.expand-close {
+  position: absolute; top: 18px; right: 18px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--wp-bg-muted); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--wp-text-muted);
+  transition: background 0.15s;
+}
+.expand-close:hover { background: var(--wp-border); }
+
+.expand-type {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--wp-accent); margin-bottom: 8px;
+}
+.expand-title {
+  font-size: 22px; font-weight: 600; letter-spacing: -0.03em;
+  color: var(--wp-text-primary); margin-bottom: 4px;
+}
+.expand-client { font-size: 14px; color: var(--wp-text-muted); margin-bottom: 24px; }
+
+.expand-body {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-bottom: 24px;
+}
+.expand-section-title {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase;
+  color: var(--wp-text-muted); margin-bottom: 8px;
+}
+.expand-data-row {
+  display: flex; gap: 8px; margin-bottom: 6px;
+  font-size: 13px; color: var(--wp-text-secondary); line-height: 1.5;
+}
+.expand-data-row::before { content: '·'; color: var(--wp-text-muted); flex-shrink: 0; }
+
+.expand-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+.btn-expand {
+  font-size: 13px; font-weight: 500;
+  border-radius: 8px; padding: 9px 18px;
+  cursor: pointer; font-family: var(--wp-font);
+  border: 1px solid var(--wp-border);
+  background: none; color: var(--wp-text-secondary);
+  transition: all 0.15s; letter-spacing: -0.01em;
+}
+.btn-expand:hover { background: var(--wp-bg-muted); color: var(--wp-text-primary); }
+.btn-expand.primary {
+  background: var(--wp-accent); color: #FFFFFF; border-color: transparent;
+  box-shadow: var(--wp-shadow-btn);
+}
+.btn-expand.primary:hover { background: var(--wp-accent-hover); }
+
+/* ─── FAB ─── */
+.fab {
+  position: fixed; bottom: 28px; right: 28px; z-index: 150;
+  width: 50px; height: 50px; border-radius: 50%;
+  background: var(--wp-accent); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: white;
+  box-shadow: var(--wp-shadow-btn), 0 4px 14px rgba(43,95,232,0.35);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.fab:hover {
+  box-shadow: var(--wp-shadow-btn), 0 8px 24px rgba(43,95,232,0.45);
+  transform: scale(1.08);
+}
+.fab-tooltip {
+  position: absolute; right: 58px; top: 50%; transform: translateY(-50%);
+  background: var(--wp-text-primary); color: #FFFFFF;
+  font-size: 12px; font-weight: 500; font-family: var(--wp-font);
+  padding: 5px 10px; border-radius: 7px; white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.15s;
+}
+.fab:hover .fab-tooltip { opacity: 1; }
+
+/* ─── SCROLL REVEAL ─── */
+.reveal {
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 0.40s ease, transform 0.40s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-kpis { flex-direction: row; flex-wrap: wrap; }
+  .kpi-card { flex: 1; min-width: 120px; }
+  .kanban { grid-template-columns: 1fr; }
+  .docs-grid { grid-template-columns: 1fr 1fr; }
+  .engine-grid { grid-template-columns: 1fr; }
+  .summary-row { grid-template-columns: 1fr 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  main { padding: 24px 20px 80px; }
+  .hero { padding: 96px 20px 40px; }
+  .section-nav { padding: 0 20px; }
+  nav { padding: 0 16px; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-dot"></div>
+    Motor Discovery
+    <span class="nav-badge">ADMIN</span>
+  </div>
+
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showSection('pipeline')">Pipeline</button>
+    <button class="nav-link" onclick="showSection('documentos')">Documentos</button>
+    <button class="nav-link" onclick="showSection('motor')">Motor IA</button>
+    <button class="nav-link" onclick="showSection('nuevo')">Nuevo Lead</button>
+  </div>
+
+  <div class="nav-actions">
+    <button class="btn-nav-ghost">↗ Exportar</button>
+    <button class="btn-nav-primary">+ Nuevo lead</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        Smart Connection · discovery.smconnection.cl
+      </div>
+      <h1 class="hero-title">
+        <strong>Motor</strong> Discovery<br>
+        Panel de administración
+      </h1>
+      <p class="hero-sub">
+        Conversaciones → SPIN/BANT → documentos comerciales.<br>
+        Todos los leads, documentos y configuración en un solo lugar.
+      </p>
+    </div>
+
+    <div class="hero-kpis">
+      <div class="kpi-card">
+        <div>
+          <div class="kpi-label">Leads activos</div>
+          <div class="kpi-value accent">12</div>
+        </div>
+        <div class="kpi-delta up">+3 esta semana</div>
+      </div>
+
+      <div class="kpi-card">
+        <div>
+          <div class="kpi-label">Pipeline en UF</div>
+          <div class="kpi-value amber">840</div>
+        </div>
+        <div class="kpi-delta accent">↑ 18%</div>
+      </div>
+
+      <div class="kpi-card">
+        <div>
+          <div class="kpi-label">Documentos generados</div>
+          <div class="kpi-value">34</div>
+        </div>
+        <div class="kpi-delta up">hoy: 6</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION NAV -->
+<div class="section-nav">
+  <div class="section-tabs">
+    <button class="section-tab active" onclick="showSection('pipeline')">Pipeline CRM</button>
+    <button class="section-tab" onclick="showSection('documentos')">Documentos</button>
+    <button class="section-tab" onclick="showSection('motor')">Motor IA</button>
+    <button class="section-tab" onclick="showSection('nuevo')">Nuevo Lead</button>
+  </div>
+  <div class="section-actions">
+    <button class="doc-action">Semana</button>
+    <button class="doc-action">Mes</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- ══════ SECTION: PIPELINE ══════ -->
+  <div id="sec-pipeline">
+    <!-- Summary row -->
+    <div class="summary-row reveal">
+      <div class="summary-card">
+        <div class="summary-label">Nuevos</div>
+        <div class="summary-val">5</div>
+        <div class="summary-sub">leads sin calificar</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Calificados</div>
+        <div class="summary-val accent">4</div>
+        <div class="summary-sub">BANT completo</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Propuesta enviada</div>
+        <div class="summary-val amber">3</div>
+        <div class="summary-sub">en negociación</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Tasa conversión</div>
+        <div class="summary-val">38%</div>
+        <div class="summary-sub">vs 31% mes ant.</div>
+      </div>
+    </div>
+
+    <!-- Kanban -->
+    <div class="section-block reveal">
+      <div class="section-header">
+        <h2 class="section-title">Pipeline activo</h2>
+        <span class="section-count">12 oportunidades</span>
+      </div>
+
+      <div class="kanban">
+        <!-- Nuevos -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kanban-col-dot" style="background:#8B95A5"></div>
+            <div class="kanban-col-title">Nuevo</div>
+            <div class="kanban-col-num">5</div>
+          </div>
+
+          <div class="kanban-card" onclick="openExpand('retenciones')">
+            <div class="kc-company">Retenciones Chile SpA</div>
+            <div class="kc-name">Rodrigo Mena · Gerente TI</div>
+            <div class="kc-tags">
+              <span class="kc-tag tag-teal">Automatización</span>
+              <span class="kc-tag tag-navy">Discovery call</span>
+            </div>
+            <div class="kc-footer">
+              <div class="kc-uf">~80–150 UF</div>
+              <div class="kc-date">Hoy 09:30</div>
+            </div>
+          </div>
+
+          <div class="kanban-card">
+            <div class="kc-company">LogiMart Ltda.</div>
+            <div class="kc-name">Camila Pérez · Ops</div>
+            <div class="kc-tags">
+              <span class="kc-tag tag-gold">Integración</span>
+              <span class="kc-tag tag-navy">Chat AI</span>
+            </div>
+            <div class="kc-footer">
+              <div class="kc-uf">~40–80 UF</div>
+              <div class="kc-date">Ayer</div>
+            </div>
+          </div>
+
+          <div class="kanban-card">
+            <div class="kc-company">Clínica Dental Sur</div>
+            <div class="kc-name">Dr. Fuentes</div>
+            <div class="kc-tags">
+              <span class="kc-tag tag-teal">SaaS Start</span>
+            </div>
+            <div class="kc-footer">
+              <div class="kc-uf">~15 UF/mes</div>
+              <div class="kc-date">13 abr</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calificado -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kanban-col-dot" style="background:var(--wp-accent)"></div>
+            <div class="kanban-col-title">Calificado</div>
+            <div class="kanban-col-num">4</div>
+          </div>
+
+          <div class="kanban-card" onclick="openExpand('constructora')">
+            <div class="kc-company">Constructora Andes</div>
+            <div class="kc-name">Felipe Rojas · CEO</div>
+            <div class="kc-tags">
+              <span class="kc-tag tag-teal">Build Premium</span>
+              <span class="kc-tag tag-gold">⭐ 94 pts</span>
+            </div>
+            <div class="kc-footer">
+              <div class="kc-uf">280–350 UF</div>
+              <div class="kc-score"><span>★</span>Alta</div>
+            </div>
+          </div>
+
+          <div class="kanban-card">
+            <div class="kc-company">Distribuidora VPM</div>
+            <div class="kc-name">Viviana Morales · Dir. Comercial</div>
+            <div class="kc-tags">
+              <span class="kc-tag tag-teal">Project + Care</span>
+            </div>
+            <div class="kc-footer">
+              <div class="kc-uf">200 UF + 20/mes</div>
+              <div class="kc-date">10 abr</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Propuesta -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kanban-col-dot" style="background:#F59E0B"></div>
+            <div class="kanban-col-title">Propuesta enviada</div>
+            <div class="kanban-col-num">3</div>
+          </div>
+
+          <div class="kanban-card" onclick="openExpand('exportadora')">
+            <div class="kc-company">Exportadora Pacifico</div>
+            <div class="kc-name">Marcelo Díaz · Dir. Operaciones</div>
+            <div class="kc-tags">
+              <span class="kc-tag tag-gold">Esperando resp.</span>
+              <span class="kc-tag tag-navy">D. Sprint</span>
+            </div>
+            <div class="kc-footer">
+              <div class="kc-uf">30 UF</div>
+              <div class="kc-date">Enviada 11 abr</div>
+            </div>
+          </div>
+
+          <div class="kanban-card">
+            <div class="kc-company">Winery Valle Central</div>
+            <div class="kc-name">Ana Leiva · Dueña</div>
+            <div class="kc-tags">
+              <span class="kc-tag tag-red">Vence 18 abr</span>
+            </div>
+            <div class="kc-footer">
+              <div class="kc-uf">120 UF</div>
+              <div class="kc-date">Enviada 8 abr</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /sec-pipeline -->
+
+  <!-- ══════ SECTION: DOCUMENTOS ══════ -->
+  <div id="sec-documentos" style="display:none">
+    <div class="section-block reveal">
+      <div class="section-header">
+        <h2 class="section-title">Documentos generados</h2>
+        <span class="section-count">34 total · 6 hoy</span>
+      </div>
+
+      <div class="docs-grid">
+        <div class="doc-card type-diagnostico" onclick="openExpand('doc-diag1')">
+          <div class="doc-card-top">
+            <div class="doc-icon" style="background:var(--wp-accent-subtle)">📋</div>
+            <span class="doc-status status-ready">Listo</span>
+          </div>
+          <div class="doc-title">Diagnóstico ejecutivo</div>
+          <div class="doc-client">Constructora Andes · 15 abr</div>
+          <div class="doc-footer">
+            <button class="doc-action primary">Ver</button>
+            <button class="doc-action">PDF</button>
+            <button class="doc-action">Word</button>
+          </div>
+        </div>
+
+        <div class="doc-card type-propuesta" onclick="openExpand('doc-prop1')">
+          <div class="doc-card-top">
+            <div class="doc-icon" style="background:rgba(245,158,11,0.10)">💰</div>
+            <span class="doc-status status-ready">Listo</span>
+          </div>
+          <div class="doc-title">Propuesta comercial</div>
+          <div class="doc-client">Constructora Andes · 15 abr</div>
+          <div class="doc-footer">
+            <button class="doc-action primary">Ver</button>
+            <button class="doc-action">PDF</button>
+            <button class="doc-action">PPT</button>
+          </div>
+        </div>
+
+        <div class="doc-card type-infografia" onclick="openExpand('doc-info1')">
+          <div class="doc-card-top">
+            <div class="doc-icon" style="background:rgba(175,82,222,0.10)">📊</div>
+            <span class="doc-status status-ready">Listo</span>
+          </div>
+          <div class="doc-title">Infografía diagnóstico</div>
+          <div class="doc-client">Constructora Andes · 15 abr</div>
+          <div class="doc-footer">
+            <button class="doc-action primary">Ver</button>
+            <button class="doc-action">PNG</button>
+          </div>
+        </div>
+
+        <div class="doc-card type-reporte">
+          <div class="doc-card-top">
+            <div class="doc-icon" style="background:rgba(107,114,128,0.10)">📄</div>
+            <span class="doc-status status-draft">Borrador</span>
+          </div>
+          <div class="doc-title">Reporte ejecutivo</div>
+          <div class="doc-client">Distribuidora VPM · 14 abr</div>
+          <div class="doc-footer">
+            <button class="doc-action primary">Editar</button>
+            <button class="doc-action">PDF</button>
+          </div>
+        </div>
+
+        <div class="doc-card type-spin">
+          <div class="doc-card-top">
+            <div class="doc-icon" style="background:rgba(255,149,0,0.10)">🎯</div>
+            <span class="doc-status status-ready">Listo</span>
+          </div>
+          <div class="doc-title">Análisis SPIN + BANT</div>
+          <div class="doc-client">Exportadora Pacifico · 11 abr</div>
+          <div class="doc-footer">
+            <button class="doc-action primary">Ver</button>
+            <button class="doc-action">Excel</button>
+          </div>
+        </div>
+
+        <div class="doc-card type-plan">
+          <div class="doc-card-top">
+            <div class="doc-icon" style="background:var(--wp-accent-subtle)">⚡</div>
+            <span class="doc-status status-new">Nuevo</span>
+          </div>
+          <div class="doc-title">Plan de acción</div>
+          <div class="doc-client">Retenciones Chile · 15 abr</div>
+          <div class="doc-footer">
+            <button class="doc-action primary">Generar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /sec-documentos -->
+
+  <!-- ══════ SECTION: MOTOR IA ══════ -->
+  <div id="sec-motor" style="display:none">
+    <div class="section-block reveal">
+      <div class="section-header">
+        <h2 class="section-title">Motor IA</h2>
+        <span class="doc-action" style="cursor:default">Claude Sonnet 4.6 activo</span>
+      </div>
+
+      <div class="engine-grid">
+        <!-- Providers -->
+        <div class="engine-card">
+          <div class="engine-card-label">Providers activos</div>
+          <div class="engine-provider-row">
+            <div class="provider-icon" style="background:#7C3AED20">🟣</div>
+            <div>
+              <div class="provider-name">Anthropic Claude</div>
+              <div class="provider-model">claude-sonnet-4-6 · extracción SPIN/BANT</div>
+            </div>
+            <span class="provider-status ps-active">Activo</span>
+          </div>
+          <div class="engine-provider-row">
+            <div class="provider-icon" style="background:#F9731620">⚡</div>
+            <div>
+              <div class="provider-name">Groq</div>
+              <div class="provider-model">llama-3.3-70b · transcripción rápida</div>
+            </div>
+            <span class="provider-status ps-fallback">Fallback</span>
+          </div>
+          <div class="engine-provider-row">
+            <div class="provider-icon" style="background:#4285F420">🔵</div>
+            <div>
+              <div class="provider-name">Gemini</div>
+              <div class="provider-model">gemini-2.0-flash · multimodal</div>
+            </div>
+            <span class="provider-status ps-fallback">Fallback 2</span>
+          </div>
+          <div class="engine-provider-row">
+            <div class="provider-icon" style="background:#0066CC20">🔷</div>
+            <div>
+              <div class="provider-name">DeepSeek</div>
+              <div class="provider-model">deepseek-chat · emergencia</div>
+            </div>
+            <span class="provider-status ps-inactive">Off</span>
+          </div>
+        </div>
+
+        <!-- Prompt config -->
+        <div class="engine-card">
+          <div class="engine-card-label">Prompt de extracción · v1.1</div>
+          <div class="engine-prompt">Soy consultor de Smart Connection. Tuve una reunión de discovery con un cliente potencial.
+
+Extrae: SPIN (Situación, Problema, Implicación, Necesidad) + BANT + Top 3 pain points + Frases textuales del cliente (máx 5) + Próximos pasos acordados.
+
+Luego genera: reporte ejecutivo, diagnóstico interno y modelo comercial recomendado con pricing en UF.</div>
+        </div>
+
+        <!-- Stats — dark card -->
+        <div class="engine-card dark">
+          <div class="engine-card-label">Métricas del motor</div>
+          <div class="engine-card-title">34 documentos</div>
+          <div class="engine-card-desc">generados esta semana · ~$0.009 USD/lead completo</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+            <div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:4px">Latencia p50</div>
+              <div style="font-size:22px;font-weight:700;color:#FFFFFF;letter-spacing:-0.04em">2.1s</div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:4px">Tokens/lead</div>
+              <div style="font-size:22px;font-weight:700;color:var(--wp-accent);letter-spacing:-0.04em">~3K</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outputs -->
+        <div class="engine-card">
+          <div class="engine-card-label">Outputs configurados</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--wp-text-secondary);cursor:pointer;letter-spacing:-0.01em">
+              <input type="checkbox" checked style="accent-color:var(--wp-accent);width:15px;height:15px">
+              Diagnóstico ejecutivo (PDF + Word)
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--wp-text-secondary);cursor:pointer;letter-spacing:-0.01em">
+              <input type="checkbox" checked style="accent-color:var(--wp-accent);width:15px;height:15px">
+              Infografía HTML (visual diagnóstico)
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--wp-text-secondary);cursor:pointer;letter-spacing:-0.01em">
+              <input type="checkbox" checked style="accent-color:var(--wp-accent);width:15px;height:15px">
+              Propuesta con pricing en UF
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--wp-text-secondary);cursor:pointer;letter-spacing:-0.01em">
+              <input type="checkbox" style="accent-color:var(--wp-accent);width:15px;height:15px">
+              Plan de acción + timeline
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--wp-text-secondary);cursor:pointer;letter-spacing:-0.01em">
+              <input type="checkbox" style="accent-color:var(--wp-accent);width:15px;height:15px">
+              SPIN/BANT en Excel (CRM export)
+            </label>
+          </div>
+        </div>
+      </div><!-- /engine-grid -->
+    </div>
+  </div><!-- /sec-motor -->
+
+  <!-- ══════ SECTION: NUEVO LEAD ══════ -->
+  <div id="sec-nuevo" style="display:none">
+    <div class="two-col">
+      <div>
+        <div class="section-block reveal">
+          <div class="section-header">
+            <h2 class="section-title">Nuevo lead por chat</h2>
+          </div>
+
+          <div class="lead-intake">
+            <div class="lead-intake-title">Inicia la conversación de discovery</div>
+            <div class="lead-intake-sub">El asistente hará las preguntas SPIN/BANT automáticamente. Solo describe el caso o pega la transcripción.</div>
+
+            <div class="pill-input-wrap">
+              <input type="text" placeholder="Ej: Cliente de logística, necesitan integrar su ERP con Bsale..." id="leadInput">
+              <button class="pill-send" onclick="processLead()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+              </button>
+            </div>
+
+            <div class="lead-quick-tags">
+              <span class="lead-tag" onclick="setLead('Transcripción de reunión lista para procesar')">📎 Pegar transcripción</span>
+              <span class="lead-tag" onclick="setLead('Lead nuevo sin reunión previa')">✨ Chat directo</span>
+              <span class="lead-tag" onclick="setLead('Lead calificado manualmente, ingresar datos')">📋 Ingresar manual</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="engine-card reveal" style="margin-top:16px;">
+          <div class="engine-card-label">Cómo funciona</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--wp-accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+              <div style="font-size:13px;color:var(--wp-text-secondary);line-height:1.5;letter-spacing:-0.01em">Ingresa el contexto del cliente o pega la transcripción de la reunión</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--wp-accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+              <div style="font-size:13px;color:var(--wp-text-secondary);line-height:1.5;letter-spacing:-0.01em">El Motor IA extrae SPIN, BANT y los pain points clave automáticamente</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="width:24px;height:24px;border-radius:50%;background:#F59E0B;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+              <div style="font-size:13px;color:var(--wp-text-secondary);line-height:1.5;letter-spacing:-0.01em">Se generan diagnóstico, infografía y propuesta con pricing en UF listos para enviar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity feed -->
+      <div class="reveal">
+        <div class="engine-card" style="position:sticky;top:120px">
+          <div class="engine-card-label">Actividad reciente</div>
+          <div class="activity-feed" style="margin-top:8px;">
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(52,211,153,0.10)">✅</div>
+              <div class="activity-body">
+                <div class="activity-text"><strong>Constructora Andes</strong> — 3 documentos generados</div>
+                <div class="activity-time">Hace 12 min</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(245,158,11,0.09)">📨</div>
+              <div class="activity-body">
+                <div class="activity-text"><strong>Exportadora Pacifico</strong> — propuesta enviada</div>
+                <div class="activity-time">Hace 1h</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--wp-bg-muted)">🆕</div>
+              <div class="activity-body">
+                <div class="activity-text"><strong>Retenciones Chile</strong> — nuevo lead desde public page</div>
+                <div class="activity-time">09:30 hoy</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--wp-accent-subtle)">⭐</div>
+              <div class="activity-body">
+                <div class="activity-text"><strong>Distribuidora VPM</strong> — score actualizado a 91 pts</div>
+                <div class="activity-time">Ayer 17:45</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(220,50,50,0.07)">⚠️</div>
+              <div class="activity-body">
+                <div class="activity-text"><strong>Winery Valle Central</strong> — propuesta vence en 3 días</div>
+                <div class="activity-time">Ayer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /sec-nuevo -->
+
+</main>
+
+<!-- EXPAND MODAL -->
+<div class="expand-overlay" id="expandOverlay" onclick="if(event.target===this)closeExpand()">
+  <div class="expand-modal">
+    <button class="expand-close" onclick="closeExpand()">✕</button>
+    <div class="expand-type" id="expandType">DIAGNÓSTICO</div>
+    <div class="expand-title" id="expandTitle">Constructora Andes</div>
+    <div class="expand-client" id="expandClient">Felipe Rojas · CEO · 15 abr 2026</div>
+
+    <div class="expand-body" id="expandBody">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="expand-actions">
+      <button class="btn-expand" onclick="closeExpand()">Cerrar</button>
+      <button class="btn-expand">📄 Exportar PDF</button>
+      <button class="btn-expand primary">✉️ Enviar al cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="showSection('nuevo')">
+  <div class="fab-tooltip">Nuevo lead</div>
+  ＋
+</button>
+
+<script>
+// ─── SECTION NAV ───
+function showSection(id) {
+  ['pipeline','documentos','motor','nuevo'].forEach(s => {
+    const el = document.getElementById('sec-' + s);
+    if (el) el.style.display = (s === id) ? '' : 'none';
+  });
+
+  document.querySelectorAll('.section-tab, .nav-link').forEach(btn => {
+    btn.classList.toggle('active',
+      btn.textContent.toLowerCase().includes(id) ||
+      (id === 'pipeline' && btn.textContent.toLowerCase().includes('pipeline'))
+    );
+  });
+
+  setTimeout(() => {
+    document.querySelectorAll('#sec-' + id + ' .reveal:not(.visible)').forEach(el => {
+      el.classList.add('visible');
+    });
+  }, 50);
+}
+
+// ─── EXPAND DATA ───
+const expandData = {
+  retenciones: {
+    type: 'NUEVO LEAD', title: 'Retenciones Chile SpA',
+    client: 'Rodrigo Mena · Gerente TI · Hoy 09:30',
+    spin: ['Operan con Excel para seguimiento de retenciones tributarias', 'Pierden ~40h/mes en conciliación manual', '3 errores por mes → multas SII ~$2M CLP', 'Quieren automatización SII + alertas'],
+    bant: ['Budget: $5–8M CLP abiertos', 'Authority: Rodrigo + Directora Financiera', 'Need: urgente — auditoría SII en 60 días', 'Timeline: quieren demo en 2 semanas']
+  },
+  constructora: {
+    type: 'LEAD CALIFICADO · Score 94', title: 'Constructora Andes SA',
+    client: 'Felipe Rojas · CEO · 12 abr 2026',
+    spin: ['Gestión de obras en WhatsApp y hojas de cálculo', 'Sin visibilidad de avance en tiempo real', 'Retrasos promedio de 3 semanas por obra', 'Quieren dashboard de proyectos + alertas automáticas'],
+    bant: ['Budget: 250–350 UF aprobados', 'Authority: Felipe (decision maker único)', 'Need: quieren implementar este trimestre', 'Timeline: go-live para julio 2026']
+  },
+  exportadora: {
+    type: 'PROPUESTA ENVIADA', title: 'Exportadora Pacífico Ltda.',
+    client: 'Marcelo Díaz · Dir. Operaciones · 11 abr 2026',
+    spin: ['Coordinación con 3 agencias de aduana por email', '2–4 días para preparar documentación de exportación', 'Errores en certificados de origen → re-trabajo', 'Necesitan portal unificado de documentos'],
+    bant: ['Budget: 30–50 UF para Discovery Sprint', 'Authority: Marcelo + Gerente General', 'Need: exploratoria — evaluando opciones', 'Timeline: sin urgencia, ideal Q3 2026']
+  },
+  'doc-diag1': {
+    type: 'DIAGNÓSTICO EJECUTIVO', title: 'Constructora Andes SA',
+    client: 'Generado 15 abr 2026 · Motor IA v1.1',
+    spin: ['Situación: gestión de obras con 120+ empleados sin sistema central', 'Problema: pérdida de $8M CLP/mes en re-trabajo y retrasos', 'Implicación: contratos con penalidades por retraso activos', 'Necesidad: plataforma de gestión de proyectos con visibilidad real-time'],
+    bant: ['Modelo recomendado: Build Premium (280–320 UF)', 'Timeline: implementación en 10–12 semanas', 'ROI proyectado: 3.2x en 12 meses', 'Próximo paso: propuesta formal con hitos']
+  },
+  'doc-prop1': {
+    type: 'PROPUESTA COMERCIAL', title: 'Constructora Andes SA',
+    client: 'Generada 15 abr 2026 · Modelo Build Premium',
+    spin: ['Fase 1 (semanas 1–4): Discovery técnico + arquitectura', 'Fase 2 (semanas 5–8): Backend + APIs de integración', 'Fase 3 (semanas 9–12): Frontend + testing + UAT', 'Fase 4: Go-live + soporte Care Hábil 3 meses incluido'],
+    bant: ['Precio total: 300 UF (hitos mensuales)', 'Hito 1: 90 UF al iniciar', 'Hito 2: 120 UF al completar fase backend', 'Hito 3: 90 UF al go-live']
+  },
+  'doc-info1': {
+    type: 'INFOGRAFÍA DIAGNÓSTICO', title: 'Constructora Andes SA',
+    client: 'Generada 15 abr 2026 · HTML autocontenido',
+    spin: ['Pain 1: Comunicación de obra ($3.2M CLP/mes perdidos)', 'Pain 2: Documentación manual ($2.8M CLP/mes en re-trabajo)', 'Pain 3: Sin reporting gerencial (decisiones sin datos)'],
+    bant: ['Formato: HTML interactivo autocontenido', 'Listo para enviar por email o imprimir', 'Incluye comparativa SaaS / Build / híbrido', 'Scoring de oportunidad: 94/100']
+  }
+};
+
+function openExpand(key) {
+  const d = expandData[key];
+  if (!d) return;
+  document.getElementById('expandType').textContent = d.type;
+  document.getElementById('expandTitle').textContent = d.title;
+  document.getElementById('expandClient').textContent = d.client;
+  document.getElementById('expandBody').innerHTML = `
+    <div>
+      <div class="expand-section-title">${d.spin ? 'SPIN / Pain Points' : 'Detalles'}</div>
+      ${(d.spin||[]).map(s => `<div class="expand-data-row">${s}</div>`).join('')}
+    </div>
+    <div>
+      <div class="expand-section-title">BANT / Siguiente paso</div>
+      ${(d.bant||[]).map(b => `<div class="expand-data-row">${b}</div>`).join('')}
+    </div>
+  `;
+  document.getElementById('expandOverlay').classList.add('open');
+}
+
+function closeExpand() {
+  document.getElementById('expandOverlay').classList.remove('open');
+}
+
+// ─── LEAD INPUT ───
+function setLead(text) {
+  document.getElementById('leadInput').value = text;
+  document.getElementById('leadInput').focus();
+}
+
+function processLead() {
+  const val = document.getElementById('leadInput').value.trim();
+  if (!val) { document.getElementById('leadInput').focus(); return; }
+  alert('✅ Lead recibido.\n\nEl Motor IA está procesando la información.\nLos documentos estarán listos en menos de 30 segundos.\n\n"' + val.substring(0,80) + (val.length>80?'...':'"'));
+  document.getElementById('leadInput').value = '';
+}
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Init
+showSection('pipeline');
+
+// ── HERO CANVAS — Partículas sinapsis (adaptado White Premium) ──
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [], mouse = { x: -999, y: -999 };
+  const MAX_DIST = 120;
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  canvas.parentElement.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  });
+  canvas.parentElement.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+
+  class P {
+    constructor() { this.reset(); }
+    reset() {
+      this.x      = Math.random() * canvas.width;
+      this.y      = Math.random() * canvas.height;
+      this.isNode = Math.random() < 0.18;
+      this.s      = this.isNode ? Math.random() * 2.4 + 1.8 : Math.random() * 1.1 + 0.4;
+      this.o      = this.isNode ? Math.random() * 0.30 + 0.45 : Math.random() * 0.25 + 0.18;
+      this.isWhite = Math.random() < 0.22; // 22% blanco puro, 78% azul WP
+      this.sx     = (Math.random() - 0.5) * 0.20;
+      this.sy     = (Math.random() - 0.5) * 0.20;
+      this.phase  = Math.random() * Math.PI * 2;
+    }
+    update() {
+      const dx = this.x - mouse.x, dy = this.y - mouse.y;
+      const d  = Math.sqrt(dx * dx + dy * dy);
+      if (d < 90) { this.x += dx / d * 0.65; this.y += dy / d * 0.65; }
+      this.x += this.sx; this.y += this.sy;
+      this.phase += 0.022;
+      if (this.x < -10 || this.x > canvas.width + 10 ||
+          this.y < -10 || this.y > canvas.height + 10) this.reset();
+    }
+    draw() {
+      let r, g, b;
+      if (this.isNode) {
+        // nodos: pulsan suavemente entre azul WP (#2B5FE8) y blanco
+        const t = (Math.sin(this.phase * 0.5) + 1) / 2;
+        r = Math.round(43  + t * (255 - 43));
+        g = Math.round(95  + t * (255 - 95));
+        b = Math.round(232 + t * (255 - 232));
+        ctx.shadowBlur = 10; ctx.shadowColor = `rgba(${r},${g},${b},0.55)`;
+      } else if (this.isWhite) {
+        r = 200; g = 215; b = 255; // blanco con tinte azul muy suave
+        ctx.shadowBlur = 0;
+      } else {
+        // partícula azul WP
+        r = 43; g = 95; b = 232;
+        ctx.shadowBlur = 0;
+      }
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${this.o})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  // Crear 55 partículas (menos que marketing — hero más pequeño)
+  for (let i = 0; i < 55; i++) particles.push(new P());
+
+  function drawEdges() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < MAX_DIST) {
+          const alpha = (1 - d / MAX_DIST) * 0.10;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          // líneas azul WP muy sutiles
+          ctx.strokeStyle = `rgba(43,95,232,${alpha})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawEdges();
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+</body>
+</html>

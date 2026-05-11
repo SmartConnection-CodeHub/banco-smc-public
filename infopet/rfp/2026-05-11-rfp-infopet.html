@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>RFP · InfoPet</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#0a0d14;color:#f1f5f9;padding:40px 20px;line-height:1.6;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(0,229,176,.08),transparent 50%);pointer-events:none;z-index:0}
+.container{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:20px}.crumb a{color:#7dd3fc;text-decoration:none}
+.badge{display:inline-block;font-size:10px;padding:4px 10px;background:rgba(0,229,176,.12);border:1px solid rgba(0,229,176,.3);border-radius:30px;color:#00e5b0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:32px;font-weight:800;color:#00e5b0;margin-bottom:8px}
+.lead{font-size:15px;color:#cbd5e1;margin-bottom:24px}
+h2{font-size:20px;font-weight:700;color:#f1f5f9;margin:36px 0 14px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:8px;display:flex;align-items:center;gap:10px}
+h2 .num{font-size:11px;color:#00e5b0;font-family:'JetBrains Mono',monospace;background:rgba(0,229,176,.08);padding:3px 8px;border-radius:4px}
+p{color:#cbd5e1;margin-bottom:12px;font-size:14px}
+.section{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;margin-bottom:14px}
+.callout{background:linear-gradient(135deg,rgba(0,229,176,.06),rgba(0,180,216,.06));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin:14px 0;font-size:13.5px;color:#cbd5e1}.callout b{color:#00e5b0}
+ul{padding-left:0;list-style:none}ul li{padding:6px 0 6px 24px;position:relative;color:#cbd5e1;font-size:13.5px;border-bottom:1px solid rgba(255,255,255,.03)}ul li::before{content:"›";position:absolute;left:8px;color:#00e5b0;font-weight:700}
+table{width:100%;border-collapse:collapse;margin:14px 0;background:rgba(15,22,35,.6);border-radius:8px;overflow:hidden;font-size:12.5px}
+th{background:rgba(0,229,176,.1);color:#00e5b0;padding:9px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;padding:2px 6px;background:rgba(15,22,35,.8);border-radius:4px;color:#7dd3fc}
+.meta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:24px}
+.meta-card{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px}
+.meta-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.meta-val{font-size:13px;color:#f1f5f9;font-weight:700}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../index.html">← InfoPet</a> / Docs / RFP</div>
+<span class="badge">RFP · v1 · cliente Javier (futuro socio)</span>
+<h1>📋 RFP · InfoPet · ecommerce mascotas + IA</h1>
+<p class="lead">Javier (socio · futuro Marketplace SMC SpA) · tienda mascotas con stock Bsale + catálogo Jumpseller · agregar sync automático + asistente IA Tsukai por raza/edad</p>
+
+<div class="meta-row">
+<div class="meta-card"><div class="meta-lbl">Cliente</div><div class="meta-val">InfoPet SpA (Javier)</div></div>
+<div class="meta-card"><div class="meta-lbl">Relación</div><div class="meta-val">Cliente + futuro socio Marketplace</div></div>
+<div class="meta-card"><div class="meta-lbl">Modelo SMC</div><div class="meta-val">Project + Care (80-500 UF + mensual)</div></div>
+<div class="meta-card"><div class="meta-lbl">Estado</div><div class="meta-val">Live · Amplify x2 (PROD + QAS)</div></div>
+</div>
+
+<h2><span class="num">01</span>🎯 Contexto</h2>
+<div class="section">
+<p>Javier opera tienda de mascotas física + ecommerce con dos sistemas separados: <b>Bsale</b> (POS · stock · facturación) y <b>Jumpseller</b> (storefront público · checkout). Los sistemas no se hablan · stock se desync · venden producto agotado · clientes molestos.</p>
+<p>Además · cliente final llega al sitio sin saber qué producto necesita para su mascota específica (raza · edad · condición). Sin asesoramiento experto el carrito promedio es bajo · NPS bajo.</p>
+<div class="callout">
+<b>💡 Insight:</b> El negocio funciona pero pierde 10-15% revenue por desync + tiene oportunidad upsell con asistente IA que recomiende como veterinario.
+</div>
+</div>
+
+<h2><span class="num">02</span>🔥 Problema</h2>
+<div class="section">
+<ul>
+<li><b>Stock desync:</b> Bsale dice 5 unidades · Jumpseller dice 10 · clientes compran agotado</li>
+<li><b>Sin asesoramiento:</b> cliente final no sabe qué producto para Golden Retriever 8 años con artritis</li>
+<li><b>Catálogo sin SEO:</b> tráfico orgánico bajo · paga ads para todo</li>
+<li><b>Sin OCR facturas:</b> recibe facturas proveedor en papel · operario carga manual a Bsale</li>
+<li><b>Sin reportería:</b> Javier (gerente) sin visibilidad real-time ventas · stock crítico · top productos</li>
+</ul>
+</div>
+
+<h2><span class="num">03</span>💡 Hipótesis</h2>
+<div class="section">
+<div class="callout">
+<b>Hipótesis principal:</b> Conectando Bsale ↔ Jumpseller con sync real-time + agregando asistente IA (Tsukai) recomendando productos por raza/edad/condición · podemos aumentar carrito promedio 25-40% y reducir desync stock a 0%.
+</div>
+</div>
+
+<h2><span class="num">04</span>🛠️ Solución</h2>
+<div class="section">
+<h3>Stack</h3>
+<ul>
+<li><b>Frontend:</b> Next.js · Amplify hosting <code>d2aji0rjcmb4r4</code> (PROD) + <code>d2nku78amplf0m</code> (QAS · free tier hasta 05-2027)</li>
+<li><b>Backend:</b> Next.js API routes · Supabase para perfiles mascotas + chat sessions</li>
+<li><b>Bsale API:</b> stock fuente de verdad · webhook + polling 15min</li>
+<li><b>Jumpseller API:</b> catálogo + checkout · sync bidireccional</li>
+<li><b>Asistente Tsukai (IA):</b> Groq Llama 3.3 70B → Scout → Gemini → DeepSeek (fallback chain · NUNCA Claude en producto · regla Hoku)</li>
+<li><b>OCR Facturas:</b> mobile · sube foto · OCR + carga automática Bsale</li>
+</ul>
+
+<h3>Features producto</h3>
+<ul>
+<li>🤖 <b>Tsukai Chat:</b> recomienda por raza · edad · alergias · condición</li>
+<li>📦 <b>Sync stock real-time:</b> Bsale → Jumpseller live · stock=0 marca agotado instantáneo</li>
+<li>🏄 <b>InfoPet Reñaca:</b> wallpaper "Mis Olas" panel local con ranking ventas</li>
+<li>🧾 <b>OCR Facturas Mobile:</b> sube foto factura · OCR + autocarga Bsale</li>
+<li>📊 <b>Reporte Gerencial Javier:</b> dashboard ejecutivo · ventas · stock · top SKUs</li>
+</ul>
+</div>
+
+<h2><span class="num">05</span>📊 KPIs</h2>
+<div class="section">
+<table>
+<thead><tr><th>Métrica</th><th>Baseline</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>Desync stock incidentes/mes</td><td>~15</td><td>0</td></tr>
+<tr><td>Carrito promedio CLP</td><td>$22.000</td><td>$30.000+ (+36%)</td></tr>
+<tr><td>NPS post-compra</td><td>32</td><td>50+</td></tr>
+<tr><td>Conversación Tsukai → compra</td><td>—</td><td>15%+</td></tr>
+<tr><td>Tiempo carga factura proveedor</td><td>10 min</td><td>30 seg (OCR)</td></tr>
+<tr><td>Costo IA mensual</td><td>—</td><td>&lt;$30 USD (Groq + fallback)</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">06</span>⚠️ Riesgos</h2>
+<div class="section">
+<table>
+<tbody>
+<tr><td>Bsale API rate limit</td><td>Medio</td><td>Polling 15min + webhook · cache local Supabase</td></tr>
+<tr><td>Tsukai alucina recomendaciones</td><td>Alto</td><td>Guardrails post + fallback "consulta veterinario"</td></tr>
+<tr><td>OCR fail con facturas mal fotografiadas</td><td>Medio</td><td>Validación humana antes de carga · fallback manual</td></tr>
+<tr><td>Free tier Amplify QAS expira 05-2027</td><td>Bajo</td><td>Planear migración o pago $5-10/mes</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="num">07</span>🛣️ Roadmap</h2>
+<div class="section">
+<h3>Fase 1 · MVP (✅ COMPLETADO)</h3>
+<ul>
+<li>Next.js + Amplify PROD + QAS</li>
+<li>Bsale + Jumpseller integración base</li>
+<li>22 maquetas iteradas · features definidas</li>
+</ul>
+<h3>Fase 2 · IA Tsukai (✅ LIVE)</h3>
+<ul>
+<li>Asistente IA con fallback chain</li>
+<li>Recomendaciones por raza/edad</li>
+</ul>
+<h3>Fase 3 · OCR + Gerencia (🔄 EN CURSO)</h3>
+<ul>
+<li>OCR facturas mobile (maqueta 2026-04-15)</li>
+<li>Reporte gerencial Javier (maqueta 2026-04-07)</li>
+</ul>
+<h3>Fase 4 · Reñaca (✅ LIVE)</h3>
+<ul>
+<li>Panel local Reñaca con wallpaper</li>
+<li>Ranking ventas tienda física</li>
+</ul>
+</div>
+
+<footer>📋 RFP InfoPet · v1 · 2026-05-11 · banco SMC<br>
+<a href="../index.html" style="color:#7dd3fc;text-decoration:none">← volver al banco InfoPet</a></footer>
+</div></body></html>

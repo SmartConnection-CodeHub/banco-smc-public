@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoPet — Display Logic Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #0C1210;
+    --bg-surface: #111a16;
+    --bg-elevated: #162018;
+    --bg-glass: rgba(13,26,19,0.85);
+    --border: rgba(255,255,255,0.07);
+    --border-accent: rgba(45,106,79,0.5);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #2D6A4F;
+    --accent-bright: #34C759;
+    --amber: #FF9500;
+    --red: #FF3B30;
+    --blue: #5AC8FA;
+    --display-bg: rgba(45,106,79,0.12);
+    --display-border: rgba(52,199,89,0.25);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 16px 48px;
+  }
+
+  /* Header */
+  .page-header {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .page-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .page-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+  .badge-green { background: rgba(52,199,89,0.12); color: var(--accent-bright); border: 1px solid rgba(52,199,89,0.2); }
+  .badge-amber { background: rgba(255,149,0,0.12); color: var(--amber); border: 1px solid rgba(255,149,0,0.2); }
+
+  /* Toggle */
+  .toggle-bar {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .toggle-btn {
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .toggle-btn:hover:not(.active) {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+  }
+  .toggle-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: 8px;
+  }
+
+  /* Glass card */
+  .glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+
+  /* Modal */
+  .modal {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .modal-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .modal-close {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    border: none; color: var(--text-secondary); font-size: 18px;
+    cursor: pointer;
+  }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; padding: 16px 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { border-bottom: 1px solid var(--border); }
+  thead th {
+    padding-bottom: 10px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  tbody tr { border-top: 1px solid var(--border); transition: background 0.12s; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  /* Display row highlight */
+  tbody tr.display-row { background: var(--display-bg); }
+  tbody tr.display-row:hover { background: rgba(45,106,79,0.18); }
+
+  td { padding: 10px 8px 10px 0; vertical-align: middle; }
+  td:last-child { padding-right: 0; }
+
+  /* Editable input style */
+  .cell-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 5px 8px;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .cell-input:hover { background: rgba(255,255,255,0.07); }
+  .cell-input:focus { background: rgba(255,255,255,0.09); border-color: var(--border-accent); }
+  .cell-input.match { border-color: rgba(52,199,89,0.3); color: var(--accent-bright); }
+  .cell-input.numeric { font-variant-numeric: tabular-nums; text-align: right; }
+
+  /* Highlight modified cells */
+  .cell-input.modified {
+    background: rgba(52,199,89,0.08);
+    border-color: rgba(52,199,89,0.3);
+    color: var(--accent-bright);
+    font-weight: 600;
+  }
+
+  /* Display badge on variante */
+  .variante-wrap { display: flex; align-items: center; gap: 6px; }
+  .display-badge {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 20px;
+    background: rgba(45,106,79,0.25);
+    color: var(--accent-bright);
+    border: 1px solid rgba(52,199,89,0.2);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* Delete btn */
+  .del-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--red); opacity: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  tr:hover .del-btn { opacity: 1; }
+  .del-btn:hover { background: rgba(255,59,48,0.12); }
+
+  /* Footer */
+  .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-count { font-size: 12px; color: var(--text-secondary); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-ghost { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.13); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #245c43; }
+
+  /* Legend */
+  .legend {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-secondary);
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 3px;
+  }
+  .legend-dot-display { background: rgba(45,106,79,0.4); border: 1px solid rgba(52,199,89,0.3); }
+  .legend-dot-modified { background: rgba(52,199,89,0.3); border: 1px solid rgba(52,199,89,0.5); }
+  .legend-dot-normal { background: rgba(255,255,255,0.07); border: 1px solid var(--border); }
+
+  /* Summary box */
+  .summary {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: var(--display-bg);
+    border: 1px solid var(--display-border);
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .summary strong { color: var(--accent-bright); font-weight: 600; }
+  .summary-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-bright); font-weight: 600; margin-bottom: 6px; }
+
+  /* Nota "antes" */
+  .before-note {
+    background: rgba(255,149,0,0.08);
+    border: 1px solid rgba(255,149,0,0.2);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 12px;
+    color: var(--amber);
+    margin-top: 16px;
+    width: 100%;
+    max-width: 900px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">InfoPet — Revisión Display Logic</div>
+    <div class="page-sub">Modal "Revisar productos antes de exportar" · Lógica de display aplicada al abrir</div>
+  </div>
+  <span class="badge badge-green">● Fix listo</span>
+</div>
+
+<!-- Toggle antes/después -->
+<div class="toggle-bar">
+  <button class="toggle-btn" id="btn-antes" onclick="setMode('antes')">Antes (sin lógica)</button>
+  <button class="toggle-btn active" id="btn-despues" onclick="setMode('despues')">Después (con display logic)</button>
+  <span class="toggle-label">Toggle para comparar</span>
+</div>
+
+<!-- Modal -->
+<div class="modal">
+  <div class="modal-header">
+    <div>
+      <div class="modal-title">Revisar productos antes de exportar</div>
+      <div class="modal-sub">Edita cualquier celda para corregir errores del OCR</div>
+    </div>
+    <button class="modal-close">×</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="productos-table">
+      <thead>
+        <tr>
+          <th style="width:28%">Producto (factura)</th>
+          <th style="width:22%">En Maestro</th>
+          <th style="width:14%">Variante</th>
+          <th style="width:9%" class="text-right">Cant.</th>
+          <th style="width:14%" class="text-right">P. Unit.</th>
+          <th style="width:4%"></th>
+        </tr>
+      </thead>
+      <tbody id="tabla-body">
+        <!-- Rows rendered by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal-footer">
+    <span class="footer-count" id="footer-count">— productos</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost">Cancelar</button>
+      <button class="btn btn-primary">Confirmar y descargar Excel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nota estado -->
+<div id="after-note" class="summary" style="display:none">
+  <div class="summary-title">Transformaciones aplicadas automáticamente</div>
+  <div id="summary-list"></div>
+</div>
+
+<div id="before-note" class="before-note" style="display:none">
+  ⚠️ <strong>Estado anterior:</strong> precio_unitario = precio por display entero. Al exportar Excel, el precio por lata quedaba incorrecto y la cantidad no reflejaba las unidades reales.
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot legend-dot-display"></div> Fila con display detectado</div>
+  <div class="legend-item"><div class="legend-dot legend-dot-modified"></div> Celda transformada automáticamente</div>
+  <div class="legend-item"><div class="legend-dot legend-dot-normal"></div> Sin cambio</div>
+</div>
+
+<script>
+const productos = [
+  { nombre: 'Belcando Adult GF Ocean',           maestro: 'BELCANDO ADULT GF OCEAN 12',   variante: '12,5Kg',  cantidad: 1, precio: 54206 },
+  { nombre: 'Belcando Finest GF Salmon',          maestro: 'BELCANDO FINEST GF SALMON',    variante: '12,5Kg',  cantidad: 1, precio: 57059 },
+  { nombre: 'Leonardo Fresh Beef',                maestro: 'LEONARDO FRESH MEAT BEEF 1',   variante: '1,5Kg',   cantidad: 1, precio: 18441 },
+  { nombre: 'Leonardo Kitten GF',                 maestro: 'LEONARDO QUALITY SELECTION',   variante: '1,8Kg',   cantidad: 1, precio: 17323 },
+  { nombre: 'Bewicat Lata Meatinis Rico en Ve',   maestro: 'BEWIDOG LATA RICO EN VENAD',   variante: '6×400g',  cantidad: 1, precio: 12000 },
+  { nombre: 'Leonardo QS Rico en Higado',         maestro: 'LEONARDO QUALITY SELECTION',   variante: '6×400g',  cantidad: 2, precio: 15565 },
+  { nombre: 'Leonardo QS Rico en Ternera',        maestro: 'LEONARDO QUALITY SELECTION',   variante: '6×400g',  cantidad: 1, precio: 15565 },
+  { nombre: 'Leonardo QS Rico en Conejo',         maestro: 'LEONARDO QUALITY SELECTION',   variante: '6×400g',  cantidad: 2, precio: 15565 },
+  { nombre: 'Leonardo Drink Beef',                maestro: 'LEONARDO DRINK BEEF 40 gr',    variante: '20×40g',  cantidad: 1, precio: 18824 },
+  { nombre: 'Belcando Finest GF Senior',          maestro: 'BELCANDO FINEST GF SENIOR 4',  variante: '4Kg',     cantidad: 1, precio: 24706 },
+  { nombre: 'Belcando Finest GF Salmon',          maestro: 'BELCANDO FINEST GF SALMON',    variante: '12,5Kg',  cantidad: 1, precio: 57059 },
+  { nombre: 'Belcando Snack Bits Pato',           maestro: 'BELCANDO BITS HORSE 90 G',     variante: '7×90g',   cantidad: 1, precio: 16800 },
+]
+
+function parseMultiplier(variante) {
+  const m = variante.match(/^(\d+)[×x]/i)
+  return m ? parseInt(m[1], 10) : 1
+}
+
+function fmt(n) {
+  return '$' + Math.round(n).toLocaleString('es-CL')
+}
+
+let currentMode = 'despues'
+
+function setMode(mode) {
+  currentMode = mode
+  document.getElementById('btn-antes').classList.toggle('active', mode === 'antes')
+  document.getElementById('btn-despues').classList.toggle('active', mode === 'despues')
+  render()
+}
+
+function render() {
+  const tbody = document.getElementById('tabla-body')
+  const summaryList = document.getElementById('summary-list')
+  const afterNote = document.getElementById('after-note')
+  const beforeNote = document.getElementById('before-note')
+  const isPrev = currentMode === 'antes'
+
+  afterNote.style.display = isPrev ? 'none' : ''
+  beforeNote.style.display = isPrev ? '' : 'none'
+
+  const summaryItems = []
+  let rows = ''
+
+  productos.forEach((p, i) => {
+    const mult = parseMultiplier(p.variante)
+    const isDisplay = mult > 1
+
+    let cantidad = p.cantidad
+    let precio = p.precio
+
+    if (!isPrev && isDisplay) {
+      cantidad = p.cantidad * mult
+      precio = Math.round(p.precio / mult)
+    }
+
+    const rowClass = isDisplay ? 'display-row' : ''
+
+    // Variante cell
+    const varianteCellInner = isDisplay
+      ? `<div class="variante-wrap">
+          <input class="cell-input" value="${p.variante}" readonly>
+          <span class="display-badge">${mult}u/display</span>
+        </div>`
+      : `<input class="cell-input" value="${p.variante}" readonly>`
+
+    // Cantidad cell
+    const cantClass = (!isPrev && isDisplay) ? 'cell-input numeric modified' : 'cell-input numeric'
+    const cantCell = `<input class="${cantClass}" value="${cantidad}" readonly>`
+
+    // Precio cell
+    const precioClass = (!isPrev && isDisplay) ? 'cell-input numeric modified' : 'cell-input numeric'
+    const precioCell = `<input class="${precioClass}" value="${fmt(precio)}" readonly>`
+
+    // Maestro cell
+    const maestroClass = p.maestro ? 'cell-input match' : 'cell-input'
+
+    rows += `<tr class="${rowClass}">
+      <td><input class="cell-input" value="${p.nombre}" readonly></td>
+      <td><input class="${maestroClass}" value="${p.maestro ?? ''}" placeholder="sin match" readonly></td>
+      <td>${varianteCellInner}</td>
+      <td>${cantCell}</td>
+      <td>${precioCell}</td>
+      <td><button class="del-btn">×</button></td>
+    </tr>`
+
+    if (!isPrev && isDisplay) {
+      const totalUnidades = p.cantidad * mult
+      summaryItems.push(
+        `<strong>${p.nombre}</strong> (${p.variante}): ` +
+        `${p.cantidad} display${p.cantidad > 1 ? 's' : ''} × ${mult}u → ` +
+        `<strong>${totalUnidades} unidades</strong> · ` +
+        `Precio: ${fmt(p.precio)} ÷ ${mult} = <strong>${fmt(Math.round(p.precio / mult))} por lata</strong>`
+      )
+    }
+  })
+
+  tbody.innerHTML = rows
+  document.getElementById('footer-count').textContent = `${productos.length} productos`
+
+  if (!isPrev) {
+    summaryList.innerHTML = summaryItems.map(s => `<div style="margin-bottom:4px">• ${s}</div>`).join('')
+  }
+}
+
+// Init
+render()
+</script>
+</body>
+</html>

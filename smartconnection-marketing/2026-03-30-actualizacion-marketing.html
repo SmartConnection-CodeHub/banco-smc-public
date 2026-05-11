@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Connection — SAP + IA para tu empresa</title>
+<style>
+:root{
+  --bg:#060912;--surface:#0a0d14;--elevated:#0f1520;
+  --glass:rgba(15,22,35,0.85);--glass2:rgba(15,22,35,0.6);
+  --border:rgba(255,255,255,0.06);--border-hover:rgba(255,255,255,0.15);
+  --text:#f1f5f9;--text2:#94a3b8;--muted:#475569;
+  --accent:#00e5b0;--accent2:#00c49a;--accent-glow:rgba(0,229,176,0.15);
+  --blue:#4a9eff;--purple:#a855f7;--orange:#f59e0b;--pink:#ec4899;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:all 0.3s;backdrop-filter:blur(20px);background:rgba(6,9,18,0.8);border-bottom:1px solid transparent}
+nav.scrolled{border-bottom-color:var(--border)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:1.2rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo span{color:var(--accent)}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.9rem;transition:color 0.3s}
+.nav-links a:hover{color:var(--accent)}
+.nav-cta{background:var(--accent);color:var(--bg);padding:10px 24px;border-radius:8px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.3s}
+.nav-cta:hover{background:var(--accent2);transform:translateY(-1px)}
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer}
+
+/* SECTIONS */
+section{padding:120px 24px}
+.container{max-width:1200px;margin:0 auto}
+.section-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:3px;color:var(--accent);margin-bottom:12px;font-weight:600}
+.section-title{font-size:2.5rem;font-weight:800;line-height:1.2;margin-bottom:16px}
+.section-desc{font-size:1.1rem;color:var(--text2);max-width:600px;line-height:1.7}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;padding-top:100px}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(0,229,176,0.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(74,158,255,0.06) 0%,transparent 50%)}
+.hero-content{position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%}
+.hero h1{font-size:3.5rem;font-weight:800;line-height:1.1;margin-bottom:24px;max-width:700px}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.25rem;color:var(--text2);max-width:550px;margin-bottom:40px;line-height:1.7}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap}
+.btn-primary{background:var(--accent);color:var(--bg);padding:14px 32px;border-radius:10px;font-weight:700;font-size:1rem;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 30px var(--accent-glow)}
+.btn-secondary{background:transparent;color:var(--text);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;border:1px solid var(--border);transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.hero-badges{display:flex;gap:12px;margin-top:40px;flex-wrap:wrap}
+.badge{background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:0.8rem;color:var(--text2);display:flex;align-items:center;gap:6px}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+/* PROBLEMA-SOLUCION */
+.problem-solution{background:var(--surface)}
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px}
+.ps-card{border-radius:20px;padding:40px;position:relative;overflow:hidden}
+.ps-before{background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15)}
+.ps-after{background:var(--accent-glow);border:1px solid rgba(0,229,176,0.2)}
+.ps-card h3{font-size:1.3rem;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.ps-list{list-style:none;font-size:0.95rem;line-height:2.2}
+.ps-before .ps-list li::before{content:"✕ ";color:#ef4444;font-weight:700}
+.ps-after .ps-list li::before{content:"✓ ";color:var(--accent);font-weight:700}
+
+/* SERVICIOS */
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.service-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all 0.4s;position:relative;overflow:hidden}
+.service-card:hover{border-color:var(--border-hover);transform:translateY(-4px);background:var(--glass2)}
+.service-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--blue));opacity:0;transition:opacity 0.3s}
+.service-card:hover::before{opacity:1}
+.service-icon{font-size:2.4rem;margin-bottom:16px;display:block}
+.service-card h3{font-size:1.15rem;font-weight:700;margin-bottom:8px}
+.service-card p{font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.service-tag{font-size:0.7rem;background:rgba(0,229,176,0.1);color:var(--accent);padding:4px 10px;border-radius:6px;display:inline-block}
+
+/* COMO TRABAJAMOS */
+.process{background:var(--surface)}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px}
+.process-step{text-align:center;position:relative}
+.process-step::after{content:"→";position:absolute;right:-20px;top:40px;color:var(--muted);font-size:1.5rem}
+.process-step:last-child::after{display:none}
+.step-circle{width:80px;height:80px;border-radius:50%;background:var(--accent-glow);border:2px solid rgba(0,229,176,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2rem}
+.process-step h4{font-weight:700;margin-bottom:6px;font-size:0.95rem}
+.process-step p{font-size:0.8rem;color:var(--text2)}
+
+/* PORTAFOLIO */
+.portfolio-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px}
+.portfolio-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.4s}
+.portfolio-card:hover{border-color:var(--border-hover);transform:translateY(-4px)}
+.portfolio-preview{height:200px;background:linear-gradient(135deg,var(--elevated),var(--surface));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.portfolio-preview .mockup{font-size:4rem;opacity:0.3}
+.portfolio-preview .category-badge{position:absolute;top:16px;left:16px;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);padding:6px 14px;border-radius:6px;font-size:0.7rem;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.portfolio-info{padding:24px}
+.portfolio-info h3{font-size:1.1rem;font-weight:700;margin-bottom:6px}
+.portfolio-info p{font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:12px}
+.portfolio-tags{display:flex;gap:8px;flex-wrap:wrap}
+.portfolio-tags span{font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);padding:4px 10px;border-radius:6px;color:var(--text2)}
+
+/* EQUIPO */
+.team{background:var(--surface)}
+.team-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px;align-items:center}
+.team-photo{width:200px;height:200px;border-radius:50%;background:linear-gradient(135deg,var(--accent-glow),rgba(74,158,255,0.1));border:2px solid rgba(0,229,176,0.2);display:flex;align-items:center;justify-content:center;font-size:4rem;margin:0 auto}
+.team-left{text-align:center}
+.team-name{font-size:1.5rem;font-weight:800;margin-top:20px}
+.team-role{color:var(--accent);font-size:0.9rem;margin-bottom:16px}
+.team-bio{color:var(--text2);font-size:0.9rem;line-height:1.7;max-width:400px;margin:0 auto}
+.team-features{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.team-feature{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all 0.3s}
+.team-feature:hover{border-color:var(--border-hover)}
+.team-feature .tf-icon{font-size:1.5rem;margin-bottom:8px;display:block}
+.team-feature h4{font-size:0.9rem;font-weight:700;margin-bottom:4px}
+.team-feature p{font-size:0.75rem;color:var(--text2)}
+
+/* PYMES */
+.pymes-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px}
+.pymes-features{display:flex;flex-direction:column;gap:16px}
+.pyme-feature{display:flex;gap:16px;align-items:flex-start;background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all 0.3s}
+.pyme-feature:hover{border-color:var(--border-hover)}
+.pyme-feature .pf-icon{font-size:1.5rem;flex-shrink:0}
+.pyme-feature h4{font-size:0.9rem;font-weight:700;margin-bottom:4px}
+.pyme-feature p{font-size:0.8rem;color:var(--text2)}
+.pymes-pricing{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:40px;text-align:center}
+.pymes-pricing h3{font-size:1.5rem;font-weight:800;margin-bottom:8px}
+.pymes-pricing .price{font-size:3rem;font-weight:800;color:var(--accent);margin:16px 0}
+.pymes-pricing .price span{font-size:1rem;color:var(--text2);font-weight:400}
+.pymes-pricing .price-desc{color:var(--text2);font-size:0.9rem;margin-bottom:24px}
+.pymes-pricing ul{list-style:none;text-align:left;margin-bottom:32px}
+.pymes-pricing ul li{padding:8px 0;border-bottom:1px solid var(--border);font-size:0.85rem;color:var(--text2)}
+.pymes-pricing ul li::before{content:"✓ ";color:var(--accent);font-weight:700}
+
+/* PARTNERS */
+.partners{background:var(--surface)}
+.partners-grid{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;margin-top:48px;opacity:0.6}
+.partner{font-size:1.1rem;font-weight:700;color:var(--text2);padding:16px 24px;transition:opacity 0.3s}
+.partner:hover{opacity:1;color:var(--text)}
+
+/* SOCIAL PROOF */
+.proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px}
+.proof-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;transition:all 0.3s}
+.proof-card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+.proof-number{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.proof-label{font-size:0.85rem;color:var(--text2);margin-top:4px}
+
+/* CTA FINAL */
+.cta-final{background:linear-gradient(135deg,rgba(0,229,176,0.08),rgba(74,158,255,0.08));border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center}
+.cta-final h2{font-size:2.5rem;font-weight:800;margin-bottom:16px}
+.cta-final p{font-size:1.1rem;color:var(--text2);max-width:500px;margin:0 auto 32px}
+.cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+/* CONTACTO */
+.contact{background:var(--surface)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px}
+.contact-info{display:flex;flex-direction:column;gap:24px}
+.contact-item{display:flex;gap:16px;align-items:flex-start}
+.contact-item .ci-icon{font-size:1.3rem;flex-shrink:0;width:44px;height:44px;background:var(--accent-glow);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.contact-item h4{font-size:0.9rem;font-weight:700;margin-bottom:2px}
+.contact-item p{font-size:0.85rem;color:var(--text2)}
+.contact-form{display:flex;flex-direction:column;gap:16px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:0.8rem;color:var(--text2);font-weight:500}
+.form-group input,.form-group select,.form-group textarea{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-family:var(--font);font-size:0.9rem;transition:border-color 0.3s;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:100px}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:60px 24px 24px}
+.footer-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer-brand p{font-size:0.85rem;color:var(--text2);line-height:1.7;margin-top:12px;max-width:300px}
+.footer-col h4{font-size:0.85rem;font-weight:700;margin-bottom:16px;color:var(--text)}
+.footer-col a{display:block;color:var(--text2);text-decoration:none;font-size:0.85rem;padding:4px 0;transition:color 0.3s}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{max-width:1200px;margin:40px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:var(--muted)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero h1{font-size:2.2rem}
+  .hero p{font-size:1rem}
+  .nav-links{display:none}
+  .hamburger{display:block}
+  .ps-grid,.services-grid,.portfolio-grid,.team-layout,.pymes-layout,.contact-grid,.footer-grid{grid-template-columns:1fr}
+  .process-steps{grid-template-columns:1fr 1fr}
+  .process-step::after{display:none}
+  .proof-grid{grid-template-columns:1fr 1fr}
+  .section-title{font-size:1.8rem}
+  section{padding:80px 24px}
+  .form-row{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">Smart<span>Connection</span></a>
+    <div class="nav-links">
+      <a href="#servicios">Servicios</a>
+      <a href="#portafolio">Portafolio</a>
+      <a href="#equipo">Equipo</a>
+      <a href="#pymes">PYMES</a>
+      <a href="#contacto">Contacto</a>
+      <a href="#agendar" class="nav-cta">Agendar Reunión</a>
+    </div>
+    <button class="hamburger" onclick="this.nextElementSibling?.classList.toggle('show')">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content container">
+    <div class="section-label">Consultoría SAP & Desarrollo con IA</div>
+    <h1>Tu empresa merece software que <span class="highlight">trabaje tan duro como tú</span></h1>
+    <p>Consultores SAP certificados y un equipo multidisciplinario con IA que entrega resultados medibles. No vendemos tecnología — resolvemos problemas reales de negocio.</p>
+    <div class="hero-ctas">
+      <a href="#contacto" class="btn-primary">Cuéntanos tu desafío →</a>
+      <a href="#servicios" class="btn-secondary">Ver servicios</a>
+    </div>
+    <div class="hero-badges">
+      <div class="badge"><span class="dot"></span> Empresa chilena</div>
+      <div class="badge"><span class="dot"></span> Consultores SAP certificados</div>
+      <div class="badge"><span class="dot"></span> IA aplicada a resultados</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA → SOLUCIÓN -->
+<section class="problem-solution">
+  <div class="container">
+    <div class="section-label">El problema</div>
+    <div class="section-title">¿Te suena familiar?</div>
+    <div class="ps-grid">
+      <div class="ps-card ps-before">
+        <h3>😤 Sin nosotros</h3>
+        <ul class="ps-list">
+          <li>Procesos manuales que consumen horas</li>
+          <li>Datos en planillas que nadie entiende</li>
+          <li>Software que no habla con tu SAP</li>
+          <li>Proveedores que desaparecen después de entregar</li>
+          <li>Proyectos que se atrasan meses</li>
+          <li>Inversiones tecnológicas sin retorno claro</li>
+        </ul>
+      </div>
+      <div class="ps-card ps-after">
+        <h3>🚀 Con Smart Connection</h3>
+        <ul class="ps-list">
+          <li>Procesos automatizados que liberan a tu equipo</li>
+          <li>Dashboards en tiempo real con datos accionables</li>
+          <li>Integraciones SAP que funcionan desde el día 1</li>
+          <li>Soporte continuo incluido — no desaparecemos</li>
+          <li>Entregas incrementales cada 2 semanas</li>
+          <li>ROI medible desde el primer mes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="container">
+    <div class="section-label">Servicios</div>
+    <div class="section-title">Todo lo que tu empresa necesita</div>
+    <div class="section-desc">Desde consultoría SAP enterprise hasta apps inteligentes para PYMES. Un solo equipo, todas las capacidades.</div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-icon">🏗️</span>
+        <h3>SAP BTP & Cloud</h3>
+        <p>Extensiones, integraciones y desarrollo en la nube de SAP. Lleva tu ERP al siguiente nivel sin romper lo que ya funciona.</p>
+        <span class="service-tag">Enterprise</span>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🔄</span>
+        <h3>Migraciones S/4HANA</h3>
+        <p>Migraciones planificadas con metodología ágil. Sin sorpresas, sin downtime extendido, con rollback garantizado.</p>
+        <span class="service-tag">Enterprise</span>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">💻</span>
+        <h3>ABAP & FIORI</h3>
+        <p>Desarrollo a medida dentro de SAP. Interfaces modernas con Fiori que tus usuarios realmente quieren usar.</p>
+        <span class="service-tag">Enterprise</span>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🔌</span>
+        <h3>Integración PI/PO & CPI</h3>
+        <p>Conectamos tu SAP con el resto de tu ecosistema: ERPs, CRMs, eCommerce, APIs de terceros.</p>
+        <span class="service-tag">Enterprise</span>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🤖</span>
+        <h3>Apps con Inteligencia Artificial</h3>
+        <p>Aplicaciones a medida potenciadas con IA: chatbots, análisis de documentos, automatización inteligente, asistentes de negocio.</p>
+        <span class="service-tag">Empresas + PYMES</span>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">📊</span>
+        <h3>Analytics & BI</h3>
+        <p>Dashboards ejecutivos, reportería automatizada y Business Intelligence. Toma decisiones con datos, no con intuición.</p>
+        <span class="service-tag">Empresas + PYMES</span>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🛡️</span>
+        <h3>Soporte Continuo (AMS)</h3>
+        <p>No desaparecemos después de la entrega. Soporte continuo, monitoreo proactivo y mejoras incrementales incluidas.</p>
+        <span class="service-tag">Todos</span>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🌐</span>
+        <h3>Desarrollo Web & eCommerce</h3>
+        <p>Sitios web de alta conversión, tiendas online y plataformas digitales. Desde landing pages hasta marketplaces completos.</p>
+        <span class="service-tag">Empresas + PYMES</span>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">📱</span>
+        <h3>Apps Móviles & PWA</h3>
+        <p>Aplicaciones progresivas que funcionan como apps nativas. Offline, push notifications, instalables desde el navegador.</p>
+        <span class="service-tag">Empresas + PYMES</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO TRABAJAMOS -->
+<section class="process">
+  <div class="container">
+    <div class="section-label">Metodología</div>
+    <div class="section-title">Cómo trabajamos</div>
+    <div class="section-desc">Un proceso probado que entrega resultados en semanas, no en meses.</div>
+
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-circle">🎯</div>
+        <h4>Diagnóstico</h4>
+        <p>Entendemos tu negocio, tus dolores y tus metas. Sin jerga técnica — hablamos tu idioma.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">📐</div>
+        <h4>Diseño</h4>
+        <p>Prototipamos la solución contigo. Ves la maqueta antes de escribir una línea de código.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">⚡</div>
+        <h4>Construcción</h4>
+        <p>Equipo multidisciplinario trabaja en paralelo. Frontend, backend e IA avanzan simultáneamente.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">🚀</div>
+        <h4>Entrega + Soporte</h4>
+        <p>Deploy a producción con monitoreo. Soporte continuo incluido — no te dejamos solo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTAFOLIO -->
+<section id="portafolio">
+  <div class="container">
+    <div class="section-label">Portafolio</div>
+    <div class="section-title">Proyectos que hablan por sí solos</div>
+    <div class="section-desc">Soluciones reales para empresas reales en Chile.</div>
+
+    <div class="portfolio-grid">
+      <div class="portfolio-card">
+        <div class="portfolio-preview" style="background:linear-gradient(135deg,#0f1520,#1a1f35)">
+          <span class="mockup">🏢</span>
+          <span class="category-badge">Intranet Empresarial</span>
+        </div>
+        <div class="portfolio-info">
+          <h3>Plataforma de Gestión Interna con IA</h3>
+          <p>Sistema completo de gestión interna con múltiples agentes de IA integrados, CRM, analytics en tiempo real y automatización de procesos.</p>
+          <div class="portfolio-tags">
+            <span>IA Multiagente</span>
+            <span>CRM</span>
+            <span>Analytics</span>
+            <span>Automatización</span>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-card">
+        <div class="portfolio-preview" style="background:linear-gradient(135deg,#0f2015,#1a3525)">
+          <span class="mockup">📋</span>
+          <span class="category-badge">App de Cotizaciones</span>
+        </div>
+        <div class="portfolio-info">
+          <h3>Cotizador Inteligente con Generación PDF</h3>
+          <p>Aplicación de cotizaciones que genera documentos profesionales en segundos. Integrada con base de datos de productos y precios dinámicos.</p>
+          <div class="portfolio-tags">
+            <span>Generación PDF</span>
+            <span>Base de Datos</span>
+            <span>Precios Dinámicos</span>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-card">
+        <div class="portfolio-preview" style="background:linear-gradient(135deg,#1a0f20,#2a1535)">
+          <span class="mockup">🛒</span>
+          <span class="category-badge">eCommerce</span>
+        </div>
+        <div class="portfolio-info">
+          <h3>Marketplace con Inteligencia de Mercado</h3>
+          <p>Plataforma de venta online con análisis de competencia automatizado, optimización de listados y reportería de ventas en tiempo real.</p>
+          <div class="portfolio-tags">
+            <span>Marketplace</span>
+            <span>Análisis Competitivo</span>
+            <span>Reportería</span>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-card">
+        <div class="portfolio-preview" style="background:linear-gradient(135deg,#0f1a20,#152a35)">
+          <span class="mockup">🐾</span>
+          <span class="category-badge">Gestión de Inventario</span>
+        </div>
+        <div class="portfolio-info">
+          <h3>Sincronización Multi-Plataforma con IA</h3>
+          <p>Sistema que sincroniza inventario entre múltiples plataformas de venta, con clasificación inteligente de productos y alertas automatizadas.</p>
+          <div class="portfolio-tags">
+            <span>Multi-Plataforma</span>
+            <span>IA Clasificación</span>
+            <span>Sync en Tiempo Real</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPO -->
+<section id="equipo" class="team">
+  <div class="container">
+    <div class="section-label">Equipo</div>
+    <div class="section-title">Las personas detrás de la tecnología</div>
+
+    <div class="team-layout">
+      <div class="team-left">
+        <div class="team-photo">👨‍💻</div>
+        <div class="team-name">Guillermo González León</div>
+        <div class="team-role">Fundador & Director</div>
+        <div class="team-bio">+7 años de experiencia en consultoría SAP, desarrollo full-stack e inteligencia artificial aplicada. Apasionado por resolver problemas complejos con soluciones simples.</div>
+      </div>
+      <div>
+        <h3 style="font-size:1.3rem;font-weight:700;margin-bottom:24px">Un equipo completo a tu disposición</h3>
+        <p style="color:var(--text2);font-size:0.9rem;margin-bottom:24px;line-height:1.7">No somos un freelancer ni una consultora genérica. Contamos con un equipo multidisciplinario especializado que cubre cada ángulo de tu proyecto.</p>
+        <div class="team-features">
+          <div class="team-feature">
+            <span class="tf-icon">🏗️</span>
+            <h4>Arquitectura</h4>
+            <p>Diseño técnico robusto antes de escribir código</p>
+          </div>
+          <div class="team-feature">
+            <span class="tf-icon">⚡</span>
+            <h4>Desarrollo</h4>
+            <p>Frontend, backend e IA trabajando en paralelo</p>
+          </div>
+          <div class="team-feature">
+            <span class="tf-icon">🔍</span>
+            <h4>Calidad</h4>
+            <p>Testing riguroso como usuario real antes de entregar</p>
+          </div>
+          <div class="team-feature">
+            <span class="tf-icon">🎧</span>
+            <h4>Soporte</h4>
+            <p>Acompañamiento continuo post-entrega incluido</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section>
+  <div class="container">
+    <div class="section-label">Resultados</div>
+    <div class="section-title">Números que importan</div>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-number">+7</div>
+        <div class="proof-label">Años de experiencia SAP</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-number">99.9%</div>
+        <div class="proof-label">Uptime en producción</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-number">2 sem</div>
+        <div class="proof-label">Primera entrega funcional</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-number">24/7</div>
+        <div class="proof-label">Monitoreo de sistemas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PYMES -->
+<section id="pymes">
+  <div class="container">
+    <div class="section-label">Para PYMES</div>
+    <div class="section-title">Tecnología de primer nivel, accesible para tu negocio</div>
+    <div class="section-desc">No necesitas ser una gran empresa para tener software profesional.</div>
+
+    <div class="pymes-layout">
+      <div class="pymes-features">
+        <div class="pyme-feature">
+          <span class="pf-icon">💰</span>
+          <div>
+            <h4>Sin grandes inversiones iniciales</h4>
+            <p>Planes mensuales accesibles. Pagas por lo que usas, creces cuando necesitas.</p>
+          </div>
+        </div>
+        <div class="pyme-feature">
+          <span class="pf-icon">⚡</span>
+          <div>
+            <h4>Implementación rápida</h4>
+            <p>Tu solución funcionando en semanas, no en meses. Entregas incrementales cada 2 semanas.</p>
+          </div>
+        </div>
+        <div class="pyme-feature">
+          <span class="pf-icon">🤖</span>
+          <div>
+            <h4>IA que trabaja por ti</h4>
+            <p>Automatiza cotizaciones, responde clientes, clasifica datos — mientras tú te enfocas en vender.</p>
+          </div>
+        </div>
+        <div class="pyme-feature">
+          <span class="pf-icon">📈</span>
+          <div>
+            <h4>Crece sin límites</h4>
+            <p>Tu software escala contigo. Empiezas simple, agregas funcionalidades cuando las necesites.</p>
+          </div>
+        </div>
+        <div class="pyme-feature">
+          <span class="pf-icon">🛡️</span>
+          <div>
+            <h4>Soporte incluido</h4>
+            <p>No te dejamos solo después de la entrega. Soporte continuo, actualizaciones y mejoras.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pymes-pricing">
+        <h3>Plan PYME</h3>
+        <div class="price-desc">Todo lo que necesitas para digitalizar tu negocio</div>
+        <div class="price">Desde $99.990 <span>CLP/mes</span></div>
+        <ul>
+          <li>Sitio web profesional</li>
+          <li>Cotizador online integrado</li>
+          <li>CRM básico (leads y clientes)</li>
+          <li>Reportes automáticos mensuales</li>
+          <li>Asistente IA para tu negocio</li>
+          <li>Hosting y dominio incluido</li>
+          <li>Soporte por WhatsApp</li>
+          <li>Sin permanencia mínima</li>
+        </ul>
+        <a href="#contacto" class="btn-primary" style="width:100%;justify-content:center">Quiero digitalizar mi negocio →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="partners">
+  <div class="container" style="text-align:center">
+    <div class="section-label">Tecnologías</div>
+    <div class="section-title">Trabajamos con los mejores</div>
+    <div class="partners-grid">
+      <div class="partner">SAP</div>
+      <div class="partner">AWS</div>
+      <div class="partner">Google Cloud</div>
+      <div class="partner">Anthropic</div>
+      <div class="partner">OpenAI</div>
+      <div class="partner">GitHub</div>
+      <div class="partner">Vercel</div>
+      <div class="partner">Supabase</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="container">
+    <div class="section-label">¿Listo para empezar?</div>
+    <h2>Conversemos sobre <span style="color:var(--accent)">tu proyecto</span></h2>
+    <p>30 minutos. Sin compromiso. Te escuchamos, diagnosticamos y te decimos honestamente si podemos ayudarte.</p>
+    <div class="cta-buttons">
+      <a href="#agendar" class="btn-primary">Agendar reunión gratuita →</a>
+      <a href="https://wa.me/56955361419?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Smart%20Connection" class="btn-secondary" target="_blank">💬 WhatsApp directo</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="contact">
+  <div class="container">
+    <div class="section-label">Contacto</div>
+    <div class="section-title">Cuéntanos tu desafío</div>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="ci-icon">📍</div>
+          <div>
+            <h4>Oficina</h4>
+            <p>Barros Borgoño 71, Providencia<br>Santiago, Chile</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon">📞</div>
+          <div>
+            <h4>Teléfono</h4>
+            <p>+56 9 5536 1419<br>+56 9 7700 8176</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon">✉️</div>
+          <div>
+            <h4>Email</h4>
+            <p>contacto@smconnection.cl</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon">🕐</div>
+          <div>
+            <h4>Horario</h4>
+            <p>Lunes a Viernes<br>9:00 — 18:00 hrs</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon">💬</div>
+          <div>
+            <h4>WhatsApp</h4>
+            <p><a href="https://wa.me/56955361419" style="color:var(--accent);text-decoration:none">Escríbenos directo →</a></p>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" onsubmit="event.preventDefault();alert('Mensaje enviado. Te contactaremos pronto.')">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" required placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label>Empresa</label>
+            <input type="text" placeholder="Tu empresa">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" required placeholder="tu@email.com">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" placeholder="+56 9 ...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tipo de servicio *</label>
+          <select required>
+            <option value="">Selecciona una opción</option>
+            <option>Consultoría SAP</option>
+            <option>Migración S/4HANA</option>
+            <option>Desarrollo ABAP/FIORI</option>
+            <option>Integración PI/PO/CPI</option>
+            <option>App con IA</option>
+            <option>Desarrollo Web / eCommerce</option>
+            <option>Solución PYME</option>
+            <option>Soporte AMS</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cuéntanos tu desafío *</label>
+          <textarea required placeholder="¿Qué problema quieres resolver? ¿Qué resultado esperas?"></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center">Enviar mensaje →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">Smart<span>Connection</span></a>
+      <p>Servicios profesionales SAP y desarrollo con IA para empresas y PYMES en Chile. Tecnología que resuelve problemas reales.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios SAP</h4>
+      <a href="#">SAP BTP & Cloud</a>
+      <a href="#">Migraciones S/4HANA</a>
+      <a href="#">ABAP & FIORI</a>
+      <a href="#">PI/PO & CPI</a>
+      <a href="#">AMS & Soporte</a>
+    </div>
+    <div class="footer-col">
+      <h4>Apps + IA</h4>
+      <a href="#">Apps con IA</a>
+      <a href="#">Desarrollo Web</a>
+      <a href="#">Analytics & BI</a>
+      <a href="#">Apps Móviles</a>
+      <a href="#">Soluciones PYME</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <a href="tel:+56955361419">+56 9 5536 1419</a>
+      <a href="tel:+56977008176">+56 9 7700 8176</a>
+      <a href="mailto:contacto@smconnection.cl">contacto@smconnection.cl</a>
+      <a href="#">Barros Borgoño 71, Providencia</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Smart Connection. Todos los derechos reservados.</span>
+    <span>Santiago, Chile 🇨🇱</span>
+  </div>
+</footer>
+
+<script>
+// Nav scroll effect
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50)
+})
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault()
+    const t=document.querySelector(a.getAttribute('href'))
+    if(t)t.scrollIntoView({behavior:'smooth',block:'start'})
+  })
+})
+
+// Animate on scroll
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.opacity='1'
+      e.target.style.transform='translateY(0)'
+    }
+  })
+},{threshold:0.1})
+
+document.querySelectorAll('.service-card,.portfolio-card,.proof-card,.pyme-feature,.team-feature,.process-step').forEach(el=>{
+  el.style.opacity='0'
+  el.style.transform='translateY(20px)'
+  el.style.transition='all 0.6s ease'
+  observer.observe(el)
+})
+</script>
+</body>
+</html>

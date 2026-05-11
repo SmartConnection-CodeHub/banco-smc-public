@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOY — Scan Tecnológico + Especificación Funcional & Técnica | Panchita 🐕</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#06060a;--gl:rgba(255,255,255,.04);--gb:rgba(255,255,255,.08);--tx:#e4e4e7;--mt:#71717a;--ac:#a855f7;--ac2:#f97316;--gr:#22c55e;--yl:#eab308;--rd:#ef4444;--bl:#3b82f6;--pr:#059669}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;padding:0}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+/* Hero */
+.hero{text-align:center;padding:50px 20px 20px;background:radial-gradient(ellipse at 50% 0%,rgba(5,150,105,.12),transparent 70%)}
+.hero h1{font-size:1.8rem;font-weight:900}.hero h1 span{background:linear-gradient(135deg,var(--pr),#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{color:var(--mt);font-size:.85rem;margin-top:4px}
+
+/* Scores */
+.scores{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:20px 0}
+.sc{background:var(--gl);border:1px solid var(--gb);border-radius:14px;padding:14px 20px;text-align:center;min-width:90px;backdrop-filter:blur(10px)}
+.sc-n{font-size:1.6rem;font-weight:900;line-height:1}.sc-l{font-size:.55rem;color:var(--mt);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* Tabs */
+.tabs{display:flex;justify-content:center;gap:5px;padding:14px;flex-wrap:wrap;position:sticky;top:0;z-index:100;background:rgba(6,6,10,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--gb)}
+.tab{padding:6px 12px;border-radius:99px;font-size:.63rem;font-weight:600;cursor:pointer;border:1px solid var(--gb);color:var(--mt);background:transparent;transition:all .2s;letter-spacing:.3px}
+.tab.active{background:linear-gradient(135deg,var(--pr),#14b8a6);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(5,150,105,.3)}
+
+/* Section */
+.sec{display:none;padding:20px}.sec.active{display:block}
+.sec-t{font-size:1rem;font-weight:800;color:var(--pr);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.sec-d{color:var(--mt);font-size:.78rem;margin-bottom:16px}
+
+/* Report */
+.rpt{background:var(--gl);border:1px solid var(--gb);border-radius:16px;padding:18px;margin-bottom:16px;backdrop-filter:blur(12px)}
+.rpt h3{font-size:.82rem;font-weight:700;color:var(--ac);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.rpt h4{font-size:.75rem;font-weight:700;color:var(--ac2);margin:14px 0 8px}
+.rpt table{width:100%;border-collapse:collapse;font-size:.72rem}
+.rpt th{text-align:left;padding:6px;color:var(--mt);border-bottom:1px solid var(--gb);font-size:.58rem;text-transform:uppercase;letter-spacing:.7px}
+.rpt td{padding:6px;border-bottom:1px solid rgba(255,255,255,.02);vertical-align:top}
+.rpt tr:hover{background:rgba(255,255,255,.02)}
+.rpt ul{list-style:none;padding:0}.rpt li{padding:3px 0;font-size:.75rem;color:var(--mt)}
+.rpt li::before{content:'›';color:var(--pr);font-weight:bold;margin-right:6px}
+.rpt p{font-size:.75rem;color:var(--tx);margin-bottom:8px}
+
+.tg{display:inline-block;padding:1px 6px;border-radius:4px;font-size:7px;font-weight:700}
+.tg-ok{background:var(--gr);color:#fff}
+.tg-miss{background:var(--rd);color:#fff}
+.tg-part{background:var(--yl);color:#fff}
+.tg-new{background:var(--bl);color:#fff}
+.tg-maq{background:var(--ac);color:#fff}
+
+.badge{display:inline-flex;padding:2px 7px;border-radius:99px;font-size:8px;font-weight:600}
+.b-red{background:#fee2e2;color:#991b1b}.b-yl{background:#fef3c7;color:#92400e}.b-gr{background:#d1fae5;color:#065f46}.b-bl{background:#dbeafe;color:#1e40af}
+
+.footer{text-align:center;padding:40px 20px;border-top:1px solid var(--gb);margin-top:40px;color:var(--mt);font-size:.7rem}
+
+@media(max-width:640px){.hero h1{font-size:1.4rem}.sc{min-width:70px;padding:10px 12px}.sc-n{font-size:1.3rem}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<h1>🐕 Panchita — <span>Scan + Especificación VOY v3</span></h1>
+<div class="sub">Scan tecnológico de v2 + v3 + maqueta · Especificación funcional y técnica para Hoku</div>
+</div>
+
+<div class="scores">
+<div class="sc"><div class="sc-n" style="color:var(--pr)">7</div><div class="sc-l">Vistas Cliente</div></div>
+<div class="sc"><div class="sc-n" style="color:var(--pr)">7</div><div class="sc-l">Vistas Worker</div></div>
+<div class="sc"><div class="sc-n" style="color:var(--pr)">6</div><div class="sc-l">Vistas Admin</div></div>
+<div class="sc"><div class="sc-n" style="color:var(--ac2)">7</div><div class="sc-l">Modales</div></div>
+<div class="sc"><div class="sc-n" style="color:var(--rd)">13</div><div class="sc-l">Gaps Maqueta</div></div>
+<div class="sc"><div class="sc-n" style="color:var(--bl)">8</div><div class="sc-l">Features nuevas</div></div>
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="go('scan',this)">🔍 Scan v2</button>
+<button class="tab" onclick="go('gaps',this)">⚠️ Gaps Maqueta</button>
+<button class="tab" onclick="go('funcional',this)">📋 Espec. Funcional</button>
+<button class="tab" onclick="go('tecnica',this)">⚙️ Espec. Técnica</button>
+<button class="tab" onclick="go('fases',this)">🎯 Fases Hoku</button>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCAN TECNOLÓGICO v2                        -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec active" id="s-scan">
+<div class="container">
+<div class="sec-t">Scan Tecnológico — VOY v2 actual</div>
+<div class="sec-d">Inventario exhaustivo de cada página, vista, función, modal y efecto del código fuente</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-layer-group"></i> Arquitectura</h3>
+<table>
+<tr><th>Capa</th><th>Detalle</th></tr>
+<tr><td>Stack</td><td>Vanilla JS + Airtable API + Vercel (static + serverless)</td></tr>
+<tr><td>CSS</td><td>3 archivos: variables.css (107 tokens) + main.css (componentes globales) + app.css (layout shell) + landing.css + inline por página</td></tr>
+<tr><td>JS</td><td>8 archivos: client.js (1292 líneas) + worker.js (1227) + admin.js (839) + airtable.js (673) + auth.js + data.js + dev-panel.js + build-info.js</td></tr>
+<tr><td>Color primario</td><td><strong>#059669 (verde)</strong> — NO azul</td></tr>
+<tr><td>Iconos</td><td>FontAwesome 6.5.1 (CDN)</td></tr>
+<tr><td>Mapas</td><td>Leaflet 1.9.4 (solo en client)</td></tr>
+<tr><td>PDF</td><td>jsPDF 2.5.1 (CDN cdnjs — NO 2.5.2)</td></tr>
+<tr><td>Charts</td><td>Chart.js 4.4.7 (solo en admin)</td></tr>
+<tr><td>Emails</td><td>Resend (serverless function api/send-email.js)</td></tr>
+<tr><td>Deploy</td><td>Vercel: voy-app-2 (Guillermo) → build.js genera /public/ con config.js inyectado</td></tr>
+<tr><td>Fusión</td><td>voy-app-3 descarga HTML de voy-app-1 (Sergio) + voy-app-2 y fusiona con tema morado</td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-file-code"></i> Páginas y Vistas — Inventario completo</h3>
+
+<h4>🏠 Landing (index.html)</h4>
+<table>
+<tr><th>Sección</th><th>Contenido</th></tr>
+<tr><td>Navbar</td><td>Logo VOY + links (Cómo funciona, Servicios, Especialistas) + btn "Buscar servicio" + hamburger mobile</td></tr>
+<tr><td>Hero</td><td>Barra búsqueda (servicio + ubicación) + card worker flotante + pills categorías populares + stats bar</td></tr>
+<tr><td>Cómo funciona</td><td>Tabs cliente/trabajador + 3 pasos con iconos + flechas</td></tr>
+<tr><td>Categorías</td><td>Grid 8 categorías con iconos FA + hover animado</td></tr>
+<tr><td>Especialistas</td><td>3 worker cards + link "Ver todos"</td></tr>
+<tr><td>Footer</td><td>Links + copyright</td></tr>
+</table>
+
+<h4>🔑 Login (login/index.html)</h4>
+<table>
+<tr><th>Componente</th><th>Detalle</th></tr>
+<tr><td>Auth card</td><td>Max-width 440px, radius-2xl, shadow 32px</td></tr>
+<tr><td>Tabs</td><td>"Ingresar" | "Registrarse" con border-bottom active</td></tr>
+<tr><td>Login form</td><td>Email + password + botón "Ingresar" + error visible</td></tr>
+<tr><td>Register form</td><td>Nombre + email + password + confirmar + <strong>selector de rol</strong> (🏠 Cliente / 🔧 Profesional) + ciudad select + categoría (si profesional)</td></tr>
+<tr><td>Demo accounts</td><td>Cuentas de prueba clickeables (cliente, especialista, admin)</td></tr>
+</table>
+
+<h4>👤 Cliente (client/index.html) — 7 vistas + 4 modales + 2 paneles</h4>
+<table>
+<tr><th>ID</th><th>Vista</th><th>Funcionalidades</th></tr>
+<tr><td>view-buscar</td><td>Explorar</td><td>Layout 2 cols (380px lista + mapa Leaflet). Filtros: category chips, radio slider, ordenar select, checkboxes (disponible, verificado). Toggle lista/grid. Worker cards con avatar, rating, skills, precio, status dot. Mapa con markers + popups.</td></tr>
+<tr><td>view-activos</td><td>Servicios activos</td><td>Cards de bookings en curso con estado, worker info, botón cancelar, botón chat. Badges de cotización (pending/accepted/rejected).</td></tr>
+<tr><td>view-historial</td><td>Historial</td><td>data-table con todos los servicios pasados, columnas: servicio, worker, fecha, precio, estado, calificar.</td></tr>
+<tr><td>view-perfil</td><td>Mi perfil</td><td>Tabs (datos, seguridad). Avatar upload. Campos: nombre, email, teléfono, ciudad, dirección. Cambiar contraseña (actual + nueva + confirmar).</td></tr>
+<tr><td>view-pagos</td><td>Pagos</td><td>Métodos de pago (placeholder).</td></tr>
+<tr><td>view-favoritos</td><td>Favoritos</td><td>Grid de workers favoritos (localStorage). Corazón toggle.</td></tr>
+<tr><td>view-notifs</td><td>Notificaciones</td><td>Lista de notificaciones.</td></tr>
+</table>
+<table>
+<tr><th>Modal/Panel</th><th>Contenido</th></tr>
+<tr><td>bookingModal</td><td>Info worker, servicio select, modalidad (inmediato/agendar), fecha, hora, dirección, descripción, resumen precio.</td></tr>
+<tr><td>ratingModal</td><td>5 estrellas clickeables (setRating), textarea comentario.</td></tr>
+<tr><td>notifModal</td><td>Lista de notificaciones.</td></tr>
+<tr><td>quotationViewModal</td><td>Ver cotización completa: desglose + aceptar/rechazar + descargar PDF.</td></tr>
+<tr><td>worker-detail</td><td>Panel slide-in 420px: avatar, bio, skills, galería 3-col, reseñas, btn Mensaje + Agendar.</td></tr>
+<tr><td>chat-panel</td><td>Panel lateral: header con avatar, messages con polling, input + send.</td></tr>
+</table>
+
+<h4>🔧 Worker (worker/index.html) — 7 vistas + 3 modales</h4>
+<table>
+<tr><th>ID</th><th>Vista</th><th>Funcionalidades</th></tr>
+<tr><td>view-dashboard</td><td>Dashboard</td><td>Greeting dinámico, 4 stat cards (ganancias, trabajos, rating, solicitudes) con trends. Grid 2-col: trabajo activo (completar) + gráfico barras 6 meses con hover. Solicitudes preview.</td></tr>
+<tr><td>view-solicitudes</td><td>Solicitudes</td><td>Request cards con .new (borde + label "NUEVA"). Botones: Aceptar, Rechazar, Cotizar. Info cliente con avatar.</td></tr>
+<tr><td>view-agenda</td><td>Agenda</td><td>Grid 2-col: calendario 7 cols (.today, .has-job dot, .busy, .other-month, selectDay()) + detalle día con timeline de trabajos.</td></tr>
+<tr><td>view-ganancias</td><td>Ganancias</td><td>Stats cards + gráfico + comparativa mensual + detalle transacciones.</td></tr>
+<tr><td>view-perfil</td><td>Mi perfil</td><td>Avatar upload, nombre, bio, skills, galería, teléfono, ciudad. Cambiar contraseña.</td></tr>
+<tr><td>view-verificacion</td><td>Verificación</td><td>Steps con iconos (done/pending/missing). Upload documentos por categoría. Preview archivos subidos.</td></tr>
+<tr><td>view-resenas</td><td>Reseñas</td><td>Lista de reseñas recibidas: stars + texto + fecha + cliente.</td></tr>
+</table>
+<table>
+<tr><th>Modal</th><th>Contenido</th></tr>
+<tr><td>quotationModal</td><td>CREAR cotización: info cliente, tarifa/hora + horas, tabla materiales (agregar/eliminar), resumen (subtotal + comisión 15% + TOTAL), notas. Badge NUEVO pulsante.</td></tr>
+<tr><td>workerChatModal</td><td>Chat con polling: header, messages scrolleable, input.</td></tr>
+<tr><td>notifModal</td><td>Notificaciones.</td></tr>
+</table>
+
+<h4>⚙️ Admin (admin/index.html) — 6 vistas</h4>
+<table>
+<tr><th>ID</th><th>Vista</th><th>Funcionalidades</th></tr>
+<tr><td>view-overview</td><td>Dashboard</td><td>6 stats + Chart.js gráfico + breakdown por categoría + verificaciones preview + transacciones recientes.</td></tr>
+<tr><td>view-verificaciones</td><td>Verificaciones</td><td>Lista de pendientes con botones aprobar/rechazar/ver docs.</td></tr>
+<tr><td>view-usuarios</td><td>Usuarios</td><td>Tabla paginada + filtros (todos/clientes/workers) + sort + buscar + suspender/activar/eliminar.</td></tr>
+<tr><td>view-transacciones</td><td>Transacciones</td><td>Tabla con sort + paginación + filtros.</td></tr>
+<tr><td>view-categorias</td><td>Categorías</td><td>Editar categorías existentes.</td></tr>
+<tr><td>view-configuracion</td><td>Config</td><td>Configuraciones del sistema (toggles).</td></tr>
+</table>
+
+<h4>🗄️ Airtable — 8 tablas + 36 funciones CRUD</h4>
+<table>
+<tr><th>Tabla</th><th>Mappers</th><th>Funciones CRUD</th></tr>
+<tr><td>Workers</td><td>mapWorker (18 campos)</td><td>getWorkers, getWorkerByEmail, getWorkerByRecordId, updateWorker, updateWorkerAvailability, saveWorkerProfile, createWorkerAccount</td></tr>
+<tr><td>Clients</td><td>mapClient (12 campos)</td><td>getClients, getClientByEmail, saveClientProfile, createClientAccount</td></tr>
+<tr><td>Bookings</td><td>mapBooking (12 campos)</td><td>getBookings, createBooking, updateBookingStatus, addBookingReview</td></tr>
+<tr><td>Requests</td><td>mapRequest (13 campos)</td><td>getRequests, createRequest, updateRequest, updateRequestStatus</td></tr>
+<tr><td>Quotations</td><td>mapQuotation (18 campos)</td><td>createQuotation, getQuotationsByWorker, getQuotationsByClient, getQuotationByBooking, updateQuotationStatus</td></tr>
+<tr><td>Messages</td><td>mapMessage (4 campos)</td><td>getMessages, sendMessage</td></tr>
+<tr><td>Verifications</td><td>mapVerification (9 campos)</td><td>getVerifications, updateVerification, getVerificationByWorker, createVerification, uploadVerificationDoc, updateVerificationDocs</td></tr>
+<tr><td>Transactions</td><td>mapTransaction (7 campos)</td><td>getTransactions, createTransaction</td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-wand-magic-sparkles"></i> Efectos CSS — 16 detectados</h3>
+<table>
+<tr><th>#</th><th>Efecto</th><th>CSS</th></tr>
+<tr><td>1</td><td>Card hover elevación</td><td>translateY(-2px) + shadow-lg</td></tr>
+<tr><td>2</td><td>Btn primary hover</td><td>translateY(-1px) + shadow-blue-lg</td></tr>
+<tr><td>3</td><td>Input focus ring</td><td>border-color primary + box-shadow 3px primary-light</td></tr>
+<tr><td>4</td><td>Sidebar link hover</td><td>bg gray-50 + icon color primary</td></tr>
+<tr><td>5</td><td>Status dot pulse</td><td>@keyframes statusPulse box-shadow</td></tr>
+<tr><td>6</td><td>Badge NUEVO pulse</td><td>@keyframes pulseNew opacity 1→0.7</td></tr>
+<tr><td>7</td><td>Chart bar transition</td><td>height 0.5s ease + hover bg primary</td></tr>
+<tr><td>8</td><td>Worker detail slide-in</td><td>translateX(100%) → translateX(0)</td></tr>
+<tr><td>9</td><td>Modal overlay fade</td><td>rgba(0,0,0,0.4) backdrop</td></tr>
+<tr><td>10</td><td>Toast slide-in</td><td>@keyframes toastIn translateX(100%)→0</td></tr>
+<tr><td>11</td><td>Request card .new</td><td>border primary + bg primary-50 + ::before "NUEVA"</td></tr>
+<tr><td>12</td><td>Calendar today</td><td>bg primary, color white, font-weight 700</td></tr>
+<tr><td>13</td><td>Calendar has-job</td><td>::after dot 4px green</td></tr>
+<tr><td>14</td><td>Topbar search focus</td><td>:focus-within border + box-shadow ring</td></tr>
+<tr><td>15</td><td>Navbar scroll</td><td>.scrolled bg white + blur + shadow</td></tr>
+<tr><td>16</td><td>Hero blobs</td><td>Animated gradient blobs en landing</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- GAPS MAQUETA                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec" id="s-gaps">
+<div class="container">
+<div class="sec-t">Gaps: Código v2 vs Maqueta v3</div>
+<div class="sec-d">Todo lo que existe en el código pero falta o está incompleto en la maqueta HTML</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-triangle-exclamation"></i> Gaps críticos</h3>
+<table>
+<tr><th>Pantalla/Feature</th><th>En código v2</th><th>En maqueta v3</th><th>Gap</th></tr>
+<tr><td><strong>Landing completa</strong></td><td>Hero + search + blobs + cómo funciona + categorías + workers + stats bar + footer</td><td>No incluida</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Cliente mobile</strong></td><td>@media 768px: 1 col, sidebar slide-in, worker detail 100%</td><td>No hay versión mobile de ninguna pantalla</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Mapa Leaflet mobile</strong></td><td>Responsive, se pone debajo de la lista</td><td>No existe</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Servicios activos (vista)</strong></td><td>Vista dedicada con cards + badges cotización + cancelar</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Historial (tabla)</strong></td><td>data-table completa con columnas</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Perfil cliente editable</strong></td><td>Tabs datos/seguridad, avatar upload, cambiar password</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Favoritos</strong></td><td>Grid con corazón toggle + localStorage</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Pagos</strong></td><td>Vista placeholder</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Quotation view modal (cliente)</strong></td><td>Modal con desglose + aceptar/rechazar + PDF download</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Worker perfil editable</strong></td><td>Bio, skills, galería, teléfono, avatar, password</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Worker reseñas vista</strong></td><td>Lista completa de reseñas recibidas</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Admin categorías</strong></td><td>Editar nombre/icono de categorías</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+<tr><td><strong>Admin configuración</strong></td><td>Toggles del sistema</td><td>No maquetada</td><td><span class="tg tg-miss">FALTA</span></td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-circle-half-stroke"></i> Parcialmente cubiertos</h3>
+<table>
+<tr><th>Pantalla</th><th>Qué falta en la maqueta</th></tr>
+<tr><td>Worker dashboard</td><td>Trend arrows en stats, comparativa mensual 3 cols debajo del gráfico</td></tr>
+<tr><td>Agenda</td><td>Días .busy (amarillo), .other-month (gris), selectDay() click</td></tr>
+<tr><td>Admin dashboard</td><td>Chart.js real, breakdown por categoría, transacciones recientes</td></tr>
+<tr><td>Admin usuarios</td><td>Paginación, sort, suspender/activar/eliminar acciones</td></tr>
+<tr><td>Login</td><td>Demo accounts clickeables, error visible state, loading spinner en botón</td></tr>
+<tr><td>Cotización crear</td><td>Tabla materiales más detallada (material input + qty + unit price + total por fila)</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ESPECIFICACIÓN FUNCIONAL                   -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec" id="s-funcional">
+<div class="container">
+<div class="sec-t">Especificación Funcional</div>
+<div class="sec-d">User stories con criterios de aceptación — features NUEVAS que no existen en v2</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-clipboard-list"></i> US-01: Sistema de reclamos</h3>
+<p><strong>Como</strong> cliente, <strong>quiero</strong> reportar un problema con un servicio, <strong>para</strong> resolver disputas y obtener reembolso.</p>
+<h4>Criterios de aceptación</h4>
+<ul>
+<li>Botón "Reportar problema" visible en booking completado o en curso</li>
+<li>4 tipos de reclamo: mala calidad, no se presentó, trabajo incompleto, daños</li>
+<li>Campo de descripción obligatorio (min 20 caracteres)</li>
+<li>Upload de fotos como evidencia (Airtable attachments, max 5 fotos)</li>
+<li>Estado del reclamo visible para el cliente: abierto → en revisión → resuelto</li>
+<li>Admin puede: tomar caso, agregar nota interna, resolver con reembolso total/parcial/sin reembolso</li>
+<li>Email de notificación al cliente cuando se resuelve</li>
+</ul>
+<h4>Tabla Airtable: Claims</h4>
+<ul>
+<li>ClaimId (autonumber), BookingRecordId (link), ClientRecordId, WorkerRecordId</li>
+<li>Type (singleSelect: mala_calidad, no_show, incompleto, daños)</li>
+<li>Description (long text), Photos (attachment)</li>
+<li>Status (singleSelect: open, reviewing, resolved)</li>
+<li>AdminNotes (long text), RefundAmount (number), RefundType (singleSelect: full, partial, none)</li>
+<li>CreatedAt, ResolvedAt (datetime)</li>
+</ul>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-clipboard-list"></i> US-02: Solicitud urgente</h3>
+<p><strong>Como</strong> cliente, <strong>quiero</strong> marcar una solicitud como urgente, <strong>para</strong> conseguir ayuda rápidamente.</p>
+<h4>Criterios de aceptación</h4>
+<ul>
+<li>Toggle "Solicitud urgente" en el formulario de nueva solicitud (dentro de bookingModal)</li>
+<li>Card urgente tiene borde rojo + badge "⚡ URGENTE" en la lista de solicitudes del worker</li>
+<li>Solicitudes urgentes aparecen primero en la lista del worker</li>
+<li>Campo IsUrgent (checkbox) en tabla Requests</li>
+</ul>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-clipboard-list"></i> US-03: Materiales guardados</h3>
+<p><strong>Como</strong> profesional, <strong>quiero</strong> guardar materiales que uso frecuentemente, <strong>para</strong> cotizar más rápido.</p>
+<h4>Criterios de aceptación</h4>
+<ul>
+<li>Botón "📦 Mis materiales" en el modal de cotización</li>
+<li>Lista desplegable de materiales guardados con nombre + precio unitario</li>
+<li>Click en material lo agrega a la tabla de materiales de la cotización</li>
+<li>CRUD de materiales guardados en perfil del worker (agregar, editar, eliminar)</li>
+<li>Tabla SavedMaterials: MatId, WorkerRecordId, Name, UnitPrice, Unit</li>
+</ul>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-clipboard-list"></i> US-04: Sistema de niveles</h3>
+<p><strong>Como</strong> profesional, <strong>quiero</strong> ver mi nivel y progreso, <strong>para</strong> motivarme a completar más trabajos.</p>
+<h4>Criterios de aceptación</h4>
+<ul>
+<li>3 niveles: 🥉 Bronce (0-19 trabajos), 🥈 Plata (20-49), 🥇 Oro (50+)</li>
+<li>Badge de nivel visible en: dashboard worker, perfil público, worker cards</li>
+<li>Progress bar hacia el siguiente nivel</li>
+<li>Campo Level (formula basada en CompletedJobs) en tabla Workers</li>
+<li>Vista "Ganancias" muestra nivel + rendimiento (tasa aceptación, precio promedio, mejor día, racha)</li>
+</ul>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-clipboard-list"></i> US-05: Horario semanal + disponibilidad mejorada</h3>
+<p><strong>Como</strong> profesional, <strong>quiero</strong> configurar mi horario por día + radio de cobertura + modo vacaciones.</p>
+<h4>Criterios de aceptación</h4>
+<ul>
+<li>7 filas (Lun-Dom) con toggle activo/inactivo + hora inicio + hora fin</li>
+<li>Slider de radio de cobertura (1-50 km)</li>
+<li>Toggle "Modo vacaciones" que pausa todas las solicitudes</li>
+<li>Tabla WorkerSchedule: ScheduleId, WorkerRecordId, DayOfWeek (0-6), StartTime, EndTime, IsActive</li>
+<li>Campos adicionales en Workers: CoverageRadius (number), VacationMode (checkbox)</li>
+</ul>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-clipboard-list"></i> US-06: Centro de notificaciones mejorado</h3>
+<p><strong>Como</strong> usuario, <strong>quiero</strong> ver todas mis notificaciones organizadas, <strong>para</strong> no perderme nada.</p>
+<h4>Criterios de aceptación</h4>
+<ul>
+<li>Tabla Notifications en Airtable (reemplaza notificaciones hardcoded)</li>
+<li>Tipos: quotation_received, quotation_accepted, booking_confirmed, worker_on_way, job_completed, claim_resolved</li>
+<li>Dot de "no leída" en cada notificación + counter en bell de topbar</li>
+<li>Marcar como leída al abrir</li>
+<li>Filtros: todas, sin leer, cotizaciones, sistema</li>
+</ul>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-clipboard-list"></i> US-07: Comparador de cotizaciones</h3>
+<p><strong>Como</strong> cliente, <strong>quiero</strong> comparar cotizaciones lado a lado, <strong>para</strong> elegir la mejor opción.</p>
+<h4>Criterios de aceptación</h4>
+<ul>
+<li>Cuando un booking tiene 2+ cotizaciones, mostrar vista comparador</li>
+<li>Highlight "🏆 Mejor precio" en la cotización más barata</li>
+<li>Mostrar: worker name, rating, verificación, precio, desglose, tiempo respuesta</li>
+<li>Botón "Aceptar" en cada cotización</li>
+<li>Se implementa dentro de view-activos o como modal</li>
+</ul>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-clipboard-list"></i> US-08: Timeline de booking</h3>
+<p><strong>Como</strong> cliente, <strong>quiero</strong> ver el progreso de mi reserva visualmente.</p>
+<h4>Criterios de aceptación</h4>
+<ul>
+<li>5 pasos: Confirmada → Pagada → En camino → En curso → Completada</li>
+<li>Cada paso con icono (done ✓ / active ● / pending ○)</li>
+<li>Campo TimelineStatus en tabla Bookings (singleSelect)</li>
+<li>Worker puede avanzar el estado ("En camino", "Completar")</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ESPECIFICACIÓN TÉCNICA                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec" id="s-tecnica">
+<div class="container">
+<div class="sec-t">Especificación Técnica</div>
+<div class="sec-d">Archivos a modificar, tablas a crear, funciones a agregar</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-database"></i> Cambios en Airtable</h3>
+<h4>Tablas NUEVAS a crear</h4>
+<table>
+<tr><th>Tabla</th><th>Campos</th><th>Vista por defecto</th></tr>
+<tr><td><strong>Claims</strong></td><td>ClaimId (auto), BookingRecordId, ClientRecordId, WorkerRecordId, Type (singleSelect), Description, Photos (attachment), Status (singleSelect: open/reviewing/resolved), AdminNotes, RefundAmount, RefundType (singleSelect), CreatedAt, ResolvedAt</td><td>Grid filtrado por Status = open</td></tr>
+<tr><td><strong>Notifications</strong></td><td>NotifId (auto), UserRecordId, UserType (singleSelect: client/worker), Type (singleSelect), Title, Body, Read (checkbox), RelatedRecordId, CreatedAt</td><td>Grid filtrado por Read = false</td></tr>
+<tr><td><strong>SavedMaterials</strong></td><td>MatId (auto), WorkerRecordId, Name, UnitPrice (currency), Unit (singleSelect: unidad/metro/kg)</td><td>Grid agrupado por WorkerRecordId</td></tr>
+<tr><td><strong>WorkerSchedule</strong></td><td>ScheduleId (auto), WorkerRecordId, DayOfWeek (number 0-6), StartTime, EndTime, IsActive (checkbox)</td><td>Grid agrupado por WorkerRecordId</td></tr>
+</table>
+
+<h4>Campos NUEVOS en tablas existentes</h4>
+<table>
+<tr><th>Tabla</th><th>Campo</th><th>Tipo</th></tr>
+<tr><td>Workers</td><td>CoverageRadius</td><td>Number (default 15)</td></tr>
+<tr><td>Workers</td><td>VacationMode</td><td>Checkbox</td></tr>
+<tr><td>Workers</td><td>Level</td><td>Formula: IF(CompletedJobs>=50,"oro",IF(CompletedJobs>=20,"plata","bronce"))</td></tr>
+<tr><td>Bookings</td><td>IsUrgent</td><td>Checkbox</td></tr>
+<tr><td>Bookings</td><td>TimelineStatus</td><td>SingleSelect: confirmed/paid/on_way/in_progress/completed</td></tr>
+<tr><td>Requests</td><td>IsUrgent</td><td>Checkbox</td></tr>
+<tr><td>Requests</td><td>Photos</td><td>Attachment</td></tr>
+<tr><td>Messages</td><td>ImageUrl</td><td>Attachment</td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-code"></i> Archivos JS a modificar</h3>
+<table>
+<tr><th>Archivo</th><th>Funciones a AGREGAR</th></tr>
+<tr><td><strong>js/airtable.js</strong></td><td>mapClaim, mapNotification, mapSavedMaterial, mapSchedule, getClaims, createClaim, updateClaimStatus, getNotifications, createNotification, markNotifRead, getSavedMaterials, createSavedMaterial, deleteSavedMaterial, getWorkerSchedule, saveWorkerSchedule</td></tr>
+<tr><td><strong>js/client.js</strong></td><td>openClaimModal, submitClaim, loadClaimStatus, renderComparator, renderTimeline, loadNotificationsFromDB, markNotifAsRead</td></tr>
+<tr><td><strong>js/worker.js</strong></td><td>loadSavedMaterials, addSavedMaterial, useSavedMaterial, loadSchedule, saveSchedule, toggleVacation, updateCoverageRadius, advanceTimeline</td></tr>
+<tr><td><strong>js/admin.js</strong></td><td>loadClaims, takeClaim, resolveClaim (con reembolso)</td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-file-lines"></i> Archivos HTML a modificar</h3>
+<table>
+<tr><th>Archivo</th><th>Cambios</th></tr>
+<tr><td>client/index.html</td><td>+ Modal claim (form con tipo + descripción + foto upload). + Toggle urgente en bookingModal. + Comparador cotizaciones (en view-activos o nuevo modal). + Timeline visual en detalle booking.</td></tr>
+<tr><td>worker/index.html</td><td>+ Sección materiales guardados en view-perfil. + Botón "Mis materiales" en quotationModal. + Vista disponibilidad (horario + radio + vacaciones) en view-perfil o nueva vista. + Nivel badge en dashboard.</td></tr>
+<tr><td>admin/index.html</td><td>+ Vista reclamos (nuevo view-reclamos) con lista + acciones reembolso.</td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3><i class="fa-solid fa-palette"></i> CSS — NO cambiar</h3>
+<ul>
+<li>Mantener variables.css, main.css, app.css tal como están</li>
+<li>Nuevos estilos van inline en cada página (patrón existente)</li>
+<li>Color primario: #059669 (verde) — no cambiar</li>
+<li>Los 16 efectos CSS deben mantenerse sin modificación</li>
+<li>Nuevos componentes (claim card, timeline, comparator) siguen el design system existente</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FASES HOKU                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec" id="s-fases">
+<div class="container">
+<div class="sec-t">Fases de Implementación para Hoku</div>
+<div class="sec-d">Orden de implementación con dependencias — 4 fases incrementales</div>
+
+<div class="rpt"><h3>🔴 Fase 1 — Fundación (prerequisitos para todo lo demás)</h3>
+<table>
+<tr><th>#</th><th>Tarea</th><th>Archivo</th><th>Esfuerzo</th></tr>
+<tr><td>1.1</td><td>Crear tablas Claims, Notifications, SavedMaterials, WorkerSchedule en Airtable</td><td>Manual en Airtable UI</td><td><span class="badge b-yl">Manual</span></td></tr>
+<tr><td>1.2</td><td>Agregar campos nuevos a Workers, Bookings, Requests, Messages</td><td>Manual en Airtable UI</td><td><span class="badge b-yl">Manual</span></td></tr>
+<tr><td>1.3</td><td>Mappers + CRUD en airtable.js para Claims, Notifications, SavedMaterials, WorkerSchedule</td><td>js/airtable.js</td><td><span class="badge b-red">Alto</span></td></tr>
+<tr><td>1.4</td><td>Notificaciones desde DB (reemplazar hardcoded)</td><td>js/client.js + js/worker.js</td><td><span class="badge b-yl">Medio</span></td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3>🔴 Fase 2 — Features de cliente</h3>
+<table>
+<tr><th>#</th><th>Tarea</th><th>Archivo</th><th>Esfuerzo</th></tr>
+<tr><td>2.1</td><td>Modal de reclamo: form + tipos + upload fotos + submit</td><td>client/index.html + js/client.js</td><td><span class="badge b-red">Alto</span></td></tr>
+<tr><td>2.2</td><td>Toggle urgente en bookingModal + campo IsUrgent</td><td>client/index.html + js/client.js</td><td><span class="badge b-gr">Bajo</span></td></tr>
+<tr><td>2.3</td><td>Comparador cotizaciones (vista o modal en view-activos)</td><td>js/client.js</td><td><span class="badge b-yl">Medio</span></td></tr>
+<tr><td>2.4</td><td>Timeline visual en detalle booking (5 pasos)</td><td>js/client.js</td><td><span class="badge b-yl">Medio</span></td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3>🟡 Fase 3 — Features de worker</h3>
+<table>
+<tr><th>#</th><th>Tarea</th><th>Archivo</th><th>Esfuerzo</th></tr>
+<tr><td>3.1</td><td>Materiales guardados: CRUD en perfil + selector en quotationModal</td><td>worker/index.html + js/worker.js</td><td><span class="badge b-yl">Medio</span></td></tr>
+<tr><td>3.2</td><td>Sistema de niveles: badge + progress bar + rendimiento</td><td>js/worker.js</td><td><span class="badge b-gr">Bajo</span></td></tr>
+<tr><td>3.3</td><td>Horario semanal configurable + radio cobertura + modo vacaciones</td><td>worker/index.html + js/worker.js</td><td><span class="badge b-yl">Medio</span></td></tr>
+<tr><td>3.4</td><td>Solicitudes urgentes: card roja + badge + sort primero</td><td>js/worker.js</td><td><span class="badge b-gr">Bajo</span></td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3>🟢 Fase 4 — Admin + pulido</h3>
+<table>
+<tr><th>#</th><th>Tarea</th><th>Archivo</th><th>Esfuerzo</th></tr>
+<tr><td>4.1</td><td>Admin: vista reclamos con take case + resolver + reembolso</td><td>admin/index.html + js/admin.js</td><td><span class="badge b-yl">Medio</span></td></tr>
+<tr><td>4.2</td><td>Chat con fotos (ImageUrl attachment en Messages)</td><td>client + worker JS</td><td><span class="badge b-yl">Medio</span></td></tr>
+<tr><td>4.3</td><td>Perfil público mejorado: nivel badge, galería, bio</td><td>js/client.js (worker detail)</td><td><span class="badge b-gr">Bajo</span></td></tr>
+<tr><td>4.4</td><td>Estados UI mejorados: skeleton shimmer para loading states</td><td>Todos los JS</td><td><span class="badge b-gr">Bajo</span></td></tr>
+</table>
+</div>
+
+<div class="rpt"><h3>📋 Resumen para Hoku</h3>
+<p style="font-size:.82rem;color:var(--tx);line-height:1.7">
+<strong>Stack</strong>: Vanilla JS + Airtable — NO migrar.<br>
+<strong>Color</strong>: Verde #059669.<br>
+<strong>Iconos</strong>: FontAwesome 6.5.<br>
+<strong>Comisión</strong>: 15%.<br>
+<strong>Layout</strong>: Desktop-first con sidebar, responsive mobile.<br>
+<strong>Patrón de código</strong>: funciones globales en archivos separados, showView() para toggle vistas, VOY.openModal() para modales, VoyDB.* para CRUD.<br>
+<strong>Despliegue</strong>: git push → Vercel auto-deploy voy-app-2, luego manual voy-app-3.<br>
+<strong>Testing</strong>: Probar en voy-app-2 primero (voy-app-2.vercel.app), luego fusionar a voy-app-3.<br>
+<strong>Orden</strong>: Fase 1 → 2 → 3 → 4. NO saltar fases. Cada fase debe funcionar antes de empezar la siguiente.<br>
+<strong>jsPDF</strong>: versión 2.5.1 (NO 2.5.2 que da 404).<br>
+<strong>Dev panel</strong>: no tocar, se inyecta automáticamente en voy-app-3.
+</p>
+</div>
+</div>
+</div>
+
+<div class="footer">
+<div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:4px">VOY v3 — Scan + Especificación</div>
+<p>Scan: 20 vistas + 7 modales + 16 efectos + 8 tablas + 36 funciones CRUD</p>
+<p style="margin-top:4px">Panchita 🐕 → Hoku 🐾 · 24 marzo 2026 · Smart Connection</p>
+</div>
+
+<script>
+function go(id,el){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('s-'+id).classList.add('active');el.classList.add('active');window.scrollTo({top:document.querySelector('.tabs').offsetTop+50,behavior:'smooth'})}
+</script>
+</body>
+</html>

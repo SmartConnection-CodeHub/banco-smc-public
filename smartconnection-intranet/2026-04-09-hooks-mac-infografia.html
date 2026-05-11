@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hooks macOS — Claude Code</title>
+<style>
+  :root {
+    --bg-base: #060912;
+    --bg-surface: #0a0d14;
+    --bg-elevated: #0f1520;
+    --bg-glass: rgba(15,22,35,0.85);
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-medium: rgba(255,255,255,0.10);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #00e5b0;
+    --accent-dim: rgba(0,229,176,0.12);
+    --accent-border: rgba(0,229,176,0.25);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.10);
+    --yellow-border: rgba(251,191,36,0.25);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.10);
+    --red-border: rgba(248,113,113,0.25);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.10);
+    --blue-border: rgba(96,165,250,0.25);
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding: 0 8px;
+  }
+
+  .header-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .header h1 {
+    font-size: clamp(24px, 5vw, 40px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header h1 span {
+    background: linear-gradient(135deg, var(--accent), #00b4d8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* TIMELINE / FLUJO EXPLICATIVO */
+  .how-it-works {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 40px;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .how-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .flow-node {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .flow-node.claude { border-color: var(--accent-border); color: var(--accent); }
+  .flow-node.harness { border-color: var(--blue-border); color: var(--blue); }
+  .flow-node.mac { border-color: var(--yellow-border); color: var(--yellow); }
+  .flow-node.guillermo { border-color: var(--border-medium); color: var(--text-primary); }
+
+  .flow-arrow {
+    color: var(--text-muted);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .flow-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* HOOKS GRID */
+  .hooks-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* HOOK CARD */
+  .hook-card {
+    border-radius: var(--radius);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .hook-card:hover { transform: translateY(-2px); }
+  .hook-card.green { border-color: var(--accent-border); }
+  .hook-card.yellow { border-color: var(--yellow-border); }
+  .hook-card.red { border-color: var(--red-border); }
+
+  .hook-header {
+    padding: 20px 20px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .hook-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .green .hook-icon { background: var(--accent-dim); }
+  .yellow .hook-icon { background: var(--yellow-dim); }
+  .red .hook-icon { background: var(--red-dim); }
+
+  .hook-meta { flex: 1; }
+
+  .hook-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    padding: 3px 8px;
+    margin-bottom: 6px;
+  }
+
+  .green .hook-tag { background: var(--accent-dim); color: var(--accent); }
+  .yellow .hook-tag { background: var(--yellow-dim); color: var(--yellow); }
+  .red .hook-tag { background: var(--red-dim); color: var(--red); }
+
+  .hook-name {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .hook-trigger {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-family: var(--font-mono);
+  }
+
+  .hook-body {
+    padding: 16px 20px 20px;
+  }
+
+  .hook-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 18px;
+  }
+
+  /* FLUJO VISUAL DEL HOOK */
+  .hook-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .hook-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    position: relative;
+  }
+
+  .hook-step + .hook-step {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .step-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .green .step-dot { background: var(--accent-dim); }
+  .yellow .step-dot { background: var(--yellow-dim); }
+  .red .step-dot { background: var(--red-dim); }
+
+  .step-content { flex: 1; }
+
+  .step-who {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .step-what {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .step-detail {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  .step-code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    display: block;
+    overflow-x: auto;
+  }
+
+  .green .step-code { color: var(--accent); }
+  .yellow .step-code { color: var(--yellow); }
+  .red .step-code { color: var(--red); }
+
+  /* PERCEPTION BAR */
+  .perception {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .green .perception { background: var(--accent-dim); border: 1px solid var(--accent-border); }
+  .yellow .perception { background: var(--yellow-dim); border: 1px solid var(--yellow-border); }
+  .red .perception { background: var(--red-dim); border: 1px solid var(--red-border); }
+
+  .perception-icon { font-size: 18px; flex-shrink: 0; }
+
+  .perception-text { color: var(--text-primary); line-height: 1.4; }
+  .perception-text strong { font-weight: 700; display: block; margin-bottom: 1px; }
+  .perception-text span { font-size: 12px; color: var(--text-secondary); }
+
+  /* CÓDIGO FINAL */
+  .code-section {
+    max-width: 640px;
+    margin: 40px auto 0;
+  }
+
+  .code-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    padding-left: 4px;
+  }
+
+  .code-block {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  pre {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    white-space: pre;
+  }
+
+  .c-key { color: var(--accent); }
+  .c-val { color: var(--yellow); }
+  .c-str { color: #c084fc; }
+  .c-comment { color: var(--text-muted); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-label">🔧 Claude Code — macOS</div>
+  <h1>Hooks que <span>hablan contigo</span><br>sin que mires la pantalla</h1>
+  <p>3 automatizaciones que conectan Claude Code con macOS y te avisan mediante voz, energía y sonido.</p>
+</div>
+
+<!-- CÓMO FUNCIONA -->
+<div class="how-it-works">
+  <div class="how-title">¿Cómo funciona un hook?</div>
+  <div class="flow-row">
+    <div class="flow-node claude">🤖 Claude Code</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node harness">⚙️ Harness local</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node mac">🍎 macOS</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node guillermo">👤 Tú</div>
+  </div>
+  <div class="flow-sub">
+    El harness ejecuta un shell script en momentos clave (inicio, fin, bloqueo).<br>
+    No consume tokens. No necesita que Claude "recuerde" hacerlo.
+  </div>
+</div>
+
+<!-- HOOKS GRID -->
+<div class="hooks-grid">
+
+  <!-- HOOK 1: SAY -->
+  <div class="hook-card green">
+    <div class="hook-header">
+      <div class="hook-icon">🔊</div>
+      <div class="hook-meta">
+        <div class="hook-tag">Stop</div>
+        <div class="hook-name">Voz al terminar</div>
+        <div class="hook-trigger">say "Tarea completada"</div>
+      </div>
+    </div>
+    <div class="hook-body">
+      <div class="hook-desc">
+        Cuando Claude termina una tarea, macOS habla en voz alta. No necesitas mirar la pantalla ni esperar la notificación visual — lo escuchas aunque tengas auriculares puestos o estés en otra app.
+      </div>
+
+      <div class="hook-flow">
+        <div class="hook-step">
+          <div class="step-dot">🤖</div>
+          <div class="step-content">
+            <div class="step-who">Claude Code</div>
+            <div class="step-what">Termina de ejecutar la tarea</div>
+            <div class="step-detail">Build, deploy, edición de archivos — lo que sea</div>
+          </div>
+        </div>
+        <div class="hook-step">
+          <div class="step-dot">⚙️</div>
+          <div class="step-content">
+            <div class="step-who">Hook Stop — Harness</div>
+            <div class="step-what">Dispara el comando say</div>
+            <code class="step-code">say "Tarea completada"</code>
+          </div>
+        </div>
+        <div class="hook-step">
+          <div class="step-dot">🍎</div>
+          <div class="step-content">
+            <div class="step-who">macOS — sintetizador de voz</div>
+            <div class="step-what">Voz del sistema habla en los speakers</div>
+            <div class="step-detail">Usa la voz configurada en Accesibilidad > Contenido hablado</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="perception">
+        <div class="perception-icon">👂</div>
+        <div class="perception-text">
+          <strong>Lo que percibes tú</strong>
+          <span>Escuchas "Tarea completada" sin mirar el terminal. Puedes estar en otra app, con auriculares, o al otro lado del cuarto.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOOK 2: CAFFEINATE -->
+  <div class="hook-card yellow">
+    <div class="hook-header">
+      <div class="hook-icon">☕</div>
+      <div class="hook-meta">
+        <div class="hook-tag">SessionStart + Stop</div>
+        <div class="hook-name">Mac despierto en deploys</div>
+        <div class="hook-trigger">caffeinate -di &</div>
+      </div>
+    </div>
+    <div class="hook-body">
+      <div class="hook-desc">
+        Al iniciar una sesión Claude activa caffeinate, que le dice a macOS "no duermas". Al terminar, lo mata. Sin esto, si tu Mac entra en reposo durante un deploy o build largo, el proceso puede pausarse o morir.
+      </div>
+
+      <div class="hook-flow">
+        <div class="hook-step">
+          <div class="step-dot">▶️</div>
+          <div class="step-content">
+            <div class="step-who">Hook SessionStart</div>
+            <div class="step-what">Inicia caffeinate en background</div>
+            <code class="step-code">caffeinate -di &amp; echo $! > /tmp/claude_caffeinate.pid</code>
+          </div>
+        </div>
+        <div class="hook-step">
+          <div class="step-dot">🍎</div>
+          <div class="step-content">
+            <div class="step-who">macOS — Power Management</div>
+            <div class="step-what">Suspende el sleep del sistema y del disco</div>
+            <div class="step-detail">-d = no sleep del sistema / -i = no sleep inactivo</div>
+          </div>
+        </div>
+        <div class="hook-step">
+          <div class="step-dot">⏹️</div>
+          <div class="step-content">
+            <div class="step-who">Hook Stop</div>
+            <div class="step-what">Mata caffeinate al terminar la sesión</div>
+            <code class="step-code">kill $(cat /tmp/claude_caffeinate.pid) 2>/dev/null</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="perception">
+        <div class="perception-icon">🛡️</div>
+        <div class="perception-text">
+          <strong>Lo que percibes tú</strong>
+          <span>El deploy termina aunque te hayas ido a tomar un café. Sin caffeinate, el Mac duerme y el proceso queda a medias.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOOK 3: SOSUMI -->
+  <div class="hook-card red">
+    <div class="hook-header">
+      <div class="hook-icon">🚫</div>
+      <div class="hook-meta">
+        <div class="hook-tag">PreToolUse</div>
+        <div class="hook-name">Alerta sonora de bloqueo</div>
+        <div class="hook-trigger">sound name "Sosumi"</div>
+      </div>
+    </div>
+    <div class="hook-body">
+      <div class="hook-desc">
+        Cuando Claude intenta ejecutar algo peligroso (rm -rf, DROP TABLE, escribir en .env) el hook lo bloquea con exit 2. Además de rechazar la acción, suena el clásico "Sosumi" de macOS — el sonido de "no se puede".
+      </div>
+
+      <div class="hook-flow">
+        <div class="hook-step">
+          <div class="step-dot">⚠️</div>
+          <div class="step-content">
+            <div class="step-who">Claude intenta ejecutar</div>
+            <div class="step-what">Bash con rm -rf / o DROP TABLE</div>
+            <div class="step-detail">O escribir en .env / .pem / .key</div>
+          </div>
+        </div>
+        <div class="hook-step">
+          <div class="step-dot">⚙️</div>
+          <div class="step-content">
+            <div class="step-who">Hook PreToolUse — Harness</div>
+            <div class="step-what">Detecta el comando peligroso → exit 2 → bloquea</div>
+            <code class="step-code">osascript -e 'beep' -e 'set volume alert volume 100'
+osascript -e 'display alert "Bloqueado" message "Comando peligroso detectado"'</code>
+          </div>
+        </div>
+        <div class="hook-step">
+          <div class="step-dot">🍎</div>
+          <div class="step-content">
+            <div class="step-who">macOS</div>
+            <div class="step-what">Suena Sosumi + aparece alerta visual</div>
+            <div class="step-detail">La acción de Claude fue rechazada — no se ejecutó nada</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="perception">
+        <div class="perception-icon">🔴</div>
+        <div class="perception-text">
+          <strong>Lo que percibes tú</strong>
+          <span>Escuchas "Sosumi" y aparece una alerta. Sabes al instante que algo se bloqueó sin tener que revisar el terminal.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CÓDIGO PARA ACTIVARLOS -->
+<div class="code-section">
+  <div class="code-section-title">📋 Configuración en ~/.claude/settings.json</div>
+  <div class="code-block">
+<pre><span class="c-comment">// Agregar dentro de "hooks": {}</span>
+
+<span class="c-comment">// 1. Voz al terminar</span>
+<span class="c-key">"Stop"</span>: [{
+  <span class="c-key">"matcher"</span>: <span class="c-str">""</span>,
+  <span class="c-key">"hooks"</span>: [{
+    <span class="c-key">"type"</span>: <span class="c-str">"command"</span>,
+    <span class="c-key">"command"</span>: <span class="c-str">"say 'Tarea completada'"</span>,
+    <span class="c-key">"async"</span>: <span class="c-val">true</span>
+  }]
+}]
+
+<span class="c-comment">// 2. Caffeinate (agregar a session_audit.sh)</span>
+<span class="c-str">caffeinate -di &amp; echo $! > /tmp/claude_caffeinate.pid</span>
+<span class="c-comment">// En Stop → kill $(cat /tmp/claude_caffeinate.pid)</span>
+
+<span class="c-comment">// 3. Sosumi en bloqueos (dentro del PreToolUse Bash existente)</span>
+<span class="c-str">osascript -e 'beep' 2>/dev/null
+echo 'BLOQUEADO: comando peligroso' &gt;&amp;2
+exit 2</span></pre>
+  </div>
+</div>
+
+<div class="footer">
+  🐕 Panchita — Smart Connection · 2026-04-09
+</div>
+
+</body>
+</html>

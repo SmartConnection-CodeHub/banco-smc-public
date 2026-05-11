@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoPet Panel</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #1a1c1e;
+    --surface: rgba(255,255,255,0.04);
+    --surface2: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e8e8;
+    --muted: #8a8a8a;
+    --critico: #ff4d4d;
+    --alerta: #ff9500;
+    --estable: #34c759;
+    --exceso: #007aff;
+    --accent: #e8e0d0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 44px;
+    background: #111214;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+  .nav-badge {
+    background: #2a2e35;
+    color: var(--muted);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color .2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+  /* LAYOUT */
+  .wrapper {
+    position: relative;
+    min-height: calc(100vh - 44px);
+    overflow: hidden;
+  }
+
+  /* FOX BG */
+  .fox-bg {
+    position: absolute;
+    top: -20px;
+    left: -60px;
+    width: 520px;
+    height: 520px;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .main {
+    position: relative;
+    z-index: 2;
+    padding: 28px 28px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+
+  /* TOP KPIs */
+  .kpis {
+    display: grid;
+    grid-template-columns: 200px 200px 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: stretch;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .kpi-label {
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .kpi-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .kpi-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-bottom: 8px;
+  }
+  .kpi-status .kpi-val { font-size: 30px; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+  .tab {
+    padding: 8px 16px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all .2s;
+  }
+  .tab.active {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+  }
+
+  /* PANEL */
+  .panel {
+    display: none;
+    animation: fadeIn .3s ease;
+  }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* TOOLBAR */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .search-box {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    outline: none;
+  }
+  .search-box::placeholder { color: var(--muted); }
+  .filter-counts {
+    display: flex;
+    gap: 6px;
+  }
+  .fc {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .fc-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .select-cat {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .15s;
+  }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 11px 10px; vertical-align: middle; }
+
+  .prod-name { font-weight: 500; font-size: 12px; color: #fff; }
+  .prod-sub { color: var(--muted); font-size: 10px; margin-top: 2px; }
+
+  .badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .badge-critico { background: rgba(255,77,77,.18); color: var(--critico); }
+  .badge-alerta  { background: rgba(255,149,0,.18);  color: var(--alerta); }
+  .badge-estable { background: rgba(52,199,89,.18);  color: var(--estable); }
+  .badge-exceso  { background: rgba(0,122,255,.18);  color: var(--exceso); }
+  .badge-error   { background: rgba(255,77,77,.25); color: var(--critico); font-size: 9px; }
+
+  .spark { display: flex; align-items: center; }
+  svg.sparkline { width: 52px; height: 22px; }
+
+  /* CATEGORY REPORT */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .cat-card.dog::before   { background: linear-gradient(90deg, #ff6b35, #ff4d4d); }
+  .cat-card.cat::before   { background: linear-gradient(90deg, #bf5af2, #007aff); }
+  .cat-card.bird::before  { background: linear-gradient(90deg, #32ade6, #34c759); }
+  .cat-card.fish::before  { background: linear-gradient(90deg, #007aff, #5ac8fa); }
+  .cat-card.reptile::before { background: linear-gradient(90deg, #34c759, #30d158); }
+  .cat-card.other::before { background: linear-gradient(90deg, #636366, #aeaeb2); }
+
+  .cat-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .cat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 11px;
+  }
+  .cat-row-label { color: var(--muted); }
+  .cat-row-val   { font-weight: 500; }
+
+  .bar-wrap {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  /* DONUT CHART */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .chart-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #ccc;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .legend { display: flex; flex-direction: column; gap: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .legend-pct { margin-left: auto; color: var(--muted); padding-left: 12px; }
+
+  /* BAR CHART */
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bar-label { width: 120px; font-size: 11px; color: var(--muted); flex-shrink: 0; text-align: right; }
+  .bar-track {
+    flex: 1;
+    height: 18px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-seg {
+    height: 100%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,.85);
+    white-space: nowrap;
+    overflow: hidden;
+    transition: width 1s ease;
+  }
+  .bar-amt { width: 70px; text-align: right; font-size: 11px; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect width="18" height="18" rx="4" fill="#2a2e35"/><path d="M4 13L7 7l2 4 2-5 3 7" stroke="#e8e0d0" stroke-width="1.4" stroke-linejoin="round"/></svg>
+    InfoPet
+    <span class="nav-badge">PANEL</span>
+  </div>
+  <div class="nav-links">
+    <a>Inicio</a><a>Carga</a><a>Facturas</a><a>Stock</a>
+    <a class="active">IA</a><a>Bulk</a><a>Sync</a>
+  </div>
+</nav>
+
+<div class="wrapper">
+  <!-- FOX SVG -->
+  <svg class="fox-bg" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="150,30 60,100 30,200 150,270 270,200 240,100" stroke="white" stroke-width="1" fill="none"/>
+    <polygon points="150,30 60,100 150,130" stroke="white" stroke-width="0.8" fill="none"/>
+    <polygon points="150,30 240,100 150,130" stroke="white" stroke-width="0.8" fill="none"/>
+    <polygon points="60,100 30,200 110,180 150,130" stroke="white" stroke-width="0.8" fill="none"/>
+    <polygon points="240,100 270,200 190,180 150,130" stroke="white" stroke-width="0.8" fill="none"/>
+    <polygon points="30,200 110,180 150,270" stroke="white" stroke-width="0.8" fill="none"/>
+    <polygon points="270,200 190,180 150,270" stroke="white" stroke-width="0.8" fill="none"/>
+    <polygon points="110,180 150,270 190,180" stroke="white" stroke-width="0.8" fill="none"/>
+    <polygon points="60,100 110,180 150,130" stroke="white" stroke-width="0.7" fill="none"/>
+    <polygon points="240,100 190,180 150,130" stroke="white" stroke-width="0.7" fill="none"/>
+    <circle cx="120" cy="145" r="6" stroke="white" stroke-width="0.8" fill="none"/>
+    <circle cx="180" cy="145" r="6" stroke="white" stroke-width="0.8" fill="none"/>
+    <polygon points="150,165 140,185 160,185" stroke="white" stroke-width="0.8" fill="none"/>
+  </svg>
+
+  <div class="main">
+    <h1>Inteligencia de Producto</h1>
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Revenue 30D</div>
+        <div class="kpi-val">$7.047.863</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Revenue Este Mes</div>
+        <div class="kpi-val" style="font-size:22px">$404.818</div>
+      </div>
+      <div class="kpi kpi-status">
+        <div class="kpi-dot" style="background:var(--critico)"></div>
+        <div class="kpi-val" style="color:var(--critico)">81</div>
+        <div class="kpi-label" style="margin-top:2px">Crítico</div>
+      </div>
+      <div class="kpi kpi-status">
+        <div class="kpi-dot" style="background:var(--alerta)"></div>
+        <div class="kpi-val" style="color:var(--alerta)">19</div>
+        <div class="kpi-label" style="margin-top:2px">Alerta</div>
+      </div>
+      <div class="kpi kpi-status">
+        <div class="kpi-dot" style="background:var(--estable)"></div>
+        <div class="kpi-val" style="color:var(--estable)">69</div>
+        <div class="kpi-label" style="margin-top:2px">Estable</div>
+      </div>
+      <div class="kpi kpi-status">
+        <div class="kpi-dot" style="background:var(--exceso)"></div>
+        <div class="kpi-val" style="color:var(--exceso)">1.932</div>
+        <div class="kpi-label" style="margin-top:2px">Exceso</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('stock',this)">Stock & Productos</div>
+      <div class="tab" onclick="switchTab('ventas',this)">Reporte por Categoría</div>
+    </div>
+
+    <!-- PANEL STOCK -->
+    <div class="panel active" id="panel-stock">
+      <div class="toolbar">
+        <input class="search-box" placeholder="Buscar por nombre o SKU..." />
+        <div class="filter-counts">
+          <div class="fc"><div class="fc-dot" style="background:var(--muted)"></div>2101 Todos</div>
+          <div class="fc"><div class="fc-dot" style="background:var(--critico)"></div>81 Crítico</div>
+          <div class="fc"><div class="fc-dot" style="background:var(--alerta)"></div>19 Alerta</div>
+          <div class="fc"><div class="fc-dot" style="background:var(--estable)"></div>69 Estable</div>
+          <div class="fc"><div class="fc-dot" style="background:var(--exceso)"></div>1932 Exceso</div>
+        </div>
+        <select class="select-cat">
+          <option>Todas las categorías</option>
+          <option>Perro comida seca</option>
+          <option>Gato comida húmeda</option>
+          <option>Accesorios</option>
+        </select>
+        <button class="btn">Exportar CSV</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Ventas 30D</th>
+            <th>Tendencia</th>
+            <th>Revenue 30D</th>
+            <th>Vel./Día</th>
+            <th>Días Stock</th>
+            <th>Proyección</th>
+          </tr>
+        </thead>
+        <tbody id="product-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- PANEL VENTAS POR CATEGORÍA -->
+    <div class="panel" id="panel-ventas">
+
+      <!-- CARDS POR CATEGORIA -->
+      <div class="cat-grid" id="cat-grid"></div>
+
+      <!-- CHARTS -->
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-title">Distribución de Revenue por Categoría</div>
+          <div class="donut-wrap">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--surface2)" stroke-width="18"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#ff6b35" stroke-width="18"
+                stroke-dasharray="189 125" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#bf5af2" stroke-width="18"
+                stroke-dasharray="75 239" stroke-dashoffset="-189" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#32ade6" stroke-width="18"
+                stroke-dasharray="44 270" stroke-dashoffset="-264" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#34c759" stroke-width="18"
+                stroke-dasharray="31 283" stroke-dashoffset="-308" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#007aff" stroke-width="18"
+                stroke-dasharray="18 296" stroke-dashoffset="-339" transform="rotate(-90 60 60)"/>
+              <text x="60" y="56" text-anchor="middle" fill="white" font-family="Rajdhani,sans-serif" font-size="16" font-weight="700">100%</text>
+              <text x="60" y="70" text-anchor="middle" fill="#8a8a8a" font-family="DM Sans,sans-serif" font-size="9">5 categorías</text>
+            </svg>
+            <div class="legend" id="donut-legend"></div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Ventas Unitarias Últimos 30D por Categoría</div>
+          <div class="bar-chart" id="bar-chart"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// DATA
+const products = [
+  { name:"BRAVERY DOG CHICKEN MINI PUPPY SMALL BREEDS", sub:"2 Kg", cat:"Perro comida seca", stock:0, ventas:1, trend:"up", rev:"$20.990", vel:"0.0", dias:0, proy:"error" },
+  { name:"BRAVERY DOG SALMON PUPPY LARGE/MEDIUM BREEDS", sub:"12 Kg", cat:"Perro comida seca", stock:0, ventas:1, trend:"down", rev:"$75.990", vel:"0.0", dias:0, proy:"critico" },
+  { name:"BRAVERY DOG SALMON MINI ADULT SMALL BREEDS", sub:"2 Kg", cat:"Perro comida seca", stock:0, ventas:1, trend:"down2", rev:"$22.990", vel:"0.0", dias:0, proy:"critico" },
+  { name:"ROYAL CANIN MAXI ADULT", sub:"15 Kg", cat:"Perro comida seca", stock:12, ventas:18, trend:"up", rev:"$142.000", vel:"0.6", dias:20, proy:"estable" },
+  { name:"HILLS SCIENCE DIET INDOOR CAT", sub:"3.5 Kg", cat:"Gato comida seca", stock:4, ventas:7, trend:"down", rev:"$48.300", vel:"0.2", dias:20, proy:"alerta" },
+  { name:"PURINA PRO PLAN URINARY CAT", sub:"7.5 Kg", cat:"Gato comida seca", stock:28, ventas:9, trend:"up", rev:"$67.500", vel:"0.3", dias:93, proy:"exceso" },
+  { name:"BRIT CARE SENSITIVE DIGEST DUCK", sub:"3 Kg", cat:"Perro comida seca", stock:56, ventas:22, trend:"up", rev:"$198.000", vel:"0.7", dias:80, proy:"exceso" },
+];
+
+const categories = [
+  { name:"Perro comida seca", cls:"dog", skus:842, ventas:1240, rev:3820000, critico:41, exceso:680 },
+  { name:"Gato comida seca", cls:"cat", skus:431, ventas:510, rev:1510000, critico:18, exceso:390 },
+  { name:"Accesorios / Juguetes", cls:"bird", skus:312, ventas:290, rev:880000, critico:12, exceso:220 },
+  { name:"Gato comida húmeda", cls:"fish", skus:215, ventas:180, rev:520000, critico:6, exceso:180 },
+  { name:"Snacks & Premios", cls:"reptile", skus:178, ventas:149, rev:230000, critico:3, exceso:300 },
+  { name:"Otros", cls:"other", skus:123, ventas:68, rev:87863, critico:1, exceso:162 },
+];
+
+const maxRev = Math.max(...categories.map(c=>c.rev));
+const totalRev = categories.reduce((a,c)=>a+c.rev,0);
+
+const catColors = ["#ff6b35","#bf5af2","#32ade6","#34c759","#007aff","#636366"];
+const trendColors = { up:"var(--estable)", down:"var(--alerta)", down2:"var(--critico)" };
+
+function sparkSVG(trend){
+  const paths = {
+    up: "M4,16 L16,10 L28,8 L40,5 L48,3",
+    down: "M4,4 L16,8 L28,10 L40,13 L48,16",
+    down2: "M4,4 L16,9 L28,14 L40,16 L48,18"
+  };
+  const c = trendColors[trend];
+  return `<svg class="sparkline" viewBox="0 0 52 20"><polyline points="${paths[trend]}" fill="none" stroke="${c}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+// RENDER TABLE
+const tbody = document.getElementById('product-tbody');
+products.forEach(p=>{
+  let proyBadge = '';
+  if(p.proy==='error') proyBadge=`<span class="badge badge-error">STOCK 0</span>`;
+  else if(p.proy==='critico') proyBadge=`<span class="badge badge-critico">Crítico</span>`;
+  else if(p.proy==='alerta') proyBadge=`<span class="badge badge-alerta">Alerta</span>`;
+  else if(p.proy==='estable') proyBadge=`<span class="badge badge-estable">Estable</span>`;
+  else if(p.proy==='exceso') proyBadge=`<span class="badge badge-exceso">Exceso</span>`;
+
+  const stockColor = p.stock===0 ? 'var(--critico)' : 'var(--text)';
+  tbody.innerHTML += `<tr>
+    <td><div class="prod-name">${p.name}</div><div class="prod-sub">${p.sub}</div></td>
+    <td style="color:var(--muted);font-size:11px">${p.cat}</td>
+    <td style="color:${stockColor};font-weight:600">${p.stock}</td>
+    <td>${p.ventas}</td>
+    <td class="spark">${sparkSVG(p.trend)}</td>
+    <td style="font-weight:500">${p.rev}</td>
+    <td style="color:var(--muted)">${p.vel}</td>
+    <td>${p.dias}</td>
+    <td>${proyBadge}</td>
+  </tr>`;
+});
+
+// RENDER CATEGORY CARDS
+const grid = document.getElementById('cat-grid');
+categories.forEach((c,i)=>{
+  const pct = Math.round(c.rev/maxRev*100);
+  const revFmt = '$'+c.rev.toLocaleString('es-CL');
+  const color = catColors[i];
+  grid.innerHTML += `<div class="cat-card ${c.cls}">
+    <div class="cat-name">${c.name}</div>
+    <div class="cat-row"><span class="cat-row-label">SKUs</span><span class="cat-row-val">${c.skus}</span></div>
+    <div class="cat-row"><span class="cat-row-label">Ventas 30D</span><span class="cat-row-val">${c.ventas.toLocaleString('es-CL')}</span></div>
+    <div class="cat-row"><span class="cat-row-label">Revenue 30D</span><span class="cat-row-val" style="color:#fff">${revFmt}</span></div>
+    <div class="cat-row">
+      <span class="cat-row-label">Crítico</span>
+      <span class="cat-row-val" style="color:var(--critico)">${c.critico}</span>
+      <span class="cat-row-label" style="margin-left:12px">Exceso</span>
+      <span class="cat-row-val" style="color:var(--exceso);margin-left:4px">${c.exceso}</span>
+    </div>
+    <div class="bar-wrap"><div class="bar-fill" style="width:0%;background:${color}" data-pct="${pct}"></div></div>
+  </div>`;
+});
+
+// DONUT LEGEND
+const legend = document.getElementById('donut-legend');
+categories.forEach((c,i)=>{
+  const pct = Math.round(c.rev/totalRev*100);
+  legend.innerHTML += `<div class="legend-item">
+    <div class="legend-dot" style="background:${catColors[i]}"></div>
+    <span style="color:var(--text)">${c.name}</span>
+    <span class="legend-pct">${pct}%</span>
+  </div>`;
+});
+
+// BAR CHART
+const barChart = document.getElementById('bar-chart');
+const maxVentas = Math.max(...categories.map(c=>c.ventas));
+categories.forEach((c,i)=>{
+  const pct = Math.round(c.ventas/maxVentas*100);
+  barChart.innerHTML += `<div class="bar-row">
+    <div class="bar-label">${c.name.split(' ')[0]+' '+c.name.split(' ')[1]}</div>
+    <div class="bar-track">
+      <div class="bar-seg" style="width:0%;background:${catColors[i]}" data-pct="${pct}">${c.ventas} uds.</div>
+    </div>
+    <div class="bar-amt">$${Math.round(c.rev/1000)}K</div>
+  </div>`;
+});
+
+// TAB SWITCH
+function switchTab(id, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='ventas') setTimeout(animateBars, 50);
+}
+
+function animateBars(){
+  document.querySelectorAll('[data-pct]').forEach(el=>{
+    el.style.width = el.dataset.pct+'%';
+  });
+}
+</script>
+</body>
+</html>

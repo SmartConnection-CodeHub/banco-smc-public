@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Habla con nosotros — Smart Connection</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:          #F7F8FA;
+  --surface:     #FFFFFF;
+  --text:        #0F1117;
+  --secondary:   #4B5463;
+  --muted:       #8B95A5;
+  --border:      rgba(15,17,23,0.09);
+  --accent:      #00C896;
+  --accent-dark: #00A87E;
+  --accent-sub:  rgba(0,200,150,0.10);
+  --shadow-sm:   0 1px 3px rgba(15,17,23,0.06), 0 1px 2px rgba(15,17,23,0.04);
+  --shadow-md:   0 4px 14px rgba(15,17,23,0.08), 0 2px 4px rgba(15,17,23,0.04);
+  --shadow-lg:   0 12px 40px rgba(15,17,23,0.10), 0 4px 8px rgba(15,17,23,0.04);
+  --font:        'Inter', -apple-system, system-ui, sans-serif;
+  --r:           14px;
+  --r-pill:      9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  letter-spacing: -0.01em;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(247,248,250,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 600; letter-spacing: -0.02em; color: var(--text);
+  text-decoration: none;
+}
+.nav-logo-mark {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0;
+}
+.nav-sep { color: var(--border); font-weight: 300; font-size: 18px; }
+.nav-product { font-size: 14px; font-weight: 500; color: var(--secondary); }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.nav-btn {
+  padding: 7px 16px; border-radius: var(--r-pill);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--secondary);
+  transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center;
+}
+.nav-btn:hover { border-color: rgba(15,17,23,0.20); color: var(--text); }
+.nav-btn.primary {
+  background: var(--text); color: #fff; border-color: var(--text);
+}
+.nav-btn.primary:hover { background: #1e2330; }
+
+/* ─── MAIN LAYOUT ─── */
+main {
+  flex: 1;
+  padding-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  min-height: 100vh;
+}
+
+/* ─── LEFT — CHAT SECTION ─── */
+.chat-section {
+  padding: 64px 48px 40px;
+  display: flex; flex-direction: column;
+  max-width: 660px;
+}
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent-dark); margin-bottom: 28px;
+}
+.eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+h1 {
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+h1 strong { font-weight: 700; }
+h1 .accent-word { color: var(--accent-dark); }
+
+.hero-sub {
+  font-size: 16px;
+  color: var(--secondary);
+  line-height: 1.65;
+  max-width: 480px;
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+
+/* ─── CHAT THREAD ─── */
+.chat-thread {
+  display: flex; flex-direction: column; gap: 14px;
+  margin-bottom: 28px;
+  flex: 1;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.chat-thread::-webkit-scrollbar { width: 4px; }
+.chat-thread::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.msg {
+  display: flex; align-items: flex-end; gap: 10px;
+  animation: msgIn 0.3s ease both;
+}
+.msg.user { flex-direction: row-reverse; }
+
+@keyframes msgIn {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.msg-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+  flex-shrink: 0;
+}
+.msg-avatar.ai  { background: var(--text); color: #fff; }
+.msg-avatar.usr { background: var(--accent-sub); color: var(--accent-dark); }
+
+.msg-meta { display: flex; flex-direction: column; gap: 3px; max-width: 72%; }
+.msg-name  { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.msg.user .msg-name { text-align: right; }
+
+.bubble {
+  padding: 12px 16px;
+  border-radius: 16px 16px 16px 4px;
+  font-size: 14px; line-height: 1.6;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.msg.user .bubble {
+  background: var(--text);
+  color: #fff;
+  border-color: var(--text);
+  border-radius: 16px 16px 4px 16px;
+}
+
+.bubble.typing {
+  display: flex; align-items: center; gap: 4px;
+  padding: 14px 18px;
+  min-width: 60px;
+}
+.dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--muted);
+  animation: bounce 1.2s ease infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+
+/* Quick reply chips */
+.quick-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 4px;
+}
+.quick-chip {
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid rgba(0,200,150,0.30);
+  background: var(--accent-sub);
+  color: var(--accent-dark);
+  font-size: 12px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.quick-chip:hover {
+  background: rgba(0,200,150,0.18);
+  border-color: rgba(0,200,150,0.50);
+}
+
+/* ─── PILL INPUT ─── */
+.pill-input-wrap {
+  display: flex; align-items: center; gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 10px 10px 10px 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 12px;
+}
+.pill-input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,200,150,0.12);
+}
+.pill-input-wrap input {
+  flex: 1; border: none; outline: none;
+  background: transparent;
+  font-size: 14px; color: var(--text); font-family: var(--font);
+  letter-spacing: -0.01em;
+}
+.pill-input-wrap input::placeholder { color: var(--muted); }
+.pill-send {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--text); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.15s;
+}
+.pill-send:hover { background: #1e2330; transform: scale(1.05); }
+.pill-send svg { width: 16px; height: 16px; fill: #fff; }
+
+.input-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 24px;
+}
+.itag {
+  padding: 5px 12px; border-radius: var(--r-pill);
+  border: 1px solid var(--border); background: var(--surface);
+  font-size: 12px; color: var(--secondary);
+  cursor: pointer; transition: all 0.15s;
+}
+.itag:hover { border-color: var(--accent); color: var(--accent-dark); background: var(--accent-sub); }
+
+/* Trust row */
+.trust-row {
+  display: flex; align-items: center; gap: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.trust-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--muted);
+}
+.trust-icon { font-size: 14px; }
+
+/* ─── RIGHT — VISUAL PANEL ─── */
+.visual-panel {
+  background: var(--text);
+  padding: 64px 36px 40px;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  position: sticky; top: 56px;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+}
+
+/* Particle canvas inside right panel */
+#right-canvas {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0;
+}
+
+.panel-content { position: relative; z-index: 1; }
+
+.panel-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35); margin-bottom: 24px;
+}
+
+.panel-heading {
+  font-size: 26px; font-weight: 300; letter-spacing: -0.03em;
+  color: #fff; line-height: 1.2; margin-bottom: 8px;
+}
+.panel-heading strong { font-weight: 700; }
+.panel-sub {
+  font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6;
+  max-width: 300px;
+}
+
+/* Steps */
+.steps { margin-top: 40px; display: flex; flex-direction: column; gap: 0; }
+.step {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  animation: fadeUp 0.5s ease both;
+}
+.step:last-child { border-bottom: none; }
+.step:nth-child(1) { animation-delay: 0.1s; }
+.step:nth-child(2) { animation-delay: 0.25s; }
+.step:nth-child(3) { animation-delay: 0.4s; }
+.step:nth-child(4) { animation-delay: 0.55s; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.step-num {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.50);
+  flex-shrink: 0;
+}
+.step.active .step-num {
+  background: var(--accent); border-color: var(--accent); color: #000;
+}
+.step-body {}
+.step-title {
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.90);
+  letter-spacing: -0.01em; margin-bottom: 2px;
+}
+.step.inactive .step-title { color: rgba(255,255,255,0.40); }
+.step-desc {
+  font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.5;
+}
+
+/* KPI mini cards at bottom */
+.panel-kpis {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  position: relative; z-index: 1;
+}
+.pkpi {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.pkpi-val {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.04em;
+  color: #fff; margin-bottom: 2px;
+}
+.pkpi-val.accent { color: var(--accent); }
+.pkpi-label { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; }
+  .visual-panel { display: none; }
+  .chat-section { padding: 40px 24px 32px; max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">SC</div>
+    Smart Connection
+    <span class="nav-sep">·</span>
+    <span class="nav-product">Discovery</span>
+  </a>
+  <div class="nav-actions">
+    <a href="#" class="nav-btn">Cómo funciona</a>
+    <a href="#" class="nav-btn primary">Ver propuesta</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- LEFT: CHAT -->
+  <div class="chat-section">
+
+    <div class="eyebrow">
+      <div class="eyebrow-dot"></div>
+      Smart Connection · Discovery activo
+    </div>
+
+    <h1>
+      <strong>Habla</strong> con<br>
+      <span class="accent-word">nosotros.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Cuéntanos el problema. Discovery lo analiza, extrae los puntos clave y en minutos tienes un diagnóstico real — sin formularios, sin esperar.
+    </p>
+
+    <!-- CHAT THREAD -->
+    <div class="chat-thread" id="chatThread">
+
+      <div class="msg" id="msg1">
+        <div class="msg-avatar ai">D</div>
+        <div class="msg-meta">
+          <span class="msg-name">Discovery</span>
+          <div class="bubble">
+            Hola 👋 Soy Discovery, el asistente de Smart Connection. ¿Cuál es el proceso que más tiempo le está costando a tu equipo hoy?
+          </div>
+          <div class="quick-chips">
+            <span class="quick-chip" onclick="sendQuick(this)">Cotizaciones lentas</span>
+            <span class="quick-chip" onclick="sendQuick(this)">Facturación manual</span>
+            <span class="quick-chip" onclick="sendQuick(this)">Sistemas desconectados</span>
+            <span class="quick-chip" onclick="sendQuick(this)">Reportes a mano</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INPUT -->
+    <div class="pill-input-wrap">
+      <input
+        type="text"
+        id="chatInput"
+        placeholder="Escribe tu respuesta..."
+        autocomplete="off"
+        onkeydown="if(event.key==='Enter')sendMsg()"
+      />
+      <button class="pill-send" onclick="sendMsg()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="input-tags">
+      <span class="itag" onclick="setMsg('Mis vendedores tardan 2h armando propuestas')">💼 Propuestas lentas</span>
+      <span class="itag" onclick="setMsg('No tengo visibilidad de mi inventario en tiempo real')">📦 Inventario manual</span>
+      <span class="itag" onclick="setMsg('Mis sistemas no se hablan entre sí')">🔗 Integrar sistemas</span>
+      <span class="itag" onclick="setMsg('Quiero automatizar mi facturación SII')">🧾 Facturación SII</span>
+      <span class="itag" onclick="setMsg('Necesito un agente IA para mi empresa')">🤖 Agente IA propio</span>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-item"><span class="trust-icon">⚡</span> Respuesta en &lt;10 min</div>
+      <div class="trust-item"><span class="trust-icon">🔒</span> Sin tarjeta de crédito</div>
+      <div class="trust-item"><span class="trust-icon">🇨🇱</span> 100% chileno</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: VISUAL PANEL -->
+  <div class="visual-panel">
+    <canvas id="right-canvas"></canvas>
+
+    <div class="panel-content">
+      <div class="panel-eyebrow">Cómo funciona</div>
+      <h2 class="panel-heading">De la conversación<br><strong>al diagnóstico.</strong></h2>
+      <p class="panel-sub">Sin formularios. Sin esperar días. Discovery extrae lo esencial y genera los documentos en minutos.</p>
+
+      <div class="steps">
+        <div class="step active">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Cuéntanos el problema</div>
+            <div class="step-desc">En tus propias palabras — Discovery entiende contexto, no keywords.</div>
+          </div>
+        </div>
+        <div class="step inactive">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Extracción SPIN + BANT</div>
+            <div class="step-desc">Situación, Problema, Implicación, Necesidad, Presupuesto y Timeline — automático.</div>
+          </div>
+        </div>
+        <div class="step inactive">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Diagnóstico ejecutivo</div>
+            <div class="step-desc">PDF con los 3 cuellos de botella, impacto en CLP y alternativas de solución.</div>
+          </div>
+        </div>
+        <div class="step inactive">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Propuesta lista en tu bandeja</div>
+            <div class="step-desc">Con pricing en UF según lo detectado en la conversación.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-kpis">
+      <div class="pkpi">
+        <div class="pkpi-val accent">12</div>
+        <div class="pkpi-label">Leads activos</div>
+      </div>
+      <div class="pkpi">
+        <div class="pkpi-val">840 UF</div>
+        <div class="pkpi-label">Pipeline activo</div>
+      </div>
+      <div class="pkpi">
+        <div class="pkpi-val accent">&lt;10 min</div>
+        <div class="pkpi-label">Conversación → docs</div>
+      </div>
+      <div class="pkpi">
+        <div class="pkpi-val">34</div>
+        <div class="pkpi-label">Documentos generados</div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+// ── CONVERSATION FLOW ──
+const flows = [
+  {
+    trigger: ['cotiz', 'propuesta', 'propuestas', 'vendedor'],
+    reply: '¿Cuántos vendedores tiene el equipo y cuántas propuestas hacen por semana aproximadamente?',
+    chips: ['3-5 vendedores', '6-10 vendedores', 'Más de 10'],
+    step: 2
+  },
+  {
+    trigger: ['factur', 'sii', 'boleta', 'factura'],
+    reply: '¿Están integrados a algún sistema de facturación hoy (Bsale, Facturalte, Siigo) o lo hacen manual en el SII?',
+    chips: ['Lo hacemos manual en SII', 'Tenemos sistema pero desconectado', 'No tenemos nada aún'],
+    step: 2
+  },
+  {
+    trigger: ['inventario', 'stock', 'bodega'],
+    reply: '¿Cuántos SKUs manejan aproximadamente y en cuántas ubicaciones?',
+    chips: ['Menos de 500 SKUs', '500 a 5.000 SKUs', 'Más de 5.000 SKUs'],
+    step: 2
+  },
+  {
+    trigger: ['sistema', 'integra', 'conectar', 'desconect'],
+    reply: '¿Qué sistemas necesitas conectar? Por ejemplo: tienda online, ERP, facturación, CRM…',
+    chips: ['Tienda + facturación', 'ERP + CRM', 'Todo separado'],
+    step: 2
+  },
+  {
+    trigger: ['agente', 'chatbot', 'ia', 'inteligencia'],
+    reply: '¿Para qué área quieres el agente IA? Atención al cliente, ventas, operaciones, otro…',
+    chips: ['Atención al cliente', 'Soporte interno', 'Generación de propuestas'],
+    step: 2
+  }
+];
+
+const finalReplies = [
+  'Perfecto. Con eso ya tengo suficiente contexto. Estoy preparando tu diagnóstico…',
+  'Entendido — muy claro. Generando el análisis SPIN ahora…',
+  'Excelente. En base a lo que describes, veo al menos 2-3 puntos de alto impacto. Dame un momento…'
+];
+
+let msgCount = 0;
+let stepActive = 1;
+
+function setMsg(text) {
+  document.getElementById('chatInput').value = text;
+  document.getElementById('chatInput').focus();
+}
+
+function sendQuick(el) {
+  document.getElementById('chatInput').value = el.textContent;
+  sendMsg();
+}
+
+function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const text  = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addMsg(text, 'user');
+  msgCount++;
+
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      const matched = flows.find(f => f.trigger.some(t => text.toLowerCase().includes(t)));
+
+      if (msgCount === 1 && matched) {
+        addAIMsg(matched.reply, matched.chips);
+        activateStep(matched.step);
+      } else if (msgCount === 2) {
+        const reply = finalReplies[Math.floor(Math.random() * finalReplies.length)];
+        addAIMsg(reply);
+        activateStep(3);
+        setTimeout(() => {
+          addAIMsg('📋 <strong>Diagnóstico listo.</strong><br>Detecté <strong>3 puntos críticos</strong> en tu operación. ¿Te envío el resumen ejecutivo a tu email?');
+          activateStep(4);
+        }, 2200);
+      } else {
+        addAIMsg('Entendido. ¿Hay algo más que quieras agregar antes de que prepare el diagnóstico?');
+      }
+    }, 1400);
+  }, 400);
+}
+
+function addMsg(text, role) {
+  const thread = document.getElementById('chatThread');
+  const isAI = role === 'ai';
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `
+    <div class="msg-avatar ${isAI ? 'ai' : 'usr'}">${isAI ? 'D' : 'G'}</div>
+    <div class="msg-meta">
+      <span class="msg-name">${isAI ? 'Discovery' : 'Tú'}</span>
+      <div class="bubble">${text}</div>
+    </div>
+  `;
+  div.style.animationDelay = '0s';
+  thread.appendChild(div);
+  thread.scrollTop = thread.scrollHeight;
+}
+
+function addAIMsg(text, chips) {
+  const thread = document.getElementById('chatThread');
+  const div = document.createElement('div');
+  div.className = 'msg';
+  let chipsHTML = '';
+  if (chips && chips.length) {
+    chipsHTML = `<div class="quick-chips">${chips.map(c => `<span class="quick-chip" onclick="sendQuick(this)">${c}</span>`).join('')}</div>`;
+  }
+  div.innerHTML = `
+    <div class="msg-avatar ai">D</div>
+    <div class="msg-meta">
+      <span class="msg-name">Discovery</span>
+      <div class="bubble">${text}</div>
+      ${chipsHTML}
+    </div>
+  `;
+  div.style.animationDelay = '0s';
+  thread.appendChild(div);
+  thread.scrollTop = thread.scrollHeight;
+}
+
+function addTyping() {
+  const thread = document.getElementById('chatThread');
+  const div = document.createElement('div');
+  div.className = 'msg'; div.id = 'typing-indicator';
+  div.innerHTML = `
+    <div class="msg-avatar ai">D</div>
+    <div class="msg-meta">
+      <span class="msg-name">Discovery</span>
+      <div class="bubble typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+  `;
+  thread.appendChild(div);
+  thread.scrollTop = thread.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+function activateStep(n) {
+  document.querySelectorAll('.step').forEach((s, i) => {
+    s.className = 'step ' + (i < n ? 'active' : 'inactive');
+    if (i === n - 1) s.classList.add('active');
+  });
+}
+
+// ── CANVAS PARTICLES (right panel) ──
+(function() {
+  const canvas = document.getElementById('right-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const MAX_DIST = 100;
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class P {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.isNode = Math.random() < 0.15;
+      this.s = this.isNode ? Math.random() * 2.2 + 1.6 : Math.random() * 1.0 + 0.4;
+      this.o = this.isNode ? Math.random() * 0.25 + 0.35 : Math.random() * 0.20 + 0.12;
+      this.isGreen = Math.random() < 0.60;
+      this.sx = (Math.random() - 0.5) * 0.18;
+      this.sy = (Math.random() - 0.5) * 0.18;
+      this.phase = Math.random() * Math.PI * 2;
+    }
+    update() {
+      this.x += this.sx; this.y += this.sy;
+      this.phase += 0.02;
+      if (this.x < -10 || this.x > canvas.width + 10 ||
+          this.y < -10 || this.y > canvas.height + 10) this.reset();
+    }
+    draw() {
+      let r, g, b;
+      if (this.isGreen) { r = 0; g = 200; b = 150; }
+      else { r = 255; g = 255; b = 255; }
+      if (this.isNode) {
+        ctx.shadowBlur = 8; ctx.shadowColor = `rgba(${r},${g},${b},0.5)`;
+      }
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${this.o})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  for (let i = 0; i < 45; i++) particles.push(new P());
+
+  function drawEdges() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < MAX_DIST) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,200,150,${(1 - d / MAX_DIST) * 0.08})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawEdges();
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+</body>
+</html>

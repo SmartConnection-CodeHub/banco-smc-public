@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🌐 SMC Marketing · banco</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;min-height:100vh;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%);pointer-events:none;z-index:0}.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.section{display:none}.section.active{display:block}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;font-weight:600;margin-left:auto;background:rgba(0,229,176,.15);color:#00e5b0}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}.info-meta b{color:#f1f5f9}
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.fx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.fx{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center}
+.fx-icon{font-size:24px;margin-bottom:6px}
+.fx-name{font-size:12px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.fx-desc{font-size:10.5px;color:#94a3b8}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px}
+.stat{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px;text-align:center}
+.stat-big{font-size:26px;font-weight:800;color:#00e5b0;line-height:1.1}
+.stat-label{font-size:11px;color:#94a3b8;margin-top:4px}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.plan{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}
+.plan-name{font-size:14px;font-weight:700;color:#00e5b0;margin-bottom:4px}
+.plan-price{font-size:18px;font-weight:800;color:#f1f5f9;margin-bottom:6px}
+.plan-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / SMC Marketing</div>
+<h1>🌐 SMC Marketing · smconnection.cl</h1>
+<p class="subtitle">Live · HTML puro + S3 + CloudFront · 45 versiones · &lt;$1/mes</p>
+<div class="rfp"><b>📋 RFP:</b> SMC necesitaba presencia web que vendiera "Monday con IA real" · Kanban · agentes · 50+ integraciones · sidebar IA. HTML puro + 14 efectos visuales premium · mobile first 375px. <b>Resultado:</b> sitio S3 + CloudFront carga &lt;1s · costo &lt;$1/mes.</div>
+
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="amb">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🚀</span><span class="info-name">PROD</span><span class="info-stage">Live</span></div><div class="info-meta"><a href="https://smconnection.cl/" target="_blank" style="color:#00e5b0">smconnection.cl</a><br><b>Stack:</b> S3 + CloudFront<br><b>Costo:</b> &lt;$1/mes</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">💻</span><span class="info-name">Local</span><span class="info-stage">Live</span></div><div class="info-meta"><b>Repo:</b> local + GitHub<br><b>Deploy:</b> <code>scripts/deploy-s3.sh</code></div></div>
+</div>
+</div>
+
+<div class="section" id="inf">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📦</span><span class="info-name">S3 bucket</span></div><div class="info-meta"><b>Bucket:</b> <code>smartconnetion25</code><br><b>Region:</b> sa-east-1<br><b>Versionado:</b> activo</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">☁️</span><span class="info-name">CloudFront</span></div><div class="info-meta"><b>Distribution:</b> <code>E3O4YBX3RKHQUL</code><br><b>SSL:</b> ACM cert<br><b>Cache:</b> 1h</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🌐</span><span class="info-name">Route 53</span></div><div class="info-meta"><b>Zone:</b> smconnection.cl<br><b>Apex:</b> ALIAS → CloudFront</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🐙</span><span class="info-name">GitHub repo</span></div><div class="info-meta"><b>Branch:</b> main<br><b>Deploy:</b> manual con bash script</div></div>
+</div>
+</div>
+
+<div class="section" id="cnx">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📊</span><span class="info-name">Google Analytics 4</span><span class="info-stage">Live</span></div><div class="info-meta">Tráfico · funnels · conversiones</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📊</span><span class="info-name">Meta Pixel</span><span class="info-stage">Live</span></div><div class="info-meta">Tracking ads Facebook/Instagram</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">💬</span><span class="info-name">WhatsApp CTA</span><span class="info-stage">Live</span></div><div class="info-meta">Contacto directo · funnel principal</div></div>
+</div>
+</div>
+
+<div class="section" id="doc">
+<div class="info-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-marketing.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">Brand voice guidelines</span></div><div class="info-meta">Tono SMC · prohibidos · permitidos</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🎨</span><span class="info-name">Design tokens</span></div><div class="info-meta">Paleta marketing · tipografía · spacing</div></div>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">💰 Pricing SMC · 4 modelos comerciales</span></div>
+<div class="tbl-desc">Los 4 modelos de venta que vende el sitio · página pública.</div>
+<div class="plan-grid">
+<div class="plan"><div class="plan-name">Discovery Sprint</div><div class="plan-price">15-40 UF</div><div class="plan-desc">Ordenar antes de construir · cliente con dudas</div></div>
+<div class="plan"><div class="plan-name">SaaS Start</div><div class="plan-price">3-15 UF/mes</div><div class="plan-desc">Plataforma lista · sin inversión inicial</div></div>
+<div class="plan"><div class="plan-name">Build Premium</div><div class="plan-price">80-500 UF</div><div class="plan-desc">A medida · cliente dueño · equipo propio</div></div>
+<div class="plan"><div class="plan-name">Project + Care</div><div class="plan-price">80-500 UF + mensual</div><div class="plan-desc">Desarrollo + continuidad operativa</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">⚡ 14 Efectos Visuales Premium</span></div>
+<div class="tbl-desc">Las técnicas que diferencian smconnection.cl de cualquier landing genérica.</div>
+<div class="fx-grid">
+<div class="fx"><div class="fx-icon">🪟</div><div class="fx-name">Glassmorphism</div><div class="fx-desc">backdrop-filter blur 20px</div></div>
+<div class="fx"><div class="fx-icon">🌈</div><div class="fx-name">Gradient mesh</div><div class="fx-desc">Radial gradients superpuestos</div></div>
+<div class="fx"><div class="fx-icon">✨</div><div class="fx-name">Glow hover</div><div class="fx-desc">box-shadow accent color</div></div>
+<div class="fx"><div class="fx-icon">📜</div><div class="fx-name">Scroll snap</div><div class="fx-desc">Secciones snap mobile</div></div>
+<div class="fx"><div class="fx-icon">🎯</div><div class="fx-name">Parallax sutil</div><div class="fx-desc">transform on scroll</div></div>
+<div class="fx"><div class="fx-icon">💫</div><div class="fx-name">Particles bg</div><div class="fx-desc">Canvas particles loop</div></div>
+<div class="fx"><div class="fx-icon">🎬</div><div class="fx-name">Reveal on scroll</div><div class="fx-desc">IntersectionObserver fade-up</div></div>
+<div class="fx"><div class="fx-icon">📊</div><div class="fx-name">Mini pipeline</div><div class="fx-desc">SVG flow animado</div></div>
+</div>
+</div>
+
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">📊 Métricas objetivo · performance</span></div>
+<div class="tbl-desc">KPIs técnicos que diferencian SMC.</div>
+<div class="stats">
+<div class="stat"><div class="stat-big">&lt;1s</div><div class="stat-label">LCP target</div></div>
+<div class="stat"><div class="stat-big">&gt;90</div><div class="stat-label">Lighthouse</div></div>
+<div class="stat"><div class="stat-big">&lt;$1</div><div class="stat-label">USD/mes infra</div></div>
+<div class="stat"><div class="stat-big">375px</div><div class="stat-label">Mobile first</div></div>
+<div class="stat"><div class="stat-big">45</div><div class="stat-label">Versiones</div></div>
+<div class="stat"><div class="stat-big">14</div><div class="stat-label">Efectos premium</div></div>
+</div>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · Marketing · 5 tabs · 3 tablas · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← maestro</a></footer>
+</div>
+<script>function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}</script>
+</body></html>

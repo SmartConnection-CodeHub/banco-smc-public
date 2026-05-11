@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🛍️ Marketplace SMC · banco</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;min-height:100vh;position:relative}body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%);pointer-events:none;z-index:0}.container{max-width:1600px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:30px;font-weight:800;color:#00e5b0;margin-bottom:6px}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:18px}
+.crumb{font-size:12px;color:#7dd3fc;margin-bottom:24px}.crumb a{color:#7dd3fc;text-decoration:none}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:14px 16px;border-radius:6px;margin-bottom:24px;font-size:13px;color:#cbd5e1;line-height:1.55}.rfp b{color:#00e5b0;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:12px}
+.tab{padding:8px 14px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600}
+.tab.active{background:rgba(0,229,176,.12);border-color:rgba(0,229,176,.3);color:#00e5b0}
+.section{display:none}.section.active{display:block}
+.section-head{margin:24px 0 14px;display:flex;align-items:center;gap:10px}
+.section-title{font-size:16px;font-weight:700;color:#f1f5f9}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.info{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px}
+.info-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.info-icon{font-size:18px}.info-name{font-size:13px;font-weight:700;color:#f1f5f9}
+.info-stage{font-size:9px;padding:2px 7px;border-radius:30px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-left:auto;background:rgba(0,229,176,.15);color:#00e5b0}
+.info-meta{font-size:11px;color:#94a3b8;line-height:1.5}.info-meta code{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}.info-meta b{color:#f1f5f9}
+.tbl-card{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:20px}
+.tbl-card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl-num{font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tbl-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.tbl-desc{font-size:12px;color:#94a3b8;margin-bottom:14px}
+.flow{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:#cbd5e1;line-height:2}
+.flow-node{display:inline-block;padding:8px 14px;margin:4px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.3);border-radius:6px;color:#00e5b0;font-weight:700}
+.flow-arrow{color:#7dd3fc;font-size:14px;margin:0 6px}
+.flow-mid{display:inline-block;padding:8px 14px;margin:4px;background:rgba(125,211,252,.08);border:1px solid rgba(125,211,252,.3);border-radius:6px;color:#7dd3fc;font-weight:700}
+.pend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.pend{background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.05);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.pend-num{font-size:18px;font-weight:800;color:#fbbf24;min-width:28px;line-height:1.2}
+.pend-body{flex:1}
+.pend-name{font-size:12px;font-weight:700;color:#f1f5f9;margin-bottom:3px}
+.pend-desc{font-size:10.5px;color:#94a3b8;line-height:1.5}
+.canal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.canal{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px}
+.canal-icon{font-size:24px;margin-bottom:6px}
+.canal-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.canal-target{font-size:11px;color:#7dd3fc;margin-bottom:4px}
+.canal-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.doc{background:rgba(15,22,35,.5);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;text-decoration:none;color:#cbd5e1;display:block;transition:all .15s}
+.doc:hover{border-color:rgba(0,229,176,.3);transform:translateY(-2px)}
+.doc-icon{font-size:18px;margin-bottom:6px}
+.doc-name{font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.doc-date{font-size:10px;color:#7dd3fc;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.doc-desc{font-size:11px;color:#94a3b8;line-height:1.5}
+footer{margin-top:60px;padding:20px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:11px;text-align:center}
+</style></head><body><div class="container">
+<div class="crumb"><a href="../SmartConnection/index.html">← Banco SMC</a> / Marketplace SMC</div>
+<h1>🛍️ Marketplace SMC · MeLi + Helium 10</h1>
+<p class="subtitle">Live · Amplify · canal multi B2C/B2G/B2B · socio Javier</p>
+<div class="rfp"><b>📋 RFP 25-mar:</b> Marzo 2026 · Guillermo + Javier definen segunda SpA para canal MercadoLibre Chile (B2C) + Mercado Público (B2G) + privados (B2B). Panchita (BA) handoff a Hoku con RFP marcando conexiones Helium 10 ↔ MeLi API. <b>Estado:</b> sitio live con 13 pendientes pre-MVP completo.</div>
+
+<div class="tabs">
+<div class="tab active" onclick="t('amb',this)">🌐 Ambientes</div>
+<div class="tab" onclick="t('inf',this)">☁️ Infra</div>
+<div class="tab" onclick="t('cnx',this)">🔌 Conexiones</div>
+<div class="tab" onclick="t('doc',this)">📄 Docs</div>
+<div class="tab" onclick="t('tbl',this)">🎨 Tablas</div>
+</div>
+
+<div class="section active" id="amb">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">🚀</span><span class="info-name">PROD</span><span class="info-stage">Live</span></div><div class="info-meta"><a href="https://marketplace.smconnection.cl/" target="_blank" style="color:#00e5b0">marketplace.smconnection.cl</a><br><b>Stack:</b> Next.js · Amplify <code>d3avx08z099h4q</code><br><b>Build:</b> prerender + cache · 18.4KB</div></div>
+</div>
+</div>
+
+<div class="section" id="inf">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">⚙️</span><span class="info-name">Amplify</span></div><div class="info-meta"><b>App ID:</b> <code>d3avx08z099h4q</code><br><b>Branch:</b> main auto-deploy<br><b>Region:</b> sa-east-1</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🌐</span><span class="info-name">Route 53</span></div><div class="info-meta"><b>Zone:</b> smconnection.cl<br><b>Record:</b> <code>marketplace.</code> A → Amplify</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🗄️</span><span class="info-name">Supabase</span></div><div class="info-meta"><b>Uso:</b> productos · órdenes · cache Helium<br><b>RLS:</b> activo</div></div>
+</div>
+</div>
+
+<div class="section" id="cnx">
+<div class="info-grid">
+<div class="info"><div class="info-head"><span class="info-icon">📊</span><span class="info-name">Helium 10 API</span><span class="info-stage">Live</span></div><div class="info-meta"><b>Uso:</b> datos Amazon · keywords · trends<br><b>Aplica a:</b> análisis competencia + sourcing</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🛒</span><span class="info-name">MercadoLibre API</span><span class="info-stage">Live</span></div><div class="info-meta"><b>Uso:</b> publicar productos · gestionar órdenes<br><b>Comisión MeLi:</b> 16% + IVA</div></div>
+<div class="info"><div class="info-head"><span class="info-icon">🏛️</span><span class="info-name">ChileCompra (futuro)</span></div><div class="info-meta"><b>Uso B2G:</b> licitaciones Mercado Público<br><b>Requisitos:</b> ChileProveedores · F30 · F30-1 al día</div></div>
+</div>
+</div>
+
+<div class="section" id="doc">
+<div class="doc-grid">
+<div class="info" style="border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.5),rgba(0,229,176,.04))"><div class="info-head"><span class="info-icon">📋</span><span class="info-name">RFP · Request for Proposal</span><span style="font-size:9px;padding:2px 7px;background:rgba(0,229,176,.15);color:#00e5b0;border-radius:30px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:auto">PRINCIPAL</span></div><a href="rfp/2026-05-11-rfp-marketplace.html" class="info-url">2026-05-11 · RFP completo v1</a><div class="info-meta">10 secciones · contexto · problema · hipótesis · solución · KPIs · riesgos · roadmap · equipo · modelo comercial · criterios aceptación</div></div>
+<a class="doc" href="2026-03-25-marketplace-rfp-conexiones.html"><div class="doc-icon">📋</div><div class="doc-name">RFP Conexiones</div><div class="doc-date">2026-03-25 · Panchita→Hoku</div><div class="doc-desc">El RFP histórico que define las conexiones Helium 10 ↔ MeLi · handoff Panchita BA a Hoku para implementación</div></a>
+</div>
+</div>
+
+<div class="section" id="tbl">
+
+<!-- TABLA #1 · 3 CANALES -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #1</span><span class="tbl-title">🎯 3 Canales de Venta</span></div>
+<div class="tbl-desc">Marketplace SMC opera en 3 canales simultáneos · cada uno con dinámica distinta.</div>
+<div class="canal-grid">
+<div class="canal"><div class="canal-icon">🛒</div><div class="canal-name">B2C · MercadoLibre</div><div class="canal-target">Consumidor final Chile</div><div class="canal-desc">Volumen alto · comisión MeLi 16% · pago integrado · logística MeLi Envíos</div></div>
+<div class="canal"><div class="canal-icon">🏛️</div><div class="canal-name">B2G · Mercado Público</div><div class="canal-target">Estado · municipalidades</div><div class="canal-desc">Licitaciones · boletas garantía · plazos largos · margen mayor · ChileCompra</div></div>
+<div class="canal"><div class="canal-icon">🏢</div><div class="canal-name">B2B · Empresas privadas</div><div class="canal-target">Empresas · revendedores</div><div class="canal-desc">Volumen mediano · factura · pago 30-60 días · contacto directo</div></div>
+</div>
+</div>
+
+<!-- TABLA #2 · FLOW HELIUM↔MELI -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #2</span><span class="tbl-title">🔄 Flow Helium 10 ↔ MeLi</span></div>
+<div class="tbl-desc">Cómo se conecta inteligencia de Amazon (Helium) con venta en Chile (MeLi).</div>
+<div class="flow">
+<span class="flow-node">Helium 10</span><span class="flow-arrow">→</span><span class="flow-mid">Supabase cache</span><span class="flow-arrow">→</span><span class="flow-node">Marketplace SMC</span><span class="flow-arrow">→</span><span class="flow-node">MeLi API</span><br>
+<span style="color:#6b7b8e;font-size:10px">Datos Amazon (keywords · BSR · precio · reviews) → análisis SMC → publicación optimizada MeLi</span>
+</div>
+</div>
+
+<!-- TABLA #3 · 13 PENDIENTES MVP -->
+<div class="tbl-card">
+<div class="tbl-card-head"><span class="tbl-num">Tabla #3</span><span class="tbl-title">⏳ 13 Pendientes pre-MVP completo</span></div>
+<div class="tbl-desc">Lo que falta para que Marketplace pase de MVP a producto vendible.</div>
+<div class="pend-grid">
+<div class="pend"><span class="pend-num">1</span><div class="pend-body"><div class="pend-name">Auth Supabase</div><div class="pend-desc">Login admin para gestión productos</div></div></div>
+<div class="pend"><span class="pend-num">2</span><div class="pend-body"><div class="pend-name">Importar productos Helium</div><div class="pend-desc">Bulk import desde CSV/API</div></div></div>
+<div class="pend"><span class="pend-num">3</span><div class="pend-body"><div class="pend-name">Sync MeLi inventario</div><div class="pend-desc">Bidireccional · stock en tiempo real</div></div></div>
+<div class="pend"><span class="pend-num">4</span><div class="pend-body"><div class="pend-name">Cálculo costo CIF</div><div class="pend-desc">FOB + flete + seguro + arancel</div></div></div>
+<div class="pend"><span class="pend-num">5</span><div class="pend-body"><div class="pend-name">Pricing dinámico</div><div class="pend-desc">Margen objetivo + ajuste por competencia</div></div></div>
+<div class="pend"><span class="pend-num">6</span><div class="pend-body"><div class="pend-name">Dashboard ventas</div><div class="pend-desc">Métricas por canal · margen · stock</div></div></div>
+<div class="pend"><span class="pend-num">7</span><div class="pend-body"><div class="pend-name">Integración ChileCompra</div><div class="pend-desc">Licitaciones B2G · boletas garantía</div></div></div>
+<div class="pend"><span class="pend-num">8</span><div class="pend-body"><div class="pend-name">Webhook órdenes MeLi</div><div class="pend-desc">Capturar venta · trigger despacho</div></div></div>
+<div class="pend"><span class="pend-num">9</span><div class="pend-body"><div class="pend-name">Logística despacho</div><div class="pend-desc">Chilexpress · Starken · Pickit APIs</div></div></div>
+<div class="pend"><span class="pend-num">10</span><div class="pend-body"><div class="pend-name">Facturación B2B</div><div class="pend-desc">DTE 33 · integración Bsale/Defontana</div></div></div>
+<div class="pend"><span class="pend-num">11</span><div class="pend-body"><div class="pend-name">Reportes Helium</div><div class="pend-desc">Top products · keywords trending</div></div></div>
+<div class="pend"><span class="pend-num">12</span><div class="pend-body"><div class="pend-name">Alertas mora cliente B2B</div><div class="pend-desc">Pago atrasado · gestión cobranza</div></div></div>
+<div class="pend"><span class="pend-num">13</span><div class="pend-body"><div class="pend-name">SEO landings producto</div><div class="pend-desc">Tráfico orgánico Google</div></div></div>
+</div>
+</div>
+
+</div>
+
+<footer>📚 Banco SMC · Marketplace · 5 tabs · 3 tablas visual rico · <a href="../SmartConnection/index.html" style="color:#7dd3fc;text-decoration:none">← maestro</a></footer>
+</div>
+<script>function t(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}</script>
+</body></html>

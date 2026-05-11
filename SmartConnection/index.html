@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Banco SMC v7.1 · SMC Core + Proyectos</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Inter,system-ui,sans-serif}
+body{background:#060912;color:#f1f5f9;padding:32px 20px 80px;line-height:1.5;position:relative;overflow-x:hidden;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 1000px 700px at 10% 0%,rgba(0,229,176,.06),transparent 50%),radial-gradient(ellipse 1000px 700px at 90% 100%,rgba(0,180,216,.05),transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:1700px;margin:0 auto;position:relative;z-index:1}
+h1{font-size:34px;font-weight:800;color:#00e5b0;margin-bottom:6px;letter-spacing:-.02em}
+.subtitle{font-size:14px;color:#94a3b8;margin-bottom:24px}
+.meta{display:flex;gap:12px;font-size:11px;color:#6b7b8e;margin-bottom:32px;flex-wrap:wrap}
+.meta span{padding:4px 12px;background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:30px;color:#00e5b0}
+.search{width:100%;max-width:600px;padding:12px 16px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#f1f5f9;font-size:14px;margin-bottom:32px}
+.search:focus{outline:none;border-color:#00e5b0}
+.cat{margin-top:42px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.cat-icon{font-size:22px}.cat-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.cat-desc{font-size:12px;color:#6b7b8e;font-style:italic}
+.cat-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(0,229,176,.3),transparent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:18px}
+.card{background:rgba(15,22,35,.7);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:22px;backdrop-filter:blur(20px);color:#cbd5e1;display:flex;flex-direction:column;transition:all .2s;cursor:pointer;min-height:280px}
+.card:hover{border-color:rgba(0,229,176,.3);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,229,176,.1)}
+.card-link{display:none}
+.card a{color:#00e5b0;text-decoration:none}.card a:hover{text-decoration:underline}
+.card-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.card-icon{font-size:28px}.card-title{font-size:19px;font-weight:700;color:#f1f5f9}
+.card-stage{font-size:10px;padding:3px 10px;border-radius:30px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;margin-left:auto}
+.stage-live{background:rgba(0,229,176,.15);color:#00e5b0;border:1px solid rgba(0,229,176,.3)}
+.stage-build{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.stage-nda{background:rgba(168,85,247,.12);color:#a855f7;border:1px solid rgba(168,85,247,.3)}
+.card-owner{font-size:10px;padding:2px 8px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.06);border-radius:30px;color:#94a3b8;display:inline-block;margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;align-self:flex-start}
+.rfp{background:linear-gradient(135deg,rgba(0,229,176,.04),rgba(0,180,216,.04));border-left:3px solid #00e5b0;padding:10px 14px;border-radius:6px;margin:8px 0;font-size:12px;color:#cbd5e1;line-height:1.55}
+.rfp b{color:#00e5b0;font-weight:600}
+.tabs-preview{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:10px 0;font-size:9.5px}
+.tab-mini{padding:5px 4px;background:rgba(15,22,35,.6);border:1px solid rgba(255,255,255,.04);border-radius:4px;text-align:center;color:#94a3b8;line-height:1.3}
+.tab-mini b{display:block;color:#00e5b0;font-size:11px;font-weight:700}
+.prod{margin:8px 0;font-size:12px}
+.prod a{color:#00e5b0;font-weight:600;text-decoration:none}
+.prod a:hover{text-decoration:underline}
+.prod-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-right:6px;font-weight:600}
+.cta{margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.cta-text{color:#00e5b0;font-weight:600}
+.cta-count{font-size:10.5px;color:#6b7b8e;font-family:'JetBrains Mono',monospace}
+footer{margin-top:80px;padding:24px 0;border-top:1px solid rgba(255,255,255,.06);color:#6b7b8e;font-size:12px;text-align:center}
+code{font-family:'JetBrains Mono',monospace;font-size:11px;padding:1px 5px;background:rgba(15,22,35,.8);border-radius:3px;color:#7dd3fc}
+.core-highlight{border-color:rgba(0,229,176,.3);background:linear-gradient(135deg,rgba(15,22,35,.7),rgba(0,229,176,.04))}
+</style></head><body><div class="container">
+<h1>📚 Banco SMC · Vista Maestra</h1>
+<p class="subtitle">SMC Core + Proyectos · 3 niveles · 5 tabs estándar · todo visual</p>
+<div class="meta"><span>v7.1 · 2026-05-10</span><span>1 core + 9 proyectos · NDA omitidos</span><span>2 categorías</span><span>Sentinela · HTML fixed</span></div>
+<input type="text" class="search" placeholder="🔍 Buscar proyecto, stack, cliente..." oninput="f(this.value)">
+
+<div class="cat"><span class="cat-icon">🏠</span><span class="cat-title">SMC Core</span><span class="cat-desc">el sistema operativo que hace funcionar todo lo demás</span><span class="cat-line"></span></div>
+<div class="grid">
+
+<div class="card core-highlight" data-search="smc os sistema agentes claude code 23 sentinela" onclick="if(event.target.tagName!=='A')location.href='../smc-os/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🧠</span><div class="card-title">SMC OS · sistema operativo</div><span class="card-stage stage-live">Live · v17</span></div>
+<span class="card-owner">🏠 CORE · cómo trabaja SMC</span>
+<div class="rfp"><b>📋 RFP:</b> Ordenar al equipo SMC sin contratar 23 personas · armamos 23 agentes Claude Code con loops formalizados (Orchestrator · ReAct · Pipeline · Reflexion · Background) e identidad visual obligatoria. <b>Resultado:</b> SO personal que escala con Sebas. Es el cerebro de TODOS los proyectos abajo.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>3</b>Ambientes</div><div class="tab-mini"><b>4</b>Infra</div><div class="tab-mini"><b>5</b>Conex</div><div class="tab-mini"><b>3</b>Docs</div><div class="tab-mini"><b>6</b>Tablas</div></div>
+<div class="cta"><span class="cta-text">📂 Abrir SMC OS →</span><span class="cta-count">5 tabs · 21 assets</span></div>
+</div>
+
+</div>
+
+<div class="cat"><span class="cat-icon">📂</span><span class="cat-title">Proyectos</span><span class="cat-desc">todo lo que SMC construye · propios + socios + clientes + procesos</span><span class="cat-line"></span></div>
+<div class="grid">
+
+<div class="card" data-search="intranet smc nextjs supabase amplify dashboard propio" onclick="if(event.target.tagName!=='A')location.href='../intranet/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">💻</span><div class="card-title">SMC Intranet</div><span class="card-stage stage-live">Live</span></div>
+<span class="card-owner">🏢 PROPIO SMC</span>
+<div class="rfp"><b>📋 RFP:</b> Dashboard interno para ver agentes activos · proyectos · governance · MCPs. Puente al mundo Claude para humanos que no abren CLI. 19 maquetas históricas + la live actual.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>3</b>Ambientes</div><div class="tab-mini"><b>5</b>Infra</div><div class="tab-mini"><b>6</b>Conex</div><div class="tab-mini"><b>4</b>Docs</div><div class="tab-mini"><b>20</b>Maquetas</div></div>
+<div class="prod"><span class="prod-label">🚀 PROD</span><a href="https://intranet.smconnection.cl/" target="_blank">intranet.smconnection.cl</a></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 38 assets</span></div>
+</div>
+
+<div class="card" data-search="marketing smconnection.cl landing s3 cloudfront html monday propio" onclick="if(event.target.tagName!=='A')location.href='../smartconnection-marketing/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🌐</span><div class="card-title">SMC Marketing</div><span class="card-stage stage-live">Live</span></div>
+<span class="card-owner">🏢 PROPIO SMC</span>
+<div class="rfp"><b>📋 RFP:</b> Presencia web vendiendo "Monday con IA real" · Kanban · agentes · 50+ integraciones · sidebar IA. HTML puro + 14 efectos premium · mobile first 375px. 45 versiones desde 30-mar.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>2</b>Ambientes</div><div class="tab-mini"><b>4</b>Infra</div><div class="tab-mini"><b>3</b>Conex</div><div class="tab-mini"><b>2</b>Docs</div><div class="tab-mini"><b>45</b>Maquetas</div></div>
+<div class="prod"><span class="prod-label">🚀 PROD</span><a href="https://smconnection.cl/" target="_blank">smconnection.cl</a></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 56 assets</span></div>
+</div>
+
+<div class="card" data-search="holding controller f22 spa tributario contable gladys propio" onclick="if(event.target.tagName!=='A')location.href='../holding/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🏢</span><div class="card-title">Holding · panel tributario</div><span class="card-stage stage-build">Maqueta WIP</span></div>
+<span class="card-owner">🏢 PROPIO SMC</span>
+<div class="rfp"><b>📋 RFP:</b> Tras reunión Gladys (07-may-2026) consolidar 4 SpA (SMC · Kanki · Marketplace · smc-XPort) en panel único. Agente Controller IA prepara F29 + F22 + conciliación SII↔banco↔MeLi↔MP.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>1</b>Ambiente</div><div class="tab-mini"><b>2</b>Infra</div><div class="tab-mini"><b>3</b>Conex</div><div class="tab-mini"><b>1</b>Doc</div><div class="tab-mini"><b>3</b>Maquetas</div></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 10 assets</span></div>
+</div>
+
+<div class="card" data-search="kanki streetwear concon supabase essential grizzly socio martin" onclick="if(event.target.tagName!=='A')location.href='../kanki-street/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🛒</span><div class="card-title">Kanki Street · streetwear B2C</div><span class="card-stage stage-live">Live</span></div>
+<span class="card-owner">🤝 SOCIO · Martín 50%</span>
+<div class="rfp"><b>📋 RFP:</b> Guillermo + Martín (50/50 SpA en constitución) levantan marca streetwear sin pagar Shopify. Supabase + Apps Script + Vanilla JS. 3 ambientes (DEV · QAS GH Pages $0 · PROD S3+CF otra cuenta AWS).</div>
+<div class="tabs-preview"><div class="tab-mini"><b>3</b>Ambientes</div><div class="tab-mini"><b>5</b>Infra</div><div class="tab-mini"><b>4</b>Conex</div><div class="tab-mini"><b>2</b>Docs</div><div class="tab-mini"><b>21</b>Maquetas</div></div>
+<div class="prod"><span class="prod-label">🚀 PROD</span><a href="https://kanki.smconnection.cl/" target="_blank">kanki.smconnection.cl</a></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 35 assets</span></div>
+</div>
+
+<div class="card" data-search="infopet bsale jumpseller groq amplify mascotas javier socio" onclick="if(event.target.tagName!=='A')location.href='../infopet/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🐕</span><div class="card-title">InfoPet · ecommerce mascotas + IA</div><span class="card-stage stage-live">Live</span></div>
+<span class="card-owner">🤝 SOCIO · Javier</span>
+<div class="rfp"><b>📋 RFP:</b> Javier (socio · futuro Marketplace SMC SpA) tenía tienda mascotas con stock Bsale + catálogo Jumpseller. Faltaba sync automático + asistente IA por raza/edad. Next + Bsale ↔ Jumpseller ↔ Groq Llama 3.3.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>2</b>Ambientes</div><div class="tab-mini"><b>4</b>Infra</div><div class="tab-mini"><b>5</b>Conex</div><div class="tab-mini"><b>3</b>Docs</div><div class="tab-mini"><b>22</b>Maquetas</div></div>
+<div class="prod"><span class="prod-label">🚀 PROD</span><a href="https://infopet.smconnection.cl/" target="_blank">infopet.smconnection.cl</a></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 36 assets</span></div>
+</div>
+
+<div class="card" data-search="marketplace mercadolibre helium meli rfp panchita hoku javier socio" onclick="if(event.target.tagName!=='A')location.href='../marketplace/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🛍️</span><div class="card-title">Marketplace SMC · MeLi + Helium 10</div><span class="card-stage stage-live">Live</span></div>
+<span class="card-owner">🤝 SOCIO · Javier</span>
+<div class="rfp"><b>📋 RFP 25-mar:</b> Guillermo + Javier definen SpA para MercadoLibre Chile (B2C) + Mercado Público (B2G) + privados (B2B). Panchita BA → Hoku handoff con conexiones Helium 10 ↔ MeLi.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>1</b>Ambiente</div><div class="tab-mini"><b>3</b>Infra</div><div class="tab-mini"><b>3</b>Conex</div><div class="tab-mini"><b>1</b>Doc</div><div class="tab-mini"><b>1</b>Maqueta</div></div>
+<div class="prod"><span class="prod-label">🚀 PROD</span><a href="https://marketplace.smconnection.cl/" target="_blank">marketplace.smconnection.cl</a></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 9 assets</span></div>
+</div>
+
+<div class="card" data-search="voy cotizacion airtable jspdf vercel transporte despacho cliente" onclick="if(event.target.tagName!=='A')location.href='../voy/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🚐</span><div class="card-title">VOY · cotizaciones transporte</div><span class="card-stage stage-live">Live</span></div>
+<span class="card-owner">👤 CLIENTE · VOY</span>
+<div class="rfp"><b>📋 RFP:</b> Cliente VOY reducir cotización 45 min → 3 min. Stack barato: Airtable + Vanilla JS + jsPDF + Vercel free. Sidebar 260px desktop-first (excepción mobile-first SMC). Caso de éxito vendible.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>2</b>Ambientes</div><div class="tab-mini"><b>3</b>Infra</div><div class="tab-mini"><b>2</b>Conex</div><div class="tab-mini"><b>1</b>Doc</div><div class="tab-mini"><b>6</b>Maquetas</div></div>
+<div class="prod"><span class="prod-label">🚀 PROD</span><a href="https://voy-app-3.vercel.app/" target="_blank">voy-app-3.vercel.app</a></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 14 assets</span></div>
+</div>
+
+
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 21 assets</span></div>
+</div>
+
+
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 15 assets</span></div>
+</div>
+
+
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 17 assets</span></div>
+</div>
+
+<div class="card" data-search="alpaso dance studio s3 cloudfront ballet baile concon cliente" onclick="if(event.target.tagName!=='A')location.href='../alpaso/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🩰</span><div class="card-title">Alpaso Dance Studio</div><span class="card-stage stage-live">Live</span></div>
+<span class="card-owner">👤 CLIENTE · Alpaso</span>
+<div class="rfp"><b>📋 RFP:</b> Cliente estudio danza necesitaba sitio elegante (clases · profesoras · galería). Stack más barato (HTML puro · S3 · CloudFront). $0.50/mes · maqueta = prod · patrón replicable para landings.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>1</b>Ambiente</div><div class="tab-mini"><b>3</b>Infra</div><div class="tab-mini"><b>1</b>Conex</div><div class="tab-mini"><b>1</b>Doc</div><div class="tab-mini"><b>1</b>Maqueta</div></div>
+<div class="prod"><span class="prod-label">🚀 PROD</span><a href="https://alpasodancestudio.cl/" target="_blank">alpasodancestudio.cl</a></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 7 assets</span></div>
+</div>
+
+<div class="card" data-search="discovery cliente spin bant infografia reunion transcript propuesta proceso" onclick="if(event.target.tagName!=='A')location.href='../discovery-cliente/index.html'" style="cursor:pointer">
+<div class="card-head"><span class="card-icon">🔍</span><div class="card-title">Discovery Cliente</div><span class="card-stage stage-build">Fase 1-2</span></div>
+<span class="card-owner">🧪 PROCESO · transversal SMC</span>
+<div class="rfp"><b>📋 RFP:</b> Cada reunión con prospecto deja transcript suelto que se pierde. SMC arma pipeline: transcript → SPIN/BANT → infografía + reporte + propuesta. Fase 1: manual · Fase 2: script bash · Fase 3: app web.</div>
+<div class="tabs-preview"><div class="tab-mini"><b>2</b>Ambientes</div><div class="tab-mini"><b>2</b>Infra</div><div class="tab-mini"><b>2</b>Conex</div><div class="tab-mini"><b>1</b>Doc</div><div class="tab-mini"><b>9</b>Maquetas</div></div>
+<div class="cta"><span class="cta-text">📂 Abrir proyecto →</span><span class="cta-count">5 tabs · 16 assets</span></div>
+</div>
+
+</div>
+
+<footer>📚 <b>Banco SMC v7.1</b> · SMC Core (1) + Proyectos (12) · HTML fix: card-link absoluto en vez de anidación <code>&lt;a&gt;</code><br>
+Owner labels: 🏠 CORE · 🏢 PROPIO · 🤝 SOCIO · 👤 CLIENTE · 🧪 PROCESO · Cerebro Sentinela 2026-05-10</footer>
+</div>
+<script>
+function f(q){q=q.toLowerCase().trim();document.querySelectorAll('.card').forEach(c=>{const t=(c.dataset.search+' '+c.textContent).toLowerCase();c.style.display=!q||t.includes(q)?'':'none'})}
+document.querySelectorAll('.card').forEach(c=>{
+  const link=c.querySelector('.card-link');
+  if(!link)return;
+  const href=link.getAttribute('href');
+  c.addEventListener('click',e=>{
+    if(e.target.tagName==='A'&&e.target!==link)return;
+    location.href=href;
+  });
+});
+</script>
+</body></html>

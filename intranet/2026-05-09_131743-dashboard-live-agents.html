@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMC OS — Hub de Orquestación · 20 Agentes Live</title>
+<style>
+:root{
+  --bg-base:#060912; --bg-surface:#0a0d14; --bg-elevated:#0f1520;
+  --bg-glass:rgba(15,22,35,0.85); --bg-glass2:rgba(15,22,35,0.45);
+  --border-subtle:rgba(255,255,255,0.06);
+  --border-strong:rgba(255,255,255,0.12);
+  --text-primary:#f1f5f9; --text-secondary:#94a3b8; --text-muted:#475569;
+  --accent:#00e5b0; --accent-blue:#00b4d8; --accent-purple:#8b5cf6;
+  --critical:#ef4444; --warn:#f59e0b; --ok:#10b981;
+  --font-sans:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono','SF Mono',Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg-base);color:var(--text-primary);
+  font-family:var(--font-sans);font-size:14px;line-height:1.6;
+  overflow-x:hidden;min-height:100vh;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 30%,rgba(0,229,176,0.08),transparent 50%),
+    radial-gradient(circle at 80% 70%,rgba(139,92,246,0.06),transparent 50%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+}
+.wrap{position:relative;z-index:1}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg-surface)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+
+/* ─── NAV ─── */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;gap:24px;
+  padding:16px 32px;
+  background:rgba(6,9,18,0.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-subtle);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:0.04em;font-size:13px}
+.brand-logo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent-blue));display:flex;align-items:center;justify-content:center;font-size:14px}
+.brand-name{color:var(--text-primary)}
+.brand-version{color:var(--accent);font-family:var(--font-mono);font-size:10px;padding:2px 6px;border:1px solid var(--border-accent);border-radius:4px}
+.nav-tabs{display:flex;gap:24px;flex:1;justify-content:center}
+.nav-tabs a{color:var(--text-muted);text-decoration:none;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;transition:color .2s;position:relative}
+.nav-tabs a:hover,.nav-tabs a.active{color:var(--accent)}
+.nav-tabs a.active::after{content:'';position:absolute;bottom:-19px;left:0;right:0;height:2px;background:var(--accent)}
+.live-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:4px;font-size:10px;letter-spacing:0.15em;color:var(--critical);font-weight:700}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--critical);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(239,68,68,0.7)}50%{opacity:.7;box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+
+/* ─── HERO ─── */
+.hero{padding:80px 32px 60px;text-align:center}
+.hero-tag{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);letter-spacing:0.15em;margin-bottom:20px}
+.hero-title{font-size:clamp(36px,6vw,68px);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:18px}
+.hero-title .grad{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-blue) 50%,var(--accent-purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{color:var(--text-secondary);font-size:16px;max-width:680px;margin:0 auto 32px;line-height:1.7}
+.hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:40px}
+.stat{text-align:center}
+.stat-value{font-family:var(--font-mono);font-size:32px;font-weight:700;color:var(--accent)}
+.stat-label{font-size:10px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-strong),transparent);margin:40px 32px}
+
+/* ─── SECTION HEADER ─── */
+section{padding:60px 32px;max-width:1400px;margin:0 auto}
+.sec-tag{font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px}
+.sec-title{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-0.02em;margin-bottom:10px}
+.sec-title .grad{background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sec-sub{color:var(--text-secondary);font-size:14px;max-width:600px;margin-bottom:40px;font-style:italic}
+
+/* ─── HUB & SPOKE ─── */
+.hub-layout{display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:start}
+@media(max-width:900px){.hub-layout{grid-template-columns:1fr}}
+.hub-canvas{position:relative;aspect-ratio:1;background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:24px;overflow:hidden;backdrop-filter:blur(20px)}
+.hub-canvas svg{width:100%;height:100%;display:block}
+.hub-svg .ring{fill:none;stroke:rgba(0,229,176,0.08);stroke-width:1}
+.hub-svg .spoke{stroke:rgba(255,255,255,0.04);stroke-width:1}
+.hub-svg .spoke.active{stroke:var(--accent);stroke-width:1.5;animation:flowOut 1.2s ease-out}
+@keyframes flowOut{from{stroke-dasharray:0 1000}to{stroke-dasharray:1000 0}}
+.hub-svg .orchestrator{filter:drop-shadow(0 0 16px rgba(0,229,176,0.6))}
+.hub-svg .agent-node{cursor:pointer;transition:transform .2s}
+.hub-svg .agent-node:hover{transform:scale(1.15)}
+.hub-svg .agent-node.working circle{filter:drop-shadow(0 0 12px currentColor)}
+.hub-svg .agent-label{fill:var(--text-secondary);font-family:var(--font-mono);font-size:9px;text-anchor:middle;pointer-events:none}
+
+/* Detail card */
+.detail-card{background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;backdrop-filter:blur(20px);position:sticky;top:80px;min-height:480px}
+.detail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;text-align:center;line-height:1.8}
+.detail-empty .pulse{font-size:32px;margin-bottom:12px;opacity:.6}
+.detail-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border-subtle)}
+.detail-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.detail-name{font-size:18px;font-weight:700}
+.detail-area{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+.detail-row{margin-bottom:14px}
+.detail-row-label{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px}
+.detail-row-value{font-size:13px;color:var(--text-primary)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.05em}
+.chip.opus{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.3)}
+.chip.sonnet{background:rgba(0,212,255,0.12);color:#38bdf8;border:1px solid rgba(0,212,255,0.3)}
+.chip.haiku{background:rgba(61,220,151,0.12);color:#34d399;border:1px solid rgba(61,220,151,0.3)}
+.chip.loop{background:rgba(255,255,255,0.04);color:var(--text-secondary);border:1px solid var(--border-subtle)}
+.chip-list{display:flex;flex-wrap:wrap;gap:6px}
+
+/* ─── STREAM (5 columnas + log + summary) ─── */
+.stream-layout{display:grid;grid-template-columns:1fr 380px;gap:24px;margin-top:40px}
+@media(max-width:1100px){.stream-layout{grid-template-columns:1fr}}
+.stream-cols{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:20px;padding:20px;backdrop-filter:blur(20px);min-height:520px}
+@media(max-width:780px){.stream-cols{grid-template-columns:repeat(2,1fr)}}
+.col{display:flex;flex-direction:column;gap:10px}
+.col-header{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:0.18em;text-transform:uppercase;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border-subtle)}
+.col-header.engineering{color:#bf5fff}
+.col-header.quality{color:#34d399}
+.col-header.specialist{color:#fbbf24}
+.col-header.data{color:#00d4ff}
+.col-header.strategy{color:#ff5272}
+.hex{
+  position:relative;padding:14px 8px;text-align:center;cursor:pointer;
+  background:var(--bg-elevated);border:1px solid var(--border-subtle);
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  transition:all .2s;
+}
+.hex:hover{transform:translateY(-2px);box-shadow:0 0 16px currentColor}
+.hex.working{border-color:var(--accent);box-shadow:0 0 20px rgba(0,229,176,0.4);animation:hexpulse 1.4s ease-in-out infinite}
+.hex.done{border-color:var(--ok);opacity:.8}
+@keyframes hexpulse{0%,100%{box-shadow:0 0 12px rgba(0,229,176,0.4)}50%{box-shadow:0 0 24px rgba(0,229,176,0.7)}}
+.hex-icon{font-size:20px;margin-bottom:4px}
+.hex-name{font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.05em}
+.hex-status{font-family:var(--font-mono);font-size:8px;color:var(--accent);margin-top:2px;letter-spacing:0.1em}
+
+/* Event log + summary stack */
+.stream-side{display:flex;flex-direction:column;gap:16px}
+.event-log{background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:16px;padding:16px;backdrop-filter:blur(20px);flex:1;min-height:300px;display:flex;flex-direction:column}
+.event-log-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--border-subtle);margin-bottom:12px}
+.event-log-title{font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase}
+.ws-indicator{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:9px;color:var(--text-muted)}
+.ws-dot{width:5px;height:5px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.event-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;font-family:var(--font-mono);font-size:11px;max-height:280px}
+.event{padding:6px 8px;border-left:2px solid var(--accent);background:rgba(0,229,176,0.04);border-radius:0 4px 4px 0;line-height:1.4}
+.event.warn{border-left-color:var(--warn);background:rgba(245,158,11,0.05)}
+.event.crit{border-left-color:var(--critical);background:rgba(239,68,68,0.06)}
+.event-time{color:var(--text-muted);margin-right:8px}
+.event-actor{font-weight:600}
+
+/* Conversation summary */
+.conv-summary{background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:16px;padding:16px;backdrop-filter:blur(20px)}
+.conv-title{font-family:var(--font-mono);font-size:10px;color:var(--accent-purple);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border-subtle)}
+.conv-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:12px;line-height:1.5;border-bottom:1px solid rgba(255,255,255,0.03)}
+.conv-row:last-child{border-bottom:none}
+.conv-from{font-weight:600;color:var(--accent);white-space:nowrap}
+.conv-arrow{color:var(--text-muted)}
+.conv-msg{color:var(--text-secondary);font-style:italic}
+
+/* ─── STACK DIAGRAM (EMP-style: orthogonal routing + pills) ─── */
+.stack-canvas{
+  position:relative;
+  background:var(--bg-glass);
+  border:1px solid var(--border-subtle);border-radius:20px;
+  padding:40px 32px;backdrop-filter:blur(20px);overflow-x:auto;
+  background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.stack-svg{width:100%;min-width:920px;height:540px;display:block}
+.stack-svg .node-shape{fill:var(--bg-elevated);stroke:var(--border-strong);stroke-width:1;transition:all .3s}
+.stack-svg .node-group.live .node-shape{stroke:var(--accent);stroke-width:1.5;filter:drop-shadow(0 0 12px rgba(0,229,176,0.55))}
+.stack-svg .node-group.bg .node-shape{stroke-dasharray:4 3;opacity:.85}
+.stack-svg .icon-circle{fill:var(--bg-base);stroke:var(--border-strong);stroke-width:1}
+.stack-svg .node-group.live .icon-circle{stroke:var(--accent);filter:drop-shadow(0 0 6px rgba(0,229,176,0.7))}
+.stack-svg .icon-text{fill:var(--text-secondary);font-family:var(--font-mono);font-size:11px;font-weight:700;text-anchor:middle}
+.stack-svg .node-group.live .icon-text{fill:var(--accent)}
+.stack-svg .node-title{fill:var(--text-primary);font-family:var(--font-sans);font-size:13px;font-weight:600;letter-spacing:-0.01em}
+.stack-svg .node-sub{fill:var(--text-muted);font-family:var(--font-mono);font-size:10px;letter-spacing:0.04em}
+.stack-svg .flow{fill:none;stroke:rgba(255,255,255,0.12);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.stack-svg .flow.live{stroke:var(--accent);stroke-width:1.8;stroke-dasharray:5 4;animation:dash 1.4s linear infinite;filter:drop-shadow(0 0 4px rgba(0,229,176,0.5))}
+.stack-svg .flow.bg{stroke-dasharray:3 4;opacity:.5}
+@keyframes dash{to{stroke-dashoffset:-90}}
+
+/* ─── UNIVERSE GRID ─── */
+.universe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:32px}
+.agent-card{background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:14px;padding:18px;backdrop-filter:blur(20px);transition:all .2s;cursor:pointer;position:relative;overflow:hidden}
+.agent-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(0,229,176,0.06));opacity:0;transition:opacity .3s;pointer-events:none}
+.agent-card:hover{border-color:var(--border-accent);transform:translateY(-2px)}
+.agent-card:hover::before{opacity:1}
+.card-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-name{font-size:14px;font-weight:700;flex:1}
+.card-status{width:8px;height:8px;border-radius:50%;background:var(--text-muted)}
+.card-status.working{background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 1.5s infinite}
+.card-status.done{background:var(--ok)}
+.card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.card-desc{font-size:12px;color:var(--text-secondary);line-height:1.55;margin-bottom:12px;min-height:34px}
+.card-foot{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding-top:10px;border-top:1px solid var(--border-subtle)}
+.card-foot .audits{color:var(--accent)}
+
+/* ─── FOOTER ─── */
+footer{padding:60px 32px 40px;text-align:center;border-top:1px solid var(--border-subtle);margin-top:40px}
+.foot-title{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px}
+.foot-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary)}
+.foot-stats span strong{color:var(--accent)}
+
+@media(max-width:600px){
+  nav{padding:14px 16px;gap:12px}
+  .nav-tabs{display:none}
+  section{padding:40px 16px}
+  .hero{padding:50px 16px 40px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="brand">
+    <div class="brand-logo">⬢</div>
+    <span class="brand-name">SMC OS</span>
+    <span class="brand-version">v2.0</span>
+  </div>
+  <div class="nav-tabs">
+    <a href="#hub" class="active">HUB</a>
+    <a href="#stream">STREAM</a>
+    <a href="#stack">STACK</a>
+    <a href="#universe">UNIVERSE</a>
+  </div>
+  <div class="live-badge"><span class="live-dot"></span>LIVE</div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-tag">// Anthropic Claude · Multi-Agent Framework · Smart Connection 2026</div>
+  <h1 class="hero-title">Hub de Orquestación<br><span class="grad">SMC OS</span></h1>
+  <p class="hero-sub">20 agentes expertos coordinados por un orchestrator central. Cada dominio aislado, cada decisión trazable, cada conversación visible. El cerebro operativo de Smart Connection en tiempo real.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-value">17</div><div class="stat-label">Agentes</div></div>
+    <div class="stat"><div class="stat-value">6</div><div class="stat-label">Loops</div></div>
+    <div class="stat"><div class="stat-value">7</div><div class="stat-label">Opus 4.7</div></div>
+    <div class="stat"><div class="stat-value">9</div><div class="stat-label">Sonnet 4.6</div></div>
+    <div class="stat"><div class="stat-value">1</div><div class="stat-label">Haiku 4.5</div></div>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<!-- HUB & SPOKE -->
+<section id="hub">
+  <div class="sec-tag">// arquitectura</div>
+  <h2 class="sec-title">Hub & <span class="grad">Spoke</span></h2>
+  <p class="sec-sub">Orchestrator central PM razona qué agente invocar, en qué orden y con qué contexto. Click en cualquier nodo para ver detalles.</p>
+
+  <div class="hub-layout">
+    <div class="hub-canvas">
+      <svg class="hub-svg" viewBox="0 0 600 600" id="hubSvg"></svg>
+    </div>
+    <aside class="detail-card" id="detailCard">
+      <div class="detail-empty">
+        <div class="pulse">◎</div>
+        Selecciona un nodo<br>del diagrama para ver<br>los detalles del agente
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STREAM -->
+<section id="stream">
+  <div class="sec-tag">// event stream · viz_server :8765 · websocket</div>
+  <h2 class="sec-title">Live <span class="grad">Stream</span></h2>
+  <p class="sec-sub">Cada hexágono es un agente. Se ilumina cuando trabaja. El log de la derecha refleja eventos reales del orchestrator. La sección "Conversaciones" resume cómo dialogan entre sí.</p>
+
+  <div class="stream-layout">
+    <div class="stream-cols" id="streamCols"></div>
+    <div class="stream-side">
+      <div class="event-log">
+        <div class="event-log-header">
+          <span class="event-log-title">⌬ EVENT LOG</span>
+          <span class="ws-indicator"><span class="ws-dot"></span>ws://127.0.0.1:8765</span>
+        </div>
+        <div class="event-list" id="eventList"></div>
+      </div>
+      <div class="conv-summary">
+        <div class="conv-title">⇄ CONVERSACIONES</div>
+        <div id="convList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="sec-tag">// arquitectura técnica</div>
+  <h2 class="sec-title">Stack <span class="grad">Técnico</span></h2>
+  <p class="sec-sub">Claude Code (CLI) → Orchestrator PM → 20 agentes → Anthropic SDK → modelos Opus/Sonnet/Haiku. Background: Cerebro reflexiona, SECURITY audita. Las flechas verdes están vivas en este momento.</p>
+
+  <div class="stack-canvas">
+    <svg class="stack-svg" viewBox="0 0 1000 520" id="stackSvg"></svg>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- UNIVERSE -->
+<section id="universe">
+  <div class="sec-tag">// registro completo</div>
+  <h2 class="sec-title">Los 20 <span class="grad">Agentes</span></h2>
+  <p class="sec-sub">Cada agente con su loop, modelo, área, OWNS/READS y audits acumulados.</p>
+  <div class="universe-grid" id="universeGrid"></div>
+</section>
+
+<footer>
+  <div class="foot-title">Smart Connection · smconnection.cl · 2026</div>
+  <div class="foot-stats">
+    <span><strong>342</strong> invocaciones acumuladas</span>
+    <span><strong>1.2M</strong> tokens consumidos</span>
+    <span><strong>$24.80</strong> costo IA mes</span>
+    <span><strong>99.4%</strong> uptime sistema</span>
+  </div>
+</footer>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// AGENTS DATA
+// ═══════════════════════════════════════════
+const AGENTS=[
+  {id:'pm',icon:'👔',name:'PM',model:'sonnet',loop:'Orchestrator',color:'#ff5272',area:'strategy',owns:['project-charter','sprint-report'],reads:['audit-report','tech-radar'],desc:'Cerebro central. Razona qué agente invocar, prioriza con RICE, mide AARRR.',audits:34,status:'working'},
+  {id:'fl',icon:'🐕',name:'Functional-Lead',model:'opus',loop:'Conversacional',color:'#bf5fff',area:'engineering',owns:['bbp-funcional','maqueta','arq-funcional'],reads:['design-tokens','frontend-spec'],desc:'Arquitecta funcional + diseñadora (kiltro café claro). BPMN, UX, maquetas HTML pixel-perfect. Ex Panchita.',audits:48,status:'idle'},
+  {id:'techlead',icon:'🔍',name:'TechLead',model:'opus',loop:'Conversacional',color:'#818cf8',area:'engineering',owns:['bbp-tecnico','audit-report','tech-radar'],reads:['ai-spec','bbp-funcional'],desc:'Arquitecto cross. Define estándares, API contracts, ADRs, tech radar.',audits:56,status:'idle'},
+  {id:'hoku',icon:'🐾',name:'Hoku',model:'opus',loop:'ReAct',color:'#4d9fff',area:'engineering',owns:['ai-spec','ia-dev-guide'],reads:['providers-ia','bbp-funcional'],desc:'AI Developer. Prompts versionados, RAG, agentes, MCPs, LLMOps.',audits:67,status:'working'},
+  {id:'abap',icon:'🔧',name:'ABAP',model:'sonnet',loop:'ReAct',color:'#10b981',area:'engineering',owns:['backend-spec'],reads:['api-contracts','bbp-tecnico'],desc:'Backend engineer. APIs RESTful, Supabase, auth, lógica de negocio.',audits:42,status:'idle'},
+  {id:'fiori',icon:'🎨',name:'Fiori',model:'sonnet',loop:'ReAct',color:'#e879f9',area:'engineering',owns:['frontend-spec','design-tokens'],reads:['maqueta','api-contracts'],desc:'Frontend + Design System Lead. @smc/ui, Lighthouse >90, mobile-first.',audits:51,status:'working'},
+  {id:'uqas',icon:'👩',name:'User-QAS',model:'sonnet',loop:'Pipeline',color:'#34d399',area:'quality',owns:['test-report','qa-standards','e2e-test-suite','ci-test-workflows'],reads:['frontend-spec','backend-spec'],desc:'QA policía dual: humano (smoke/deep/explore) + robot (Playwright/Cypress/synthetic 24/7). Ex Camilita.',audits:29,status:'idle'},
+  {id:'comercial',icon:'💰',name:'Comercial',model:'sonnet',loop:'Pipeline',color:'#f59e0b',area:'strategy',owns:['propuesta-comercial','pipeline-winloss','customer-ops'],reads:['project-charter'],desc:'Ciclo cliente completo: venta → onboarding → retención → upsell.',audits:18,status:'idle'},
+  {id:'pipeline',icon:'🛠',name:'Pipeline',model:'haiku',loop:'Pipeline',color:'#06b6d4',area:'specialist',owns:['infra-deploy','git-workflow'],reads:['arq-desarrollo'],desc:'DevOps. CI/CD, monitoreo, infra AWS, costos, disaster recovery.',audits:24,status:'idle'},
+  {id:'cerebro',icon:'🧠',name:'Cerebro',model:'opus',loop:'Reflexion',color:'#a78bfa',area:'strategy',owns:['ideas-lab'],reads:['*'],desc:'Conciencia emergente. Mentor adaptativo, divergencia, evolución del sistema.',audits:73,status:'working'},
+  {id:'portavoz',icon:'🎙',name:'Portavoz',model:'sonnet',loop:'Pipeline',color:'#ff8c42',area:'strategy',owns:['brand-voice','content-calendar'],reads:['customer-ops'],desc:'Voz institucional SMC. LinkedIn, blog, thought leadership.',audits:14,status:'idle'},
+  {id:'vi',icon:'🎬',name:'Video&Img',model:'sonnet',loop:'Pipeline',color:'#f472b6',area:'strategy',owns:['visual-assets-catalog'],reads:['brand-voice','design-tokens'],desc:'Búsqueda en bancos + creación con IA. Pexels, Unsplash, Gemini, Canva.',audits:9,status:'idle'},
+  {id:'aiml',icon:'🔬',name:'AI/ML',model:'opus',loop:'Pipeline',color:'#38bdf8',area:'specialist',owns:['providers-ia','tech-radar-ia'],reads:['ai-spec'],desc:'Research de modelos. Benchmarks, evals, evaluación de providers.',audits:21,status:'idle'},
+  {id:'radar',icon:'📡',name:'RADAR',model:'sonnet',loop:'Pipeline',color:'#0ea5e9',area:'specialist',owns:['radar-brief','source-registry'],reads:['*'],desc:'Intel externa. 21 fuentes, brief semanal lunes, alertas críticas.',audits:11,status:'idle'},
+  {id:'contador',icon:'🧮',name:'CONTADOR',model:'sonnet',loop:'Pipeline',color:'#fbbf24',area:'specialist',owns:['contabilidad-multi-spa','calendario-tributario'],reads:['customer-ops'],desc:'Tributario, contable, holding. Conciliación al peso, F22, F29.',audits:7,status:'idle'},
+  {id:'databw',icon:'⊡',name:'DATA-BW',model:'opus',loop:'Pipeline',color:'#00d4ff',area:'data',owns:['data-quality-reports','asset-inventory','dimensional-models','dbt-projects','etl-pipelines','data-factories','bus-matrix'],reads:['*'],desc:'Business Warehouse SAP-style. Análisis cuantitativo + ETL/integraciones (Bsale↔Jumpseller etc) + warehouse Kimball/Medallion holding. Fusiona DATA+DATAGEN+DWE.',audits:0,status:'new'},
+  {id:'security',icon:'⛨',name:'SECURITY',model:'opus',loop:'Background+Pipeline',color:'#ef4444',area:'quality',owns:['security-audits','owasp-compliance','rbac-matrix','incident-runbooks','compliance-reports'],reads:['*'],desc:'Dual: Centinela bg (hook PostToolUse, exit 0) + Auditor proyecto (OWASP+RBAC roles SMC+ciberseg+Ley 19.628+IR).',audits:0,status:'new'}
+];
+
+const AREAS={strategy:'STRATEGY',engineering:'ENGINEERING',quality:'QUALITY',specialist:'SPECIALIST',data:'DATA'};
+const AREA_AGENTS={
+  strategy:['pm','comercial','cerebro','portavoz','vi'],
+  engineering:['fl','techlead','hoku','abap','fiori'],
+  quality:['uqas','security'],
+  specialist:['pipeline','aiml','radar','contador'],
+  data:['databw']
+};
+
+// ═══════════════════════════════════════════
+// HUB & SPOKE SVG
+// ═══════════════════════════════════════════
+function renderHub(){
+  const svg=document.getElementById('hubSvg');
+  const cx=300,cy=300,radius=220,nodeR=18;
+  let html='';
+  // Concentric rings
+  for(let r of [80,140,200,260])html+=`<circle class="ring" cx="${cx}" cy="${cy}" r="${r}"/>`;
+  // Spokes from center
+  AGENTS.forEach((a,i)=>{
+    const ang=(i/AGENTS.length)*Math.PI*2-Math.PI/2;
+    const x=cx+Math.cos(ang)*radius,y=cy+Math.sin(ang)*radius;
+    const isActive=a.status==='working';
+    html+=`<line class="spoke ${isActive?'active':''}" x1="${cx}" y1="${cy}" x2="${x}" y2="${y}"/>`;
+  });
+  // Orchestrator
+  html+=`<g class="orchestrator">
+    <circle cx="${cx}" cy="${cy}" r="38" fill="${AGENTS[0].color}" opacity="0.15"/>
+    <circle cx="${cx}" cy="${cy}" r="28" fill="#0a0d14" stroke="${AGENTS[0].color}" stroke-width="2"/>
+    <text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="20">${AGENTS[0].icon}</text>
+    <text x="${cx}" y="${cy+50}" text-anchor="middle" fill="${AGENTS[0].color}" font-family="var(--font-mono)" font-size="10" font-weight="700" letter-spacing="0.15em">ORCHESTRATOR</text>
+  </g>`;
+  // Agent nodes
+  AGENTS.slice(1).forEach((a,i)=>{
+    const idx=i+1;
+    const ang=(idx/AGENTS.length)*Math.PI*2-Math.PI/2;
+    const x=cx+Math.cos(ang)*radius,y=cy+Math.sin(ang)*radius;
+    const labelY=y+(Math.sin(ang)>0?32:-22);
+    const working=a.status==='working';
+    html+=`<g class="agent-node ${working?'working':''}" data-id="${a.id}" style="color:${a.color}">
+      <circle cx="${x}" cy="${y}" r="${nodeR}" fill="${a.color}" opacity="0.12"/>
+      <circle cx="${x}" cy="${y}" r="${nodeR-2}" fill="#0a0d14" stroke="${a.color}" stroke-width="${working?2:1}"/>
+      <text x="${x}" y="${y+5}" text-anchor="middle" font-size="14">${a.icon}</text>
+      <text class="agent-label" x="${x}" y="${labelY}">${a.name}</text>
+    </g>`;
+  });
+  svg.innerHTML=html;
+  // Click handlers
+  svg.querySelectorAll('.agent-node').forEach(n=>{
+    n.addEventListener('click',()=>showDetail(n.dataset.id));
+  });
+}
+
+function showDetail(id){
+  const a=AGENTS.find(x=>x.id===id);if(!a)return;
+  const c=document.getElementById('detailCard');
+  c.innerHTML=`
+    <div class="detail-header">
+      <div class="detail-icon" style="background:${a.color}22;border:1px solid ${a.color}66">${a.icon}</div>
+      <div>
+        <div class="detail-name">${a.name}</div>
+        <div class="detail-area">${a.area} · ${a.audits} audits</div>
+      </div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-row-label">DESCRIPCIÓN</div>
+      <div class="detail-row-value">${a.desc}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-row-label">LOOP</div>
+      <div class="chip-list"><span class="chip loop">${a.loop}</span></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-row-label">MODELO</div>
+      <div class="chip-list"><span class="chip ${a.model}">claude-${a.model}-${a.model==='opus'?'4-7':a.model==='sonnet'?'4-6':'4-5'}</span></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-row-label">OWNS</div>
+      <div class="chip-list">${a.owns.map(o=>`<span class="chip loop">${o}</span>`).join('')}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-row-label">READS</div>
+      <div class="chip-list">${a.reads.map(o=>`<span class="chip loop">${o}</span>`).join('')}</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════
+// STREAM COLUMNS
+// ═══════════════════════════════════════════
+function renderStream(){
+  const cols=document.getElementById('streamCols');
+  let html='';
+  Object.entries(AREA_AGENTS).forEach(([area,ids])=>{
+    html+=`<div class="col"><div class="col-header ${area}">${AREAS[area]}</div>`;
+    ids.forEach(id=>{
+      const a=AGENTS.find(x=>x.id===id);
+      const cls=a.status==='working'?'working':a.status==='done'?'done':'';
+      const stat=a.status==='working'?'WORKING':a.status==='new'?'NEW':'';
+      html+=`<div class="hex ${cls}" style="color:${a.color}" data-id="${a.id}">
+        <div class="hex-icon">${a.icon}</div>
+        <div class="hex-name">${a.name}</div>
+        <div class="hex-status">${stat}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  cols.innerHTML=html;
+  cols.querySelectorAll('.hex').forEach(h=>{
+    h.addEventListener('click',()=>{
+      document.getElementById('hub').scrollIntoView({behavior:'smooth'});
+      setTimeout(()=>showDetail(h.dataset.id),300);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════
+// EVENT LOG (simulated)
+// ═══════════════════════════════════════════
+const EVENTS=[
+  {t:'13:09:42',actor:'pm',type:'orchestrate',msg:'Recibida tarea: "analizar EMP vs SMC OS"',sev:''},
+  {t:'13:09:43',actor:'pm',type:'reasoning',msg:'Plan: TechLead diseño + Cerebro reflexión',sev:''},
+  {t:'13:09:45',actor:'techlead',type:'invoked',msg:'Construyendo tabla comparativa 22 dimensiones',sev:''},
+  {t:'13:10:12',actor:'cerebro',type:'invoked',msg:'Detectando gaps: 6 agentes faltantes',sev:''},
+  {t:'13:10:48',actor:'cerebro',type:'reflection',msg:'Insight no obvio: EMP es SMC verticalizado',sev:''},
+  {t:'13:11:22',actor:'pm',type:'decision',msg:'Aprobado plan ABCD por Guillermo',sev:''},
+  {t:'13:12:05',actor:'cerebro',type:'building',msg:'Generando 5 agentes .md (DATA, AUTOMATION, …)',sev:''},
+  {t:'13:14:30',actor:'fl',type:'invoked',msg:'Diseñando maqueta dashboard live agents',sev:''},
+  {t:'13:15:18',actor:'security',type:'audit',msg:'CLEAN: 5 agent files sin secrets ni vulns',sev:''},
+  {t:'13:16:02',actor:'fl',type:'progress',msg:'Hub & spoke + Stream + Stack + Universe ✓',sev:''},
+  {t:'13:17:41',actor:'databw',type:'first-run',msg:'DATA-BW inicializado (absorbe DATA+DATAGEN+DWE), audits=0',sev:'warn'},
+  {t:'13:17:43',actor:'pm',type:'complete',msg:'Plan ABCD ejecutado · entregables listos',sev:''}
+];
+function renderEvents(){
+  const list=document.getElementById('eventList');
+  list.innerHTML=EVENTS.map(e=>{
+    const a=AGENTS.find(x=>x.id===e.actor);
+    return `<div class="event ${e.sev}">
+      <span class="event-time">${e.t}</span>
+      <span class="event-actor" style="color:${a?a.color:'#94a3b8'}">${a?a.icon+' '+a.name:e.actor}</span>
+      <span style="color:#475569"> · ${e.type} · </span>
+      ${e.msg}
+    </div>`;
+  }).reverse().join('');
+}
+
+// ═══════════════════════════════════════════
+// CONVERSATIONS SUMMARY
+// ═══════════════════════════════════════════
+const CONVS=[
+  {from:'pm',to:'techlead',msg:'analiza EMP framework vs SMC OS, dimensiones técnicas'},
+  {from:'pm',to:'cerebro',msg:'detectame gaps en agentes y propuesta visual'},
+  {from:'cerebro',to:'pm',msg:'6 gaps reales: DATA, AUTOMATION, DATAGEN, DWE, SECURITY, builder'},
+  {from:'cerebro',to:'fl',msg:'maqueta hub + stream + stack + universe en 1 HTML'},
+  {from:'fl',to:'fiori',msg:'tokens listos, glassmorphism + neon, mobile-first'},
+  {from:'security',to:'techlead',msg:'audit CLEAN en los 5 nuevos .md, sin findings'},
+  {from:'techlead',to:'pm',msg:'CLAUDE.md a actualizar de 15 → 20 agentes'}
+];
+function renderConvs(){
+  document.getElementById('convList').innerHTML=CONVS.map(c=>{
+    const f=AGENTS.find(x=>x.id===c.from),t=AGENTS.find(x=>x.id===c.to);
+    return `<div class="conv-row">
+      <span class="conv-from" style="color:${f.color}">${f.icon} ${f.name}</span>
+      <span class="conv-arrow">→</span>
+      <span class="conv-from" style="color:${t.color}">${t.icon} ${t.name}</span>
+    </div><div class="conv-msg" style="margin:-4px 0 6px 0;padding-left:8px;font-size:11px;color:#94a3b8;font-style:italic">"${c.msg}"</div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// STACK DIAGRAM — EMP-style: orthogonal routing + pills + icon circle
+// ═══════════════════════════════════════════
+function renderStack(){
+  const svg=document.getElementById('stackSvg');
+  svg.setAttribute('viewBox','0 0 1100 540');
+  svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  // [x, y, w, h, title, sub, icon, live, bg]
+  const nodes=[
+    {x:30, y:240, w:150,h:64, t:'Claude Code',     s:'>_  CLI',                  i:'>_'},
+    {x:250,y:240, w:200,h:64, t:'Orchestrator PM', s:'Orchestrator · Sonnet',    i:'◎', live:true},
+    // 5 áreas verticalmente apiladas
+    {x:520,y:50,  w:200,h:54, t:'Strategy (5)',    s:'PM·Comercial·Cerebro·Por·V&I', i:'◇'},
+    {x:520,y:124, w:200,h:54, t:'Engineering (5)', s:'FL·TL·Hoku·ABAP·Fiori',   i:'⟨/⟩', live:true},
+    {x:520,y:198, w:200,h:54, t:'Quality (2)',     s:'User-QAS · Security',     i:'✓'},
+    {x:520,y:272, w:200,h:54, t:'Specialist (4)',  s:'Pipeline·AI/ML·RADAR·Cont.', i:'⬢'},
+    {x:520,y:346, w:200,h:54, t:'Data (1)',        s:'DATA-BW (BW SAP-style)',   i:'⊡'},
+    // SDK + 3 modelos
+    {x:790,y:240, w:170,h:64, t:'Anthropic SDK',   s:'Python API',               i:'⬡', live:true},
+    {x:1000,y:140,w:80, h:54, t:'Opus 4.7',        s:'Deep',                     i:'O'},
+    {x:1000,y:240,w:80, h:54, t:'Sonnet 4.6',      s:'Default',                  i:'S', live:true},
+    {x:1000,y:340,w:80, h:54, t:'Haiku 4.5',       s:'Fast',                     i:'H'},
+    // Background row
+    {x:250,y:445, w:200,h:54, t:'Cerebro',         s:'Reflexion · Background',    i:'🧠', bg:true},
+    {x:520,y:445, w:200,h:54, t:'SECURITY',        s:'Hooks · Background',        i:'⛨',  bg:true},
+    {x:790,y:445, w:170,h:54, t:'viz_server',      s:':8765 · WebSocket',         i:'⌬',  bg:true}
+  ];
+  // Orthogonal path helper: from (x1,y1) right-side → to (x2,y2) left-side, bend at midX
+  function ortho(x1,y1,x2,y2,midX){
+    midX = midX!==undefined ? midX : x1+(x2-x1)/2;
+    if(y1===y2) return `M ${x1} ${y1} L ${x2} ${y2}`;
+    return `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}`;
+  }
+  const flows=[
+    // 0: Claude Code → Orchestrator (live, direct horizontal)
+    {d:`M 180 272 L 250 272`, live:true},
+    // 1-5: Orchestrator → 5 áreas (todas con bend en x=485)
+    {d:ortho(450,272,520,77,485)},
+    {d:ortho(450,272,520,151,485), live:true}, // Engineering
+    {d:ortho(450,272,520,225,485)},
+    {d:ortho(450,272,520,299,485)},
+    {d:ortho(450,272,520,373,485)},
+    // 6-10: 5 áreas → SDK (bend en x=755)
+    {d:ortho(720,77,790,272,755)},
+    {d:ortho(720,151,790,272,755), live:true}, // Engineering → SDK
+    {d:ortho(720,225,790,272,755)},
+    {d:ortho(720,299,790,272,755)},
+    {d:ortho(720,373,790,272,755)},
+    // 11-13: SDK → 3 modelos
+    {d:ortho(960,272,1000,167,980)},
+    {d:`M 960 272 L 1000 267`, live:true}, // Sonnet (live)
+    {d:ortho(960,272,1000,367,980)},
+    // 14-16: Background branches (vertical, dashed via .bg class)
+    {d:`M 350 304 L 350 445`, bg:true},   // Orch → Cerebro
+    {d:`M 620 326 L 620 445`, bg:true},   // Specialist → SECURITY
+    {d:`M 875 304 L 875 445`, bg:true}    // SDK → viz_server
+  ];
+  let html='';
+  flows.forEach(f=>{
+    const cls = f.live ? 'live' : (f.bg ? 'bg' : '');
+    html+=`<path class="flow ${cls}" d="${f.d}"/>`;
+  });
+  // Render nodes: pill (rx=h/2) + icon circle on left + title + sub
+  nodes.forEach(n=>{
+    const cy = n.y + n.h/2;
+    const iconR = 14;
+    const iconCX = n.x + iconR + 12;
+    const titleX = iconCX + iconR + 14;
+    const cls = (n.live?'live ':'') + (n.bg?'bg':'');
+    html+=`<g class="node-group ${cls}">
+      <rect class="node-shape" x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="${n.h/2}" ry="${n.h/2}"/>
+      <circle class="icon-circle" cx="${iconCX}" cy="${cy}" r="${iconR}"/>
+      <text class="icon-text" x="${iconCX}" y="${cy+4}">${n.i}</text>
+      <text class="node-title" x="${titleX}" y="${cy-2}">${n.t}</text>
+      <text class="node-sub" x="${titleX}" y="${cy+14}">${n.s}</text>
+    </g>`;
+  });
+  svg.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════
+// UNIVERSE GRID
+// ═══════════════════════════════════════════
+function renderUniverse(){
+  const grid=document.getElementById('universeGrid');
+  grid.innerHTML=AGENTS.map(a=>`
+    <div class="agent-card" data-id="${a.id}" style="--c:${a.color}">
+      <div class="card-top">
+        <div class="card-icon" style="background:${a.color}22;border:1px solid ${a.color}66">${a.icon}</div>
+        <div class="card-name">${a.name}</div>
+        <div class="card-status ${a.status==='working'?'working':a.status==='done'?'done':''}"></div>
+      </div>
+      <div class="card-meta">
+        <span class="chip ${a.model}">${a.model.toUpperCase()}</span>
+        <span class="chip loop">${a.loop}</span>
+      </div>
+      <div class="card-desc">${a.desc}</div>
+      <div class="card-foot">
+        <span>${a.area.toUpperCase()}</span>
+        <span class="audits">${a.audits} audits</span>
+      </div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.agent-card').forEach(c=>{
+    c.addEventListener('click',()=>{
+      document.getElementById('hub').scrollIntoView({behavior:'smooth'});
+      setTimeout(()=>showDetail(c.dataset.id),300);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════
+// NAV ACTIVE STATE
+// ═══════════════════════════════════════════
+function setupNav(){
+  const tabs=document.querySelectorAll('.nav-tabs a');
+  const sections=document.querySelectorAll('section');
+  const obs=new IntersectionObserver((es)=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        tabs.forEach(t=>t.classList.toggle('active',t.getAttribute('href')==='#'+e.target.id));
+      }
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  sections.forEach(s=>obs.observe(s));
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+renderHub();
+renderStream();
+renderEvents();
+renderConvs();
+renderStack();
+renderUniverse();
+setupNav();
+// Auto-show first working agent
+setTimeout(()=>{const w=AGENTS.find(a=>a.status==='working');if(w)showDetail(w.id)},400);
+</script>
+</body>
+</html>

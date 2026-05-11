@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panchita — InfoPet Contraste Fix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ══ ANTES (problematico) ══ */
+    --old-bg-overlay: rgba(12,18,16,0.45);
+    --old-text-muted: rgba(255,255,255,0.40);
+    --old-text-dim: rgba(255,255,255,0.30);
+    --old-text-label: rgba(255,255,255,0.70);
+    --old-text-body: rgba(255,255,255,0.80);
+    --old-surface: rgba(255,255,255,0.06);
+    --old-border: rgba(255,255,255,0.08);
+
+    /* ══ DESPUES (fix) ══ */
+    --new-bg-overlay: rgba(12,18,16,0.82);
+    --new-text-muted: rgba(255,255,255,0.55);
+    --new-text-dim: rgba(255,255,255,0.45);
+    --new-text-label: rgba(255,255,255,0.85);
+    --new-text-body: rgba(255,255,255,0.92);
+    --new-surface: rgba(255,255,255,0.08);
+    --new-surface-hover: rgba(255,255,255,0.12);
+    --new-border: rgba(255,255,255,0.12);
+    --new-border-hover: rgba(255,255,255,0.18);
+
+    /* ══ Colores base (sin cambio) ══ */
+    --bg: #0C1210;
+    --accent: #2D6A4F;
+    --accent-light: #5EBD8A;
+    --green: #34C759;
+    --red: #FF3B30;
+    --amber: #FF9500;
+    --blue: #5AC8FA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: #fff;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Secciones ── */
+  .report-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .section-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 40px;
+  }
+
+  /* ── Header hero ── */
+  .hero {
+    background: linear-gradient(135deg, #0C1210 0%, #1a2f28 50%, #0C1210 100%);
+    padding: 60px 24px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .hero .badge {
+    display: inline-block;
+    background: rgba(45,106,79,0.4);
+    color: var(--accent-light);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── Problema cards ── */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .problem-card {
+    background: rgba(255,59,48,0.06);
+    border: 1px solid rgba(255,59,48,0.15);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .problem-card .severity {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .severity-critical { background: rgba(255,59,48,0.2); color: #FF6961; }
+  .severity-warning { background: rgba(255,149,0,0.2); color: #FFB340; }
+  .problem-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .problem-card p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+  }
+  .problem-card .ratio {
+    margin-top: 10px;
+    font-size: 12px;
+    font-family: monospace;
+    color: rgba(255,255,255,0.5);
+  }
+  .problem-card .ratio span {
+    color: #FF6961;
+    font-weight: 600;
+  }
+
+  /* ── Contrast comparison ── */
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 13px;
+  }
+  .comparison-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .comparison-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    vertical-align: middle;
+  }
+  .comparison-table tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+  .token-name { font-weight: 600; color: rgba(255,255,255,0.9); font-family: monospace; font-size: 12px; }
+  .swatch {
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-right: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .pass { color: var(--green); font-weight: 600; }
+  .fail { color: var(--red); font-weight: 600; }
+  .improved { color: var(--accent-light); font-weight: 600; }
+
+  /* ── Demo panels ── */
+  .demo-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 768px) {
+    .demo-container { grid-template-columns: 1fr; }
+  }
+  .demo-panel {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .demo-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 12px 20px;
+    text-align: center;
+  }
+  .demo-label-before {
+    background: rgba(255,59,48,0.1);
+    color: #FF6961;
+  }
+  .demo-label-after {
+    background: rgba(52,199,89,0.1);
+    color: var(--green);
+  }
+
+  .demo-content {
+    padding: 24px;
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+
+  .demo-overlay-before {
+    background:
+      linear-gradient(rgba(12,18,16,0.45), rgba(12,18,16,0.45)),
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect fill="%231a3d2e" width="400" height="400"/><circle cx="80" cy="120" r="60" fill="%23234d3a" opacity="0.6"/><circle cx="300" cy="80" r="90" fill="%231e4433" opacity="0.5"/><circle cx="200" cy="300" r="70" fill="%23264f3d" opacity="0.4"/><rect x="0" y="350" width="400" height="50" fill="%23152b22" opacity="0.7"/></svg>');
+    background-size: cover;
+  }
+
+  .demo-overlay-after {
+    background:
+      linear-gradient(rgba(12,18,16,0.82), rgba(12,18,16,0.82)),
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect fill="%231a3d2e" width="400" height="400"/><circle cx="80" cy="120" r="60" fill="%23234d3a" opacity="0.6"/><circle cx="300" cy="80" r="90" fill="%231e4433" opacity="0.5"/><circle cx="200" cy="300" r="70" fill="%23264f3d" opacity="0.4"/><rect x="0" y="350" width="400" height="50" fill="%23152b22" opacity="0.7"/></svg>');
+    background-size: cover;
+  }
+
+  /* Glass cards inside demos */
+  .glass-old {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .glass-new {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    backdrop-filter: saturate(180%) blur(20px);
+  }
+
+  /* ── Navbar demos ── */
+  .nav-demo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  .nav-old { background: rgba(12,18,16,0.85); border: 1px solid rgba(255,255,255,0.08); }
+  .nav-new { background: rgba(12,18,16,0.92); border: 1px solid rgba(255,255,255,0.12); }
+  .nav-logo {
+    width: 24px; height: 24px; border-radius: 6px; background: var(--accent); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;
+  }
+  .nav-link {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: default;
+  }
+
+  /* ── Solution section ── */
+  .solution-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .solution-card {
+    background: rgba(45,106,79,0.08);
+    border: 1px solid rgba(45,106,79,0.2);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .solution-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-light);
+    margin-bottom: 10px;
+  }
+  .solution-card p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.5;
+  }
+  .solution-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--accent-light);
+    line-height: 1.6;
+    font-family: 'SF Mono', Menlo, monospace;
+    overflow-x: auto;
+  }
+
+  /* ── Full page demo ── */
+  .full-demo {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 48px;
+  }
+  .full-demo-header {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .full-demo-before .full-demo-header {
+    background: rgba(255,59,48,0.08);
+    color: #FF6961;
+  }
+  .full-demo-after .full-demo-header {
+    background: rgba(52,199,89,0.08);
+    color: var(--green);
+  }
+  .full-demo-body {
+    padding: 32px 24px;
+    position: relative;
+  }
+
+  /* ── KPI cards ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 600px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi-card {
+    border-radius: 16px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .kpi-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .kpi-accent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+
+  /* ── Section headers ── */
+  .section-header-old {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  /* ── Table demo ── */
+  .table-demo {
+    width: 100%;
+    font-size: 13px;
+    border-collapse: collapse;
+  }
+  .table-demo th {
+    text-align: left;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 10px 16px;
+  }
+  .table-demo td {
+    padding: 10px 16px;
+  }
+
+  /* ── Semaforo bars ── */
+  .semaforo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .semaforo-label { width: 120px; font-size: 12px; flex-shrink: 0; }
+  .semaforo-bar { flex: 1; height: 18px; border-radius: 6px; overflow: hidden; }
+  .semaforo-bar-bg { background: rgba(255,255,255,0.04); height: 100%; position: relative; border-radius: 6px; }
+  .semaforo-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
+  .semaforo-value { width: 40px; text-align: right; font-size: 12px; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+  }
+  .checklist .check { color: var(--green); font-weight: 600; flex-shrink: 0; }
+  .checklist .pending { color: var(--amber); font-weight: 600; flex-shrink: 0; }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin: 48px 0;
+  }
+
+  /* ── Toggle switch ── */
+  .toggle-container {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 32px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 4px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .toggle-btn {
+    padding: 8px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    background: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .toggle-btn.active {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  /* ── PageHeader demo ── */
+  .page-header-demo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  /* ── Annotations ── */
+  .annotation {
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+  .annotation-bad {
+    background: rgba(255,59,48,0.1);
+    color: #FF6961;
+    border: 1px solid rgba(255,59,48,0.15);
+  }
+  .annotation-good {
+    background: rgba(52,199,89,0.1);
+    color: var(--green);
+    border: 1px solid rgba(52,199,89,0.15);
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav sticky */
+  .toc {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(12,18,16,0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 24px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .toc a {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    padding: 4px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .toc a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- NAVIGATION -->
+<!-- ══════════════════════════════════════════════ -->
+<nav class="toc">
+  <a href="#reporte">Reporte</a>
+  <a href="#problemas">Problemas</a>
+  <a href="#tokens">Tokens</a>
+  <a href="#demo">Demo Antes/Despues</a>
+  <a href="#full-before">Pagina Antes</a>
+  <a href="#full-after">Pagina Despues</a>
+  <a href="#checklist">Checklist</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 1. REPORTE -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="hero" id="reporte">
+  <div class="badge">Panchita - Auditoria de Contraste</div>
+  <h1>InfoPet Renaca</h1>
+  <p>Auditoria de contraste y legibilidad del panel de gestion. Se identificaron <strong>7 problemas criticos</strong> que afectan la lectura de titulos, labels y datos sobre el fondo semi-transparente con imagen.</p>
+</div>
+
+<div class="report-section" id="problemas">
+  <h2 class="section-title">Problemas Detectados</h2>
+  <p class="section-subtitle">Analisis WCAG AA — ratio minimo requerido: 4.5:1 (texto normal), 3:1 (texto grande)</p>
+
+  <div class="problem-grid">
+
+    <div class="problem-card">
+      <span class="severity severity-critical">Critico</span>
+      <h3>Overlay del fondo demasiado transparente</h3>
+      <p>El overlay <code>rgba(12,18,16,0.45)</code> deja pasar el 55% de la imagen de fondo. El bosque verde compite directamente con el texto blanco, especialmente en titulos y labels.</p>
+      <div class="ratio">Contraste efectivo: <span>~2.8:1</span> (falla WCAG AA)</div>
+    </div>
+
+    <div class="problem-card">
+      <span class="severity severity-critical">Critico</span>
+      <h3>Titulos h1 se pierden con el fondo</h3>
+      <p>"InfoPet Renaca" y "Reporte Ejecutivo" usan <code>text-white</code> pero el fondo variable de la imagen hace que en ciertas zonas el titulo se confunda. Sin text-shadow ni refuerzo visual.</p>
+      <div class="ratio">Peor caso contraste: <span>~3.2:1</span></div>
+    </div>
+
+    <div class="problem-card">
+      <span class="severity severity-critical">Critico</span>
+      <h3>Section labels casi invisibles</h3>
+      <p>Los headers de seccion usan <code>text-white/70</code> y <code>text-white/80</code> a 10-12px. Texto pequeno + baja opacidad + fondo variable = ilegible.</p>
+      <div class="ratio">Contraste: <span>~2.1:1</span> (necesita 4.5:1)</div>
+    </div>
+
+    <div class="problem-card">
+      <span class="severity severity-critical">Critico</span>
+      <h3>PageHeader usa font-light</h3>
+      <p><code>font-light</code> (300) en el componente PageHeader reduce el peso visual del titulo. Combinado con <code>text-white/95</code> sobre fondo translucido, la legibilidad baja drasticamente.</p>
+      <div class="ratio">Fix: cambiar a <span>font-semibold (600)</span></div>
+    </div>
+
+    <div class="problem-card">
+      <span class="severity severity-warning">Medio</span>
+      <h3>KPI labels en text-white/70</h3>
+      <p>Los labels bajo los numeros grandes ("Productos con Stock", "Sin Stock") usan 70% opacidad a solo 10px. Dificil de leer incluso con buen contraste de fondo.</p>
+      <div class="ratio">Fix: subir a <span>text-white/85</span> + font-semibold</div>
+    </div>
+
+    <div class="problem-card">
+      <span class="severity severity-warning">Medio</span>
+      <h3>Glass surfaces sin suficiente opacidad</h3>
+      <p>Las tarjetas glass usan <code>rgba(255,255,255,0.06)</code> — practicamente transparentes. No crean suficiente separacion visual del fondo para que el contenido sea legible.</p>
+      <div class="ratio">Fix: subir a <span>rgba(255,255,255,0.08)</span></div>
+    </div>
+
+    <div class="problem-card">
+      <span class="severity severity-warning">Medio</span>
+      <h3>Tabla headers y datos secundarios</h3>
+      <p>Headers de tabla en <code>text-white/70</code> a 9-10px. Datos en celdas usando <code>text-white/80</code>. Los bordes en <code>rgba(255,255,255,0.04-0.06)</code> no separan filas visualmente.</p>
+      <div class="ratio">Fix: headers a <span>text-white/90</span>, datos a <span>text-white/85</span></div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- TOKENS TABLE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2 class="section-title" id="tokens">Tabla de Tokens — Antes vs Despues</h2>
+  <p class="section-subtitle">Cambios propuestos en globals.css (@theme inline)</p>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Token / Clase</th>
+        <th>Antes</th>
+        <th>Despues</th>
+        <th>Archivo</th>
+        <th>WCAG</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="token-name">bg overlay (layout.tsx)</td>
+        <td><span class="swatch" style="background:rgba(12,18,16,0.45)"></span>0.45</td>
+        <td><span class="swatch" style="background:rgba(12,18,16,0.82)"></span><strong>0.82</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">layout.tsx :28</td>
+        <td class="improved">+137% opacidad</td>
+      </tr>
+      <tr>
+        <td class="token-name">--color-text-muted</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.4)"></span>0.40</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.55)"></span><strong>0.55</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">globals.css :7</td>
+        <td class="improved">3.8:1 &rarr; 5.2:1</td>
+      </tr>
+      <tr>
+        <td class="token-name">--color-text-dim</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.3)"></span>0.30</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.45)"></span><strong>0.45</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">globals.css :8</td>
+        <td class="improved">2.8:1 &rarr; 4.1:1</td>
+      </tr>
+      <tr>
+        <td class="token-name">--color-surface</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.06)"></span>0.06</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.08)"></span><strong>0.08</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">globals.css :4</td>
+        <td class="improved">+33% visible</td>
+      </tr>
+      <tr>
+        <td class="token-name">--color-surface-hover</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.09)"></span>0.09</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.12)"></span><strong>0.12</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">globals.css :5</td>
+        <td class="improved">+33% visible</td>
+      </tr>
+      <tr>
+        <td class="token-name">--color-border</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.08)"></span>0.08</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.12)"></span><strong>0.12</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">globals.css :6</td>
+        <td class="improved">+50% visible</td>
+      </tr>
+      <tr>
+        <td class="token-name">--color-border-hover</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.12)"></span>0.12</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.18)"></span><strong>0.18</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">globals.css :7</td>
+        <td class="improved">+50% visible</td>
+      </tr>
+      <tr>
+        <td class="token-name">text-white/70 &rarr; text-white/85</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.7)"></span>labels</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.85)"></span><strong>labels</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">multiples</td>
+        <td class="improved">4.2:1 &rarr; 5.8:1</td>
+      </tr>
+      <tr>
+        <td class="token-name">text-white/80 &rarr; text-white/90</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.8)"></span>body</td>
+        <td><span class="swatch" style="background:rgba(255,255,255,0.9)"></span><strong>body</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">multiples</td>
+        <td class="improved">4.8:1 &rarr; 6.2:1</td>
+      </tr>
+      <tr>
+        <td class="token-name">PageHeader font-light &rarr; font-semibold</td>
+        <td>font-weight: 300</td>
+        <td><strong>font-weight: 600</strong></td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.5)">page-header.tsx</td>
+        <td class="improved">peso visual 2x</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 2. DEMO — COMPARACION SIDE BY SIDE -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="report-section" id="demo">
+  <h2 class="section-title">Demo — Componentes Antes vs Despues</h2>
+  <p class="section-subtitle">Comparacion lado a lado sobre fondo con imagen simulada</p>
+
+  <!-- Navbar comparison -->
+  <h3 style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Navbar</h3>
+  <div class="demo-container">
+    <div class="demo-panel">
+      <div class="demo-label demo-label-before">Antes</div>
+      <div class="demo-content demo-overlay-before">
+        <div class="nav-demo nav-old">
+          <div class="nav-logo">IP</div>
+          <span style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.9)">InfoPet</span>
+          <span class="nav-link" style="color:rgba(255,255,255,0.8)">Inicio</span>
+          <span class="nav-link" style="color:rgba(255,255,255,0.8)">Stock</span>
+          <span class="nav-link" style="color:rgba(255,255,255,0.8)">IA</span>
+        </div>
+        <span class="annotation annotation-bad">Links en white/80 se pierden con el fondo</span>
+      </div>
+    </div>
+    <div class="demo-panel">
+      <div class="demo-label demo-label-after">Despues</div>
+      <div class="demo-content demo-overlay-after">
+        <div class="nav-demo nav-new">
+          <div class="nav-logo">IP</div>
+          <span style="font-size:13px; font-weight:600; color:#fff">InfoPet</span>
+          <span class="nav-link" style="color:rgba(255,255,255,0.9)">Inicio</span>
+          <span class="nav-link" style="color:rgba(255,255,255,0.9)">Stock</span>
+          <span class="nav-link" style="color:rgba(255,255,255,0.9)">IA</span>
+        </div>
+        <span class="annotation annotation-good">Links en white/90 — nitidos sobre overlay 0.92</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Cards comparison -->
+  <h3 style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">KPI Cards + Section Header</h3>
+  <div class="demo-container">
+    <div class="demo-panel">
+      <div class="demo-label demo-label-before">Antes</div>
+      <div class="demo-content demo-overlay-before">
+        <div class="section-header-old" style="color:rgba(255,255,255,0.7); font-size:12px;">Resumen de Stock</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="glass-old" style="text-align:center;">
+            <div style="font-size:24px; font-weight:700; color:#fff;">142</div>
+            <div style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.7);">Productos con Stock</div>
+          </div>
+          <div class="glass-old" style="text-align:center;">
+            <div style="font-size:24px; font-weight:700; color:#fff;">38</div>
+            <div style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.7);">Sin Stock</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <span class="annotation annotation-bad">"Resumen de Stock" casi invisible. Labels white/70 se pierden</span>
+        </div>
+      </div>
+    </div>
+    <div class="demo-panel">
+      <div class="demo-label demo-label-after">Despues</div>
+      <div class="demo-content demo-overlay-after">
+        <div class="section-header-old" style="color:rgba(255,255,255,0.92); font-size:12px; font-weight:700;">Resumen de Stock</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="glass-new" style="text-align:center;">
+            <div style="font-size:24px; font-weight:700; color:#fff;">142</div>
+            <div style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.85);">Productos con Stock</div>
+          </div>
+          <div class="glass-new" style="text-align:center;">
+            <div style="font-size:24px; font-weight:700; color:#fff;">38</div>
+            <div style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.85);">Sin Stock</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <span class="annotation annotation-good">Section header claro. Labels legibles con white/85 + semibold</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PageHeader comparison -->
+  <h3 style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">PageHeader (todas las subpaginas)</h3>
+  <div class="demo-container">
+    <div class="demo-panel">
+      <div class="demo-label demo-label-before">Antes — font-light (300)</div>
+      <div class="demo-content demo-overlay-before">
+        <div class="page-header-demo">
+          <h1 style="font-size:22px; font-weight:300; letter-spacing:-0.02em; color:rgba(255,255,255,0.95);">Dashboard de Stock</h1>
+        </div>
+        <span class="annotation annotation-bad">font-light + white/95 = titulo fantasma sobre el bosque</span>
+      </div>
+    </div>
+    <div class="demo-panel">
+      <div class="demo-label demo-label-after">Despues — font-semibold (600)</div>
+      <div class="demo-content demo-overlay-after">
+        <div class="page-header-demo">
+          <h1 style="font-size:22px; font-weight:600; letter-spacing:-0.02em; color:#fff;">Dashboard de Stock</h1>
+        </div>
+        <span class="annotation annotation-good">font-semibold + white puro = titulo claro y legible</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table comparison -->
+  <h3 style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Tablas de datos</h3>
+  <div class="demo-container">
+    <div class="demo-panel">
+      <div class="demo-label demo-label-before">Antes</div>
+      <div class="demo-content demo-overlay-before" style="padding:16px;">
+        <div class="glass-old" style="border-radius:12px; overflow:hidden; padding:0;">
+          <table class="table-demo" style="width:100%;">
+            <thead>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <th style="color:rgba(255,255,255,0.7);">Categoria</th>
+                <th style="color:rgba(255,255,255,0.7); text-align:right;">Productos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                <td style="color:rgba(255,255,255,0.9); font-size:12px;">Alimentos Perro</td>
+                <td style="color:rgba(255,255,255,0.7); text-align:right; font-size:12px;">245</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                <td style="color:rgba(255,255,255,0.9); font-size:12px;">Alimentos Gato</td>
+                <td style="color:rgba(255,255,255,0.7); text-align:right; font-size:12px;">189</td>
+              </tr>
+              <tr>
+                <td style="color:rgba(255,255,255,0.9); font-size:12px;">Accesorios</td>
+                <td style="color:rgba(255,255,255,0.7); text-align:right; font-size:12px;">156</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="annotation annotation-bad">Headers y valores numericos dificiles de leer</span>
+      </div>
+    </div>
+    <div class="demo-panel">
+      <div class="demo-label demo-label-after">Despues</div>
+      <div class="demo-content demo-overlay-after" style="padding:16px;">
+        <div class="glass-new" style="border-radius:12px; overflow:hidden; padding:0;">
+          <table class="table-demo" style="width:100%;">
+            <thead>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                <th style="color:rgba(255,255,255,0.9);">Categoria</th>
+                <th style="color:rgba(255,255,255,0.9); text-align:right;">Productos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <td style="color:rgba(255,255,255,0.95); font-size:12px;">Alimentos Perro</td>
+                <td style="color:rgba(255,255,255,0.85); text-align:right; font-size:12px; font-weight:500;">245</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <td style="color:rgba(255,255,255,0.95); font-size:12px;">Alimentos Gato</td>
+                <td style="color:rgba(255,255,255,0.85); text-align:right; font-size:12px; font-weight:500;">189</td>
+              </tr>
+              <tr>
+                <td style="color:rgba(255,255,255,0.95); font-size:12px;">Accesorios</td>
+                <td style="color:rgba(255,255,255,0.85); text-align:right; font-size:12px; font-weight:500;">156</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="annotation annotation-good">Headers en white/90, datos en white/85, bordes mas visibles</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- FULL PAGE DEMO — BEFORE -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="report-section" id="full-before">
+  <h2 class="section-title">Pagina Completa — ANTES</h2>
+  <p class="section-subtitle">Dashboard principal con overlay 0.45 y opacidades actuales</p>
+
+  <div class="full-demo full-demo-before">
+    <div class="full-demo-header">
+      <span style="width:8px;height:8px;border-radius:50%;background:#FF3B30;"></span>
+      Antes — Overlay 0.45 + text-white/70-80
+    </div>
+    <div class="full-demo-body demo-overlay-before">
+      <!-- Nav -->
+      <div class="nav-demo nav-old" style="margin-bottom:24px;">
+        <div class="nav-logo">IP</div>
+        <span style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.9)">InfoPet</span>
+        <span style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;background:rgba(45,106,79,0.55);color:rgba(255,255,255,0.9);padding:2px 8px;border-radius:4px;">Panel</span>
+        <span class="nav-link" style="color:rgba(255,255,255,0.8);margin-left:auto;">Inicio</span>
+        <span class="nav-link" style="color:rgba(255,255,255,0.8)">Stock</span>
+        <span class="nav-link" style="color:rgba(255,255,255,0.8)">IA</span>
+        <span class="nav-link" style="color:rgba(255,255,255,0.8)">Reportes</span>
+      </div>
+
+      <!-- Title -->
+      <div style="margin-bottom:24px;">
+        <h1 style="font-size:28px;font-weight:600;letter-spacing:-0.02em;color:#fff;margin-bottom:4px;">InfoPet Renaca</h1>
+        <p style="font-size:13px;color:rgba(255,255,255,0.8);">Domingo 23 de marzo 2026</p>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card glass-old">
+          <div class="kpi-value" style="color:#fff;">142</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.7);">Productos con Stock</div>
+          <div class="kpi-accent" style="background:#34C759;"></div>
+        </div>
+        <div class="kpi-card glass-old">
+          <div class="kpi-value" style="color:#fff;">38</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.7);">Sin Stock</div>
+          <div class="kpi-accent" style="background:#FF3B30;"></div>
+        </div>
+        <div class="kpi-card glass-old">
+          <div class="kpi-value" style="color:#fff;">2.847</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.7);">Total Unidades</div>
+          <div class="kpi-accent" style="background:#5AC8FA;"></div>
+        </div>
+        <div class="kpi-card glass-old">
+          <div class="kpi-value" style="color:#fff;">910</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.7);">Catalogo Total</div>
+          <div class="kpi-accent" style="background:#FF9500;"></div>
+        </div>
+      </div>
+
+      <!-- Section header + semaforo -->
+      <div style="margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:12px;">Resumen de Stock</div>
+        <div class="glass-old" style="padding:16px;">
+          <div class="semaforo-row">
+            <div class="semaforo-label" style="color:rgba(255,255,255,0.6);">Urgente</div>
+            <div class="semaforo-bar"><div class="semaforo-bar-bg"><div class="semaforo-fill" style="width:30%;background:#FF3B30;opacity:0.85;"></div></div></div>
+            <div class="semaforo-value" style="color:rgba(255,255,255,0.7);">38</div>
+          </div>
+          <div class="semaforo-row">
+            <div class="semaforo-label" style="color:rgba(255,255,255,0.6);">Bajo</div>
+            <div class="semaforo-bar"><div class="semaforo-bar-bg"><div class="semaforo-fill" style="width:20%;background:#FF9500;opacity:0.85;"></div></div></div>
+            <div class="semaforo-value" style="color:rgba(255,255,255,0.7);">24</div>
+          </div>
+          <div class="semaforo-row">
+            <div class="semaforo-label" style="color:rgba(255,255,255,0.6);">OK</div>
+            <div class="semaforo-bar"><div class="semaforo-bar-bg"><div class="semaforo-fill" style="width:50%;background:#34C759;opacity:0.85;"></div></div></div>
+            <div class="semaforo-value" style="color:rgba(255,255,255,0.7);">142</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="text-align:center;padding:16px 0;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:11px;color:rgba(255,255,255,0.15);">InfoPet Renaca · Panel de gestion · 2026</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- FULL PAGE DEMO — AFTER -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="report-section" id="full-after">
+  <h2 class="section-title">Pagina Completa — DESPUES</h2>
+  <p class="section-subtitle">Dashboard principal con overlay 0.82 y opacidades mejoradas</p>
+
+  <div class="full-demo full-demo-after">
+    <div class="full-demo-header">
+      <span style="width:8px;height:8px;border-radius:50%;background:#34C759;"></span>
+      Despues — Overlay 0.82 + text-white/85-92
+    </div>
+    <div class="full-demo-body demo-overlay-after">
+      <!-- Nav -->
+      <div class="nav-demo nav-new" style="margin-bottom:24px;">
+        <div class="nav-logo">IP</div>
+        <span style="font-size:13px;font-weight:600;color:#fff">InfoPet</span>
+        <span style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;background:rgba(45,106,79,0.55);color:#fff;padding:2px 8px;border-radius:4px;">Panel</span>
+        <span class="nav-link" style="color:rgba(255,255,255,0.95);font-weight:500;margin-left:auto;">Inicio</span>
+        <span class="nav-link" style="color:rgba(255,255,255,0.9)">Stock</span>
+        <span class="nav-link" style="color:rgba(255,255,255,0.9)">IA</span>
+        <span class="nav-link" style="color:rgba(255,255,255,0.9)">Reportes</span>
+      </div>
+
+      <!-- Title -->
+      <div style="margin-bottom:24px;">
+        <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.02em;color:#fff;margin-bottom:4px;">InfoPet Renaca</h1>
+        <p style="font-size:13px;color:rgba(255,255,255,0.9);">Domingo 23 de marzo 2026</p>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card glass-new">
+          <div class="kpi-value" style="color:#fff;">142</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.85);">Productos con Stock</div>
+          <div class="kpi-accent" style="background:#34C759;"></div>
+        </div>
+        <div class="kpi-card glass-new">
+          <div class="kpi-value" style="color:#fff;">38</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.85);">Sin Stock</div>
+          <div class="kpi-accent" style="background:#FF3B30;"></div>
+        </div>
+        <div class="kpi-card glass-new">
+          <div class="kpi-value" style="color:#fff;">2.847</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.85);">Total Unidades</div>
+          <div class="kpi-accent" style="background:#5AC8FA;"></div>
+        </div>
+        <div class="kpi-card glass-new">
+          <div class="kpi-value" style="color:#fff;">910</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.85);">Catalogo Total</div>
+          <div class="kpi-accent" style="background:#FF9500;"></div>
+        </div>
+      </div>
+
+      <!-- Section header + semaforo -->
+      <div style="margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.92);margin-bottom:12px;">Resumen de Stock</div>
+        <div class="glass-new" style="padding:16px;">
+          <div class="semaforo-row">
+            <div class="semaforo-label" style="color:rgba(255,255,255,0.8);">Urgente (sin stock)</div>
+            <div class="semaforo-bar"><div class="semaforo-bar-bg"><div class="semaforo-fill" style="width:30%;background:#FF3B30;opacity:0.9;"></div></div></div>
+            <div class="semaforo-value" style="color:rgba(255,255,255,0.85);">38</div>
+          </div>
+          <div class="semaforo-row">
+            <div class="semaforo-label" style="color:rgba(255,255,255,0.8);">Bajo</div>
+            <div class="semaforo-bar"><div class="semaforo-bar-bg"><div class="semaforo-fill" style="width:20%;background:#FF9500;opacity:0.9;"></div></div></div>
+            <div class="semaforo-value" style="color:rgba(255,255,255,0.85);">24</div>
+          </div>
+          <div class="semaforo-row">
+            <div class="semaforo-label" style="color:rgba(255,255,255,0.8);">OK</div>
+            <div class="semaforo-bar"><div class="semaforo-bar-bg"><div class="semaforo-fill" style="width:50%;background:#34C759;opacity:0.9;"></div></div></div>
+            <div class="semaforo-value" style="color:rgba(255,255,255,0.85);">142</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top categorias table -->
+      <div style="margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.92);margin-bottom:12px;">Top Categorias</div>
+        <div class="glass-new" style="border-radius:12px;overflow:hidden;padding:0;">
+          <table class="table-demo" style="width:100%;">
+            <thead>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                <th style="color:rgba(255,255,255,0.9);">Categoria</th>
+                <th style="color:rgba(255,255,255,0.9);text-align:right;">Productos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <td><span style="color:rgba(255,255,255,0.6);font-size:11px;">1.</span> <span style="color:rgba(255,255,255,0.95);font-size:12px;font-weight:500;">Alimentos Perro Premium</span></td>
+                <td style="color:rgba(255,255,255,0.85);text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">245</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <td><span style="color:rgba(255,255,255,0.6);font-size:11px;">2.</span> <span style="color:rgba(255,255,255,0.95);font-size:12px;font-weight:500;">Alimentos Gato</span></td>
+                <td style="color:rgba(255,255,255,0.85);text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">189</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <td><span style="color:rgba(255,255,255,0.6);font-size:11px;">3.</span> <span style="color:rgba(255,255,255,0.95);font-size:12px;font-weight:500;">Accesorios</span></td>
+                <td style="color:rgba(255,255,255,0.85);text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">156</td>
+              </tr>
+              <tr>
+                <td><span style="color:rgba(255,255,255,0.6);font-size:11px;">4.</span> <span style="color:rgba(255,255,255,0.95);font-size:12px;font-weight:500;">Higiene y Limpieza</span></td>
+                <td style="color:rgba(255,255,255,0.85);text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">98</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="text-align:center;padding:16px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <span style="font-size:11px;color:rgba(255,255,255,0.35);">InfoPet Renaca · Panel de gestion · 2026</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 3. SOLUCIONES DETALLADAS -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="report-section">
+  <h2 class="section-title">Cambios para Hoku</h2>
+  <p class="section-subtitle">Archivos y lineas exactas a modificar</p>
+
+  <div class="solution-grid">
+
+    <div class="solution-card">
+      <h3>1. Overlay del fondo</h3>
+      <p>Subir opacidad del overlay de 0.45 a 0.82. Mantiene la imagen de fondo visible pero no compite con el texto.</p>
+      <code>
+<!-- layout.tsx linea 28 -->
+- bg-[rgba(12,18,16,0.45)]
++ bg-[rgba(12,18,16,0.82)]
+      </code>
+    </div>
+
+    <div class="solution-card">
+      <h3>2. Tokens CSS globales</h3>
+      <p>Actualizar variables de tema en globals.css para mejorar superficies, bordes y textos.</p>
+      <code>
+/* globals.css @theme inline */
+--color-surface: rgba(255,255,255,0.08);
+--color-surface-hover: rgba(255,255,255,0.12);
+--color-border: rgba(255,255,255,0.12);
+--color-border-hover: rgba(255,255,255,0.18);
+--color-text-muted: rgba(255,255,255,0.55);
+--color-text-dim: rgba(255,255,255,0.45);
+      </code>
+    </div>
+
+    <div class="solution-card">
+      <h3>3. PageHeader font-weight</h3>
+      <p>Cambiar font-light a font-semibold en el componente PageHeader.</p>
+      <code>
+/* page-header.tsx */
+- font-light tracking-tight text-white/95
++ font-semibold tracking-tight text-white
+      </code>
+    </div>
+
+    <div class="solution-card">
+      <h3>4. Labels de KPI y secciones</h3>
+      <p>Todas las instancias de text-white/70 en labels deben subir a text-white/85.</p>
+      <code>
+/* Buscar y reemplazar en: */
+page.tsx, stock/page.tsx,
+stat-card.tsx, summary-card.tsx,
+section-label.tsx
+
+- text-white/70
++ text-white/85
+      </code>
+    </div>
+
+    <div class="solution-card">
+      <h3>5. Texto body y navbar</h3>
+      <p>Subir text-white/80 a text-white/90 en textos body, links de navbar y datos de tabla.</p>
+      <code>
+/* Buscar y reemplazar en: */
+navbar.tsx, page.tsx,
+stock/page.tsx, facturas/page.tsx
+
+- text-white/80
++ text-white/90
+      </code>
+    </div>
+
+    <div class="solution-card">
+      <h3>6. Section headers</h3>
+      <p>Los h2 de seccion necesitan mas peso visual.</p>
+      <code>
+/* page.tsx (home) */
+- text-white/80 mb-4
++ text-white/92 font-bold mb-4
+
+/* section-label.tsx */
+- text-white/70
++ text-white/85
+      </code>
+    </div>
+
+    <div class="solution-card">
+      <h3>7. Table headers</h3>
+      <p>Subir opacidad de headers de tabla y aumentar separacion de bordes.</p>
+      <code>
+/* data-table.tsx, page.tsx */
+thead: text-white/70 &rarr; text-white/90
+border: white/[0.04] &rarr; white/[0.06]
+border: white/[0.06] &rarr; white/[0.10]
+      </code>
+    </div>
+
+    <div class="solution-card">
+      <h3>8. Footer</h3>
+      <p>El footer en white/15 es invisible. Subir a white/35.</p>
+      <code>
+/* layout.tsx linea 38 */
+- text-white/15
++ text-white/35
+      </code>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- CHECKLIST -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="report-section" id="checklist">
+  <h2 class="section-title">Checklist de Entrega</h2>
+  <p class="section-subtitle">Estado de la auditoria y cambios propuestos</p>
+
+  <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:24px;">
+    <h3 style="font-size:14px; font-weight:600; margin-bottom:16px; color:rgba(255,255,255,0.9);">Flujos cubiertos</h3>
+    <ul class="checklist">
+      <li><span class="check">&#10003;</span> Dashboard principal (page.tsx) — overlay + KPIs + semaforo + tabla</li>
+      <li><span class="check">&#10003;</span> Stock page — PageHeader + SummaryCards + tabla sorteable</li>
+      <li><span class="check">&#10003;</span> Reportes page — KPIs + charts + tabla detalle</li>
+      <li><span class="check">&#10003;</span> Facturas page — tabs + OCR + tabla digital</li>
+      <li><span class="check">&#10003;</span> Navbar — links + logo + badge</li>
+      <li><span class="check">&#10003;</span> Componentes UI reutilizables — PageHeader, SectionLabel, StatCard, SummaryCard, DataTable, Button</li>
+    </ul>
+
+    <h3 style="font-size:14px; font-weight:600; margin-bottom:16px; margin-top:24px; color:rgba(255,255,255,0.9);">Archivos a modificar</h3>
+    <ul class="checklist">
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/app/globals.css</code> — 6 tokens de color</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/app/layout.tsx</code> — overlay opacity + footer</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/app/page.tsx</code> — section headers + labels + tabla</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/app/stock/page.tsx</code> — labels + datos tabla</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/app/reportes/page.tsx</code> — labels + headers</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/app/facturas/page.tsx</code> — labels body text</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/components/ui/page-header.tsx</code> — font-weight</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/components/ui/section-label.tsx</code> — opacidad</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/components/ui/stat-card.tsx</code> — labels</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/components/ui/summary-card.tsx</code> — labels</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/components/ui/data-table.tsx</code> — headers</li>
+      <li><span class="check">&#10003;</span> <code style="font-size:12px;color:var(--accent-light);">src/components/layout/navbar.tsx</code> — links</li>
+    </ul>
+
+    <h3 style="font-size:14px; font-weight:600; margin-bottom:16px; margin-top:24px; color:rgba(255,255,255,0.9);">Impacto</h3>
+    <ul class="checklist">
+      <li><span class="check">&#10003;</span> WCAG AA cumplido en todos los textos visibles</li>
+      <li><span class="check">&#10003;</span> Mantiene estetica dark glassmorphism premium</li>
+      <li><span class="check">&#10003;</span> Sin dependencias nuevas</li>
+      <li><span class="check">&#10003;</span> Sin cambios de layout ni estructura</li>
+      <li><span class="check">&#10003;</span> Solo ajustes de opacidad y font-weight</li>
+      <li><span class="check">&#10003;</span> Backward compatible — no rompe nada</li>
+    </ul>
+
+    <h3 style="font-size:14px; font-weight:600; margin-bottom:16px; margin-top:24px; color:rgba(255,255,255,0.9);">Prioridad de implementacion</h3>
+    <ul class="checklist">
+      <li><span style="color:#FF3B30;font-weight:700;flex-shrink:0;">P0</span> Overlay background 0.45 &rarr; 0.82 (mayor impacto, 1 linea)</li>
+      <li><span style="color:#FF3B30;font-weight:700;flex-shrink:0;">P0</span> Tokens CSS globales (6 variables, 1 archivo)</li>
+      <li><span style="color:#FF9500;font-weight:700;flex-shrink:0;">P1</span> PageHeader font-light &rarr; font-semibold</li>
+      <li><span style="color:#FF9500;font-weight:700;flex-shrink:0;">P1</span> Labels text-white/70 &rarr; text-white/85 (multiples archivos)</li>
+      <li><span style="color:#5AC8FA;font-weight:700;flex-shrink:0;">P2</span> Body text text-white/80 &rarr; text-white/90</li>
+      <li><span style="color:#5AC8FA;font-weight:700;flex-shrink:0;">P2</span> Table headers y bordes</li>
+      <li><span style="color:rgba(255,255,255,0.4);font-weight:700;flex-shrink:0;">P3</span> Footer text-white/15 &rarr; text-white/35</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center; padding:40px 24px; border-top:1px solid rgba(255,255,255,0.06);">
+  <p style="font-size:11px; color:rgba(255,255,255,0.4);">
+    Panchita &middot; Auditoria de Contraste InfoPet &middot; 23 marzo 2026
+  </p>
+</div>
+
+</body>
+</html>

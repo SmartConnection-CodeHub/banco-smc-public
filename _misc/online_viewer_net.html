@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Architect Strategic Stack 2026</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #08080c;
+            --card: #121218;
+            --accent: #a78bfa;
+            --text: #e2e8f0;
+            --dim: #64748b;
+            --border: #2d2d39;
+            --success: #10b981;
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; line-height: 1.6; }
+        .container { max-width: 1200px; margin: auto; padding: 40px 20px; }
+        
+        header { border-left: 4px solid var(--accent); padding-left: 20px; margin-bottom: 50px; }
+        h1 { font-size: 2.5rem; margin: 0; letter-spacing: -1px; }
+        .badge { background: var(--accent); color: #000; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 30px; }
+        
+        .chart-container { position: relative; height: 250px; width: 100%; margin-top: 20px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; color: var(--dim); font-size: 0.8rem; text-transform: uppercase; padding: 10px; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+
+        .use-case { background: #1a1a24; border-left: 3px solid var(--success); padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px; }
+        .footer { margin-top: 60px; text-align: center; color: var(--dim); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="badge">PROYECCIÓN 2026</span>
+        <h1>Ecosistema de Arquitectura TI</h1>
+        <p>Optimización de Stack: IA, Automatización y SDKs de Alto Rendimiento</p>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Estimación de Costos Mensuales (USD)</h3>
+            <p style="font-size: 0.85rem; color: var(--dim);">Comparativa entre suscripciones SaaS vs. Infraestructura propia (n8n/Supabase).</p>
+            <div class="chart-container">
+                <canvas id="costChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Matriz de Herramientas Críticas</h3>
+            <table>
+                <thead>
+                    <tr><th>Categoría</th><th>Herramienta</th><th>ROI Esperado</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><b>Coding</b></td><td>Cursor + Claude</td><td>+40% Vel. Entrega</td></tr>
+                    <tr><td><b>Backend</b></td><td>Supabase</td><td>-30% Costo Infra</td></tr>
+                    <tr><td><b>Workflow</b></td><td>n8n (Self-host)</td><td>Ilimitado / Fijo</td></tr>
+                    <tr><td><b>IA Ops</b></td><td>DeepSeek API</td><td>Costo-Efectivo</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>Casos de Uso: Aplicación Práctica</h3>
+            <div class="use-case">
+                <strong>InfoPet (RAG System):</strong>
+                <p>Uso de Supabase Vector para almacenar literatura médica y Claude 3.5 para diagnósticos asistidos.</p>
+            </div>
+            <div class="use-case">
+                <strong>Modernización de Código:</strong>
+                <p>Migración de legacy a Microservicios usando la capacidad de indexación de Cursor.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Balance de Capacidades IA</h3>
+            <div class="chart-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Generado para perfil de Arquitecto TI — Gemini Analysis & Jake's Tech Lab Insights
+    </footer>
+</div>
+
+<script>
+    // Configuración del gráfico de barras (Costos)
+    const ctxBar = document.getElementById('costChart').getContext('2d');
+    new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: ['SaaS Tradicional', 'Modern Stack (AI-Optimized)'],
+            datasets: [{
+                label: 'Costo USD/Mes',
+                data: [450, 120],
+                backgroundColor: ['#334155', '#a78bfa'],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { grid: { color: '#2d2d39' }, ticks: { color: '#64748b' } },
+                x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Configuración del gráfico de radar
+    const ctxRadar = document.getElementById('radarChart').getContext('2d');
+    new Chart(ctxRadar, {
+        type: 'radar',
+        data: {
+            labels: ['Lógica', 'Precio', 'Privacidad', 'Escalabilidad', 'Velocidad'],
+            datasets: [{
+                label: 'Claude 3.5',
+                data: [5, 2, 4, 5, 4],
+                borderColor: '#a78bfa',
+                backgroundColor: 'rgba(167, 139, 250, 0.2)'
+            }, {
+                label: 'DeepSeek',
+                data: [4, 5, 3, 4, 5],
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.2)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: { 
+                    angleLines: { color: '#2d2d39' },
+                    grid: { color: '#2d2d39' },
+                    pointLabels: { color: '#64748b' },
+                    ticks: { display: false }
+                }
+            },
+            plugins: { legend: { labels: { color: '#e2e8f0' } } }
+        }
+    });
+</script>
+
+</body>
+</html>

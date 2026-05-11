@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VS Code + Claude Code — Guía de Instalación</title>
+<style>
+  :root {
+    --bg-base: #060912;
+    --bg-surface: #0a0d14;
+    --bg-elevated: #0f1520;
+    --bg-glass: rgba(15,22,35,0.85);
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-glow: rgba(0,229,176,0.2);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #00e5b0;
+    --accent-blue: #00b4d8;
+    --accent-purple: #7c3aed;
+    --accent-orange: #f97316;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 60px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,176,0.08);
+    border: 1px solid rgba(0,229,176,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #f1f5f9 0%, var(--accent) 60%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* PREREQS */
+  .prereqs {
+    max-width: 860px;
+    margin: 0 auto 56px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 28px 32px;
+  }
+  .prereqs-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .prereqs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .prereq-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+  .prereq-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .prereq-info strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .prereq-info span {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  /* STEPS */
+  .steps-container {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* Línea vertical */
+  .steps-container::before {
+    content: '';
+    position: absolute;
+    left: 35px;
+    top: 60px;
+    bottom: 60px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent) 0%, var(--accent-blue) 50%, transparent 100%);
+    opacity: 0.3;
+  }
+
+  .step-card {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .step-number {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 800;
+    background: var(--bg-elevated);
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 20px rgba(0,229,176,0.2);
+    color: var(--accent);
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-number.blue { border-color: var(--accent-blue); box-shadow: 0 0 20px rgba(0,180,216,0.2); color: var(--accent-blue); }
+  .step-number.purple { border-color: var(--accent-purple); box-shadow: 0 0 20px rgba(124,58,237,0.2); color: #a78bfa; }
+  .step-number.orange { border-color: var(--accent-orange); box-shadow: 0 0 20px rgba(249,115,22,0.2); color: var(--accent-orange); }
+
+  .step-body {
+    flex: 1;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 24px 28px;
+    transition: border-color 0.2s;
+  }
+  .step-body:hover {
+    border-color: rgba(0,229,176,0.15);
+  }
+
+  .step-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .step-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .step-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+  .badge-cli { background: rgba(0,229,176,0.1); color: var(--accent); border: 1px solid rgba(0,229,176,0.2); }
+  .badge-browser { background: rgba(0,180,216,0.1); color: var(--accent-blue); border: 1px solid rgba(0,180,216,0.2); }
+  .badge-vscode { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .badge-optional { background: rgba(249,115,22,0.1); color: var(--accent-orange); border: 1px solid rgba(249,115,22,0.2); }
+
+  .step-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  /* Code block */
+  .code-block {
+    background: #0a0d14;
+    border: 1px solid rgba(0,229,176,0.1);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    color: var(--accent);
+    position: relative;
+    overflow-x: auto;
+  }
+  .code-block .prompt {
+    color: var(--text-muted);
+    user-select: none;
+  }
+  .code-block .cmd {
+    color: var(--accent);
+  }
+  .code-block .flag {
+    color: var(--accent-blue);
+  }
+  .code-block .comment {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Copy btn */
+  .code-copy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,229,176,0.08);
+    border: 1px solid rgba(0,229,176,0.15);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 11px;
+    color: var(--accent);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: all 0.2s;
+  }
+  .code-copy:hover { background: rgba(0,229,176,0.15); }
+
+  /* Steps inner grid */
+  .step-sub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  @media (max-width: 600px) {
+    .step-sub-grid { grid-template-columns: 1fr; }
+    .steps-container::before { display: none; }
+  }
+  .step-sub {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .step-sub-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .step-sub p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .step-sub code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(0,229,176,0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  /* Tip box */
+  .tip {
+    display: flex;
+    gap: 10px;
+    background: rgba(0,229,176,0.04);
+    border: 1px solid rgba(0,229,176,0.12);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .tip-icon { flex-shrink: 0; color: var(--accent); }
+  .tip a { color: var(--accent); text-decoration: none; }
+  .tip a:hover { text-decoration: underline; }
+
+  /* Visual steps (clicks) */
+  .click-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .click-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .click-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .click-arrow {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* SUCCESS */
+  .success-box {
+    max-width: 860px;
+    margin: 40px auto 0;
+    background: linear-gradient(135deg, rgba(0,229,176,0.05), rgba(0,180,216,0.05));
+    border: 1px solid rgba(0,229,176,0.2);
+    border-radius: 20px;
+    padding: 36px 40px;
+    text-align: center;
+  }
+  .success-box h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .success-box p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .success-commands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .success-cmd {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .success-cmd span {
+    color: var(--text-muted);
+    font-size: 11px;
+    display: block;
+    text-align: left;
+    font-family: var(--font-sans);
+    margin-bottom: 2px;
+  }
+
+  /* METHODS comparison */
+  .methods {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  @media (max-width: 600px) { .methods { grid-template-columns: 1fr; } }
+  .method-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .method-card.recommended {
+    border-color: rgba(0,229,176,0.25);
+    background: rgba(0,229,176,0.03);
+  }
+  .method-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .method-rec {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(0,229,176,0.1);
+    border-radius: 100px;
+    padding: 2px 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .method-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .method-card ul li {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    line-height: 1.4;
+  }
+  .method-card ul li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+    font-size: 11px;
+    margin-top: 1px;
+  }
+
+  /* Keyboard shortcut */
+  kbd {
+    background: var(--bg-elevated);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-primary);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .footer span { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🤖 Guía de Instalación</div>
+  <h1>VS Code + Claude Code</h1>
+  <p>Conecta tu editor favorito con el CLI de IA más poderoso. Trabaja con Claude directamente desde tu proyecto.</p>
+</div>
+
+<!-- PREREQS -->
+<div class="prereqs">
+  <div class="prereqs-title">📦 Requisitos previos</div>
+  <div class="prereqs-grid">
+    <div class="prereq-item">
+      <div class="prereq-icon">🟢</div>
+      <div class="prereq-info">
+        <strong>Node.js</strong>
+        <span>versión 18 o superior</span>
+      </div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">💙</div>
+      <div class="prereq-info">
+        <strong>VS Code</strong>
+        <span>cualquier versión reciente</span>
+      </div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">🔑</div>
+      <div class="prereq-info">
+        <strong>Cuenta Anthropic</strong>
+        <span>claude.ai o API key</span>
+      </div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">💻</div>
+      <div class="prereq-info">
+        <strong>Terminal</strong>
+        <span>macOS / Linux / Windows WSL</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="steps-container">
+
+  <!-- STEP 1 -->
+  <div class="step-card">
+    <div class="step-number">1</div>
+    <div class="step-body">
+      <div class="step-header">
+        <div class="step-title">Verificar Node.js</div>
+        <div class="step-badge badge-cli">CLI</div>
+      </div>
+      <p class="step-desc">Abre la terminal integrada de VS Code y verifica que tengas Node.js 18+ instalado.</p>
+      <div class="code-block">
+        <span class="prompt">$ </span><span class="cmd">node --version</span><br>
+        <span class="comment"># debe mostrar v18.x.x o superior</span><br><br>
+        <span class="prompt">$ </span><span class="cmd">npm --version</span><br>
+        <span class="comment"># debe mostrar 8.x.x o superior</span>
+        <button class="code-copy" onclick="copyCode(this, 'node --version\nnpm --version')">copiar</button>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">💡</span>
+        <span>¿No tienes Node.js? Descárgalo en <a href="#">nodejs.org</a> o usa <code>brew install node</code> en macOS.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card">
+    <div class="step-number blue">2</div>
+    <div class="step-body">
+      <div class="step-header">
+        <div class="step-title">Instalar Claude Code CLI</div>
+        <div class="step-badge badge-cli">CLI</div>
+      </div>
+      <p class="step-desc">Instala el paquete global de Claude Code con npm. Este es el motor que alimenta todo.</p>
+      <div class="code-block">
+        <span class="prompt">$ </span><span class="cmd">npm install -g @anthropic-ai/claude-code</span>
+        <button class="code-copy" onclick="copyCode(this, 'npm install -g @anthropic-ai/claude-code')">copiar</button>
+      </div>
+      <div class="code-block" style="margin-top: 10px;">
+        <span class="comment"># verificar instalación</span><br>
+        <span class="prompt">$ </span><span class="cmd">claude --version</span>
+        <button class="code-copy" onclick="copyCode(this, 'claude --version')">copiar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card">
+    <div class="step-number purple">3</div>
+    <div class="step-body">
+      <div class="step-header">
+        <div class="step-title">Abrir la terminal integrada en VS Code</div>
+        <div class="step-badge badge-vscode">VS Code</div>
+      </div>
+
+      <div class="tip" style="margin-bottom: 14px; background: rgba(249,115,22,0.05); border-color: rgba(249,115,22,0.2);">
+        <span class="tip-icon">⚠️</span>
+        <span><strong style="color:#f97316">Ojo:</strong> En el Marketplace de VS Code aparecen muchas extensiones llamadas "Claude Code" pero <strong>ninguna es oficial de Anthropic</strong>. Son wrappers de terceros. No instales ninguna — la integración real es vía terminal.</span>
+      </div>
+
+      <p class="step-desc">Claude Code se integra con VS Code a través de la terminal integrada. Sin extensiones, sin configuración extra.</p>
+
+      <div class="methods">
+        <div class="method-card recommended">
+          <div class="method-title">
+            💻 Terminal integrada
+            <span class="method-rec">método oficial</span>
+          </div>
+          <ul>
+            <li>Abre tu proyecto en VS Code</li>
+            <li>Presiona <kbd>⌘</kbd> + <kbd>J</kbd> para abrir la terminal</li>
+            <li>Ejecuta <code>claude</code> y ya está</li>
+            <li>Lee el contexto del proyecto automáticamente</li>
+            <li>Acceso a todos los archivos del workspace</li>
+          </ul>
+        </div>
+        <div class="method-card">
+          <div class="method-title">🖥️ Terminal externa</div>
+          <ul>
+            <li>Abre Terminal.app o iTerm2</li>
+            <li>Navega con <code>cd ~/tu-proyecto</code></li>
+            <li>Ejecuta <code>code .</code> para abrir VS Code</li>
+            <li>Luego ejecuta <code>claude</code></li>
+            <li>Útil si prefieres terminal separada</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="click-steps" style="margin-top: 16px;">
+        <div class="click-step">
+          <div class="click-num">1</div>
+          <span>Con VS Code abierto, presiona <kbd>⌘</kbd> + <kbd>J</kbd></span>
+        </div>
+        <div class="click-step">
+          <div class="click-num">2</div>
+          <span>Se abre el panel inferior <span class="click-arrow">→</span> selecciona pestaña <strong>Terminal</strong></span>
+        </div>
+        <div class="click-step">
+          <div class="click-num">3</div>
+          <span>Escribe <code style="background:rgba(0,229,176,0.08);padding:2px 6px;border-radius:4px;color:var(--accent)">claude</code> y presiona Enter</span>
+        </div>
+        <div class="click-step">
+          <div class="click-num">4</div>
+          <span>Claude detecta el proyecto automáticamente y está listo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card">
+    <div class="step-number orange">4</div>
+    <div class="step-body">
+      <div class="step-header">
+        <div class="step-title">Autenticar con Anthropic</div>
+        <div class="step-badge badge-browser">Auth</div>
+      </div>
+      <p class="step-desc">En la terminal de VS Code, ejecuta Claude por primera vez. Te pedirá autenticación.</p>
+
+      <div class="code-block">
+        <span class="comment"># Navega a tu proyecto primero</span><br>
+        <span class="prompt">$ </span><span class="cmd">cd ~/tu-proyecto</span><br><br>
+        <span class="comment"># Inicia Claude Code</span><br>
+        <span class="prompt">$ </span><span class="cmd">claude</span>
+        <button class="code-copy" onclick="copyCode(this, 'claude')">copiar</button>
+      </div>
+
+      <div class="step-sub-grid">
+        <div class="step-sub">
+          <div class="step-sub-label">Opción A — Claude.ai</div>
+          <p>Si tienes plan Claude Pro/Max, autentícate con tu cuenta claude.ai. Abrirá el navegador automáticamente.</p>
+        </div>
+        <div class="step-sub">
+          <div class="step-sub-label">Opción B — API Key</div>
+          <p>Usa tu API key de Anthropic. Pégala cuando la solicite. Se guarda en <code>~/.claude</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-card">
+    <div class="step-number">5</div>
+    <div class="step-body">
+      <div class="step-header">
+        <div class="step-title">Abrir tu proyecto y ejecutar</div>
+        <div class="step-badge badge-cli">Listo 🎉</div>
+      </div>
+      <p class="step-desc">Con el proyecto abierto en VS Code, Claude Code lee automáticamente el contexto de tus archivos.</p>
+
+      <div class="code-block">
+        <span class="comment"># Abrir VS Code en el directorio actual</span><br>
+        <span class="prompt">$ </span><span class="cmd">code .</span><br><br>
+        <span class="comment"># Desde la terminal integrada de VS Code:</span><br>
+        <span class="prompt">$ </span><span class="cmd">claude</span><br><br>
+        <span class="comment"># O pide algo directo:</span><br>
+        <span class="prompt">$ </span><span class="cmd">claude <span class="flag">"explica qué hace este proyecto"</span></span>
+        <button class="code-copy" onclick="copyCode(this, 'claude')">copiar</button>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">⚡</span>
+        <span>Claude Code lee tu <code>package.json</code>, estructura de archivos y código automáticamente. Usa <code>claude --help</code> para ver todos los comandos disponibles.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SUCCESS BOX -->
+<div class="success-box">
+  <h2>✅ Todo listo — Comandos útiles para empezar</h2>
+  <p>Claude Code ya está integrado en VS Code. Usa estos comandos desde la terminal integrada del editor.</p>
+  <div class="success-commands">
+    <div class="success-cmd">
+      <span>iniciar sesión interactiva</span>
+      claude
+    </div>
+    <div class="success-cmd">
+      <span>consulta rápida</span>
+      claude "tu pregunta"
+    </div>
+    <div class="success-cmd">
+      <span>ver versión</span>
+      claude --version
+    </div>
+    <div class="success-cmd">
+      <span>modo doctor</span>
+      claude doctor
+    </div>
+    <div class="success-cmd">
+      <span>ver ayuda</span>
+      claude --help
+    </div>
+    <div class="success-cmd">
+      <span>config settings</span>
+      claude /settings
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Creado con <span>Smart Connection</span> · Claude Code CLI · <span>@smc/ui</span> design system
+</div>
+
+<script>
+  function copyCode(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '¡copiado!';
+      btn.style.color = '#00e5b0';
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.style.color = '';
+      }, 1500);
+    });
+  }
+</script>
+
+</body>
+</html>

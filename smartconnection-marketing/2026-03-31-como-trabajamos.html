@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Connection — Como Trabajamos (Maqueta v4)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00c1c1;
+      --primary-dark: #009a9a;
+      --primary-light: #00e5e5;
+      --accent-gold: #f0ab00;
+      --dark-bg: #0a0e17;
+      --dark-bg-2: #111827;
+      --dark-bg-3: #1a2332;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --font: 'Inter', system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font);
+      background: var(--dark-bg);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === SECTION === */
+    .section-how {
+      position: relative;
+      padding: 6rem 1.5rem;
+      overflow: hidden;
+    }
+
+    .section-how .blob {
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .section-how .blob-1 { left: -120px; top: 8%; background: radial-gradient(circle, rgba(0,193,193,0.05), transparent 70%); }
+    .section-how .blob-2 { right: -120px; bottom: 8%; background: radial-gradient(circle, rgba(240,171,0,0.03), transparent 70%); }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* === HEADER === */
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-label {
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .section-title {
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: 800;
+      color: #fff;
+      margin-top: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .section-title .highlight {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      max-width: 660px;
+      margin: 0 auto;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    /* === SUBSECTION LABELS === */
+    .subsection {
+      margin-bottom: 1.5rem;
+    }
+    .subsection-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      margin-bottom: 1.25rem;
+    }
+    .subsection-label.ia {
+      color: var(--primary);
+      background: rgba(0, 193, 193, 0.06);
+      border: 1px solid rgba(0, 193, 193, 0.12);
+    }
+    .subsection-label.method {
+      color: var(--accent-gold);
+      background: rgba(240, 171, 0, 0.06);
+      border: 1px solid rgba(240, 171, 0, 0.12);
+    }
+
+    /* === GRID === */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .cards-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    /* === CARD BASE === */
+    .hw-card {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 2rem 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s ease;
+    }
+    .hw-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(0, 193, 193, 0.06),
+        transparent 40%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Card accent variants */
+    .hw-card.ia-card { border-color: rgba(0, 193, 193, 0.08); }
+    .hw-card.ia-card:hover {
+      border-color: rgba(0, 193, 193, 0.25);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(0,193,193,0.06);
+    }
+    .hw-card.ia-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 2rem; right: 2rem; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0; transition: opacity 0.35s;
+    }
+    .hw-card.ia-card:hover::after { opacity: 0.4; }
+
+    .hw-card.method-card { border-color: rgba(240, 171, 0, 0.06); }
+    .hw-card.method-card:hover {
+      border-color: rgba(240, 171, 0, 0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(240,171,0,0.04);
+    }
+    .hw-card.method-card::before {
+      background: radial-gradient(
+        500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(240, 171, 0, 0.04),
+        transparent 40%
+      );
+    }
+    .hw-card.method-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 2rem; right: 2rem; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+      opacity: 0; transition: opacity 0.35s;
+    }
+    .hw-card.method-card:hover::after { opacity: 0.3; }
+
+    /* Card content */
+    .card-icon-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-icon {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+    .ia-card .card-icon {
+      background: rgba(0, 193, 193, 0.1);
+      color: var(--primary);
+    }
+    .method-card .card-icon {
+      background: rgba(240, 171, 0, 0.08);
+      color: var(--accent-gold);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-ref {
+      font-size: 0.72rem;
+      opacity: 0.45;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: opacity 0.3s;
+    }
+    .ia-card .card-ref { color: var(--primary); }
+    .method-card .card-ref { color: var(--accent-gold); }
+    .hw-card:hover .card-ref { opacity: 0.8; }
+    .card-ref i { font-size: 0.6rem; }
+
+    /* === DIVIDER === */
+    .section-divider {
+      margin: 2.5rem 0 1.5rem;
+    }
+
+    /* === BOTTOM === */
+    .bottom-strip {
+      margin-top: 3rem;
+      text-align: center;
+      padding: 1.75rem 2rem;
+      border-radius: 16px;
+      background: rgba(17, 24, 39, 0.4);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .bottom-strip p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+    .bottom-strip .hl-cyan { color: var(--primary); font-weight: 600; }
+    .bottom-strip .hl-gold { color: var(--accent-gold); font-weight: 600; }
+
+    /* === ANIMATION === */
+    .animate-in {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .animate-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cards-grid .hw-card:nth-child(1) { transition-delay: 0.05s; }
+    .cards-grid .hw-card:nth-child(2) { transition-delay: 0.1s; }
+    .cards-grid .hw-card:nth-child(3) { transition-delay: 0.15s; }
+    .cards-grid .hw-card:nth-child(4) { transition-delay: 0.2s; }
+
+    /* === MAQUETA BADGE === */
+    .maqueta-badge {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(240, 171, 0, 0.9);
+      color: #0a0e17;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      z-index: 9999;
+      letter-spacing: 0.05em;
+    }
+
+    .context-section {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .context-section .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.35;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 767px) {
+      .bottom-strip { padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="maqueta-badge">MAQUETA v4 — 2026-03-31</div>
+
+  <div class="context-section">
+    <span class="label">... Seccion anterior: Confian en Nosotros ...</span>
+  </div>
+
+  <!-- ========== COMO TRABAJAMOS ========== -->
+  <section class="section-how" id="como-trabajamos">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="container">
+
+      <!-- Header -->
+      <div class="section-header animate-in">
+        <span class="section-label">Como trabajamos</span>
+        <h2 class="section-title">IA real + <span class="highlight">ingenieria seria</span></h2>
+        <p class="section-desc">Combinamos infraestructura de inteligencia artificial en produccion con metodologias de ingenieria probadas. No improvisamos — construimos sistemas que funcionan, se miden y evolucionan.</p>
+      </div>
+
+      <!-- IA BLOCK -->
+      <div class="subsection animate-in">
+        <span class="subsection-label ia"><i class="bi bi-cpu"></i> Inteligencia Artificial</span>
+      </div>
+
+      <div class="cards-grid">
+
+        <!-- 1. MCP -->
+        <div class="hw-card ia-card animate-in">
+          <div class="card-icon-row">
+            <div class="card-icon"><i class="bi bi-plug"></i></div>
+            <h3 class="card-title">Model Context Protocol</h3>
+          </div>
+          <p class="card-desc">Nuestros agentes de IA se conectan a herramientas reales — calendario, gestion de proyectos, diseño, analytics — y ejecutan acciones concretas. No solo responden texto: hacen cosas.</p>
+          <span class="card-ref"><i class="bi bi-circle-fill"></i> Protocolo abierto para conectar IA con el mundo real</span>
+        </div>
+
+        <!-- 2. Multi-Agent -->
+        <div class="hw-card ia-card animate-in">
+          <div class="card-icon-row">
+            <div class="card-icon"><i class="bi bi-diagram-3"></i></div>
+            <h3 class="card-title">Orquestacion Multi-Agente</h3>
+          </div>
+          <p class="card-desc">Agentes especializados trabajan coordinados en paralelo — cada uno con su dominio, herramientas y contexto. Se comunican entre si para resolver tareas complejas que un solo modelo no puede.</p>
+          <span class="card-ref"><i class="bi bi-circle-fill"></i> Patron de microservicios aplicado a inteligencia artificial</span>
+        </div>
+
+        <!-- 3. RAG -->
+        <div class="hw-card ia-card animate-in">
+          <div class="card-icon-row">
+            <div class="card-icon"><i class="bi bi-search"></i></div>
+            <h3 class="card-title">RAG + Vector Search</h3>
+          </div>
+          <p class="card-desc">La IA busca en tus documentos reales antes de responder — no inventa. Embeddings vectoriales, busqueda hibrida y reranking para que las respuestas siempre tengan fuente verificable.</p>
+          <span class="card-ref"><i class="bi bi-circle-fill"></i> Retrieval Augmented Generation — respuestas con citas, no con fe</span>
+        </div>
+
+        <!-- 4. AI Guardrails -->
+        <div class="hw-card ia-card animate-in">
+          <div class="card-icon-row">
+            <div class="card-icon"><i class="bi bi-shield-lock"></i></div>
+            <h3 class="card-title">AI Guardrails</h3>
+          </div>
+          <p class="card-desc">Filtros automaticos antes y despues de cada respuesta de IA. Bloquean alucinaciones, datos sensibles e inyeccion de prompts. La IA no dice lo que quiere — dice lo que debe.</p>
+          <span class="card-ref"><i class="bi bi-circle-fill"></i> Middleware de seguridad pre y post en cada llamada al modelo</span>
+        </div>
+
+      </div>
+
+      <!-- DIVIDER -->
+      <div class="section-divider"></div>
+
+      <!-- METODOLOGIAS BLOCK -->
+      <div class="subsection animate-in">
+        <span class="subsection-label method"><i class="bi bi-gear"></i> Metodologias &amp; Arquitectura</span>
+      </div>
+
+      <div class="cards-grid">
+
+        <!-- 4. Eval-Driven -->
+        <div class="hw-card method-card animate-in">
+          <div class="card-icon-row">
+            <div class="card-icon"><i class="bi bi-clipboard-data"></i></div>
+            <h3 class="card-title">Eval-Driven Development</h3>
+          </div>
+          <p class="card-desc">Cada prompt pasa por un dataset de evaluacion con score minimo antes de produccion. Medimos tasa de alucinacion, consistencia y calidad. Si el score baja, no se deploya.</p>
+          <span class="card-ref"><i class="bi bi-circle-fill"></i> TDD adaptado a modelos de lenguaje</span>
+        </div>
+
+        <!-- 5. Kaizen -->
+        <div class="hw-card method-card animate-in">
+          <div class="card-icon-row">
+            <div class="card-icon"><i class="bi bi-arrow-repeat"></i></div>
+            <h3 class="card-title">Kaizen — Mejora Continua</h3>
+          </div>
+          <p class="card-desc">Ciclo de auditoria periodica y automatizada: codigo, configuracion, contratos e integraciones. Score por area, hallazgos cuantificados con costo estimado — no solo recomendaciones.</p>
+          <span class="card-ref"><i class="bi bi-circle-fill"></i> Toyota Production System aplicado a software</span>
+        </div>
+
+        <!-- 6. Governance -->
+        <div class="hw-card method-card animate-in">
+          <div class="card-icon-row">
+            <div class="card-icon"><i class="bi bi-building-gear"></i></div>
+            <h3 class="card-title">Governance System</h3>
+          </div>
+          <p class="card-desc">Sistema de gobierno con documentos versionados, ownership explicito y trazabilidad de decisiones. Cada agente sabe que puede modificar y que solo puede leer. Nada se improvisa.</p>
+          <span class="card-ref"><i class="bi bi-circle-fill"></i> Decisiones con dueño, criterio y registro auditable</span>
+        </div>
+
+        <!-- 7. Maqueta-First -->
+        <div class="hw-card method-card animate-in">
+          <div class="card-icon-row">
+            <div class="card-icon"><i class="bi bi-eye"></i></div>
+            <h3 class="card-title">Maqueta-First</h3>
+          </div>
+          <p class="card-desc">Prototipo interactivo con datos reales, todos los estados y responsive — antes de escribir una linea de codigo. Apruebas lo que ves, no lo que imaginas.</p>
+          <span class="card-ref"><i class="bi bi-circle-fill"></i> Design Sprint — validas antes de invertir en desarrollo</span>
+        </div>
+
+      </div>
+
+      <!-- Bottom -->
+      <div class="bottom-strip animate-in">
+        <p><span class="hl-cyan">Infraestructura de IA</span> que ejecuta acciones reales, se protege con guardrails y se testea antes de produccion. <span class="hl-gold">Ingenieria</span> que valida con prototipos, audita con datos y evoluciona cada entrega de forma sistematica.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="context-section">
+    <span class="label">... Seccion siguiente: Soluciones PYME ...</span>
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+
+    document.querySelectorAll('.hw-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+      });
+    });
+  </script>
+
+</body>
+</html>
