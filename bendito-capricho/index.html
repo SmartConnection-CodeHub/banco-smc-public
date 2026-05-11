@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bendito Capricho — Plataforma de Supervisión Digital · Fase 1 entregada · Créalo SpA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fdfaf6;
+  --surface:#ffffff;
+  --ink:#1f1416;
+  --ink-soft:#544049;
+  --ink-mute:#8b7a82;
+  --border:#ece4dc;
+  --border-strong:#d8cabb;
+  /* Paleta retail premium BC */
+  --primary:#8b2c4d;        /* burgundy */
+  --primary-soft:#f5e6ec;
+  --primary-dark:#5e1a33;
+  --secondary:#c9a66b;       /* champagne */
+  --secondary-soft:#f7efdf;
+  --accent:#8b2c4d;
+  --success:#15803d;
+  --success-soft:#dcfce7;
+  --warn:#b45309;
+  --warn-soft:#fef3c7;
+  --info:#1e40af;
+  --info-soft:#dbeafe;
+  --next:#000000;
+  --air:#fcb400;
+  --vercel:#000000;
+  --shadow:0 1px 2px rgba(46,18,28,0.04), 0 8px 24px rgba(46,18,28,0.05);
+  --shadow-strong:0 4px 12px rgba(46,18,28,0.08), 0 24px 48px rgba(139,44,77,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.55;
+  font-size:15px;
+  -webkit-font-smoothing:antialiased;
+}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.875em}
+.container{max-width:1280px;margin:0 auto;padding:0 24px}
+@media(min-width:768px){.container{padding:0 32px}}
+
+/* HEADER */
+header{
+  background:rgba(255,255,255,0.92);
+  border-bottom:1px solid var(--border);
+  padding:18px 0;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(12px);
+}
+.header-grid{display:flex;justify-content:space-between;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;color:var(--primary);font-size:16px;letter-spacing:-.01em}
+.brand-mark{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  display:grid;place-items:center;color:white;font-weight:800;font-size:14px;
+  box-shadow:0 4px 12px rgba(139,44,77,0.25);
+}
+.brand-sub{font-size:11px;color:var(--ink-mute);font-weight:500;display:block;letter-spacing:.04em;text-transform:uppercase}
+nav.toc{display:none;gap:2px;flex-wrap:wrap}
+@media(min-width:1024px){nav.toc{display:flex}}
+nav.toc a{
+  text-decoration:none;color:var(--ink-soft);
+  font-size:12.5px;font-weight:500;
+  padding:6px 10px;border-radius:6px;transition:all .15s;
+}
+nav.toc a:hover{color:var(--primary);background:var(--primary-soft)}
+.menu-btn{display:flex;background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px;color:var(--ink-soft)}
+@media(min-width:1024px){.menu-btn{display:none}}
+
+/* HERO */
+.hero{
+  padding:64px 0 56px;
+  text-align:center;
+  background:linear-gradient(180deg,var(--bg) 0%,var(--surface) 100%);
+}
+@media(min-width:768px){.hero{padding:96px 0 72px}}
+.hero-eyebrow{
+  display:inline-block;color:var(--primary);background:var(--primary-soft);
+  padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px;
+}
+.hero h1{
+  font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1.08;
+  color:var(--ink);max-width:840px;margin:0 auto 18px;
+}
+@media(min-width:768px){.hero h1{font-size:54px}}
+.hero h1 .accent{color:var(--primary);font-style:italic;font-weight:600}
+.hero p{font-size:16px;color:var(--ink-soft);max-width:680px;margin:0 auto;font-weight:400}
+@media(min-width:768px){.hero p{font-size:19px}}
+.hero-cta{margin-top:28px;display:inline-flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 20px;border-radius:10px;
+  font-size:14px;font-weight:600;text-decoration:none;
+  transition:all .15s;border:1.5px solid transparent;cursor:pointer;
+  font-family:inherit;
+}
+.btn-primary{background:var(--primary);color:white;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-ghost{background:transparent;color:var(--primary);border-color:var(--border-strong)}
+.btn-ghost:hover{border-color:var(--primary);background:var(--primary-soft)}
+.hero-meta{
+  margin-top:36px;display:inline-flex;gap:16px;padding:14px 22px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;box-shadow:var(--shadow);flex-wrap:wrap;
+}
+.hero-meta-item{font-size:11px;color:var(--ink-mute);text-align:left}
+.hero-meta-item strong{display:block;color:var(--ink);font-size:17px;font-weight:700;letter-spacing:-.01em}
+
+/* SECTION */
+section{padding:56px 0}
+@media(min-width:768px){section{padding:80px 0}}
+section.alt{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.section-header{margin-bottom:40px}
+.section-eyebrow{
+  color:var(--primary);font-size:12px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;
+}
+.section-title{
+  font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.18;
+  color:var(--ink);max-width:760px;
+}
+@media(min-width:768px){.section-title{font-size:38px}}
+.section-desc{font-size:15px;color:var(--ink-soft);margin-top:14px;max-width:720px;line-height:1.6}
+@media(min-width:768px){.section-desc{font-size:17px}}
+
+/* GRID ELEMENTS */
+.grid-3{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:640px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.grid-3{grid-template-columns:repeat(3,1fr)}}
+.grid-4{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:640px){.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.grid-4{grid-template-columns:repeat(4,1fr)}}
+
+/* CARDS */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:24px;transition:all .2s;
+}
+.card:hover{box-shadow:var(--shadow-strong);transform:translateY(-2px);border-color:var(--primary)}
+.card-icon{
+  width:42px;height:42px;border-radius:10px;
+  background:var(--primary-soft);color:var(--primary);
+  display:grid;place-items:center;font-weight:800;font-size:18px;margin-bottom:14px;
+}
+.card h3{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:6px}
+.card p{color:var(--ink-soft);font-size:13.5px;line-height:1.55}
+.card .meta{font-size:11px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.card.feat{border-left:3px solid var(--primary)}
+
+/* PIPELINE HORIZONTAL */
+.pipeline{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:24px;box-shadow:var(--shadow);margin-bottom:20px;
+}
+@media(min-width:768px){.pipeline{padding:32px}}
+.pipeline-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.pipeline-title{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.pipeline-desc{font-size:13px;color:var(--ink-mute);margin-top:4px}
+.pipeline-tag{font-size:11px;font-weight:700;background:var(--primary-soft);color:var(--primary);padding:4px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em}
+.pipeline-track{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+.step{
+  background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  padding:12px 14px;min-width:155px;flex:0 0 auto;position:relative;
+  display:flex;flex-direction:column;gap:5px;
+}
+.step-arrow{align-self:center;width:24px;flex:0 0 24px;color:var(--ink-mute);display:grid;place-items:center;font-size:18px}
+.step-num{font-size:10px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.08em}
+.step-tag{
+  font-size:10.5px;font-family:'JetBrains Mono',monospace;
+  color:var(--ink-mute);background:var(--primary-soft);
+  padding:2px 6px;border-radius:4px;align-self:flex-start;font-weight:600;
+}
+.step-name{font-size:13px;font-weight:600;color:var(--ink);line-height:1.3}
+.step-actor{font-size:11px;color:var(--ink-mute);margin-top:2px}
+.step.check{border-color:#bbf7d0;background:#f0fdf4}
+.step.check .step-num{color:#15803d}
+.step.alert{border-color:#fecaca;background:#fef2f2}
+.step.alert .step-num{color:#b91c1c}
+.step.warn{border-color:#fde68a;background:#fffbeb}
+.step.warn .step-num{color:#b45309}
+
+/* ARQUITECTURA BOARD */
+.arch-board{
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  padding:32px 20px;box-shadow:var(--shadow);position:relative;
+}
+@media(min-width:768px){.arch-board{padding:48px 40px}}
+.arch-grid{display:grid;grid-template-columns:1fr;gap:16px;align-items:stretch}
+@media(min-width:768px){.arch-grid{grid-template-columns:1fr auto 1fr auto 1fr;gap:18px;align-items:center}}
+.arch-system{
+  background:#fff;border-radius:14px;padding:22px 18px;
+  border:2px solid var(--border);text-align:center;transition:all .2s;
+}
+.arch-system:hover{transform:translateY(-2px);box-shadow:var(--shadow-strong)}
+.arch-system.next{border-color:#000}
+.arch-system.air{border-color:var(--air)}
+.arch-system.vercel{border-color:#000;background:linear-gradient(180deg,#fff,#fafafa)}
+.arch-icon{
+  width:52px;height:52px;margin:0 auto 12px;border-radius:12px;
+  display:grid;place-items:center;font-weight:800;color:white;font-size:18px;letter-spacing:-.02em;
+}
+.next .arch-icon{background:#000}
+.air .arch-icon{background:var(--air);color:#000}
+.vercel .arch-icon{background:#000}
+.arch-system h4{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.arch-system .sub{font-size:11px;color:var(--ink-mute);margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.arch-system ul{list-style:none;text-align:left;font-size:12.5px;color:var(--ink-soft);line-height:1.7}
+.arch-system ul li::before{content:"▸ ";color:var(--ink-mute)}
+.arch-flow{text-align:center;color:var(--ink-mute);font-size:22px;font-weight:300;display:none}
+@media(min-width:768px){.arch-flow{display:block}}
+.arch-flow .label{font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;font-weight:600;display:block;margin-top:-2px;font-family:'JetBrains Mono',monospace}
+
+.arch-extras{display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px}
+@media(min-width:640px){.arch-extras{grid-template-columns:repeat(3,1fr)}}
+.arch-extra{
+  background:linear-gradient(180deg,var(--secondary-soft) 0%,#fff 100%);
+  border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;
+}
+.arch-extra h5{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.arch-extra p{font-size:11.5px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace}
+
+/* TABS */
+.tabs{
+  display:flex;gap:6px;margin-bottom:24px;
+  background:#fff;border:1px solid var(--border);
+  border-radius:12px;padding:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.tab-btn{
+  flex:1 0 auto;min-width:120px;padding:11px 14px;
+  background:transparent;border:none;border-radius:8px;cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:600;color:var(--ink-soft);
+  transition:all .15s;text-align:center;letter-spacing:-.01em;
+}
+.tab-btn:hover{background:var(--primary-soft);color:var(--primary)}
+.tab-btn.active{background:var(--primary);color:white;box-shadow:0 4px 12px rgba(139,44,77,.25)}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* MATRIZ MODULOS x ROLES */
+.matrix-table{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;box-shadow:var(--shadow);overflow-x:auto;
+}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
+thead{background:linear-gradient(180deg,var(--primary-soft) 0%,#fff 100%)}
+th{
+  text-align:left;padding:12px 14px;font-weight:700;
+  color:var(--ink);font-size:11.5px;text-transform:uppercase;
+  letter-spacing:.06em;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+th:first-child{position:sticky;left:0;background:linear-gradient(180deg,var(--primary-soft) 0%,#fff 100%);z-index:2;border-right:1px solid var(--border)}
+td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--ink-soft);vertical-align:middle}
+td:first-child{position:sticky;left:0;background:#fff;font-weight:600;color:var(--ink);border-right:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+tr:hover td:first-child{background:#fafbfc}
+.perm{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:5px;color:#fff}
+.perm.crud{background:#15803d}
+.perm.cru{background:#1e40af}
+.perm.r{background:#8b7a82}
+.perm.none{background:#e5e7eb;color:#8b7a82}
+.perm.scope{background:#8b2c4d}
+
+/* BPMN flow */
+.bpmn{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:24px;box-shadow:var(--shadow);
+}
+.bpmn-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.bpmn-sub{font-size:12px;color:var(--ink-mute);margin-bottom:18px;font-family:'JetBrains Mono',monospace}
+.bpmn-flow{display:flex;flex-direction:column;gap:0}
+.bpmn-node{
+  display:flex;align-items:flex-start;gap:14px;
+  background:#fafafa;border-left:3px solid var(--primary);
+  padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:2px;
+}
+.bpmn-node.start{border-color:#15803d;background:#f0fdf4}
+.bpmn-node.end{border-color:#15803d;background:#f0fdf4}
+.bpmn-node.gate{border-color:#b45309;background:#fffbeb}
+.bpmn-node.system{border-color:var(--info);background:var(--info-soft)}
+.bpmn-actor{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--primary);min-width:90px;flex-shrink:0;
+  padding-top:1px;
+}
+.bpmn-node.start .bpmn-actor,.bpmn-node.end .bpmn-actor{color:#15803d}
+.bpmn-node.gate .bpmn-actor{color:#b45309}
+.bpmn-node.system .bpmn-actor{color:var(--info)}
+.bpmn-step{font-size:13px;color:var(--ink);line-height:1.5}
+.bpmn-step strong{font-weight:700}
+.bpmn-arrow{align-self:center;color:var(--ink-mute);font-size:18px;line-height:1;margin:2px 0 2px 22px}
+
+/* SECUENCIA */
+.seq{
+  background:#1a1416;color:#f0e1e6;
+  border-radius:14px;padding:24px 18px;
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;
+  line-height:1.85;box-shadow:var(--shadow-strong);overflow-x:auto;
+}
+@media(min-width:768px){.seq{padding:32px 28px;font-size:13px}}
+.seq-header{
+  color:var(--secondary);font-size:11px;text-transform:uppercase;
+  letter-spacing:.1em;margin-bottom:14px;font-weight:700;
+}
+.seq pre{white-space:pre;font-family:inherit;color:inherit}
+.seq .actor{color:#fcb6c8;font-weight:600}
+.seq .arrow{color:#c9a66b}
+.seq .msg{color:#f7efdf}
+.seq .note{color:#8b7a82;font-style:italic}
+
+/* CIFRAS */
+.cifras-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:640px){.cifras-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1024px){.cifras-grid{grid-template-columns:repeat(4,1fr)}}
+.cifra{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:22px 18px;text-align:left;position:relative;overflow:hidden;
+  transition:all .2s;
+}
+.cifra:hover{transform:translateY(-2px);box-shadow:var(--shadow-strong);border-color:var(--primary)}
+.cifra::after{
+  content:"";position:absolute;top:0;right:0;width:60px;height:60px;
+  background:radial-gradient(circle at 100% 0%,var(--primary-soft) 0%,transparent 70%);
+  border-radius:0 14px 0 0;pointer-events:none;
+}
+.cifra-num{
+  font-size:38px;font-weight:800;color:var(--primary);
+  letter-spacing:-.03em;line-height:1;margin-bottom:8px;
+  font-feature-settings:"tnum";
+}
+.cifra-unit{font-size:14px;color:var(--ink-mute);font-weight:600;margin-left:4px}
+.cifra-label{font-size:12.5px;color:var(--ink);font-weight:600;margin-bottom:4px;letter-spacing:-.01em}
+.cifra-sub{font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace}
+
+/* CALLOUT */
+.callout{
+  background:linear-gradient(135deg,var(--primary-soft),#fff);
+  border-left:4px solid var(--primary);
+  padding:18px 22px;border-radius:0 12px 12px 0;margin:24px 0;
+}
+.callout-title{font-weight:700;color:var(--primary);margin-bottom:6px;font-size:13.5px;letter-spacing:-.01em}
+.callout p{color:var(--ink-soft);font-size:13.5px;line-height:1.6}
+.callout.warn{background:linear-gradient(135deg,var(--warn-soft),#fff);border-color:var(--warn)}
+.callout.warn .callout-title{color:var(--warn)}
+.callout.success{background:linear-gradient(135deg,var(--success-soft),#fff);border-color:var(--success)}
+.callout.success .callout-title{color:var(--success)}
+
+/* ANTES/DESPUES */
+.before-after{display:grid;grid-template-columns:1fr;gap:0}
+@media(min-width:768px){.before-after{grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}}
+.ba-col{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:24px;
+}
+.ba-col.before{border-color:#fecaca;background:#fef9f9}
+.ba-col.after{border-color:#bbf7d0;background:#f7fdfa}
+.ba-col h4{font-size:14px;font-weight:700;letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.before h4{color:#b91c1c}
+.after h4{color:#15803d}
+.ba-col ul{list-style:none;font-size:13.5px;color:var(--ink-soft);line-height:1.7}
+.ba-col ul li{padding-left:20px;position:relative;margin-bottom:6px}
+.before ul li::before{content:"✗";position:absolute;left:0;color:#b91c1c;font-weight:700}
+.after ul li::before{content:"✓";position:absolute;left:0;color:#15803d;font-weight:700}
+.ba-arrow{display:none}
+@media(min-width:768px){.ba-arrow{display:grid;place-items:center;color:var(--ink-mute);font-size:28px}}
+
+/* DEPTOS GRID */
+.deptos{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.deptos{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.deptos{grid-template-columns:repeat(4,1fr)}}
+.depto{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:18px;transition:all .2s;position:relative;
+}
+.depto:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--primary)}
+.depto-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.depto-code{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--primary-soft);color:var(--primary);
+  display:grid;place-items:center;font-family:'JetBrains Mono',monospace;
+  font-weight:800;font-size:11px;letter-spacing:.04em;
+}
+.depto h4{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.depto p{font-size:12.5px;color:var(--ink-mute);margin-bottom:10px}
+.depto .stats{display:flex;gap:14px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-mute)}
+.depto .stats strong{color:var(--ink);font-size:14px;display:block;font-weight:700}
+
+/* OPP - PIPELINE 7 ETAPAS */
+.kanban{
+  display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;
+}
+.kanban-col{
+  flex:0 0 220px;background:var(--surface);
+  border:1px solid var(--border);border-radius:12px;padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.kanban-col.s1{border-top:3px solid #d1d5db}
+.kanban-col.s2{border-top:3px solid #93c5fd}
+.kanban-col.s3{border-top:3px solid #60a5fa}
+.kanban-col.s4{border-top:3px solid #fcd34d}
+.kanban-col.s5{border-top:3px solid #fb923c}
+.kanban-col.s6{border-top:3px solid #c084fc}
+.kanban-col.s7{border-top:3px solid #4ade80}
+.kanban-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.kanban-head h5{font-size:12.5px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.kanban-num{font-size:11px;font-weight:700;color:var(--ink-mute);font-family:'JetBrains Mono',monospace}
+.kanban-desc{font-size:11.5px;color:var(--ink-mute);margin-bottom:6px;line-height:1.5}
+.kanban-actor{font-size:10.5px;font-weight:600;color:var(--primary);background:var(--primary-soft);padding:3px 8px;border-radius:6px;align-self:flex-start;text-transform:uppercase;letter-spacing:.04em}
+.kanban-sla{font-size:11px;color:var(--ink-soft);margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);font-family:'JetBrains Mono',monospace}
+
+/* FOOTER */
+footer{
+  background:linear-gradient(180deg,#fff,#fafafa);
+  padding:48px 0 32px;border-top:1px solid var(--border);margin-top:0;
+}
+.footer-grid{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px}
+.footer-meta{font-size:13px;color:var(--ink-mute);line-height:1.7}
+.footer-meta strong{color:var(--ink)}
+.footer-tag{
+  background:var(--primary);color:#fff;
+  padding:7px 16px;border-radius:999px;font-size:12px;font-weight:600;
+  letter-spacing:.02em;display:inline-flex;gap:6px;align-items:center;
+}
+.footer-links{display:flex;gap:18px;font-size:12.5px;flex-wrap:wrap}
+.footer-links a{color:var(--ink-soft);text-decoration:none;font-weight:500}
+.footer-links a:hover{color:var(--primary)}
+
+/* =======================================
+   VISIO FLOW · estilo banco-diseno v15
+   Nodos horizontales con pulse animado
+   ======================================= */
+.visio-stage{
+  background:linear-gradient(180deg,#fdfaf6 0%,#fff 100%);
+  border:1px solid var(--border);border-radius:16px;
+  padding:24px 18px;box-shadow:var(--shadow);
+  margin-bottom:20px;position:relative;overflow:hidden;
+}
+@media(min-width:768px){.visio-stage{padding:32px 28px}}
+.visio-stage::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(139,44,77,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,44,77,.04) 1px,transparent 1px);
+  background-size:24px 24px;opacity:.5;pointer-events:none;
+}
+.visio-head{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:14px;flex-wrap:wrap;margin-bottom:18px;position:relative;
+}
+.visio-head .live-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  font:600 11px 'JetBrains Mono',monospace;
+  color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase;
+}
+.visio-head .live-pill::before{
+  content:"";width:6px;height:6px;border-radius:99px;background:var(--success);
+  box-shadow:0 0 0 3px rgba(21,128,61,.25);animation:livepulse 1.6s ease-in-out infinite;
+}
+@keyframes livepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.9)}}
+.visio-title{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.visio-sub{font-size:12px;color:var(--ink-mute);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.visio-tag{font-size:10.5px;font-weight:700;background:var(--primary);color:#fff;padding:5px 12px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em;font-family:'JetBrains Mono',monospace}
+
+/* Flow horizontal con nodos */
+.ce-flow{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+  align-items:stretch;
+  position:relative;z-index:1;
+}
+.ce-flow.f3{grid-template-columns:1fr}
+.ce-flow.f4{grid-template-columns:1fr}
+.ce-flow.f5{grid-template-columns:1fr}
+@media(min-width:768px){
+  .ce-flow.f3{grid-template-columns:1fr 40px 1fr 40px 1fr}
+  .ce-flow.f4{grid-template-columns:1fr 32px 1fr 32px 1fr 32px 1fr}
+  .ce-flow.f5{grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr 28px 1fr}
+}
+.ce-node{
+  background:#fff;border:1.5px solid var(--border);border-radius:12px;
+  padding:14px 14px;display:flex;flex-direction:column;gap:6px;
+  box-shadow:0 1px 3px rgba(46,18,28,.06);
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+  position:relative;
+}
+.ce-node:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(46,18,28,.12)}
+.ce-node .lbl{font:700 9.5px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute)}
+.ce-node .nm{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--ink);line-height:1.2}
+.ce-node .sub{font:11px 'JetBrains Mono',monospace;color:var(--ink-soft);line-height:1.4}
+.ce-node .corner{position:absolute;top:8px;right:10px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ink-mute);letter-spacing:.04em}
+/* Variantes por sistema/rol */
+.ce-node.next{border-color:#000}
+.ce-node.next .lbl{color:#000}
+.ce-node.air{border-color:var(--air);background:linear-gradient(180deg,#fff,#fffdf5)}
+.ce-node.air .lbl{color:#b08200}
+.ce-node.vercel{border-color:#000;background:linear-gradient(180deg,#fff,#fafafa)}
+.ce-node.lider{border-color:#8b2c4d}
+.ce-node.lider .lbl{color:#8b2c4d}
+.ce-node.francis{border-color:#1e40af}
+.ce-node.francis .lbl{color:#1e40af}
+.ce-node.maria{border-color:#b45309;background:linear-gradient(180deg,#fffbeb,#fff)}
+.ce-node.maria .lbl{color:#b45309}
+.ce-node.system{background:var(--ink);color:#f7efdf;border:none}
+.ce-node.system .lbl{color:var(--secondary)}
+.ce-node.system .nm{color:#fff}
+.ce-node.system .sub{color:#d0c5b3}
+.ce-node.gate{border-color:#fcd34d;background:linear-gradient(180deg,#fffbeb,#fff)}
+.ce-node.gate .lbl{color:#b45309}
+.ce-node.start{border-color:#15803d}
+.ce-node.start .lbl{color:#15803d}
+.ce-node.end{border-color:#15803d;background:linear-gradient(180deg,#fff,#f0fdf4)}
+.ce-node.end .lbl{color:#15803d}
+.ce-node.alert{border-color:#dc2626;background:linear-gradient(180deg,#fef2f2,#fff)}
+.ce-node.alert .lbl{color:#dc2626}
+
+/* Arrow con pulse */
+.ce-arrow{
+  display:flex;align-items:center;justify-content:center;
+  position:relative;height:auto;min-height:18px;
+  color:var(--ink-mute);font:700 18px 'JetBrains Mono',monospace;
+}
+@media(min-width:768px){.ce-arrow{height:100%}}
+.ce-arrow::after{
+  content:"→";display:none;
+}
+@media(min-width:768px){
+  .ce-arrow{flex-direction:row}
+  .ce-arrow::before{
+    content:"";position:absolute;top:50%;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--primary) 30%,var(--primary) 70%,transparent);
+    transform:translateY(-50%);opacity:.4;
+  }
+  .ce-arrow .pulse{
+    position:absolute;top:50%;left:0;
+    width:8px;height:8px;border-radius:99px;
+    background:var(--primary);transform:translateY(-50%);
+    box-shadow:0 0 12px var(--primary),0 0 0 4px rgba(139,44,77,.15);
+    animation:travel 2.4s linear infinite;
+  }
+  .ce-arrow .tip{
+    position:relative;color:var(--primary);font-size:16px;font-weight:700;
+    background:#fff;padding:0 4px;z-index:2;
+  }
+}
+@media(max-width:767px){
+  .ce-arrow{padding:4px 0;color:var(--primary)}
+  .ce-arrow::before{
+    content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;
+    background:linear-gradient(180deg,transparent,var(--primary) 30%,var(--primary) 70%,transparent);
+    transform:translateX(-50%);opacity:.4;
+  }
+  .ce-arrow .pulse{
+    position:absolute;left:50%;top:0;
+    width:8px;height:8px;border-radius:99px;
+    background:var(--primary);transform:translateX(-50%);
+    box-shadow:0 0 12px var(--primary);
+    animation:travelV 2.4s linear infinite;
+  }
+  .ce-arrow .tip{position:relative;background:var(--surface);padding:2px 6px;color:var(--primary)}
+}
+@keyframes travel{
+  0%{left:0;opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{left:100%;opacity:0}
+}
+@keyframes travelV{
+  0%{top:0;opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{top:100%;opacity:0}
+}
+
+/* Meta badges debajo */
+.ce-meta{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;
+  position:relative;z-index:1;
+}
+.ce-meta .badge{
+  font:600 11px 'JetBrains Mono',monospace;
+  padding:5px 11px;border-radius:999px;
+  background:#fff;border:1px solid var(--border);
+  color:var(--ink-soft);letter-spacing:.02em;
+}
+.ce-meta .badge.ok{background:var(--success-soft);color:#15803d;border-color:transparent;font-weight:700}
+.ce-meta .badge.warn{background:var(--warn-soft);color:#b45309;border-color:transparent;font-weight:700}
+.ce-meta .badge.danger{background:#fee2e2;color:#b91c1c;border-color:transparent;font-weight:700}
+.ce-meta .badge .dot{display:inline-block;width:6px;height:6px;border-radius:99px;background:currentColor;margin-right:6px;vertical-align:middle}
+
+/* Log terminal */
+.ce-log{
+  background:var(--ink);color:#f7efdf;
+  border-radius:10px;padding:16px 18px;margin-top:14px;
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.85;
+  overflow-x:auto;position:relative;z-index:1;
+}
+.ce-log .ts{color:#8b7a82}
+.ce-log .ok{color:var(--success)}
+.ce-log .warn{color:#fcd34d}
+.ce-log .err{color:#fca5a5}
+.ce-log .arr{color:var(--secondary);font-weight:700}
+.ce-log .actor{color:#fcb6c8;font-weight:600}
+
+/* Visio orientation toggle */
+.visio-controls{
+  display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;
+}
+.visio-ctrl{
+  font:600 11px 'JetBrains Mono',monospace;
+  padding:5px 11px;border-radius:99px;
+  background:#fff;border:1px solid var(--border);
+  color:var(--ink-soft);cursor:pointer;letter-spacing:.04em;text-transform:uppercase;
+  transition:all .15s;
+}
+.visio-ctrl.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.visio-ctrl:hover:not(.on){border-color:var(--primary);color:var(--primary)}
+
+/* =======================================
+   VISIO CANVAS ENTERPRISE
+   Estilo Cencomall High Level Architecture
+   Zones agrupadas + SVG paths + actores + notas
+   ======================================= */
+.visio-canvas{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:24px 18px;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+@media(min-width:768px){.visio-canvas{padding:32px 24px}}
+.visio-canvas::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(139,44,77,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(139,44,77,.05) 1px,transparent 1px);
+  background-size:20px 20px;
+  pointer-events:none;
+}
+.visio-canvas-head{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:20px;gap:14px;flex-wrap:wrap;position:relative;z-index:5;
+}
+.visio-canvas-title{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.02em;text-align:center;flex:1}
+.visio-canvas-sub{font-size:12px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:4px}
+.visio-zoom{
+  display:inline-flex;background:#fff;border:1px solid var(--border-strong);
+  border-radius:10px;overflow:hidden;font-family:'JetBrains Mono',monospace;
+  align-items:center;font-size:11px;
+}
+.visio-zoom .pct{padding:6px 12px;color:var(--ink-soft);border-right:1px solid var(--border);font-weight:700}
+.visio-zoom button{
+  background:#fff;border:none;padding:7px 11px;cursor:pointer;
+  border-right:1px solid var(--border);color:var(--ink-soft);font-size:14px;
+}
+.visio-zoom button:last-child{border-right:none}
+.visio-zoom button:hover{background:var(--primary-soft);color:var(--primary)}
+
+/* Layout principal del Visio */
+.visio-svg-wrap{position:relative;z-index:2;min-height:520px}
+.visio-svg-wrap svg.connectors{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.visio-svg-wrap svg.connectors path{fill:none;stroke-width:1.8;stroke-linecap:round}
+.visio-svg-wrap svg.connectors path.label-bg{fill:#fff;stroke:none}
+
+/* Layers (z-index for boxes above connectors) */
+.visio-actors-top,.visio-actors-bottom{
+  display:grid;grid-template-columns:1fr;gap:12px;
+  position:relative;z-index:4;margin-bottom:20px;
+}
+@media(min-width:768px){
+  .visio-actors-top{grid-template-columns:repeat(3,1fr)}
+  .visio-actors-bottom{grid-template-columns:repeat(4,1fr)}
+}
+
+.visio-zones{
+  display:grid;grid-template-columns:1fr;gap:20px;
+  position:relative;z-index:4;margin-bottom:20px;
+}
+@media(min-width:768px){.visio-zones{grid-template-columns:repeat(3,1fr);gap:14px}}
+
+/* ZONA agrupadora con dashed border de color */
+.visio-zone{
+  border:2px dashed var(--zone-color,var(--primary));
+  border-radius:14px;padding:14px 12px 12px;
+  position:relative;background:rgba(255,255,255,.6);
+  display:flex;flex-direction:column;gap:10px;
+}
+.visio-zone[data-zone="frontend"]{--zone-color:#000}
+.visio-zone[data-zone="data"]{--zone-color:#b08200}
+.visio-zone[data-zone="infra"]{--zone-color:#15803d}
+.visio-zone[data-zone="external"]{--zone-color:#dc2626}
+.visio-zone-label{
+  position:absolute;top:-11px;left:14px;
+  background:#fff;padding:2px 10px;
+  font:700 10.5px 'JetBrains Mono',monospace;
+  color:var(--zone-color,var(--primary));letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+/* CAJA dentro de la zona */
+.visio-box{
+  background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  padding:12px 14px;display:flex;flex-direction:column;gap:5px;
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  position:relative;cursor:default;
+}
+.visio-box:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(46,18,28,.1);border-color:var(--zone-color)}
+.visio-box-head{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.visio-logo{
+  width:36px;height:36px;border-radius:8px;display:grid;place-items:center;
+  flex-shrink:0;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:11px;color:#fff;
+  letter-spacing:-.02em;
+}
+.visio-logo.next{background:#000}
+.visio-logo.air{background:#fcb400;color:#000}
+.visio-logo.vercel{background:#000}
+.visio-logo.nauth{background:linear-gradient(135deg,#000,#444)}
+.visio-logo.pwa{background:#5a0fc8}
+.visio-logo.wa{background:#25d366}
+.visio-logo.drive{background:linear-gradient(135deg,#4285f4,#fbbc04,#34a853);font-size:9px}
+.visio-logo.bc{background:linear-gradient(135deg,var(--primary),var(--primary-dark));font-size:10px}
+.visio-box-title{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+.visio-box-host{font-size:10.5px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace}
+.visio-box-bullets{list-style:none;font-size:11px;color:var(--ink-soft);line-height:1.7;padding-left:2px}
+.visio-box-bullets li{padding-left:14px;position:relative}
+.visio-box-bullets li::before{content:"▸";position:absolute;left:0;color:var(--ink-mute);font-size:10px}
+
+/* Actor (usuario externo con avatar) */
+.visio-actor{
+  background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  padding:11px 13px;display:flex;align-items:center;gap:11px;
+  transition:transform .2s,box-shadow .2s;
+}
+.visio-actor:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.visio-actor-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary-soft),var(--secondary-soft));
+  border:2px solid var(--primary);
+  display:grid;place-items:center;
+  color:var(--primary);font-weight:800;font-size:11px;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;
+}
+.visio-actor-avatar.dark{background:var(--ink);border-color:var(--ink);color:var(--secondary)}
+.visio-actor-avatar.gold{background:var(--secondary-soft);border-color:var(--secondary);color:#825615}
+.visio-actor-info{flex:1;min-width:0}
+.visio-actor-name{font-size:12px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.visio-actor-role{font-size:10.5px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+
+/* Post-it (notas amarillas) */
+.visio-note{
+  background:linear-gradient(135deg,#fff8d6 0%,#fefae0 100%);
+  border:1px solid #e8d886;border-left:3px solid #c9a66b;
+  border-radius:0 8px 8px 0;padding:11px 14px;
+  box-shadow:0 2px 6px rgba(201,166,107,.18);
+  position:relative;z-index:4;
+}
+.visio-note-title{font:700 10.5px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#825615;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.visio-note-bullets{list-style:none;font-size:11.5px;color:#1f1416;line-height:1.6}
+.visio-note-bullets li{padding-left:14px;position:relative}
+.visio-note-bullets li::before{content:"●";position:absolute;left:0;color:#c9a66b;font-size:8px;top:5px}
+
+.visio-notes-row{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0;position:relative;z-index:4}
+@media(min-width:768px){.visio-notes-row{grid-template-columns:1fr 1fr}}
+
+/* Numeritos de secuencia (círculos morados como Cencomall) */
+.seq-num{
+  display:inline-grid;place-items:center;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--primary);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-weight:800;font-size:11px;
+  border:3px solid #fff;box-shadow:0 0 0 1px var(--primary),0 2px 6px rgba(139,44,77,.3);
+  vertical-align:middle;
+}
+
+/* Leyenda de conexiones */
+.visio-legend{
+  display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;
+  padding:12px 16px;background:#fafbfc;border-radius:10px;
+  border:1px solid var(--border);font-size:11px;color:var(--ink-soft);
+  position:relative;z-index:4;
+}
+.visio-legend-item{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace}
+.visio-legend-item .swatch{display:inline-block;width:20px;height:2px;border-radius:1px}
+.visio-legend-item .swatch.solid-primary{background:var(--primary)}
+.visio-legend-item .swatch.solid-blue{background:#1e40af}
+.visio-legend-item .swatch.solid-gold{background:#b08200}
+.visio-legend-item .swatch.dashed-red{background:repeating-linear-gradient(90deg,#dc2626 0 4px,transparent 4px 8px)}
+
+/* =======================================
+   PROCESOS DINÁMICOS · play controller
+   ======================================= */
+.dyn-controls{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;
+}
+.dyn-btn{
+  background:var(--primary);color:#fff;border:none;
+  padding:8px 16px;border-radius:99px;cursor:pointer;
+  font:600 12px 'Inter',sans-serif;letter-spacing:-.01em;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:all .2s;
+}
+.dyn-btn:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 6px 14px rgba(139,44,77,.3)}
+.dyn-btn .ico{font-size:13px}
+.dyn-btn.ghost{background:#fff;color:var(--primary);border:1px solid var(--primary)}
+.dyn-btn.ghost:hover{background:var(--primary-soft)}
+.dyn-status{
+  font:700 11px 'JetBrains Mono',monospace;
+  color:var(--ink-mute);letter-spacing:.04em;text-transform:uppercase;
+  padding:5px 10px;background:#fff;border:1px solid var(--border);border-radius:6px;
+}
+.dyn-status.playing{color:var(--success);border-color:var(--success);background:var(--success-soft)}
+
+/* Nodo activo en proceso dinámico */
+.ce-node.dyn-active{
+  border-color:var(--primary);
+  transform:translateY(-4px) scale(1.03);
+  box-shadow:0 0 0 4px rgba(139,44,77,.15),0 16px 32px rgba(139,44,77,.18);
+  z-index:5;
+}
+.ce-node.dyn-active::after{
+  content:"";position:absolute;inset:-2px;border-radius:14px;
+  border:2px solid var(--primary);
+  animation:dyn-ring 1.2s ease-out infinite;pointer-events:none;
+}
+@keyframes dyn-ring{
+  0%{opacity:.8;transform:scale(1)}
+  100%{opacity:0;transform:scale(1.08)}
+}
+.ce-node.dyn-done{
+  border-color:var(--success);background:linear-gradient(180deg,#fff,#f0fdf4);
+}
+.ce-node.dyn-done::before{
+  content:"✓";position:absolute;top:6px;right:8px;
+  color:var(--success);font-weight:800;font-size:14px;
+}
+.ce-arrow.dyn-active .pulse{animation-duration:.6s !important;background:var(--success) !important;box-shadow:0 0 16px var(--success),0 0 0 6px rgba(21,128,61,.25) !important}
+
+/* SCROLL TO TOP */
+.scroll-top{
+  position:fixed;bottom:24px;right:24px;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--primary);color:#fff;
+  border:none;cursor:pointer;font-size:18px;font-weight:700;
+  box-shadow:var(--shadow-strong);opacity:0;pointer-events:none;
+  transition:all .25s;z-index:50;
+}
+.scroll-top.visible{opacity:1;pointer-events:auto}
+.scroll-top:hover{background:var(--primary-dark);transform:translateY(-2px)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container header-grid">
+    <div class="brand">
+      <div class="brand-mark">BC</div>
+      <div>
+        Bendito Capricho
+        <span class="brand-sub">Plataforma de supervisión · Créalo SpA</span>
+      </div>
+    </div>
+    <nav class="toc">
+      <a href="#vision">Visión</a>
+      <a href="#procesos">Procesos</a>
+      <a href="#arquitectura">Arquitectura</a>
+      <a href="#mapa">Mapa</a>
+      <a href="#ba">BA</a>
+      <a href="#opp">Opp</a>
+      <a href="#approval">Approval</a>
+      <a href="#secuencias">Secuencias</a>
+      <a href="#cifras">Cifras</a>
+      <a href="#rfp">RFP</a>
+    </nav>
+    <button class="menu-btn" onclick="toggleMenu()">☰ Menú</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <span class="hero-eyebrow">Fase 1 entregada · Mayo 2026</span>
+    <h1>Una <span class="accent">tienda retail</span> que se supervisa sola, desde el celular.</h1>
+    <p>Plataforma de supervisión digital para María José Norambuela y su equipo de 19 personas. 8 departamentos, 2 sucursales, 36 plantillas de checklists, 18 tablas de datos, 1 dashboard que muestra todo en tiempo real.</p>
+    <div class="hero-cta">
+      <a href="https://app-alpha-beige-15.vercel.app" class="btn btn-primary" target="_blank">Abrir plataforma →</a>
+      <a href="https://benditocapricho.cl" class="btn btn-ghost" target="_blank">Sitio actual</a>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>10 / 12</strong>Módulos en producción</div>
+      <div class="hero-meta-item"><strong>36</strong>Plantillas checklist</div>
+      <div class="hero-meta-item"><strong>8</strong>Roles con permisos</div>
+      <div class="hero-meta-item"><strong>7:00 AM</strong>Cron diario activo</div>
+    </div>
+  </div>
+</div>
+
+<!-- VISIÓN -->
+<section id="vision">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">01 · Visión</div>
+      <h2 class="section-title">Del WhatsApp y Word al dashboard en tiempo real</h2>
+      <p class="section-desc">Bendito Capricho opera una tienda retail de accesorios con modelo de subarriendo de stands a emprendedores. Hoy toda la gestión está en Word, Excel y WhatsApp. La plataforma digitaliza 45+ checklists, centraliza finanzas, automatiza alertas y permite a la gerencia ver el estado de toda la empresa desde un solo panel.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card feat">
+        <div class="card-icon">🎯</div>
+        <h3>Supervisión centralizada</h3>
+        <p>María José y David ven el estado de los 8 departamentos en tiempo real con semáforos verde/amarillo/rojo. No más "¿alguien sabe si Francis ya cerró caja?" por WhatsApp.</p>
+        <div class="meta">Dashboard tipo semáforo · alertas en vivo</div>
+      </div>
+      <div class="card feat">
+        <div class="card-icon">📋</div>
+        <h3>Checklists digitales</h3>
+        <p>36 plantillas (diarias, semanales, mensuales) se generan automáticamente cada día a las 7:00 AM. Cada rol completa los suyos desde el celular con foto, número, texto o check.</p>
+        <div class="meta">Cron Vercel · PWA instalable</div>
+      </div>
+      <div class="card feat">
+        <div class="card-icon">💰</div>
+        <h3>Trazabilidad financiera</h3>
+        <p>Cierres de caja con cálculo automático de diferencias por medio de pago. Pagos a emprendedores: ventas − comisión − mermas − subarriendo. Cuadratura mensual con segundo filtro.</p>
+        <div class="meta">Fase 2 · planificada</div>
+      </div>
+      <div class="card feat">
+        <div class="card-icon">📦</div>
+        <h3>Inventario en 8 pasos</h3>
+        <p>Flujo guiado para recepción de mercadería: hoja → verificación → foto → Drive → corchetear → notificar → etiquetar → archivar. Plazo 48 hrs con alertas escaladas.</p>
+        <div class="meta">Fase 3 · planificada</div>
+      </div>
+      <div class="card feat">
+        <div class="card-icon">👥</div>
+        <h3>Control de personal</h3>
+        <p>Asistencia digital (reemplazo libro físico, art. 33 Código del Trabajo), turnos, cálculo de bonos, liquidaciones para contadora día 01, imposiciones día 12.</p>
+        <div class="meta">Fase 4 · planificada</div>
+      </div>
+      <div class="card feat">
+        <div class="card-icon">🛍️</div>
+        <h3>Portal emprendedores</h3>
+        <p>Acceso limitado para que cada emprendedor vea sus ventas, mermas atribuibles, pagos recibidos y estado de subarriendo sin pedirlo por WhatsApp.</p>
+        <div class="meta">Fase 5 · backlog</div>
+      </div>
+    </div>
+
+    <div class="callout success" style="margin-top:36px">
+      <div class="callout-title">✓ Estado actual — 11 mayo 2026</div>
+      <p><strong>Fase 1 entregada y en producción.</strong> 10 usuarios cargados con sus roles, 36 plantillas activas, cron automático ejecutándose a las 10:00 UTC (7:00 AM Chile), PWA instalable en Android y iPhone. URL temporal hasta configurar app.benditocapricho.cl con DNS CNAME.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESOS -->
+<section id="procesos" class="alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">02 · Procesos</div>
+      <h2 class="section-title">Los flujos que la app digitaliza</h2>
+      <p class="section-desc">Tres procesos núcleo, mapeados de extremo a extremo: recepción de inventario en 8 pasos (la mayor fuente de error operativo hoy), cierre de caja diario (donde se detectan los descuadres) y captación de emprendedores (la fuente de revenue por subarriendo).</p>
+    </div>
+
+    <!-- Pipeline 1: Inventario 8 pasos · VISIO horizontal DINÁMICO -->
+    <div class="visio-stage" data-flow="inv">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Flujo 1 · Recepción de mercadería en tienda</div>
+          <div class="visio-sub">8 etapas · plazo 48 hrs hábiles · líder tienda + encargada inventario</div>
+        </div>
+        <span class="visio-tag">Inventario · Fase 3</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play flow</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 8 · listo</span>
+        <span class="live-pill" style="margin-left:auto">click "Play" para ver animación paso a paso</span>
+      </div>
+      <!-- Fila 1: pasos 1-4 -->
+      <div class="ce-flow f4" style="margin-bottom:14px">
+        <div class="ce-node start"><span class="corner">01</span><span class="lbl">recepción</span><span class="nm">Líder recibe hoja</span><span class="sub">canal oficial · firma emprendedor</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node"><span class="corner">02</span><span class="lbl">validación</span><span class="nm">Verificar campos</span><span class="sub">2 hrs hábiles · completitud</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.3s"></span><span class="tip">→</span></div>
+        <div class="ce-node gate"><span class="corner">03</span><span class="lbl">alta empr.</span><span class="nm">Crear familia + prefijo</span><span class="sub">si emprendedor nuevo</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.6s"></span><span class="tip">→</span></div>
+        <div class="ce-node"><span class="corner">04</span><span class="lbl">alta prod.</span><span class="nm">SKU + precio + categoría</span><span class="sub">PREFIJO-CAT-NNN</span></div>
+      </div>
+      <!-- Fila 2: pasos 5-8 -->
+      <div class="ce-flow f4">
+        <div class="ce-node system"><span class="corner">05</span><span class="lbl">registro</span><span class="nm">Operación en sistema</span><span class="sub">stock actualiza en vivo</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.9s"></span><span class="tip">→</span></div>
+        <div class="ce-node"><span class="corner">06</span><span class="lbl">digital</span><span class="nm">Foto + Drive + bibliorato</span><span class="sub">trazabilidad completa</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
+        <div class="ce-node gate"><span class="corner">07</span><span class="lbl">verif.</span><span class="nm">Muestreo físico</span><span class="sub">semanal · 10-15 SKU random</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.5s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">08</span><span class="lbl">habilitar</span><span class="nm">Notificar → etiquetar</span><span class="sub">listo para venta</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>SLA 48 hrs</span>
+        <span class="badge">~12 hojas/día</span>
+        <span class="badge">2 sucursales</span>
+        <span class="badge warn"><span class="dot"></span>rechazo si campo incompleto</span>
+        <span class="badge">muestreo coherencia 2%</span>
+      </div>
+    </div>
+
+    <!-- Pipeline 2: Cierre caja · VISIO horizontal DINÁMICO + log terminal -->
+    <div class="visio-stage" data-flow="caja">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Flujo 2 · Cierre de caja diario</div>
+          <div class="visio-sub">5 medios de pago · cuadratura automática · 2 sucursales × 1 cierre/día</div>
+        </div>
+        <span class="visio-tag">Finanzas · Fase 2</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play flow</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 5 · listo</span>
+        <span class="live-pill" style="margin-left:auto">datos reales simulados · ver log abajo</span>
+      </div>
+      <div class="ce-flow f5">
+        <div class="ce-node lider"><span class="corner">17:00</span><span class="lbl">líder</span><span class="nm">Cuenta efectivo + POS</span><span class="sub">5 medios de pago · foto arqueo</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node system"><span class="corner">auto</span><span class="lbl">sistema</span><span class="nm">Calcula diferencias</span><span class="sub">real − esperado · por medio</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">→</span></div>
+        <div class="ce-node alert"><span class="corner">if &gt;$5K</span><span class="lbl">alerta</span><span class="nm">Notify Francis</span><span class="sub">push + email · escalable</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">→</span></div>
+        <div class="ce-node francis"><span class="corner">~30 min</span><span class="lbl">francis</span><span class="nm">Revisa + aprueba</span><span class="sub">o pide investigación</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">mes</span><span class="lbl">joel</span><span class="nm">2do filtro · testigo</span><span class="sub">cuadratura mensual</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>vivo · 0 descuadres &gt;5K esta semana</span>
+        <span class="badge">~$1.2M/día Quilpué</span>
+        <span class="badge">~$850K/día San Antonio</span>
+        <span class="badge warn"><span class="dot"></span>alerta auto si Δ&gt;$5.000</span>
+        <span class="badge danger"><span class="dot"></span>escalada Gerencia si Δ&gt;$50.000</span>
+      </div>
+      <div class="ce-log">
+<span class="ts">17:42:18</span> <span class="ok">OK</span> <span class="actor">LIDER_QUI</span> <span class="arr">→</span> cierre · efectivo $385.420 · débito $612.880 · crédito $228.140 · Δ=$0<br>
+<span class="ts">17:55:02</span> <span class="ok">OK</span> <span class="actor">LIDER_SA</span> <span class="arr">→</span> cierre · efectivo $241.300 · débito $448.520 · Δ=$0<br>
+<span class="ts">18:02:11</span> <span class="warn">DEPOSITO</span> <span class="actor">LIDER_QUI</span> <span class="arr">→</span> $360.000 · comprobante adjunto · OK<br>
+<span class="ts">18:18:44</span> <span class="ok">OK</span> <span class="actor">FRANCIS</span> aprueba cierre QUI · pasa a Joel para cuadratura mes<br>
+<span class="ts">18:22:09</span> <span class="warn">ALERTA</span> <span class="actor">LIDER_SA</span> · descuadre $7.200 efectivo · investigando<br>
+<span class="ts">18:25:33</span> <span class="ok">OK</span> <span class="actor">FRANCIS</span> notifica · líder revisa boletas anuladas
+      </div>
+    </div>
+
+    <!-- Pipeline 3: Captación · VISIO 7 etapas DINÁMICO -->
+    <div class="visio-stage" data-flow="capt">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Flujo 3 · Captación de emprendedores</div>
+          <div class="visio-sub">Pipeline 7 etapas · ciclo típico 14-21 días · genera revenue por subarriendo</div>
+        </div>
+        <span class="visio-tag">Comercial · Fase 2</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play flow</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 7 · listo</span>
+        <span class="live-pill" style="margin-left:auto">owner · Dani (socio)</span>
+      </div>
+      <div class="ce-flow f4" style="margin-bottom:14px">
+        <div class="ce-node start"><span class="corner">01</span><span class="lbl">prospecto</span><span class="nm">DM · referido · presencial</span><span class="sub">mismo día · registro Airtable</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node"><span class="corner">02</span><span class="lbl">contacto</span><span class="nm">WhatsApp · presentación BC</span><span class="sub">SLA 24 hrs</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.3s"></span><span class="tip">→</span></div>
+        <div class="ce-node gate"><span class="corner">03</span><span class="lbl">validación</span><span class="nm">Fotos · rubro compatible</span><span class="sub">SLA 48-72 hrs</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.6s"></span><span class="tip">→</span></div>
+        <div class="ce-node gate"><span class="corner">04</span><span class="lbl">exclusiv.</span><span class="nm">¿Rubro saturado?</span><span class="sub">cruce Stands Layout</span></div>
+      </div>
+      <div class="ce-flow f3">
+        <div class="ce-node francis"><span class="corner">05</span><span class="lbl">cierre</span><span class="nm">Contrato + tarifa</span><span class="sub">firma electrónica</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.9s"></span><span class="tip">→</span></div>
+        <div class="ce-node system"><span class="corner">06</span><span class="lbl">integración</span><span class="nm">WA + Drive + stand + onboarding</span><span class="sub">7 días · 4 deptos en paralelo</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">07</span><span class="lbl">activo</span><span class="nm">Vende + paga subarriendo</span><span class="sub">revenue recurrente</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>conversión target: prospecto → activo 25%</span>
+        <span class="badge">~14-21 días ciclo</span>
+        <span class="badge">subarriendo + comisión ventas</span>
+        <span class="badge warn"><span class="dot"></span>cuello: validación rubro</span>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">💡 Por qué estos 3 flujos primero</div>
+      <p>Son los que tocan dinero (cierres + pagos), inventario (riesgo merma) y revenue (captación = subarriendo recurrente). Cada uno tiene hoy un punto de fricción medible: hojas perdidas, descuadres no investigados y prospectos sin seguimiento. La app reemplaza el WhatsApp como fuente de verdad.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ARQUITECTURA -->
+<section id="arquitectura">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">03 · Arquitectura técnica</div>
+      <h2 class="section-title">Next.js 16 + Airtable + Vercel · stack en producción</h2>
+      <p class="section-desc">Stack elegido para escala real del cliente: 19 usuarios, no 19.000. La dueña puede editar datos sin developer (Airtable como UI admin), deploy automático con cada commit, PWA instalable en celular sin App Store, cron nativo en Vercel.</p>
+    </div>
+
+    <div class="visio-canvas">
+      <div class="visio-canvas-head">
+        <span class="visio-zoom"><span class="pct">80%</span><button>−</button><button>+</button><button>⛶</button></span>
+        <div style="flex:1">
+          <div class="visio-canvas-title">Bendito Capricho — High Level Architecture</div>
+          <div class="visio-canvas-sub">Next.js 16 + Airtable + Vercel Edge · NextAuth v5 · PWA · WhatsApp + Drive externos</div>
+        </div>
+        <div style="width:140px"></div>
+      </div>
+
+      <!-- Actores top (usuarios internos del staff) -->
+      <div class="visio-actors-top">
+        <div class="visio-actor">
+          <div class="visio-actor-avatar">MJ</div>
+          <div class="visio-actor-info">
+            <div class="visio-actor-name">María José Norambuela</div>
+            <div class="visio-actor-role">dueña · super admin</div>
+          </div>
+        </div>
+        <div class="visio-actor">
+          <div class="visio-actor-avatar">DC</div>
+          <div class="visio-actor-info">
+            <div class="visio-actor-name">David Cárdenas</div>
+            <div class="visio-actor-role">gerente · ve todo</div>
+          </div>
+        </div>
+        <div class="visio-actor">
+          <div class="visio-actor-avatar gold">DN</div>
+          <div class="visio-actor-info">
+            <div class="visio-actor-name">Dani (socio)</div>
+            <div class="visio-actor-role">marketing + comercial</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG layer con conectores -->
+      <div class="visio-svg-wrap" id="archSvgWrap">
+        <svg class="connectors" viewBox="0 0 1000 540" preserveAspectRatio="none" aria-hidden="true">
+          <!-- Flecha 1: Frontend ↔ Airtable (REST) -->
+          <path d="M 260 180 C 380 160, 480 160, 500 180" stroke="#8b2c4d" stroke-dasharray="0"/>
+          <polygon points="500,180 492,176 492,184" fill="#8b2c4d"/>
+          <rect class="label-bg" x="350" y="155" width="58" height="16" rx="4"/>
+          <text x="379" y="167" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#8b2c4d">REST</text>
+
+          <!-- Flecha 2: Airtable → Vercel Cron loop -->
+          <path d="M 660 180 C 780 160, 880 160, 900 180" stroke="#b08200" stroke-dasharray="0"/>
+          <polygon points="900,180 892,176 892,184" fill="#b08200"/>
+          <rect class="label-bg" x="750" y="155" width="58" height="16" rx="4"/>
+          <text x="779" y="167" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#b08200">CRON</text>
+
+          <!-- Flecha 3: Vercel → Frontend (deploy + serve) -->
+          <path d="M 900 360 C 700 460, 400 460, 260 360" stroke="#15803d" stroke-dasharray="0"/>
+          <polygon points="260,360 268,356 268,364" fill="#15803d"/>
+          <rect class="label-bg" x="540" y="442" width="100" height="16" rx="4"/>
+          <text x="590" y="454" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#15803d">SERVE + SSL</text>
+
+          <!-- Flecha 4: Frontend → externos (WhatsApp + Drive) dashed -->
+          <path d="M 130 360 C 130 450, 130 480, 200 510" stroke="#dc2626" stroke-dasharray="6 4"/>
+          <polygon points="200,510 192,506 196,514" fill="#dc2626"/>
+          <rect class="label-bg" x="62" y="425" width="100" height="16" rx="4"/>
+          <text x="112" y="437" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#dc2626">WEBHOOK</text>
+        </svg>
+
+        <!-- 3 ZONAS principales -->
+        <div class="visio-zones">
+          <!-- ZONA FRONTEND -->
+          <div class="visio-zone" data-zone="frontend">
+            <span class="visio-zone-label"><span class="seq-num" style="position:relative;margin-right:6px">1</span> FRONTEND · Next.js</span>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo next">N</div>
+                <div>
+                  <div class="visio-box-title">Next.js 16 App Router</div>
+                  <div class="visio-box-host">app-alpha-beige-15.vercel.app</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>12 páginas · 25+ componentes</li>
+                <li>RSC + Server Actions + Zod</li>
+                <li>Tailwind v4 + shadcn/ui</li>
+                <li>TypeScript strict</li>
+              </ul>
+            </div>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo nauth">N5</div>
+                <div>
+                  <div class="visio-box-title">NextAuth v5</div>
+                  <div class="visio-box-host">email magic link · sin password</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>8 roles · 10 usuarios</li>
+                <li>JWT con rol + departamento</li>
+                <li>middleware protege rutas</li>
+              </ul>
+            </div>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo pwa">▶</div>
+                <div>
+                  <div class="visio-box-title">PWA · Service Worker</div>
+                  <div class="visio-box-host">manifest.json · standalone mode</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>instalable Android Chrome</li>
+                <li>instalable iPhone Safari</li>
+                <li>assets cacheados offline</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ZONA DATA · AIRTABLE -->
+          <div class="visio-zone" data-zone="data">
+            <span class="visio-zone-label"><span class="seq-num" style="position:relative;margin-right:6px">2</span> DATA · Airtable Cloud</span>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo air">A</div>
+                <div>
+                  <div class="visio-box-title">Airtable Base</div>
+                  <div class="visio-box-host">appy1mVnWcGIxa1rh</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>18 tablas · 5 grupos lógicos</li>
+                <li>36 plantillas · 172 ítems</li>
+                <li>Plan Free · ~1.000 rows</li>
+                <li>API REST v0</li>
+              </ul>
+            </div>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo air">A</div>
+                <div>
+                  <div class="visio-box-title">Airtable Automations</div>
+                  <div class="visio-box-host">12 triggers · notificaciones</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>alertas descuadre &gt; $5K</li>
+                <li>escalada nivel 1→2→3</li>
+                <li>recordatorios calendario</li>
+              </ul>
+            </div>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo bc">UI</div>
+                <div>
+                  <div class="visio-box-title">Views por rol</div>
+                  <div class="visio-box-host">UI admin para María José</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>vista Quilpué · San Antonio</li>
+                <li>vista por departamento</li>
+                <li>"Pendientes hoy" · "Con descuadre"</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ZONA INFRA · VERCEL -->
+          <div class="visio-zone" data-zone="infra">
+            <span class="visio-zone-label"><span class="seq-num" style="position:relative;margin-right:6px">3</span> INFRA · Vercel Edge</span>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo vercel">▲</div>
+                <div>
+                  <div class="visio-box-title">Vercel Hobby</div>
+                  <div class="visio-box-host">CDN global · Edge functions</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>auto-deploy en git push main</li>
+                <li>SSL automático Let's Encrypt</li>
+                <li>preview deployments por PR</li>
+              </ul>
+            </div>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo vercel">⏰</div>
+                <div>
+                  <div class="visio-box-title">Vercel Cron</div>
+                  <div class="visio-box-host">10:00 UTC diario (07:00 CL)</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>/api/v1/cron/generar-checklists</li>
+                <li>token CRON_SECRET</li>
+                <li>genera ~14 instancias/día</li>
+              </ul>
+            </div>
+            <div class="visio-box">
+              <div class="visio-box-head">
+                <div class="visio-logo bc">🔐</div>
+                <div>
+                  <div class="visio-box-title">Env vars + DNS</div>
+                  <div class="visio-box-host">app.benditocapricho.cl ⏳</div>
+                </div>
+              </div>
+              <ul class="visio-box-bullets">
+                <li>AIRTABLE_API_KEY · BASE_ID</li>
+                <li>NEXTAUTH_SECRET · URL</li>
+                <li>CRON_SECRET</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post-it notes laterales -->
+        <div class="visio-notes-row">
+          <div class="visio-note">
+            <div class="visio-note-title">📌 En Next.js</div>
+            <ul class="visio-note-bullets">
+              <li>Server Components por defecto · cliente solo donde hay interacción</li>
+              <li>Server Actions + Zod = mismo schema en cliente y servidor</li>
+              <li>Feature colocation: cada ruta tiene sus _components / _actions / _hooks</li>
+              <li>Filtrado por rol en middleware antes de cargar la página</li>
+            </ul>
+          </div>
+          <div class="visio-note">
+            <div class="visio-note-title">📌 En Airtable</div>
+            <ul class="visio-note-bullets">
+              <li>18 tablas con relaciones Link · sin SQL · sin schemas a mantener</li>
+              <li>Automations dispara webhooks · escalada nivel 1 → 2 → 3</li>
+              <li>UI admin para edición directa sin developer</li>
+              <li>⚠ Free 1K rows → Team antes de 3 sem · ~$20-100 USD/mes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actores bottom (servicios externos + locatarios) -->
+      <div class="visio-actors-bottom">
+        <div class="visio-actor">
+          <div class="visio-actor-avatar dark">L</div>
+          <div class="visio-actor-info">
+            <div class="visio-actor-name">Líderes tienda</div>
+            <div class="visio-actor-role">Quilpué · San Antonio</div>
+          </div>
+        </div>
+        <div class="visio-actor">
+          <div class="visio-actor-avatar gold">EM</div>
+          <div class="visio-actor-info">
+            <div class="visio-actor-name">Emprendedores</div>
+            <div class="visio-actor-role">portal · fase 5</div>
+          </div>
+        </div>
+        <div class="visio-actor">
+          <div class="visio-actor-avatar" style="background:#dcf8c6;border-color:#25d366;color:#15803d">WA</div>
+          <div class="visio-actor-info">
+            <div class="visio-actor-name">WhatsApp Business</div>
+            <div class="visio-actor-role">notificaciones · fase 2</div>
+          </div>
+        </div>
+        <div class="visio-actor">
+          <div class="visio-actor-avatar" style="background:#e8f0fe;border-color:#4285f4;color:#1a73e8">GD</div>
+          <div class="visio-actor-info">
+            <div class="visio-actor-name">Google Drive</div>
+            <div class="visio-actor-role">respaldo fotos + docs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leyenda de conexiones -->
+      <div class="visio-legend">
+        <div class="visio-legend-item"><span class="swatch solid-primary"></span> REST · Next ↔ Airtable</div>
+        <div class="visio-legend-item"><span class="swatch solid-gold"></span> CRON · Vercel → /api</div>
+        <div class="visio-legend-item"><span class="swatch solid-blue"></span> AUTH · NextAuth JWT</div>
+        <div class="visio-legend-item"><span class="swatch dashed-red"></span> WEBHOOK · externos (fase 2)</div>
+        <div class="visio-legend-item"><span class="seq-num" style="width:16px;height:16px;font-size:9px">N</span> secuencia de carga</div>
+      </div>
+    </div>
+
+    <div class="callout warn" style="margin-top:32px">
+      <div class="callout-title">⚠️ Punto crítico de escala</div>
+      <p>Airtable Free tiene <strong>1.000 registros máx por base</strong>. Con 228 registros fijos + 36 instancias diarias generadas por cron, la base se llena en <strong>~21 días de uso real</strong>. Migración obligatoria a Airtable Team antes de operar en serio (~$20-100 USD/mes según número de seats). Alternativa: migrar capa de datos a Supabase Postgres (500MB free, 50K MAUs) cuando el costo lo justifique.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAPA INT - MODULOS x ROLES -->
+<section id="mapa" class="alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">04 · Mapa de integraciones</div>
+      <h2 class="section-title">¿Quién hace qué en cada módulo?</h2>
+      <p class="section-desc">Matriz de permisos × módulos × roles. 8 roles definidos (de Dueña a Vendedor), filtrado automático de datos por scope (jefe ve solo su departamento, líder ve solo su tienda). Configura las views Airtable que cada persona usa.</p>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" onclick="showTab('map-perm')">Permisos por rol</button>
+      <button class="tab-btn" onclick="showTab('map-deptos')">Departamentos</button>
+      <button class="tab-btn" onclick="showTab('map-users')">Usuarios cargados</button>
+      <button class="tab-btn" onclick="showTab('map-fases')">Fases del proyecto</button>
+    </div>
+
+    <div id="map-perm" class="tab-content active">
+      <div class="matrix-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Módulo</th>
+              <th>Dueña</th>
+              <th>Gerente</th>
+              <th>Socio</th>
+              <th>Jefe Depto</th>
+              <th>Líder Tienda</th>
+              <th>Trabajador</th>
+              <th>Emprendedor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Dashboard general</td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm scope">R parc.</span></td><td><span class="perm scope">R depto</span></td><td><span class="perm scope">R tienda</span></td><td><span class="perm none">—</span></td><td><span class="perm none">—</span></td></tr>
+            <tr><td>Checklists completar</td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm cru">CRU MKT/COM</span></td><td><span class="perm scope">CRU depto</span></td><td><span class="perm scope">CRU tienda</span></td><td><span class="perm cru">CRU propios</span></td><td><span class="perm none">—</span></td></tr>
+            <tr><td>Tareas adhoc</td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm cru">CRU MKT/COM</span></td><td><span class="perm scope">CRU depto</span></td><td><span class="perm scope">CRU tienda</span></td><td><span class="perm r">R propias</span></td><td><span class="perm none">—</span></td></tr>
+            <tr><td>Cierres caja</td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm r">R</span></td><td><span class="perm scope">CRUD FIN</span></td><td><span class="perm scope">CRU tienda</span></td><td><span class="perm none">—</span></td><td><span class="perm none">—</span></td></tr>
+            <tr><td>Pagos emprendedores</td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm r">R</span></td><td><span class="perm scope">CRUD FIN</span></td><td><span class="perm r">R</span></td><td><span class="perm none">—</span></td><td><span class="perm r">R propios</span></td></tr>
+            <tr><td>Emprendedores</td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm r">R rel</span></td><td><span class="perm scope">R tienda</span></td><td><span class="perm none">—</span></td><td><span class="perm r">R propio</span></td></tr>
+            <tr><td>Inventario / mermas</td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm r">R</span></td><td><span class="perm scope">CRUD INV</span></td><td><span class="perm scope">CRU tienda</span></td><td><span class="perm none">—</span></td><td><span class="perm r">R propias</span></td></tr>
+            <tr><td>Asistencia</td><td><span class="perm crud">CRUD</span></td><td><span class="perm crud">CRUD</span></td><td><span class="perm r">R</span></td><td><span class="perm scope">CRUD ADM</span></td><td><span class="perm scope">CRU tienda</span></td><td><span class="perm r">R propia</span></td><td><span class="perm none">—</span></td></tr>
+            <tr><td>Reportes financieros</td><td><span class="perm crud">TODO</span></td><td><span class="perm crud">TODO</span></td><td><span class="perm cru">MKT/COM</span></td><td><span class="perm scope">Su depto</span></td><td><span class="perm scope">Su tienda</span></td><td><span class="perm none">—</span></td><td><span class="perm r">Propios</span></td></tr>
+            <tr><td>Configuración sistema</td><td><span class="perm crud">CRUD</span></td><td><span class="perm r">R</span></td><td><span class="perm none">—</span></td><td><span class="perm none">—</span></td><td><span class="perm none">—</span></td><td><span class="perm none">—</span></td><td><span class="perm none">—</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:18px;font-size:12px;color:var(--ink-mute);display:flex;gap:18px;flex-wrap:wrap">
+        <span><span class="perm crud" style="font-size:9px;padding:2px 6px">CRUD</span> Create+Read+Update+Delete</span>
+        <span><span class="perm cru" style="font-size:9px;padding:2px 6px">CRU</span> sin Delete</span>
+        <span><span class="perm scope" style="font-size:9px;padding:2px 6px">scope</span> filtrado por depto/tienda</span>
+        <span><span class="perm r" style="font-size:9px;padding:2px 6px">R</span> solo lectura</span>
+      </div>
+    </div>
+
+    <div id="map-deptos" class="tab-content">
+      <div class="deptos">
+        <div class="depto">
+          <div class="depto-head"><div class="depto-code">GER</div><h4>Gerencia</h4></div>
+          <p>María José + David</p>
+          <div class="stats"><div><strong>2</strong>plantillas</div><div><strong>10</strong>ítems</div></div>
+        </div>
+        <div class="depto">
+          <div class="depto-head"><div class="depto-code">FIN</div><h4>Finanzas</h4></div>
+          <p>Francis (jefa)</p>
+          <div class="stats"><div><strong>2</strong>plantillas</div><div><strong>16</strong>ítems</div></div>
+        </div>
+        <div class="depto">
+          <div class="depto-head"><div class="depto-code">MKT</div><h4>Marketing</h4></div>
+          <p>Equipo + Dani</p>
+          <div class="stats"><div><strong>2</strong>plantillas</div><div><strong>12</strong>ítems</div></div>
+        </div>
+        <div class="depto">
+          <div class="depto-head"><div class="depto-code">COM</div><h4>Comercial</h4></div>
+          <p>Dani (socio)</p>
+          <div class="stats"><div><strong>2</strong>plantillas</div><div><strong>8</strong>ítems</div></div>
+        </div>
+        <div class="depto">
+          <div class="depto-head"><div class="depto-code">ADM</div><h4>Administración</h4></div>
+          <p>Joel (jefe)</p>
+          <div class="stats"><div><strong>2</strong>plantillas</div><div><strong>14</strong>ítems</div></div>
+        </div>
+        <div class="depto">
+          <div class="depto-head"><div class="depto-code">INV</div><h4>Inventario</h4></div>
+          <p>Encargada inventario</p>
+          <div class="stats"><div><strong>4</strong>plantillas</div><div><strong>24</strong>ítems</div></div>
+        </div>
+        <div class="depto">
+          <div class="depto-head"><div class="depto-code">LID</div><h4>Líderes Tienda</h4></div>
+          <p>Quilpué + San Antonio</p>
+          <div class="stats"><div><strong>18</strong>plantillas</div><div><strong>72</strong>ítems</div></div>
+        </div>
+        <div class="depto">
+          <div class="depto-head"><div class="depto-code">LOG</div><h4>Logística Web</h4></div>
+          <p>Ana Quiñonez</p>
+          <div class="stats"><div><strong>4</strong>plantillas</div><div><strong>16</strong>ítems</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="map-users" class="tab-content">
+      <div class="matrix-table">
+        <table>
+          <thead>
+            <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Cargo</th><th>Scope</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>María José Norambuela</td><td class="mono">mariajose@benditocapricho.cl</td><td><span class="perm crud">Dueña</span></td><td>—</td><td>Todo</td></tr>
+            <tr><td>David Cárdenas</td><td class="mono">david@benditocapricho.cl</td><td><span class="perm crud">Gerente</span></td><td>Gerente General</td><td>Todo</td></tr>
+            <tr><td>Daniel (Dani)</td><td class="mono">dani@benditocapricho.cl</td><td><span class="perm cru">Socio</span></td><td>Mkt + Comercial</td><td>MKT · COM</td></tr>
+            <tr><td>Francis</td><td class="mono">francis@benditocapricho.cl</td><td><span class="perm scope">Jefe Depto</span></td><td>Jefa Finanzas</td><td>FIN</td></tr>
+            <tr><td>Joel</td><td class="mono">joel@benditocapricho.cl</td><td><span class="perm scope">Jefe Depto</span></td><td>Jefe Administración</td><td>ADM</td></tr>
+            <tr><td>Ana Quiñonez</td><td class="mono">ana@benditocapricho.cl</td><td><span class="perm scope">Jefe Depto</span></td><td>Supervisora Logística Web</td><td>LOG</td></tr>
+            <tr><td>Encargada Inventario</td><td class="mono">inventario@benditocapricho.cl</td><td><span class="perm scope">Jefe Depto</span></td><td>Enc. Inventario</td><td>INV</td></tr>
+            <tr><td>Líder Quilpué</td><td class="mono">lider.quilpue@benditocapricho.cl</td><td><span class="perm scope">Líder Tienda</span></td><td>Líder Quilpué</td><td>Tienda Q</td></tr>
+            <tr><td>Líder San Antonio</td><td class="mono">lider.sanantonio@benditocapricho.cl</td><td><span class="perm scope">Líder Tienda</span></td><td>Líder San Antonio</td><td>Tienda SA</td></tr>
+            <tr><td>Trabajador 1</td><td class="mono">trabajador@benditocapricho.cl</td><td><span class="perm r">Trabajador</span></td><td>Personal Operativo</td><td>Propios</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout" style="margin-top:18px">
+        <div class="callout-title">📧 Pendiente para producción real</div>
+        <p>Emails provisionales. María José debe confirmar la lista definitiva por persona y activar Google Workspace (Business Starter ~$6 USD/usr/mes) o usar correos personales. Luego se actualizan en Airtable Usuarios y el login funciona inmediato.</p>
+      </div>
+    </div>
+
+    <div id="map-fases" class="tab-content">
+      <div class="matrix-table">
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Módulos</th><th>Estado</th><th>Duración</th><th>Tokens est.</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pre-desarrollo</td><td>Análisis 25 docs · 4 agentes paralelos · propuesta</td><td><span class="perm crud">✓ Completado</span></td><td>—</td><td class="mono">~300K</td></tr>
+            <tr><td><strong>Fase 1</strong></td><td>Login · Mi Día · Dashboard · Checklists · Tareas · Emprendedores · Reportes · Calendario · Usuarios · PWA · Cron</td><td><span class="perm crud">✓ En producción</span></td><td>3-4 sem</td><td class="mono">~1.2M-1.5M</td></tr>
+            <tr><td>Fase 2</td><td>Finanzas (cierres, depósitos, pagos) + Comercial + Marketing + Notificaciones + Upload fotos real</td><td><span class="perm cru">Próxima</span></td><td>2-3 sem</td><td class="mono">~800K-1M</td></tr>
+            <tr><td>Fase 3</td><td>Inventario digital 8 pasos + Mermas con foto obligatoria</td><td><span class="perm cru">Planificada</span></td><td>2-3 sem</td><td class="mono">~500K-700K</td></tr>
+            <tr><td>Fase 4</td><td>Administración: asistencia digital, liquidaciones, bonos, contratos</td><td><span class="perm r">Backlog</span></td><td>2 sem</td><td class="mono">~300K-500K</td></tr>
+            <tr><td>Fase 5</td><td>Portal Emprendedores + Reportes avanzados</td><td><span class="perm r">Backlog</span></td><td>2-3 sem</td><td class="mono">~300K-400K</td></tr>
+            <tr><td>Fase 6</td><td>Logística Web · Paris Marketplace</td><td><span class="perm r">Backlog</span></td><td>2 sem</td><td class="mono">~200K-300K</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BA - Business Analysis -->
+<section id="ba">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">05 · Business Analysis</div>
+      <h2 class="section-title">El antes y el después de cada proceso</h2>
+      <p class="section-desc">Análisis funcional: cada flujo crítico hoy vive en WhatsApp, Word y Excel. La plataforma no agrega trabajo — reemplaza herramientas que ya se usan, con la diferencia de que ahora todo queda registrado y la gerencia lo ve sin pedirlo.</p>
+    </div>
+
+    <div class="before-after" style="margin-bottom:24px">
+      <div class="ba-col before">
+        <h4>✗ ANTES · Operación manual</h4>
+        <ul>
+          <li>Cierre de caja en Excel local de cada tienda</li>
+          <li>Hojas de ingreso/egreso en papel + WhatsApp</li>
+          <li>"¿Ya completaste el checklist?" por WhatsApp</li>
+          <li>Pagos a emprendedores calculados a mano</li>
+          <li>Mermas reportadas verbalmente o no reportadas</li>
+          <li>María José sin visibilidad hasta fin de semana</li>
+          <li>Descuadres descubiertos en cuadratura mensual</li>
+          <li>Nuevos emprendedores se pierden en mensajes</li>
+        </ul>
+      </div>
+      <div class="ba-arrow">→</div>
+      <div class="ba-col after">
+        <h4>✓ DESPUÉS · Plataforma de supervisión</h4>
+        <ul>
+          <li>Formulario digital con cálculo automático de diferencias</li>
+          <li>Hoja escaneada → Drive → flujo de 8 pasos trackeado</li>
+          <li>Checklists generados a las 7am · estado en dashboard</li>
+          <li>Sistema calcula ventas − comisión − mermas − arriendo</li>
+          <li>Registro con foto obligatoria + clasificación</li>
+          <li>Dashboard tipo semáforo en tiempo real</li>
+          <li>Alerta inmediata si descuadre &gt; $5.000</li>
+          <li>Pipeline 7 etapas en Kanban con SLA por etapa</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="font-size:18px;font-weight:700;margin:36px 0 16px;letter-spacing:-.01em">Reglas de negocio digitalizadas</h3>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">📅</div>
+        <h3>Calendario fijo de obligaciones</h3>
+        <p>Día 01: planilla sueldos a contadora + presupuesto Gerencia + cobro subarriendo. Día 03: presupuesto MKT. Día 05: pago sueldos + gastos fijos. Día 10: bonos. Día 12: imposiciones. Día 15: reporte financiero integral. Día 20: deadline presupuestos áreas.</p>
+        <div class="meta">11 hitos fijos · alertas automáticas</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏰</div>
+        <h3>SLAs cross-sistema</h3>
+        <p>Hoja inventario procesada en 48 hrs hábiles. Cierre caja enviado antes 20:00. Depósito comprobante en 24 hrs. Respuesta a emprendedor en 24 hrs. Mensajes DM en 2 hrs hábiles. Cobro mora &gt; 60 días → plan de cobro.</p>
+        <div class="meta">6 SLAs · escalamiento automático</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>Cumplimiento legal Chile</h3>
+        <p>Asistencia digital cumple art. 33 Código del Trabajo. Liquidaciones primeros 5 días del mes siguiente. Cotizaciones día 12 (multa si no). Contratos firmados archivados con vencimiento. Subarriendo separado de relación laboral (no son trabajadores).</p>
+        <div class="meta">Sole · análisis legal/RRHH</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚨</div>
+        <h3>Alertas escaladas en 3 niveles</h3>
+        <p>Nivel 1 (responsable) → Nivel 2 (supervisor: Joel/Gerencia) → Nivel 3 (liderazgo: María José/David). Activan en: descuadre, hoja fuera de 48h, planilla fuera de plazo, contrato vencido, stand en mora &gt; 30 días.</p>
+        <div class="meta">10 escenarios definidos</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏷️</div>
+        <h3>Trazabilidad de SKU</h3>
+        <p>Cada producto: PREFIJO_EMPR-CATEGORIA-SECUENCIAL (ej: MARI-ACC-001). Familia, emprendedor, stock por tienda, historial de precio, movimientos. Permite atribución correcta de mermas y pagos.</p>
+        <div class="meta">8 categorías · ACC BIS BOL ROV CAL DEC REG OTR</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>Cálculo pago emprendedor</h3>
+        <p><code>monto_a_pagar = ventas_periodo − comisión_BC − descuento_subarriendo − descuento_mermas_atribuibles − otros_descuentos</code>. Mermas se clasifican: producto (descuentan al emprendedor) vs operación tienda (asume BC).</p>
+        <div class="meta">Quincenal · aprobación María José si &gt; monto</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPP - Pipeline Captación -->
+<section id="opp" class="alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">06 · Oportunidades</div>
+      <h2 class="section-title">Pipeline de captación de emprendedores — Kanban 7 etapas</h2>
+      <p class="section-desc">El modelo de subarriendo de stands es el motor de ingresos de BC. Cada nuevo emprendedor activo = revenue mensual recurrente + comisión sobre ventas. Dani lidera, pero hoy todo vive en DMs sueltos. La app convierte el flujo en pipeline Kanban con SLA por etapa.</p>
+    </div>
+
+    <div class="kanban">
+      <div class="kanban-col s1">
+        <div class="kanban-head"><h5>Prospecto</h5><span class="kanban-num">01</span></div>
+        <div class="kanban-desc">DM Instagram, Facebook, referido, presencial o campaña. Registrar nombre, rubro y origen.</div>
+        <span class="kanban-actor">Dani</span>
+        <div class="kanban-sla">SLA: mismo día</div>
+      </div>
+      <div class="kanban-col s2">
+        <div class="kanban-head"><h5>Contacto</h5><span class="kanban-num">02</span></div>
+        <div class="kanban-desc">Primer mensaje WhatsApp con presentación BC, modelo subarriendo, condiciones generales.</div>
+        <span class="kanban-actor">Dani</span>
+        <div class="kanban-sla">SLA: 24 hrs</div>
+      </div>
+      <div class="kanban-col s3">
+        <div class="kanban-head"><h5>Validación</h5><span class="kanban-num">03</span></div>
+        <div class="kanban-desc">Solicitar fotos productos. Verificar rubro compatible y calidad visual. Evaluar saturación sucursal.</div>
+        <span class="kanban-actor">Dani + Daniel</span>
+        <div class="kanban-sla">SLA: 48-72 hrs</div>
+      </div>
+      <div class="kanban-col s4">
+        <div class="kanban-head"><h5>Exclusividad</h5><span class="kanban-num">04</span></div>
+        <div class="kanban-desc">Cruzar rubro con stands ocupados. Confirmar si se ofrece exclusividad en esa sucursal.</div>
+        <span class="kanban-actor">Dani</span>
+        <div class="kanban-sla">Stands Layout</div>
+      </div>
+      <div class="kanban-col s5">
+        <div class="kanban-head"><h5>Cierre</h5><span class="kanban-num">05</span></div>
+        <div class="kanban-desc">Condiciones finales: tarifa stand, comisión, duración, cláusulas. Negociar y firmar contrato.</div>
+        <span class="kanban-actor">Dani</span>
+        <div class="kanban-sla">Contrato firmado</div>
+      </div>
+      <div class="kanban-col s6">
+        <div class="kanban-head"><h5>Integración</h5><span class="kanban-num">06</span></div>
+        <div class="kanban-desc">Grupo WA · Drive · planilla fotos · stand asignado · onboarding web Ana · post bienvenida MKT.</div>
+        <span class="kanban-actor">Dani + equipo</span>
+        <div class="kanban-sla">SLA: 7 días</div>
+      </div>
+      <div class="kanban-col s7">
+        <div class="kanban-head"><h5>Activo</h5><span class="kanban-num">07</span></div>
+        <div class="kanban-desc">Estado "Activo". Vende, paga subarriendo, recibe pago quincenal. Calificación interna 1-5.</div>
+        <span class="kanban-actor">Permanente</span>
+        <div class="kanban-sla">Revisión mensual</div>
+      </div>
+    </div>
+
+    <div class="callout success" style="margin-top:32px">
+      <div class="callout-title">🎯 Conversión esperada</div>
+      <p>Cada emprendedor activo es revenue recurrente. Si la tarifa de stand promedia X UF y la comisión sobre ventas Y%, mejorar conversión de prospecto→activo del 15% al 25% multiplica el ingreso por subarriendo sin más esfuerzo comercial. Pipeline + SLA = no se pierde un solo lead en el ruido.</p>
+    </div>
+  </div>
+</section>
+
+<!-- APPROVAL - Flujos de aprobación -->
+<section id="approval">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">07 · Flujos de aprobación</div>
+      <h2 class="section-title">Quién aprueba qué, en qué orden, con qué evidencia</h2>
+      <p class="section-desc">Tres procesos donde hay dinero o decisión irreversible: cierre de caja diario (descuadre puede ser robo), pago a emprendedores (movimiento mensual de varios millones de pesos consolidado) y gastos no presupuestados (control de cash flow por departamento).</p>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" onclick="showTab('app-caja')">Cierre caja diario</button>
+      <button class="tab-btn" onclick="showTab('app-pago')">Pago emprendedor</button>
+      <button class="tab-btn" onclick="showTab('app-gasto')">Gasto no presupuestado</button>
+    </div>
+
+    <!-- Flow 1 - Cierre caja HORIZONTAL Visio -->
+    <div id="app-caja" class="tab-content active">
+      <div class="visio-stage">
+        <div class="visio-head">
+          <div>
+            <div class="visio-title">Cierre de caja diario · cadena de aprobación</div>
+            <div class="visio-sub">5 actores · 5 nodos · evidencia obligatoria: foto arqueo + foto depósito bancario</div>
+          </div>
+          <span class="visio-tag">Diario · 17:00</span>
+        </div>
+        <div class="ce-flow f5">
+          <div class="ce-node lider"><span class="corner">17:00</span><span class="lbl">líder</span><span class="nm">Cuenta + completa form</span><span class="sub">5 medios de pago · foto arqueo</span></div>
+          <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+          <div class="ce-node system"><span class="corner">auto</span><span class="lbl">sistema</span><span class="nm">Calcula diferencias</span><span class="sub">alerta si Δ&gt;$5K</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">→</span></div>
+          <div class="ce-node gate"><span class="corner">&lt;20:00</span><span class="lbl">líder</span><span class="nm">Depósito + comprobante</span><span class="sub">foto bancaria obligatoria</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">→</span></div>
+          <div class="ce-node francis"><span class="corner">~30 min</span><span class="lbl">francis</span><span class="nm">Revisa + aprueba</span><span class="sub">o pide investigación</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
+          <div class="ce-node end"><span class="corner">mensual</span><span class="lbl">joel</span><span class="nm">2do filtro · testigo</span><span class="sub">cuadratura por medio</span></div>
+        </div>
+        <div class="ce-meta">
+          <span class="badge ok"><span class="dot"></span>auditoría completa · timestamps</span>
+          <span class="badge">2 sucursales · 1 cierre/día c/u</span>
+          <span class="badge warn"><span class="dot"></span>bloqueo si no llega antes 20:00</span>
+          <span class="badge danger"><span class="dot"></span>escalada Gerencia si Δ&gt;$50K</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 2 - Pago emprendedor -->
+    <div id="app-pago" class="tab-content">
+      <div class="visio-stage">
+        <div class="visio-head">
+          <div>
+            <div class="visio-title">Pago a emprendedor · cadena de aprobación</div>
+            <div class="visio-sub">Quincenal · cálculo automático · doble aprobación si monto &gt; umbral · evidencia: transferencia bancaria</div>
+          </div>
+          <span class="visio-tag">Quincenal · días 01 y 15</span>
+        </div>
+        <div class="ce-flow f5">
+          <div class="ce-node system"><span class="corner">cierre Q</span><span class="lbl">sistema</span><span class="nm">Suma ventas brutas</span><span class="sub">desde cierres caja del período</span></div>
+          <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+          <div class="ce-node"><span class="corner">inv</span><span class="lbl">inventario</span><span class="nm">Aporta mermas</span><span class="sub">solo atribuibles a producto</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">f(x)</span></div>
+          <div class="ce-node system"><span class="corner">auto</span><span class="lbl">sistema</span><span class="nm">Calcula líquido</span><span class="sub">ventas − comisión − merma − arriendo</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">→</span></div>
+          <div class="ce-node francis"><span class="corner">revisar</span><span class="lbl">francis</span><span class="nm">Valida cálculo</span><span class="sub">estado: calculado → aprobado</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
+          <div class="ce-node maria"><span class="corner">firma</span><span class="lbl">maría josé</span><span class="nm">Aprobación final</span><span class="sub">si monto &gt; umbral</span></div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="ce-flow f3" style="grid-template-columns:1fr;align-items:stretch">
+            <div class="ce-node end" style="grid-column:1/-1"><span class="corner">ejecutar</span><span class="lbl">francis</span><span class="nm">Transfiere + sube comprobante + notifica emprendedor</span><span class="sub">estado: Pagado · estado de cuenta actualizado · queda registro en historial</span></div>
+          </div>
+        </div>
+        <div class="ce-meta">
+          <span class="badge ok"><span class="dot"></span>fórmula transparente al emprendedor</span>
+          <span class="badge">cálculo en &lt; 1 min</span>
+          <span class="badge warn"><span class="dot"></span>doble aprobación si monto&gt;umbral</span>
+          <span class="badge">comprobante adjunto obligatorio</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 3 - Gasto no presupuestado -->
+    <div id="app-gasto" class="tab-content">
+      <div class="visio-stage">
+        <div class="visio-head">
+          <div>
+            <div class="visio-title">Gasto no presupuestado · cadena de aprobación</div>
+            <div class="visio-sub">Umbral $100K · 3 actores · evidencia: boleta/factura SII · cruza con presupuesto del área</div>
+          </div>
+          <span class="visio-tag">Bajo demanda</span>
+        </div>
+        <div class="ce-flow f5">
+          <div class="ce-node start"><span class="corner">trigger</span><span class="lbl">jefe área</span><span class="nm">Crea solicitud</span><span class="sub">concepto + monto + razón</span></div>
+          <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+          <div class="ce-node system"><span class="corner">auto</span><span class="lbl">sistema</span><span class="nm">Cruza presupuesto</span><span class="sub">% ejecutado · semáforo</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">if</span></div>
+          <div class="ce-node francis"><span class="corner">&lt;$100K</span><span class="lbl">francis</span><span class="nm">Aprueba directo</span><span class="sub">estado: Aprobado</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">else</span></div>
+          <div class="ce-node maria"><span class="corner">&gt;$100K</span><span class="lbl">gerencia</span><span class="nm">Escala a MJ/David</span><span class="sub">revisa caja disponible</span></div>
+          <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
+          <div class="ce-node end"><span class="corner">ejecutar</span><span class="lbl">área</span><span class="nm">Compra + boleta</span><span class="sub">vinculado al presupuesto</span></div>
+        </div>
+        <div class="ce-meta">
+          <span class="badge ok"><span class="dot"></span>control presupuestario por área</span>
+          <span class="badge">~5-10 gastos extra/mes</span>
+          <span class="badge warn"><span class="dot"></span>alerta si presupuesto&gt;110% mes</span>
+          <span class="badge">archivo SII automático en Drive</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">🔒 Auditoría completa</div>
+      <p>Cada paso de cada flujo deja registro automático: quién aprobó, cuándo, con qué evidencia adjunta. Imposible "olvidar" pasos o aprobar sin documentación. Si SII pide auditar gastos del mes, todo está en Airtable con timestamps y archivos en Drive.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECUENCIAS -->
+<section id="secuencias" class="alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">08 · Diagramas de secuencia</div>
+      <h2 class="section-title">Cómo se conversan los actores y los sistemas</h2>
+      <p class="section-desc">Diagramas de secuencia para los 3 flujos de mayor interacción: integración cross-sistema cuando llega un emprendedor nuevo, generación automática de checklists cada mañana, alerta de descuadre que detona escalamiento.</p>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" onclick="showTab('seq-1')">Nuevo emprendedor</button>
+      <button class="tab-btn" onclick="showTab('seq-2')">Cron diario 7am</button>
+      <button class="tab-btn" onclick="showTab('seq-3')">Alerta descuadre</button>
+    </div>
+
+    <div id="seq-1" class="tab-content active">
+      <div class="seq">
+        <div class="seq-header">Secuencia · Nuevo emprendedor activo · integración cross-departamental</div>
+<pre>
+<span class="actor">Dani</span>             <span class="actor">App</span>          <span class="actor">Airtable</span>       <span class="actor">MKT</span>      <span class="actor">Ana(Web)</span>   <span class="actor">Inv</span>      <span class="actor">Fin</span>
+  │               │                │             │           │            │          │
+  ├──cerrar etapa 7 (Activo)──────►│                                                  │
+  │               │                │                                                  │
+  │               ├──UPDATE estado=Activo────────►│                                   │
+  │               │                ◄──OK───────────                                   │
+  │               │                │                                                  │
+  │               │                ├──automation trigger───►                          │
+  │               │                │             │           │            │          │
+  │               │                ├──notify "post bienvenida"──►MKT                  │
+  │               │                ├──notify "iniciar onboarding productos"────►Ana   │
+  │               │                ├──notify "crear prefijo SKU"────────────────►Inv  │
+  │               │                ├──notify "crear cobro subarriendo mes 1"───►Fin   │
+  │               │                │             │           │            │          │
+  │               │                ▼             ▼           ▼            ▼          ▼
+<span class="note"># Resultado: 4 departamentos reciben tareas auto-asignadas. Cero handoff por WhatsApp.</span>
+<span class="note"># SLA cumplido: stand ocupado en 7 días desde cierre comercial.</span>
+</pre>
+      </div>
+    </div>
+
+    <div id="seq-2" class="tab-content">
+      <div class="seq">
+        <div class="seq-header">Secuencia · Cron 7am · generación diaria de checklists</div>
+<pre>
+<span class="actor">Vercel Cron</span>     <span class="actor">/api/cron</span>     <span class="actor">Airtable</span>           <span class="actor">Usuarios</span>
+   │                │              │                       │
+   ├──10:00 UTC────►│                                       │
+   │   (07:00 CL)   │                                       │
+   │                ├──validar CRON_SECRET                  │
+   │                │              │                       │
+   │                ├──SELECT plantillas WHERE activa=true─►│
+   │                │              ◄──36 plantillas──────────
+   │                │              │                       │
+   │                ├──evaluar frecuencia + día semana/mes  │
+   │                │   (Diario: todas)                     │
+   │                │   (Semanal: si día_semana coincide)   │
+   │                │   (Mensual: si día_mes coincide)      │
+   │                │              │                       │
+   │                ├──INSERT instancias_hoy────────────────►│
+   │                │              ◄──36 instancias creadas─
+   │                │              │                       │
+   │                │              ├──asignar responsable────────────►usuario
+   │                │              │   (lookup tabla usuarios)         │
+   │                │              │                                  │
+   │                │              ├──estado: "Pendiente"             │
+   │                │              │                                  │
+   │                ◄──200 OK──────                                    │
+   │                │              │                                  │
+<span class="note"># Cada usuario abre "Mi Día" y ve sus checklists del día listos para completar.</span>
+<span class="note"># Si falla el cron → email a Sergio + retry manual /api/cron/generar-checklists?token=...</span>
+</pre>
+      </div>
+    </div>
+
+    <div id="seq-3" class="tab-content">
+      <div class="seq">
+        <div class="seq-header">Secuencia · Descuadre &gt; $5.000 · escalamiento automático</div>
+<pre>
+<span class="actor">Líder</span>          <span class="actor">App</span>             <span class="actor">Airtable</span>          <span class="actor">Francis</span>     <span class="actor">Gerencia</span>
+  │              │                 │                       │            │
+  ├──submit cierre caja────────────►                                     │
+  │              │                 │                                    │
+  │              ├──POST /api/cierres────►                               │
+  │              │                 │                                    │
+  │              │                 ├──Formula: Diferencia=Real−Sistema  │
+  │              │                 │                                    │
+  │              │                 ├──¿|Diferencia| > 5000?──── SÍ      │
+  │              │                 │                                    │
+  │              │                 ├──automation: alerta crítica───────►│
+  │              │                 │                       │   Francis  │
+  │              │                 │                       │   recibe   │
+  │              │                 │                       │   notify   │
+  │              │                 │                                    │
+  │              │                 ├──si |Diferencia| > 50000──────────►│
+  │              │                 │                                    │
+  │              │                 │                       │     ──────►│
+  │              │                 │                       │   Gerencia │
+  │              │                 │                       │   (Nivel 3)│
+  │              │                 │                                    │
+  │              │                 ├──estado: Pendiente_Revision        │
+  │              │                 │                                    │
+  │              ◄──200 + warning──                                     │
+  │              │                 │                                    │
+<span class="note"># Líder ve mensaje: "Cierre registrado con descuadre. Francis ya fue notificada."</span>
+<span class="note"># Francis abre app, revisa, dialoga por comentarios, aprueba o pide investigación.</span>
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CIFRAS -->
+<section id="cifras">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">09 · Cifras</div>
+      <h2 class="section-title">El proyecto en números</h2>
+      <p class="section-desc">Lo que ya está construido, lo que falta y los costos reales de operación. Snapshot al 11 de mayo de 2026.</p>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Estado del producto</h3>
+    <div class="cifras-grid" style="margin-bottom:36px">
+      <div class="cifra"><div class="cifra-num">12</div><div class="cifra-label">Páginas en producción</div><div class="cifra-sub">Login · Mi Día · Dashboard · 9 más</div></div>
+      <div class="cifra"><div class="cifra-num">10</div><div class="cifra-label">Endpoints API REST</div><div class="cifra-sub">/api/v1/checklists, tareas, usuarios...</div></div>
+      <div class="cifra"><div class="cifra-num">25<span class="cifra-unit">+</span></div><div class="cifra-label">Componentes de negocio</div><div class="cifra-sub">Forms · cards · diálogos · tablas</div></div>
+      <div class="cifra"><div class="cifra-num">65</div><div class="cifra-label">Archivos fuente</div><div class="cifra-sub">TypeScript strict</div></div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Base de datos</h3>
+    <div class="cifras-grid" style="margin-bottom:36px">
+      <div class="cifra"><div class="cifra-num">18</div><div class="cifra-label">Tablas Airtable</div><div class="cifra-sub">5 grupos lógicos relacionados</div></div>
+      <div class="cifra"><div class="cifra-num">36</div><div class="cifra-label">Plantillas checklist</div><div class="cifra-sub">Diario · semanal · mensual</div></div>
+      <div class="cifra"><div class="cifra-num">172</div><div class="cifra-label">Ítems verificación</div><div class="cifra-sub">~5 ítems por plantilla</div></div>
+      <div class="cifra"><div class="cifra-num">12</div><div class="cifra-label">Automations</div><div class="cifra-sub">Triggers + notifications</div></div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Operación cliente</h3>
+    <div class="cifras-grid" style="margin-bottom:36px">
+      <div class="cifra"><div class="cifra-num">8</div><div class="cifra-label">Departamentos</div><div class="cifra-sub">GER · FIN · MKT · COM · ADM · INV · LID · LOG</div></div>
+      <div class="cifra"><div class="cifra-num">2</div><div class="cifra-label">Sucursales</div><div class="cifra-sub">Quilpué · San Antonio</div></div>
+      <div class="cifra"><div class="cifra-num">19</div><div class="cifra-label">Trabajadores</div><div class="cifra-sub">10 con acceso al sistema</div></div>
+      <div class="cifra"><div class="cifra-num">8</div><div class="cifra-label">Roles con permisos</div><div class="cifra-sub">Matriz RBAC completa</div></div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Costos infraestructura</h3>
+    <div class="cifras-grid" style="margin-bottom:36px">
+      <div class="cifra"><div class="cifra-num">$0</div><div class="cifra-label">Vercel Hobby</div><div class="cifra-sub">Hosting · SSL · CDN · Cron</div></div>
+      <div class="cifra"><div class="cifra-num">$0<span class="cifra-unit">→$20-100</span></div><div class="cifra-label">Airtable</div><div class="cifra-sub">Free → Team (~3 sem para upgrade)</div></div>
+      <div class="cifra"><div class="cifra-num">$12<span class="cifra-unit">/año</span></div><div class="cifra-label">Dominio</div><div class="cifra-sub">.cl · pendiente registrar</div></div>
+      <div class="cifra"><div class="cifra-num">~$6<span class="cifra-unit">/usr</span></div><div class="cifra-label">Google Workspace</div><div class="cifra-sub">Business Starter · opcional</div></div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Esfuerzo total estimado</h3>
+    <div class="cifras-grid">
+      <div class="cifra"><div class="cifra-num">14-18</div><div class="cifra-label">Semanas roadmap completo</div><div class="cifra-sub">6 fases · entrega independiente</div></div>
+      <div class="cifra"><div class="cifra-num">3-4</div><div class="cifra-label">Semanas próxima fase</div><div class="cifra-sub">Fase 2 · Finanzas + Comercial + MKT</div></div>
+      <div class="cifra"><div class="cifra-num">~4M</div><div class="cifra-label">Tokens Claude estimados</div><div class="cifra-sub">Total proyecto end-to-end</div></div>
+      <div class="cifra"><div class="cifra-num">30</div><div class="cifra-label">Días soporte post-entrega</div><div class="cifra-sub">Fix bugs + ajustes incluidos</div></div>
+    </div>
+
+    <div class="callout success" style="margin-top:40px">
+      <div class="callout-title">✓ Pasos inmediatos para ir a producción real</div>
+      <p><strong>1.</strong> Lista definitiva de correos por persona (María José). <strong>2.</strong> Activar Google Workspace o usar correos personales. <strong>3.</strong> Acceso al DNS de benditocapricho.cl → agregar CNAME `app` → `cname.vercel-dns.com`. <strong>4.</strong> Upgrade Airtable Free → Team antes de superar 1.000 registros. <strong>5.</strong> Capacitación 1h al equipo. Tras esto, Fase 1 corre en operación normal y arranca Fase 2.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== RFP · DOCUMENTO BUSINESS ============== -->
+<section id="rfp" class="alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">10 · RFP · Documento business</div>
+      <h2 class="section-title">Request for Proposal · Bendito Capricho × Créalo SpA</h2>
+      <p class="section-desc">El proyecto desde la mirada business: contexto, problema, hipótesis, KPIs medibles, riesgos identificados y roadmap por fases. Formato heredado del RFP InfoPet del banco SMC.</p>
+    </div>
+
+    <!-- Meta cards (cliente/relación/modelo/estado) -->
+    <div style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:32px" class="grid-4">
+      <div class="card" style="border-left:3px solid var(--primary)">
+        <div style="font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Cliente</div>
+        <div style="font-size:15px;color:var(--ink);font-weight:700;letter-spacing:-.01em">Bendito Capricho</div>
+        <div style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;margin-top:2px">María José Norambuela · dueña</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--secondary)">
+        <div style="font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Relación</div>
+        <div style="font-size:15px;color:var(--ink);font-weight:700;letter-spacing:-.01em">Cliente · retail premium Chile</div>
+        <div style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;margin-top:2px">2 sucursales · 19 trabajadores</div>
+      </div>
+      <div class="card" style="border-left:3px solid #1e40af">
+        <div style="font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Modelo Créalo</div>
+        <div style="font-size:15px;color:var(--ink);font-weight:700;letter-spacing:-.01em">Project + Care</div>
+        <div style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;margin-top:2px">Desarrollo + continuidad mensual</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--success)">
+        <div style="font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Estado</div>
+        <div style="font-size:15px;color:var(--ink);font-weight:700;letter-spacing:-.01em">Fase 1 LIVE</div>
+        <div style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;margin-top:2px">Vercel · 11 may 2026</div>
+      </div>
+    </div>
+
+    <!-- 01 Contexto -->
+    <div class="card" style="margin-bottom:18px;padding:28px">
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:8px;display:flex;align-items:center;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:5px">01</span>
+        🎯 Contexto
+      </h3>
+      <p style="font-size:14px;color:var(--ink-soft);line-height:1.65;margin-bottom:12px">
+        Bendito Capricho opera <b>tienda retail de accesorios</b> en Quilpué y San Antonio bajo modelo de <b>subarriendo de stands a emprendedores</b> (cada stand vende productos de un emprendedor distinto · BC cobra arriendo + comisión sobre ventas · paga al emprendedor menos mermas atribuibles).
+      </p>
+      <p style="font-size:14px;color:var(--ink-soft);line-height:1.65;margin-bottom:12px">
+        Hoy toda la operación vive en <b>Word, Excel local y WhatsApp</b>. El equipo de 19 personas trabaja sin visibilidad central. María José y David descubren problemas en la cuadratura mensual, no cuando ocurren.
+      </p>
+      <div class="callout">
+        <div class="callout-title">💡 Insight</div>
+        <p>El negocio funciona pero la dueña vive apagando incendios. Sin trazabilidad real, los descuadres se detectan tarde y los emprendedores reciben pagos atrasados porque el cálculo es manual. La plataforma no agrega trabajo · reemplaza WhatsApp como fuente de verdad.</p>
+      </div>
+    </div>
+
+    <!-- 02 Problema -->
+    <div class="card" style="margin-bottom:18px;padding:28px">
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:8px;display:flex;align-items:center;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:5px">02</span>
+        🔥 Problemas concretos hoy
+      </h3>
+      <ul style="list-style:none;padding:0;margin:0">
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Cierres de caja sin cuadratura automática:</b> cada tienda usa Excel propio · descuadres se descubren en cuadratura mensual con Joel</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Hojas de inventario en papel:</b> emprendedor entrega · líder firma · se pierden en bibliorato · 48 hrs convertidas en 7 días</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Checklists por WhatsApp:</b> "¿completaste lo de hoy?" en grupos · sin registro de quién hizo qué · sin alertas</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Pagos a emprendedores manuales:</b> Francis calcula a mano · ventas − comisión − mermas · pagos quincenales atrasan 3-5 días</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Mermas reportadas verbalmente:</b> sin foto · sin clasificación producto/operación · costos asumidos por BC sin tracking</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Captación emprendedores se pierde:</b> DMs Instagram sueltos · sin pipeline · prospectos calientes se enfrían en mensajes</li>
+        <li style="padding:10px 0 10px 22px;position:relative;font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">María José sin visibilidad real-time:</b> revisa estado de la empresa el fin de semana cuando ya pasó la quincena</li>
+      </ul>
+    </div>
+
+    <!-- 03 Hipótesis -->
+    <div class="card" style="margin-bottom:18px;padding:28px">
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:8px;display:flex;align-items:center;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:5px">03</span>
+        💡 Hipótesis
+      </h3>
+      <div class="callout success">
+        <div class="callout-title">Hipótesis principal</div>
+        <p>Digitalizando los <b>45+ checklists</b>, <b>cierres de caja</b>, <b>flujo inventario 8 pasos</b> y <b>pipeline emprendedores 7 etapas</b> en una sola plataforma con dashboard semáforo en vivo · María José deja de descubrir problemas en cuadratura mensual y los descubre el mismo día · los pagos a emprendedores salen a tiempo · los descuadres bajan a 0 reportados (no porque no ocurran sino porque se detectan al cierre).</p>
+      </div>
+      <div class="callout" style="margin-top:10px">
+        <div class="callout-title">Hipótesis secundaria</div>
+        <p>Con pipeline visible de captación (7 etapas Kanban), Dani convierte <b>prospecto → activo</b> del 15% al <b>25%+</b> en 6 meses. Cada punto de conversión adicional = revenue mensual recurrente por subarriendo.</p>
+      </div>
+    </div>
+
+    <!-- 05 KPIs · tabla baseline → target -->
+    <div class="card" style="margin-bottom:18px;padding:28px">
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:5px">04</span>
+        📊 KPIs · baseline → target
+      </h3>
+      <div class="matrix-table">
+        <table>
+          <thead>
+            <tr><th>Métrica</th><th>Baseline (hoy)</th><th>Target 6 meses</th><th>Cómo se mide</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Cumplimiento checklists diarios</td><td>~60% (estimado)</td><td><strong style="color:var(--success)">≥90%</strong></td><td>Auto · dashboard Mi Día + Reportes</td></tr>
+            <tr><td>Tiempo procesar hoja inventario</td><td>~5-7 días</td><td><strong style="color:var(--success)">&lt;48 hrs hábiles</strong></td><td>Auto · alerta si excede plazo</td></tr>
+            <tr><td>Días retraso pago emprendedor</td><td>3-5 días</td><td><strong style="color:var(--success)">0 días</strong></td><td>Sistema calcula · Francis aprueba · MJ firma</td></tr>
+            <tr><td>Descuadres caja sin investigar</td><td>~3-5/mes</td><td><strong style="color:var(--success)">0</strong></td><td>Auto · alerta &gt;$5K · investigación obligatoria</td></tr>
+            <tr><td>Conversión prospecto → emprendedor activo</td><td>~15%</td><td><strong style="color:var(--success)">25%+</strong></td><td>Pipeline Airtable · cohort mensual</td></tr>
+            <tr><td>Mermas con foto + clasificación</td><td>~20%</td><td><strong style="color:var(--success)">100%</strong></td><td>Sistema bloquea registro sin evidencia</td></tr>
+            <tr><td>NPS staff (Net Promoter Score interno)</td><td>—</td><td><strong style="color:var(--success)">≥50</strong></td><td>Survey trimestral post-implementación</td></tr>
+            <tr><td>Costo infra mensual</td><td>$0 (papel)</td><td><strong style="color:var(--success)">&lt;$130 USD/mes</strong></td><td>Vercel + Airtable Team + Workspace</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 06 Riesgos · tabla -->
+    <div class="card" style="margin-bottom:18px;padding:28px">
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:5px">05</span>
+        ⚠️ Riesgos identificados
+      </h3>
+      <div class="matrix-table">
+        <table>
+          <thead>
+            <tr><th>Riesgo</th><th>Probabilidad</th><th>Impacto</th><th>Mitigación</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Airtable Free se llena (1K rows)</td><td><span class="perm crud">Alta</span></td><td><span class="perm cru">Medio</span></td><td>Upgrade a Team antes de 3 sem · ~$20-100/mes · ya presupuestado</td></tr>
+            <tr><td>Equipo no adopta (sigue WhatsApp)</td><td><span class="perm cru">Media</span></td><td><span class="perm crud">Alta</span></td><td>Capacitación 1h + acompañamiento semana 1 · alerta auto si no completa</td></tr>
+            <tr><td>Líderes no suben foto cierre caja</td><td><span class="perm cru">Media</span></td><td><span class="perm cru">Media</span></td><td>Sistema bloquea submit sin foto obligatoria</td></tr>
+            <tr><td>Conexión a internet intermitente en tienda</td><td><span class="perm cru">Media</span></td><td><span class="perm scope">Bajo</span></td><td>PWA cachea assets · datos requieren conexión · queue local fase 2</td></tr>
+            <tr><td>Cambio de tarifa subarriendo confunde Airtable</td><td><span class="perm scope">Baja</span></td><td><span class="perm cru">Medio</span></td><td>Historial de precios versionado · fecha vigencia obligatoria</td></tr>
+            <tr><td>María José olvida aprobar pagos &gt; umbral</td><td><span class="perm cru">Media</span></td><td><span class="perm cru">Medio</span></td><td>Recordatorio email + push · escalada a David si &gt;48 hrs</td></tr>
+            <tr><td>Vercel Hobby supera límites (improbable)</td><td><span class="perm scope">Baja</span></td><td><span class="perm scope">Bajo</span></td><td>Upgrade a Pro $20/mes si supera 100K req/mes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 07 Solución · stack -->
+    <div class="card" style="margin-bottom:18px;padding:28px">
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:12px;display:flex;align-items:center;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:5px">06</span>
+        🛠️ Solución · stack y features
+      </h3>
+      <h4 style="font-size:13px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px">Stack</h4>
+      <ul style="list-style:none;padding:0;margin:0">
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Frontend:</b> Next.js 16 App Router · Tailwind v4 + shadcn/ui · PWA · TypeScript strict</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Auth:</b> NextAuth v5 magic link email · sin password · 8 roles · JWT con scope</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Datos:</b> Airtable <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--primary-soft);padding:2px 6px;border-radius:4px;color:var(--primary)">appy1mVnWcGIxa1rh</code> · 18 tablas · 12 automations · UI admin para MJ</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Infra:</b> Vercel Hobby · auto-deploy git push · SSL · Edge CDN · cron 10:00 UTC</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Integraciones (fase 2+):</b> WhatsApp Business API (notificaciones) · Google Drive (respaldo fotos) · Bsale/POS (cierres)</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Domain:</b> <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--primary-soft);padding:2px 6px;border-radius:4px;color:var(--primary)">app.benditocapricho.cl</code> · CNAME → <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--primary-soft);padding:2px 6px;border-radius:4px;color:var(--primary)">cname.vercel-dns.com</code></li>
+      </ul>
+      <h4 style="font-size:13px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px">Features clave</h4>
+      <ul style="list-style:none;padding:0;margin:0">
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span>📋 <b style="color:var(--ink)">36 plantillas checklist:</b> diario / semanal / mensual · generación auto 7am</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span>📊 <b style="color:var(--ink)">Dashboard semáforo:</b> 8 departamentos en verde/amarillo/rojo en tiempo real</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span>💰 <b style="color:var(--ink)">Cierres caja digitales:</b> 5 medios de pago · cuadratura automática · foto arqueo obligatoria</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span>📦 <b style="color:var(--ink)">Inventario 8 pasos:</b> hoja → foto → Drive → SKU → habilitar · plazo 48 hrs</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span>🛒 <b style="color:var(--ink)">Pipeline emprendedores 7 etapas:</b> Kanban Airtable · SLA por etapa · revenue recurrente</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span>👥 <b style="color:var(--ink)">Asistencia digital:</b> reemplazo libro físico · cumple art. 33 CT</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span>📱 <b style="color:var(--ink)">PWA mobile-first:</b> instalable Android/iPhone · líderes operan desde celular</li>
+      </ul>
+    </div>
+
+    <!-- 07 Roadmap por fases con estado -->
+    <div class="card" style="margin-bottom:18px;padding:28px">
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:5px">07</span>
+        🛣️ Roadmap por fases · 6 fases · ~14-18 semanas
+      </h3>
+      <div style="display:grid;grid-template-columns:1fr;gap:12px">
+        <div style="background:linear-gradient(90deg,var(--success-soft),#fff);border:1px solid var(--success);border-radius:10px;padding:14px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+            <h4 style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em">Fase 1 · MVP supervisión <span style="color:var(--success);font-family:'JetBrains Mono',monospace;font-size:12px;margin-left:8px">✓ LIVE</span></h4>
+            <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--ink-mute)">3-4 sem · ~1.2-1.5M tokens</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-soft);line-height:1.55">Login · Mi Día · Dashboard · Checklists (36 plantillas + cron) · Tareas · Emprendedores · Reportes · Calendario · Usuarios · PWA</div>
+        </div>
+        <div style="background:linear-gradient(90deg,var(--warn-soft),#fff);border:1px solid var(--warn);border-radius:10px;padding:14px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+            <h4 style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em">Fase 2 · Dinero <span style="color:var(--warn);font-family:'JetBrains Mono',monospace;font-size:12px;margin-left:8px">🔄 PRÓXIMA</span></h4>
+            <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--ink-mute)">2-3 sem · ~800K-1M tokens</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-soft);line-height:1.55">Cierres caja (5 medios) · Depósitos con foto · Pagos emprendedores (fórmula auto) · Marketing · Comercial · Notificaciones · Upload foto real</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+            <h4 style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em">Fase 3 · Inventario <span style="color:var(--ink-mute);font-family:'JetBrains Mono',monospace;font-size:12px;margin-left:8px">⏳ PLAN</span></h4>
+            <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--ink-mute)">2-3 sem · ~500-700K tokens</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-soft);line-height:1.55">8 pasos digital · mermas con foto obligatoria · clasificación atribución · trazabilidad SKU</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+            <h4 style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em">Fase 4 · RRHH <span style="color:var(--ink-mute);font-family:'JetBrains Mono',monospace;font-size:12px;margin-left:8px">⏳ PLAN</span></h4>
+            <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--ink-mute)">2 sem · ~300-500K tokens</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-soft);line-height:1.55">Asistencia digital (art. 33 CT) · liquidaciones · bonos · contratos archivados · DT</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+            <h4 style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em">Fase 5 · Portal Emprendedores <span style="color:var(--ink-mute);font-family:'JetBrains Mono',monospace;font-size:12px;margin-left:8px">⏳ PLAN</span></h4>
+            <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--ink-mute)">2-3 sem · ~300-400K tokens</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-soft);line-height:1.55">Ventas propias · mermas atribuibles · pagos recibidos · estado subarriendo · notificaciones</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+            <h4 style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em">Fase 6 · Logística Web <span style="color:var(--ink-mute);font-family:'JetBrains Mono',monospace;font-size:12px;margin-left:8px">⏳ PLAN</span></h4>
+            <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--ink-mute)">2 sem · ~200-300K tokens</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-soft);line-height:1.55">Integración Paris Marketplace · catálogo web sincronizado · seguimiento pedidos online</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Próximos pasos -->
+    <div class="callout success">
+      <div class="callout-title">✓ Próximos pasos inmediatos (5 ítems · costo &lt;$200 USD)</div>
+      <p><strong>1.</strong> María José confirma lista definitiva de emails. <strong>2.</strong> Activar Google Workspace o usar correos personales. <strong>3.</strong> Acceso DNS benditocapricho.cl → CNAME app → cname.vercel-dns.com. <strong>4.</strong> Upgrade Airtable Free → Team antes de 1K rows. <strong>5.</strong> Capacitación 1h al equipo. <em>Tras estos 5, Fase 1 corre en operación normal y arranca Fase 2 (Dinero).</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-grid">
+    <div class="footer-meta">
+      <strong>Bendito Capricho · Plataforma de Supervisión Digital</strong><br>
+      Cliente: María José Norambuela · Implementación: Créalo SpA (RUT 78.408.754-9)<br>
+      Sergio Gary · sergiogaryf@gmail.com · crealostudio.cl<br>
+      Documento: 11 mayo 2026 · Fase 1 entregada y en producción
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-end">
+      <div class="footer-tag">v1.0 · Mayo 2026</div>
+      <div class="footer-links">
+        <a href="https://app-alpha-beige-15.vercel.app" target="_blank">Plataforma</a>
+        <a href="https://benditocapricho.cl" target="_blank">Sitio</a>
+        <a href="#vision">Volver arriba</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+<script>
+function showTab(id){
+  const btn=event.currentTarget;
+  const tabs=btn.parentElement;
+  tabs.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // Encuentra contenedor más cercano de tabs
+  const section=tabs.closest('section');
+  section.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function toggleMenu(){
+  const nav=document.querySelector('nav.toc');
+  if(getComputedStyle(nav).display==='none'){
+    nav.style.display='flex';
+    nav.style.flexDirection='column';
+    nav.style.position='absolute';
+    nav.style.top='100%';
+    nav.style.right='24px';
+    nav.style.background='#fff';
+    nav.style.padding='12px';
+    nav.style.borderRadius='10px';
+    nav.style.boxShadow='var(--shadow-strong)';
+    nav.style.border='1px solid var(--border)';
+  } else {
+    nav.style.display='none';
+  }
+}
+// Scroll-to-top button visibility
+const scrollBtn=document.querySelector('.scroll-top');
+window.addEventListener('scroll',()=>{
+  if(window.scrollY>400){scrollBtn.classList.add('visible')}
+  else{scrollBtn.classList.remove('visible')}
+});
+// Smooth scroll para nav links
+document.querySelectorAll('nav.toc a').forEach(a=>{
+  a.addEventListener('click',e=>{
+    if(window.innerWidth<1024){
+      const nav=document.querySelector('nav.toc');
+      setTimeout(()=>{nav.style.display='none'},100);
+    }
+  });
+});
+
+// ============= PROCESOS DINÁMICOS · play/pause/reset =============
+const flowState = new Map();
+function getFlowParts(stage){
+  const nodes = stage.querySelectorAll('.ce-node');
+  const arrows = stage.querySelectorAll('.ce-arrow');
+  return {nodes,arrows};
+}
+function clearFlow(stage){
+  stage.querySelectorAll('.ce-node').forEach(n=>n.classList.remove('dyn-active','dyn-done'));
+  stage.querySelectorAll('.ce-arrow').forEach(a=>a.classList.remove('dyn-active'));
+}
+function resetFlow(btn){
+  const stage = btn.closest('.visio-stage');
+  const status = stage.querySelector('.dyn-status');
+  if(flowState.has(stage)){clearInterval(flowState.get(stage));flowState.delete(stage)}
+  clearFlow(stage);
+  const {nodes} = getFlowParts(stage);
+  status.textContent = `paso 0 de ${nodes.length} · listo`;
+  status.classList.remove('playing');
+}
+function playFlow(btn){
+  const stage = btn.closest('.visio-stage');
+  const status = stage.querySelector('.dyn-status');
+  if(flowState.has(stage)){return} // ya está corriendo
+  clearFlow(stage);
+  const {nodes,arrows} = getFlowParts(stage);
+  let i = 0;
+  status.textContent = `paso 1 de ${nodes.length} · corriendo...`;
+  status.classList.add('playing');
+  // activar primer nodo
+  if(nodes[0]) nodes[0].classList.add('dyn-active');
+  const id = setInterval(()=>{
+    // marcar nodo actual como done
+    if(nodes[i]){
+      nodes[i].classList.remove('dyn-active');
+      nodes[i].classList.add('dyn-done');
+    }
+    // activar arrow correspondiente
+    if(arrows[i]){
+      arrows[i].classList.add('dyn-active');
+      setTimeout(()=>arrows[i] && arrows[i].classList.remove('dyn-active'),800);
+    }
+    i++;
+    if(i >= nodes.length){
+      clearInterval(id);flowState.delete(stage);
+      status.textContent = `${nodes.length} de ${nodes.length} · completado ✓`;
+      status.classList.remove('playing');
+      return;
+    }
+    if(nodes[i]) nodes[i].classList.add('dyn-active');
+    status.textContent = `paso ${i+1} de ${nodes.length} · corriendo...`;
+    // scroll al nodo si necesita
+    if(nodes[i] && nodes[i].scrollIntoView){
+      const rect = nodes[i].getBoundingClientRect();
+      if(rect.left < 0 || rect.right > window.innerWidth){
+        nodes[i].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+      }
+    }
+  },1100);
+  flowState.set(stage,id);
+}
+
+// ============= COUNTERS animados en CIFRAS =============
+const animCounters = new Map();
+function animateCounter(el,target,duration=1200){
+  if(animCounters.has(el)) return;
+  animCounters.set(el,true);
+  const start = performance.now();
+  const startVal = 0;
+  function frame(now){
+    const t = Math.min(1,(now-start)/duration);
+    const ease = 1 - Math.pow(1-t,3);
+    el.textContent = Math.round(startVal + (target-startVal)*ease).toLocaleString('es-CL');
+    if(t<1) requestAnimationFrame(frame);
+    else el.textContent = target.toLocaleString('es-CL');
+  }
+  requestAnimationFrame(frame);
+}
+// Observer para cifras
+const ioCifras = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const num = e.target.querySelector('.cifra-num');
+      if(num && !animCounters.has(num)){
+        const raw = num.textContent.trim();
+        const m = raw.match(/(\d+)/);
+        if(m){
+          const target = parseInt(m[1],10);
+          const prefix = raw.split(m[1])[0] || '';
+          const suffix = raw.split(m[1])[1] || '';
+          if(target > 0 && target < 100000){
+            num.dataset.original = raw;
+            num.innerHTML = `${prefix}<span class="count-num">0</span>${suffix.replace('<span','<span style="display:none" data-keep="1"')}`;
+            const span = num.querySelector('.count-num');
+            if(span) animateCounter(span,target,1400);
+            // restaurar unit span
+            const hidden = num.querySelector('[data-keep]');
+            if(hidden) setTimeout(()=>{hidden.style.display='';hidden.removeAttribute('data-keep')},1400);
+          }
+        }
+      }
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('.cifra').forEach(c=>ioCifras.observe(c));
+</script>
+
+</body>
+</html>
