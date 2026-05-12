@@ -75,26 +75,26 @@ nav.toc a:hover{color:var(--primary);background:var(--primary-soft)}
 .menu-btn{display:flex;background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px;color:var(--ink-soft)}
 @media(min-width:1024px){.menu-btn{display:none}}
 
-/* HERO */
+/* HERO · más minimalista */
 .hero{
-  padding:64px 0 56px;
+  padding:80px 0 64px;
   text-align:center;
-  background:linear-gradient(180deg,var(--bg) 0%,var(--surface) 100%);
+  background:var(--bg);
 }
-@media(min-width:768px){.hero{padding:96px 0 72px}}
+@media(min-width:768px){.hero{padding:120px 0 96px}}
 .hero-eyebrow{
   display:inline-block;color:var(--primary);background:var(--primary-soft);
   padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600;
   letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px;
 }
 .hero h1{
-  font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1.08;
-  color:var(--ink);max-width:840px;margin:0 auto 18px;
+  font-size:34px;font-weight:800;letter-spacing:-.025em;line-height:1.1;
+  color:var(--ink);max-width:680px;margin:0 auto 18px;
 }
-@media(min-width:768px){.hero h1{font-size:54px}}
+@media(min-width:768px){.hero h1{font-size:48px}}
 .hero h1 .accent{color:var(--primary);font-style:italic;font-weight:600}
-.hero p{font-size:16px;color:var(--ink-soft);max-width:680px;margin:0 auto;font-weight:400}
-@media(min-width:768px){.hero p{font-size:19px}}
+.hero p{font-size:15px;color:var(--ink-mute);max-width:520px;margin:0 auto;font-weight:400}
+@media(min-width:768px){.hero p{font-size:17px}}
 .hero-cta{margin-top:28px;display:inline-flex;flex-wrap:wrap;gap:12px;justify-content:center}
 .btn{
   display:inline-flex;align-items:center;gap:8px;
@@ -116,10 +116,10 @@ nav.toc a:hover{color:var(--primary);background:var(--primary-soft)}
 .hero-meta-item strong{display:block;color:var(--ink);font-size:17px;font-weight:700;letter-spacing:-.01em}
 
 /* SECTION */
-section{padding:56px 0}
-@media(min-width:768px){section{padding:80px 0}}
+section{padding:64px 0}
+@media(min-width:768px){section{padding:100px 0}}
 section.alt{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.section-header{margin-bottom:40px}
+.section-header{margin-bottom:48px;max-width:760px}
 .section-eyebrow{
   color:var(--primary);font-size:12px;font-weight:700;
   text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;
@@ -999,51 +999,33 @@ footer{
 .toc-divider{display:inline-block;width:1px;height:14px;background:var(--border-strong);margin:0 4px;vertical-align:middle}
 
 .block-divider{
-  padding:80px 0 24px;text-align:center;
+  padding:120px 0 32px;text-align:center;
   position:relative;
 }
 .block-divider::before{
-  content:"";position:absolute;left:50%;top:0;width:1px;height:60px;
-  background:linear-gradient(180deg,transparent,var(--border-strong));
-  transform:translateX(-50%);
+  content:"";position:absolute;left:50%;top:48px;width:1px;height:32px;
+  background:var(--border-strong);transform:translateX(-50%);
 }
 .block-divider-num{
   font-family:'JetBrains Mono',monospace;
-  font-size:13px;font-weight:800;letter-spacing:.2em;
-  color:var(--primary);text-transform:uppercase;margin-bottom:14px;
-  display:inline-flex;align-items:center;gap:14px;
-}
-.block-divider-num::before,
-.block-divider-num::after{
-  content:"";width:40px;height:1px;background:var(--primary);opacity:.4;
+  font-size:11px;font-weight:700;letter-spacing:.16em;
+  color:var(--ink-mute);text-transform:uppercase;margin-bottom:12px;
 }
 .block-divider-title{
-  font-size:36px;font-weight:800;color:var(--ink);
-  letter-spacing:-.025em;line-height:1.05;margin-bottom:12px;
-  max-width:720px;margin-left:auto;margin-right:auto;
+  font-size:28px;font-weight:800;color:var(--ink);
+  letter-spacing:-.02em;line-height:1.1;margin-bottom:8px;
+  max-width:640px;margin-left:auto;margin-right:auto;
 }
-@media(min-width:768px){.block-divider-title{font-size:52px}}
+@media(min-width:768px){.block-divider-title{font-size:40px}}
 .block-divider-title em{
-  font-style:normal;background:linear-gradient(135deg,var(--primary),var(--secondary));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-style:normal;color:var(--primary);
 }
 .block-divider-sub{
-  font-size:15px;color:var(--ink-soft);max-width:560px;
-  margin:0 auto;line-height:1.6;
+  font-size:14px;color:var(--ink-mute);max-width:480px;
+  margin:0 auto;line-height:1.55;
 }
-@media(min-width:768px){.block-divider-sub{font-size:17px}}
-.block-divider-chips{
-  margin-top:24px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
-}
-.block-divider-chip{
-  font:600 11.5px 'Inter',sans-serif;
-  padding:6px 13px;border-radius:99px;
-  background:#fff;border:1px solid var(--border-strong);
-  color:var(--ink-soft);letter-spacing:-.005em;
-  transition:all .15s;cursor:default;
-}
-.block-divider-chip:hover{border-color:var(--primary);color:var(--primary)}
-.block-divider-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+@media(min-width:768px){.block-divider-sub{font-size:15px}}
+.block-divider-chips{display:none}
 
 /* Hide sections que ya no van en el flujo principal */
 section.hidden-section{display:none !important}
@@ -1296,18 +1278,11 @@ section.hidden-section{display:none !important}
 <!-- HERO -->
 <div class="hero">
   <div class="container">
-    <span class="hero-eyebrow">Fase 1 entregada · Mayo 2026</span>
-    <h1>Una <span class="accent">tienda retail</span> que se supervisa sola, desde el celular.</h1>
-    <p>Plataforma de supervisión digital para María José Norambuela y su equipo de 19 personas. 8 departamentos, 2 sucursales, 36 plantillas de checklists, 8 tablas Airtable Fase 1 (+10 planificadas), 1 dashboard que muestra todo en tiempo real.</p>
+    <span class="hero-eyebrow">Fase 1 · Mayo 2026</span>
+    <h1>Una tienda retail que se <span class="accent">supervisa sola</span>.</h1>
+    <p>Plataforma de supervisión digital para María José Norambuela. Tres miradas: funcional, técnica y cierre.</p>
     <div class="hero-cta">
       <a href="https://app-alpha-beige-15.vercel.app" class="btn btn-primary" target="_blank">Abrir plataforma →</a>
-      <a href="https://benditocapricho.cl" class="btn btn-ghost" target="_blank">Sitio actual</a>
-    </div>
-    <div class="hero-meta">
-      <div class="hero-meta-item"><strong>10 / 12</strong>Módulos en producción</div>
-      <div class="hero-meta-item"><strong>36</strong>Plantillas checklist</div>
-      <div class="hero-meta-item"><strong>8</strong>Roles con permisos</div>
-      <div class="hero-meta-item"><strong>7:00 AM</strong>Cron diario activo</div>
     </div>
   </div>
 </div>
@@ -1332,52 +1307,26 @@ section.hidden-section{display:none !important}
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">01 · Visión</div>
-      <h2 class="section-title">Del WhatsApp y Word al dashboard en tiempo real</h2>
-      <p class="section-desc">Bendito Capricho opera una tienda retail de accesorios con modelo de subarriendo de stands a emprendedores. Hoy toda la gestión está en Word, Excel y WhatsApp. La plataforma digitaliza 45+ checklists, centraliza finanzas, automatiza alertas y permite a la gerencia ver el estado de toda la empresa desde un solo panel.</p>
+      <h2 class="section-title">Del WhatsApp al dashboard</h2>
+      <p class="section-desc">Bendito Capricho operaba en Word, Excel y WhatsApp. Hoy Fase 1 digitaliza la supervisión: checklists con cron 7am, tareas adhoc trazables y un dashboard tipo semáforo. Los procesos de dinero, inventario y captación quedan para fases 2-3.</p>
     </div>
 
     <div class="grid-3">
       <div class="card feat">
-        <div class="card-icon">🎯</div>
         <h3>Supervisión centralizada</h3>
-        <p>María José y David ven el estado de los 8 departamentos en tiempo real con semáforos verde/amarillo/rojo. No más "¿alguien sabe si Francis ya cerró caja?" por WhatsApp.</p>
-        <div class="meta">Dashboard tipo semáforo · alertas en vivo</div>
+        <p>María José y David ven el estado de los 8 departamentos en tiempo real con semáforos verde/amarillo/rojo.</p>
+        <div class="meta">Fase 1 · LIVE</div>
       </div>
       <div class="card feat">
-        <div class="card-icon">📋</div>
         <h3>Checklists digitales</h3>
-        <p>36 plantillas (diarias, semanales, mensuales) se generan automáticamente cada día a las 7:00 AM. Cada rol completa los suyos desde el celular con foto, número, texto o check.</p>
-        <div class="meta">Cron Vercel · PWA instalable</div>
+        <p>36 plantillas se generan automáticamente cada día a las 7 AM. Cada rol completa los suyos desde el celular con foto, texto o check.</p>
+        <div class="meta">Fase 1 · LIVE</div>
       </div>
       <div class="card feat">
-        <div class="card-icon">💰</div>
-        <h3>Trazabilidad financiera</h3>
-        <p>Cierres de caja con cálculo automático de diferencias por medio de pago. Pagos a emprendedores: ventas − comisión − mermas − subarriendo. Cuadratura mensual con segundo filtro.</p>
-        <div class="meta">Fase 2 · planificada</div>
+        <h3>Roadmap restante</h3>
+        <p>Cierre caja + pagos a emprendedores (F2), inventario 8 pasos + mermas (F3), asistencia + RRHH (F4), portal emprendedores (F5).</p>
+        <div class="meta">Fases 2-5 · planificadas</div>
       </div>
-      <div class="card feat">
-        <div class="card-icon">📦</div>
-        <h3>Inventario en 8 pasos</h3>
-        <p>Flujo guiado para recepción de mercadería: hoja → verificación → foto → Drive → corchetear → notificar → etiquetar → archivar. Plazo 48 hrs con alertas escaladas.</p>
-        <div class="meta">Fase 3 · planificada</div>
-      </div>
-      <div class="card feat">
-        <div class="card-icon">👥</div>
-        <h3>Control de personal</h3>
-        <p>Asistencia digital (reemplazo libro físico, art. 33 Código del Trabajo), turnos, cálculo de bonos, liquidaciones para contadora día 01, imposiciones día 12.</p>
-        <div class="meta">Fase 4 · planificada</div>
-      </div>
-      <div class="card feat">
-        <div class="card-icon">🛍️</div>
-        <h3>Portal emprendedores</h3>
-        <p>Acceso limitado para que cada emprendedor vea sus ventas, mermas atribuibles, pagos recibidos y estado de subarriendo sin pedirlo por WhatsApp.</p>
-        <div class="meta">Fase 5 · backlog</div>
-      </div>
-    </div>
-
-    <div class="callout success" style="margin-top:36px">
-      <div class="callout-title">✓ Estado actual — 11 mayo 2026</div>
-      <p><strong>Fase 1 entregada y en producción.</strong> 10 usuarios cargados con sus roles, 36 plantillas activas, cron automático ejecutándose a las 10:00 UTC (7:00 AM Chile), PWA instalable en Android y iPhone. URL temporal hasta configurar app.benditocapricho.cl con DNS CNAME.</p>
     </div>
   </div>
 </section>
@@ -1507,12 +1456,7 @@ section.hidden-section{display:none !important}
         </div>
     </div>
 
-    <!-- Procesos Fase 2-3 planificados · resumen breve -->
-    <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:24px">
-      <div style="background:linear-gradient(180deg,#fffbeb,#fff);border:1px solid #fde047;border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center"><span style="font-size:20px">💰</span><div style="flex:1"><div style="font-weight:700;font-size:13px">Cierre caja · pago empr · captación 7 etapas</div><div style="font-size:11px;color:#a16207;margin-top:2px">FASE 2 · planificado · 3-4 sem</div></div></div>
-      <div style="background:#fafafa;border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center"><span style="font-size:20px">📦</span><div style="flex:1"><div style="font-weight:700;font-size:13px">Inventario 8 pasos · mermas con foto</div><div style="font-size:11px;color:var(--ink-mute);margin-top:2px">FASE 3 · planificado · 2-3 sem</div></div></div>
-      <div style="background:#fafafa;border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center"><span style="font-size:20px">👥</span><div style="flex:1"><div style="font-weight:700;font-size:13px">Asistencia · liquidaciones · bonos</div><div style="font-size:11px;color:var(--ink-mute);margin-top:2px">FASE 4 · planificado · 2 sem</div></div></div>
-    </div>
+    <p style="margin-top:20px;font-size:12.5px;color:var(--ink-mute);text-align:center">Cierre caja · pagos · pipeline captación (F2) · inventario + mermas (F3) · asistencia (F4) están planificados, no construidos.</p>
   </div>
 </section>
 
@@ -2229,10 +2173,6 @@ section.hidden-section{display:none !important}
       </div>
     </div>
 
-    <div class="callout">
-      <div class="callout-title">🔒 Auditoría completa</div>
-      <p>Cada paso de cada flujo deja registro automático: quién aprobó, cuándo, con qué evidencia adjunta. Imposible "olvidar" pasos o aprobar sin documentación. Si SII pide auditar gastos del mes, todo está en Airtable con timestamps y archivos en Drive.</p>
-    </div>
   </div>
 </section>
 
@@ -2467,31 +2407,15 @@ section.hidden-section{display:none !important}
     <div class="section-header">
       <div class="section-eyebrow">10 · RFP · Documento business</div>
       <h2 class="section-title">Request for Proposal · Bendito Capricho × Créalo SpA</h2>
-      <p class="section-desc">El proyecto desde la mirada business: contexto, problema, hipótesis, KPIs medibles, riesgos identificados y roadmap por fases. Formato heredado del RFP InfoPet del banco SMC.</p>
+      <p class="section-desc">Contexto · problema · hipótesis · KPIs · riesgos · roadmap. Formato heredado del RFP InfoPet del banco SMC.</p>
     </div>
 
-    <!-- Meta cards (cliente/relación/modelo/estado) -->
-    <div style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:32px" class="grid-4">
-      <div class="card" style="border-left:3px solid var(--primary)">
-        <div style="font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Cliente</div>
-        <div style="font-size:15px;color:var(--ink);font-weight:700;letter-spacing:-.01em">Bendito Capricho</div>
-        <div style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;margin-top:2px">María José Norambuela · dueña</div>
-      </div>
-      <div class="card" style="border-left:3px solid var(--secondary)">
-        <div style="font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Relación</div>
-        <div style="font-size:15px;color:var(--ink);font-weight:700;letter-spacing:-.01em">Cliente · retail premium Chile</div>
-        <div style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;margin-top:2px">2 sucursales · 19 trabajadores</div>
-      </div>
-      <div class="card" style="border-left:3px solid #1e40af">
-        <div style="font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Modelo Créalo</div>
-        <div style="font-size:15px;color:var(--ink);font-weight:700;letter-spacing:-.01em">Project + Care</div>
-        <div style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;margin-top:2px">Desarrollo + continuidad mensual</div>
-      </div>
-      <div class="card" style="border-left:3px solid var(--success)">
-        <div style="font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Estado</div>
-        <div style="font-size:15px;color:var(--ink);font-weight:700;letter-spacing:-.01em">Fase 1 LIVE</div>
-        <div style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;margin-top:2px">Vercel · 11 may 2026</div>
-      </div>
+    <!-- Meta inline · 1 línea -->
+    <div style="display:flex;gap:24px;flex-wrap:wrap;padding:14px 18px;background:#fff;border:1px solid var(--border);border-radius:10px;margin-bottom:32px;font-size:12.5px">
+      <div><span style="color:var(--ink-mute);font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">Cliente</span><strong>Bendito Capricho</strong></div>
+      <div><span style="color:var(--ink-mute);font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">Proveedor</span><strong>Créalo SpA</strong></div>
+      <div><span style="color:var(--ink-mute);font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">Modelo</span><strong>Project + Care</strong></div>
+      <div><span style="color:var(--ink-mute);font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">Estado</span><strong style="color:var(--success)">Fase 1 LIVE</strong></div>
     </div>
 
     <!-- 01 Contexto -->
@@ -2693,42 +2617,15 @@ section.hidden-section{display:none !important}
       <p class="section-desc">Evaluación independiente del código, infraestructura y entregables. Score actual <strong style="color:#d97706">67/100 (C+)</strong> · con 2 semanas de correcciones llega a <strong style="color:#15803d">88/100 (B+)</strong> · inversión adicional ~$45 USD/mes.</p>
     </div>
 
-    <!-- Hero del reporte con score -->
-    <div style="background:linear-gradient(135deg,#0c1a3a,#1e3a8a);border-radius:18px;padding:36px 28px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden">
-      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 20%,rgba(139,44,77,.25),transparent)"></div>
-      <div style="position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:24px;align-items:center" class="report-hero-grid">
-        <div>
-          <div style="font-size:11px;color:#93c5fd;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;font-weight:700">Evaluación Técnica · Fase 1 · Mayo 2026</div>
-          <h3 style="font-size:32px;font-weight:900;line-height:1.1;margin-bottom:10px">El código está bien. La <em style="font-style:normal;background:linear-gradient(90deg,#fcb6c8,#c9a66b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">infraestructura</em> necesita ajustes.</h3>
-          <div style="font-size:13.5px;color:#cbd5e1;max-width:480px;line-height:1.7">Créalo entregó plataforma con tecnología moderna y bien implementada. Los problemas están en infraestructura (1 semana) y entregables estándar ausentes (manual, tickets, roadmap).</div>
-        </div>
-        <div style="display:flex;gap:14px;flex-wrap:wrap">
-          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px 22px;text-align:center;min-width:120px">
-            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:700">Score actual</div>
-            <div style="font-size:44px;font-weight:900;color:#fbbf24;line-height:1">67</div>
-            <div style="font-size:11px;color:#fca5a5;margin-top:4px">C+ · Mejorable</div>
-          </div>
-          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px 22px;text-align:center;min-width:120px">
-            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:700">Objetivo</div>
-            <div style="font-size:44px;font-weight:900;color:#a3e635;line-height:1">88</div>
-            <div style="font-size:11px;color:#86efac;margin-top:4px">B+ · Con fixes</div>
-          </div>
-          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px 22px;text-align:center;min-width:120px">
-            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:700">Costo +</div>
-            <div style="font-size:44px;font-weight:900;color:#60a5fa;line-height:1">$45</div>
-            <div style="font-size:11px;color:#93c5fd;margin-top:4px">USD/mes adicional</div>
-          </div>
-          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px 22px;text-align:center;min-width:120px">
-            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:700">Tiempo</div>
-            <div style="font-size:44px;font-weight:900;color:#c084fc;line-height:1">1</div>
-            <div style="font-size:11px;color:#d8b4fe;margin-top:4px">semana críticos</div>
-          </div>
-        </div>
-      </div>
+    <!-- Hero del reporte · minimalista -->
+    <div style="background:linear-gradient(135deg,#0c1a3a,#1e3a8a);border-radius:18px;padding:40px 32px;color:#fff;margin-bottom:32px;text-align:center">
+      <div style="font-size:11px;color:#93c5fd;text-transform:uppercase;letter-spacing:.12em;margin-bottom:18px;font-weight:700">Evaluación técnica · Mayo 2026</div>
+      <h3 style="font-size:28px;font-weight:900;line-height:1.15;margin-bottom:14px;max-width:600px;margin-left:auto;margin-right:auto">El código está bien.<br>La <em style="font-style:normal;color:#fcb6c8">infraestructura</em> necesita ajustes.</h3>
+      <div style="font-size:13px;color:#cbd5e1;max-width:480px;margin:0 auto 18px;line-height:1.6">Score actual <strong style="color:#fbbf24">67/100</strong> → objetivo <strong style="color:#a3e635">88/100</strong> con 1 semana de fix · $45/mes adicional.</div>
     </div>
 
     <!-- Resumen Ejecutivo · 4 callouts -->
-    <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin:24px 0 14px">Resumen Ejecutivo · 4 puntos clave</h3>
+    <h3 style="font-size:13px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin:0 0 16px">Resumen Ejecutivo</h3>
     <div class="grid-4" style="margin-bottom:32px">
       <div class="card" style="background:#f0fdf4;border-color:#bbf7d0">
         <div style="font-size:22px;margin-bottom:8px">✅</div>
@@ -3104,17 +3001,11 @@ section.hidden-section{display:none !important}
       </div>
     </div>
 
-    <!-- Conclusión -->
-    <div style="background:linear-gradient(135deg,#020617,#0f172a,#1e3a8a);border-radius:20px;padding:36px 28px;color:#fff;text-align:center;margin-top:32px">
-      <div style="font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:.09em;margin-bottom:12px">Conclusión SMC</div>
-      <div style="font-size:24px;font-weight:900;line-height:1.3;margin-bottom:14px;max-width:680px;margin-left:auto;margin-right:auto">El código está bien.<br>La infraestructura necesita ajustes.<br>Hay 3 entregables pendientes.</div>
-      <div style="font-size:14px;color:#94a3b8;max-width:620px;margin:0 auto 20px;line-height:1.7">Créalo entregó plataforma con tecnología moderna y correctamente implementada. Los problemas están en infraestructura (1 semana de fix) y entregables estándar ausentes: manual, tickets y roadmap. Con estas correcciones la plataforma pasa de <strong style="color:#fbbf24">67 a 88 puntos</strong> y puede operar con confianza.</div>
-      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
-        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 20px;text-align:center"><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Score actual</div><div style="font-size:24px;font-weight:900;color:#fbbf24">67</div><div style="font-size:10px;color:#fca5a5;margin-top:2px">C+ · Mejorable</div></div>
-        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 20px;text-align:center"><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Score objetivo</div><div style="font-size:24px;font-weight:900;color:#a3e635">88</div><div style="font-size:10px;color:#86efac;margin-top:2px">B+ · Con correcciones</div></div>
-        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 20px;text-align:center"><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Inversión +</div><div style="font-size:24px;font-weight:900;color:#60a5fa">$45</div><div style="font-size:10px;color:#93c5fd;margin-top:2px">USD/mes · Pro + Supabase</div></div>
-        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 20px;text-align:center"><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Tiempo estabilizar</div><div style="font-size:24px;font-weight:900;color:#c084fc">1</div><div style="font-size:10px;color:#d8b4fe;margin-top:2px">semana críticos</div></div>
-      </div>
+    <!-- Conclusión minimalista -->
+    <div style="text-align:center;padding:48px 24px 0;margin-top:24px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px">Conclusión</div>
+      <div style="font-size:22px;font-weight:800;line-height:1.3;color:var(--ink);max-width:540px;margin:0 auto 12px;letter-spacing:-.02em">El código está bien. La infraestructura necesita ajustes. Hay 3 entregables pendientes.</div>
+      <div style="font-size:13px;color:var(--ink-mute);max-width:520px;margin:0 auto;line-height:1.6">Con 1 semana de fix la plataforma pasa de 67 a 88 puntos y puede operar con confianza.</div>
     </div>
 
   </div>
