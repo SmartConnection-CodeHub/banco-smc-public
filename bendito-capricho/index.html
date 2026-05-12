@@ -797,6 +797,100 @@ footer{
 .visio-legend-item .swatch.dashed-red{background:repeating-linear-gradient(90deg,#dc2626 0 4px,transparent 4px 8px)}
 
 /* =======================================
+   SIDEBAR DE VERSIONES · panel derecho
+   ======================================= */
+.ver-toggle{
+  position:fixed;right:0;top:50%;transform:translateY(-50%);
+  background:var(--primary);color:#fff;border:none;
+  padding:14px 8px;border-radius:10px 0 0 10px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:.08em;writing-mode:vertical-rl;
+  box-shadow:-4px 0 12px rgba(46,18,28,.15);
+  z-index:90;transition:all .25s;
+  display:flex;align-items:center;gap:6px;
+}
+.ver-toggle:hover{padding-right:16px;background:var(--primary-dark)}
+.ver-toggle .num{
+  background:#fff;color:var(--primary);
+  font-size:10px;padding:1px 6px;border-radius:99px;
+  writing-mode:horizontal-tb;font-weight:800;
+}
+.ver-drawer{
+  position:fixed;right:-360px;top:0;bottom:0;
+  width:340px;max-width:90vw;
+  background:#fff;border-left:1px solid var(--border);
+  box-shadow:-12px 0 32px rgba(46,18,28,.12);
+  z-index:200;transition:right .35s cubic-bezier(.16,1,.3,1);
+  display:flex;flex-direction:column;
+}
+.ver-drawer.open{right:0}
+.ver-drawer-head{
+  padding:18px 20px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;
+}
+.ver-drawer-head h3{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.ver-drawer-head .sub{font:600 10px 'JetBrains Mono',monospace;color:rgba(255,255,255,.7);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.ver-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:14px}
+.ver-close:hover{background:rgba(255,255,255,.25)}
+.ver-body{flex:1;overflow-y:auto;padding:14px}
+.ver-filter{
+  display:flex;gap:4px;margin-bottom:14px;
+  background:#f8fafc;border-radius:8px;padding:4px;
+}
+.ver-filter button{
+  flex:1;padding:7px 10px;border:none;background:transparent;
+  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;color:var(--ink-soft);
+  border-radius:6px;cursor:pointer;
+}
+.ver-filter button.on{background:#fff;color:var(--primary);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.ver-list{display:flex;flex-direction:column;gap:6px}
+.ver-item{
+  border:1px solid var(--border);border-radius:10px;padding:12px;
+  background:#fff;transition:all .15s;cursor:pointer;position:relative;
+}
+.ver-item:hover{border-color:var(--primary);box-shadow:0 4px 10px rgba(139,44,77,.08);transform:translateX(-2px)}
+.ver-item.current{border-color:var(--success);background:linear-gradient(180deg,#f0fdf4,#fff)}
+.ver-item.current::before{content:"";position:absolute;top:0;bottom:0;left:0;width:3px;background:var(--success);border-radius:10px 0 0 10px}
+.ver-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.ver-tag{font:800 10px 'JetBrains Mono',monospace;color:var(--primary);background:var(--primary-soft);padding:2px 7px;border-radius:99px;letter-spacing:.04em}
+.ver-tag.current{color:var(--success);background:#dcfce7}
+.ver-item.current .ver-tag{color:#fff;background:var(--success)}
+.ver-date{font:600 10px 'JetBrains Mono',monospace;color:var(--ink-mute);letter-spacing:.02em}
+.ver-author{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.ver-avatar{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:800;color:#fff;flex-shrink:0}
+.ver-avatar.g{background:linear-gradient(135deg,var(--primary),var(--primary-dark))}
+.ver-avatar.s{background:linear-gradient(135deg,#1e40af,#1e3a8a)}
+.ver-avatar.c{background:linear-gradient(135deg,#000,#333)}
+.ver-author-name{font-size:11.5px;font-weight:700;color:var(--ink)}
+.ver-msg{font-size:12px;color:var(--ink-soft);line-height:1.4;margin-bottom:8px}
+.ver-actions{display:flex;gap:6px;flex-wrap:wrap}
+.ver-actions button,.ver-actions a{
+  font:600 10.5px 'Inter',sans-serif;
+  padding:4px 10px;border-radius:99px;
+  background:#fff;border:1px solid var(--border);color:var(--ink-soft);
+  cursor:pointer;text-decoration:none;letter-spacing:-.005em;transition:all .15s;
+}
+.ver-actions button:hover,.ver-actions a:hover{border-color:var(--primary);color:var(--primary)}
+.ver-actions .restore{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ver-actions .restore:hover{background:var(--primary-dark);color:#fff}
+
+.ver-add{
+  margin-top:14px;padding:14px;border:2px dashed var(--border-strong);
+  border-radius:10px;text-align:center;
+}
+.ver-add h4{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.ver-add p{font-size:11px;color:var(--ink-mute);line-height:1.5}
+.ver-add code{font-family:'JetBrains Mono',monospace;font-size:10px;background:#f1f5f9;padding:1px 6px;border-radius:4px;color:var(--primary)}
+
+.ver-overlay{
+  position:fixed;inset:0;background:rgba(15,20,32,.4);
+  z-index:150;opacity:0;pointer-events:none;transition:opacity .25s;
+  backdrop-filter:blur(2px);
+}
+.ver-overlay.show{opacity:1;pointer-events:auto}
+
+/* =======================================
    PROCESOS COMPACTOS · selector + canvas dinámico
    ======================================= */
 .proc-shell{
@@ -1293,21 +1387,20 @@ section.hidden-section{display:none !important}
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">02 · Proceso</div>
-      <h2 class="section-title">14 flujos en 6 escenarios · click para ver cada uno</h2>
-      <p class="section-desc">Procesos verificados Fase 1 según PDF Créalo. Selecciona un escenario abajo y se carga el mini-diagrama. Sin scroll · sin diagramas gigantes · todo en un solo viewport.</p>
+      <h2 class="section-title">Quién hace qué flujo, en qué orden</h2>
+      <p class="section-desc">Los 14 flujos verificados de Fase 1 (PDF Créalo) agrupados en 6 escenarios. Selecciona uno para ver el mini-diagrama. Mismo formato que Flujo de aprobación · sin scroll vertical.</p>
     </div>
 
-    <div class="proc-shell">
-      <div class="proc-index" role="tablist">
-        <button class="proc-tab on" onclick="showProc('p-auth')"><span class="ix">A · 2 flujos</span><span>Auth + Cron</span></button>
-        <button class="proc-tab" onclick="showProc('p-check')"><span class="ix">B · 4 flujos</span><span>Checklists</span></button>
-        <button class="proc-tab" onclick="showProc('p-tareas')"><span class="ix">C · 1 flujo</span><span>Tareas adhoc</span></button>
-        <button class="proc-tab" onclick="showProc('p-sup')"><span class="ix">D · 3 flujos</span><span>Supervisión</span></button>
-        <button class="proc-tab" onclick="showProc('p-gest')"><span class="ix">E · 3 flujos</span><span>Gestión</span></button>
-        <button class="proc-tab" onclick="showProc('p-pwa')"><span class="ix">F · 1 flujo</span><span>PWA mobile</span></button>
-      </div>
+    <div class="tabs" role="tablist" style="margin-bottom:24px">
+      <button class="tab-btn active" onclick="showScene(event,'p-auth')">Auth + Cron</button>
+      <button class="tab-btn" onclick="showScene(event,'p-check')">Checklists</button>
+      <button class="tab-btn" onclick="showScene(event,'p-tareas')">Tareas adhoc</button>
+      <button class="tab-btn" onclick="showScene(event,'p-sup')">Supervisión</button>
+      <button class="tab-btn" onclick="showScene(event,'p-gest')">Gestión</button>
+      <button class="tab-btn" onclick="showScene(event,'p-pwa')">PWA mobile</button>
+    </div>
 
-      <div class="proc-canvas">
+    <div class="proc-canvas" style="border:1px solid var(--border);border-radius:14px;background:#fff">
         <div id="p-auth" class="proc-scene on">
           <div class="proc-scene-head"><div><div class="proc-scene-name">Auth + Cron</div><div class="proc-scene-sub">Ítems [1] [2] · entregado · activo en producción</div></div><span class="proc-scene-tag">✓ LIVE</span></div>
           <div class="proc-flow">
@@ -1412,7 +1505,6 @@ section.hidden-section{display:none !important}
             <span class="b warn">datos requieren conexión</span>
           </div>
         </div>
-      </div>
     </div>
 
     <!-- Procesos Fase 2-3 planificados · resumen breve -->
@@ -3205,6 +3297,36 @@ section.hidden-section{display:none !important}
   </div>
 </footer>
 
+<!-- SIDEBAR DE VERSIONES -->
+<button class="ver-toggle" onclick="toggleVer()" aria-label="Abrir historial versiones">
+  <span class="num" id="verBadge">6</span>
+  HISTORIAL · VERSIONES
+</button>
+<div class="ver-overlay" onclick="toggleVer()"></div>
+<aside class="ver-drawer" id="verDrawer">
+  <div class="ver-drawer-head">
+    <div>
+      <h3>Historial de versiones</h3>
+      <div class="sub">Commits reales · banco-smc-public</div>
+    </div>
+    <button class="ver-close" onclick="toggleVer()" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="ver-body">
+    <div class="ver-filter">
+      <button class="on" onclick="filterVer(event,'all')">Todas</button>
+      <button onclick="filterVer(event,'g')">Guillermo</button>
+      <button onclick="filterVer(event,'s')">Sebastián</button>
+    </div>
+    <div class="ver-list" id="verList">
+      <!-- generadas por JS desde commits -->
+    </div>
+    <div class="ver-add">
+      <h4>📝 Cómo se crea una versión</h4>
+      <p>Cada push al repo <code>banco-smc-public</code> genera una versión automática. Sebastián puede clonar, editar y abrir Pull Request · queda registrada acá con su nombre.</p>
+    </div>
+  </div>
+</aside>
+
 <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
 
 <script>
@@ -3313,16 +3435,90 @@ function playFlow(btn){
   flowState.set(stage,id);
 }
 
-// ============= PROCESOS · selector dinámico =============
-function showProc(id){
-  const ev = (window.event && window.event.currentTarget);
+// ============= SIDEBAR VERSIONES =============
+const REPO_URL = "https://github.com/SmartConnection-CodeHub/banco-smc-public";
+const REPO_COMPARE = REPO_URL + "/compare";
+const VERSIONS = [
+  { tag:"v7", author:"g", name:"Guillermo", date:"2026-05-11 20:35", current:true, sha:"HEAD",
+    msg:"Proceso homologado a estilo Aprobación + sidebar versiones" },
+  { tag:"v6", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 20:25", sha:"5709336",
+    msg:"Procesos compactos dinámicos + Matriz navegable" },
+  { tag:"v5", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 20:20", sha:"bc26bf3",
+    msg:"Síntesis minimalista · 3 bloques (Funcional/Técnico/Cierre)" },
+  { tag:"v4", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 20:15", sha:"d708216",
+    msg:"Cifras con dashboards visuales tipo Cencosud" },
+  { tag:"v3", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 20:10", sha:"b39b03c",
+    msg:"Sección Reporte con assessment SMC integrado" },
+  { tag:"v2", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 20:05", sha:"5a18ff0",
+    msg:"Procesos reales Fase 1 según PDF · sin invenciones" },
+  { tag:"v1", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 19:46", sha:"e6834c4",
+    msg:"Maqueta inicial · arquitectura + RFP para review Sebas" },
+  { tag:"·", author:"s", name:"Sebastián (pendiente)", date:"esperando review", sha:null, pending:true,
+    msg:"Aún no ha clonado el repo · espacio reservado para sus aportes vía PR" }
+];
+
+function renderVersions(filter='all'){
+  const list = document.getElementById('verList');
+  if(!list) return;
+  list.innerHTML = '';
+  VERSIONS.filter(v => filter==='all' || v.author===filter).forEach(v=>{
+    const item = document.createElement('div');
+    item.className = 'ver-item' + (v.current?' current':'') + (v.pending?' pending':'');
+    if(v.pending){
+      item.style.opacity = '0.5';
+      item.style.background = '#fafafa';
+    }
+    const compareUrl = v.sha && v.sha!=='HEAD' ? `${REPO_COMPARE}/${v.sha}...HEAD` : '#';
+    const viewUrl = v.sha && v.sha!=='HEAD' ? `${REPO_URL}/blob/${v.sha}/bendito-capricho/index.html` : '#';
+    item.innerHTML = `
+      <div class="ver-row">
+        <span class="ver-tag${v.current?' current':''}">${v.tag}</span>
+        <span class="ver-date">${v.date}</span>
+      </div>
+      <div class="ver-author">
+        <span class="ver-avatar ${v.author}">${v.name[0]}</span>
+        <span class="ver-author-name">${v.name}${v.current?' · actual':''}</span>
+      </div>
+      <div class="ver-msg">${v.msg}</div>
+      ${v.pending ? '' : `<div class="ver-actions">
+        ${v.current ? '' : `<a href="${viewUrl}" target="_blank">Ver</a><a href="${compareUrl}" target="_blank">Comparar con actual</a><button class="restore" onclick="restoreVer('${v.tag}','${v.sha}')">Restaurar</button>`}
+        ${v.current ? '<button disabled style="background:var(--success);color:#fff;border:none">Versión actual</button>' : ''}
+      </div>`}
+    `;
+    list.appendChild(item);
+  });
+  document.getElementById('verBadge').textContent = VERSIONS.filter(v=>!v.pending).length;
+}
+
+function toggleVer(){
+  const d = document.getElementById('verDrawer');
+  const o = document.querySelector('.ver-overlay');
+  d.classList.toggle('open');
+  o.classList.toggle('show');
+}
+function filterVer(ev,key){
+  ev.currentTarget.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  ev.currentTarget.classList.add('on');
+  renderVersions(key);
+}
+function restoreVer(tag,sha){
+  alert(`Restaurar ${tag} (sha ${sha})\n\nEn producción, esto haría:\n  git checkout ${sha} -- bendito-capricho/\n  git commit -m "restore: ${tag}"\n  git push\n\nQuedaría como nueva versión sobre el historial sin perder las intermedias.`);
+}
+
+// Init versiones al cargar DOM
+document.addEventListener('DOMContentLoaded',()=>renderVersions());
+
+// ============= PROCESOS · selector dinámico (mismo patrón Aprobación) =============
+function showScene(ev,id){
   if(!ev) return;
-  const shell = ev.closest('.proc-shell');
-  if(!shell) return;
-  shell.querySelectorAll('.proc-tab').forEach(t=>t.classList.remove('on'));
-  ev.classList.add('on');
-  shell.querySelectorAll('.proc-scene').forEach(s=>s.classList.remove('on'));
-  const target = document.getElementById(id);
+  const btn = ev.currentTarget;
+  const tabsRow = btn.parentElement;
+  tabsRow.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const canvas = tabsRow.nextElementSibling;
+  if(!canvas) return;
+  canvas.querySelectorAll('.proc-scene').forEach(s=>s.classList.remove('on'));
+  const target = canvas.querySelector('#'+id);
   if(target) target.classList.add('on');
 }
 
