@@ -7,9 +7,23 @@
 
 ---
 
-## 📄 Documento principal
+## 📄 Documentos
 
-[**Abrir maqueta arquitectura + RFP**](index.html) — todo en una página
+- [**index.html**](index.html) — Maqueta completa con arquitectura Visio + 10 secciones (Versión corregida 2026-05-11 20:10 · solo procesos REALES de Fase 1)
+- [**ENTREGA-FASE1-CREALO.pdf**](ENTREGA-FASE1-CREALO.pdf) — PDF oficial firmado por Sergio Gary · 9 páginas · fuente de verdad
+
+## 🔄 Versión actual: v2 (corregida)
+
+**Cambio importante respecto a v1:** la primera versión inventó 3 procesos (cierres de caja, inventario 8 pasos, pipeline captación 7 etapas) presentándolos como si fueran de Fase 1, cuando el PDF oficial los lista como Fase 2-3 planificadas. **v2 separa explícitamente lo entregado de lo planificado:**
+
+- **Sección 02 · Procesos Fase 1 entregada** · 14 flujos verificados según PDF punto 12
+  - Grupo A: Login + Cron generación checklists (2 flujos)
+  - Grupo B: Checklists · responder, completar, revisar, filtrar (4 flujos)
+  - Grupo C: Tareas adhoc (1 flujo)
+  - Grupo D: Supervisión · dashboard, reportes, calendario (3 flujos)
+  - Grupo E: Gestión · emprendedores, usuarios, scope (3 flujos)
+  - Grupo F: PWA mobile (1 flujo)
+- **Sección 02b · Procesos Fase 2-3 planificados** (NO construidos) · cards con badge "FASE 2" o "FASE 3"
 
 ```
 https://smartconnection-codehub.github.io/banco-smc-public/bendito-capricho/

@@ -891,7 +891,7 @@ footer{
   <div class="container">
     <span class="hero-eyebrow">Fase 1 entregada · Mayo 2026</span>
     <h1>Una <span class="accent">tienda retail</span> que se supervisa sola, desde el celular.</h1>
-    <p>Plataforma de supervisión digital para María José Norambuela y su equipo de 19 personas. 8 departamentos, 2 sucursales, 36 plantillas de checklists, 18 tablas de datos, 1 dashboard que muestra todo en tiempo real.</p>
+    <p>Plataforma de supervisión digital para María José Norambuela y su equipo de 19 personas. 8 departamentos, 2 sucursales, 36 plantillas de checklists, 8 tablas Airtable Fase 1 (+10 planificadas), 1 dashboard que muestra todo en tiempo real.</p>
     <div class="hero-cta">
       <a href="https://app-alpha-beige-15.vercel.app" class="btn btn-primary" target="_blank">Abrir plataforma →</a>
       <a href="https://benditocapricho.cl" class="btn btn-ghost" target="_blank">Sitio actual</a>
@@ -964,11 +964,243 @@ footer{
 <section id="procesos" class="alt">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">02 · Procesos</div>
-      <h2 class="section-title">Los flujos que la app digitaliza</h2>
-      <p class="section-desc">Tres procesos núcleo, mapeados de extremo a extremo: recepción de inventario en 8 pasos (la mayor fuente de error operativo hoy), cierre de caja diario (donde se detectan los descuadres) y captación de emprendedores (la fuente de revenue por subarriendo).</p>
+      <div class="section-eyebrow">02 · Procesos · Fase 1 entregada</div>
+      <h2 class="section-title">14 flujos verificados en producción</h2>
+      <p class="section-desc">Estos son los flujos <strong>realmente entregados</strong> por Créalo en Fase 1 (ver PDF ENTREGA-FASE1 punto 12). Los procesos de negocio core (cierres de caja, pagos a emprendedores, inventario 8 pasos, pipeline captación) <strong>NO están construidos en Fase 1</strong> · están planificados para Fases 2-3.</p>
     </div>
 
+    <div class="callout warn" style="margin-bottom:32px">
+      <div class="callout-title">⚠ Disclaimer importante</div>
+      <p>Lo que digitaliza Fase 1 hoy: <strong>los checklists y el seguimiento de tareas</strong>. NO digitaliza aún cierres de caja, pagos a emprendedores ni inventario operativo. Esos vienen en Fase 2-3. Tener clara la diferencia entre <em>lo entregado</em> y <em>lo planificado</em> es clave para la conversación con Sebastián.</p>
+    </div>
+
+    <!-- 14 FLUJOS VERIFICADOS FASE 1 -->
+    <div class="visio-stage" data-flow="auth">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Grupo A · Autenticación + Cron · 2 flujos</div>
+          <div class="visio-sub">Verificados end-to-end · ítems [1] y [2] del PDF</div>
+        </div>
+        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 4 · listo</span>
+      </div>
+      <div class="ce-flow f4">
+        <div class="ce-node start"><span class="corner">[1]</span><span class="lbl">login</span><span class="nm">Email magic link</span><span class="sub">NextAuth v5 · sin password</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">→</span><span class="lbl">dashboard</span><span class="nm">Redirige según rol</span><span class="sub">middleware JWT + scope</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.5s"></span><span class="tip">cron</span></div>
+        <div class="ce-node system"><span class="corner">[2]</span><span class="lbl">10:00 UTC</span><span class="nm">Genera 36 checklists</span><span class="sub">CRON_SECRET · diario</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:1s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">✓</span><span class="lbl">listas</span><span class="nm">Instancias en Airtable</span><span class="sub">visibles en Mi Día</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>POST /api/auth/[...nextauth]</span>
+        <span class="badge ok"><span class="dot"></span>GET /api/v1/cron/generar-checklists</span>
+        <span class="badge">protegido por token</span>
+      </div>
+    </div>
+
+    <div class="visio-stage" data-flow="checklist">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Grupo B · Checklists · 4 flujos</div>
+          <div class="visio-sub">Verificados end-to-end · ítems [3] [4] [6] [7] del PDF</div>
+        </div>
+        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 5 · listo</span>
+      </div>
+      <div class="ce-flow f5">
+        <div class="ce-node lider"><span class="corner">[3]</span><span class="lbl">usuario</span><span class="nm">Abre checklist</span><span class="sub">desde Mi Día o lista filtrada</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node"><span class="corner">5 tipos</span><span class="lbl">responde</span><span class="nm">Check/Texto/Núm/Sel/Foto</span><span class="sub">cada respuesta con timestamp</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">→</span></div>
+        <div class="ce-node system"><span class="corner">[6]</span><span class="lbl">comenta</span><span class="nm">Opcional · muro chat</span><span class="sub">POST /api/v1/comentarios</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">→</span></div>
+        <div class="ce-node francis"><span class="corner">[4]</span><span class="lbl">supervisor</span><span class="nm">Aprueba o rechaza</span><span class="sub">con observaciones</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">[7]</span><span class="lbl">filtra</span><span class="nm">Por depto/tienda/estado</span><span class="sub">scope auto por rol</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>POST /api/v1/checklists/responder</span>
+        <span class="badge ok"><span class="dot"></span>POST /api/v1/checklists/completar</span>
+        <span class="badge ok"><span class="dot"></span>POST /api/v1/checklists/revisar</span>
+        <span class="badge ok"><span class="dot"></span>POST /api/v1/checklists/evidencia</span>
+      </div>
+    </div>
+
+    <div class="visio-stage" data-flow="tareas">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Grupo C · Tareas Ad-Hoc · 1 flujo</div>
+          <div class="visio-sub">Verificado end-to-end · ítem [5] del PDF · reemplaza WhatsApp para tareas puntuales</div>
+        </div>
+        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 4 · listo</span>
+      </div>
+      <div class="ce-flow f4">
+        <div class="ce-node start"><span class="corner">[5]</span><span class="lbl">creador</span><span class="nm">+ Nueva tarea</span><span class="sub">Dueña / Gerente / Jefe</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node"><span class="corner">campos</span><span class="lbl">define</span><span class="nm">Título · prioridad · responsable · plazo</span><span class="sub">Urgente/Alta/Media/Baja</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">→</span></div>
+        <div class="ce-node francis"><span class="corner">asign</span><span class="lbl">responsable</span><span class="nm">Aparece en su Mi Día</span><span class="sub">notificación in-app</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">✓</span><span class="lbl">completa</span><span class="nm">Marca como hecha</span><span class="sub">cambia a Completada</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>POST /api/v1/tareas</span>
+        <span class="badge">muro de comentarios</span>
+        <span class="badge">4 niveles prioridad</span>
+      </div>
+    </div>
+
+    <div class="visio-stage" data-flow="supervision">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Grupo D · Supervisión · 3 flujos</div>
+          <div class="visio-sub">Verificados end-to-end · ítems [8] [9] [10] del PDF</div>
+        </div>
+        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 3 · listo</span>
+      </div>
+      <div class="ce-flow f3">
+        <div class="ce-node maria"><span class="corner">[8]</span><span class="lbl">dashboard</span><span class="nm">Semáforo 8 deptos</span><span class="sub">verde/amarillo/rojo · alertas en banner</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node lider"><span class="corner">[9]</span><span class="lbl">reportes</span><span class="nm">Semanal comparativa</span><span class="sub">% cumplimiento + ranking responsables</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.5s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">[10]</span><span class="lbl">calendario</span><span class="nm">Vista mensual</span><span class="sub">puntos colores por estado del día</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>Dashboard /dashboard</span>
+        <span class="badge ok"><span class="dot"></span>Reportes /reportes</span>
+        <span class="badge ok"><span class="dot"></span>Calendario /calendario</span>
+        <span class="badge">racha días 100% cumplimiento</span>
+      </div>
+    </div>
+
+    <div class="visio-stage" data-flow="gestion">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Grupo E · Gestión · 3 flujos</div>
+          <div class="visio-sub">Verificados end-to-end · ítems [11] [12] [13] del PDF · CRUD básico</div>
+        </div>
+        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 3 · listo</span>
+      </div>
+      <div class="ce-flow f3">
+        <div class="ce-node gate"><span class="corner">[11]</span><span class="lbl">emprendedores</span><span class="nm">Crear · editar · estado</span><span class="sub">solo registro · sin pipeline aún</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node maria"><span class="corner">[12]</span><span class="lbl">usuarios</span><span class="nm">Admin · crear/editar/desactivar</span><span class="sub">Dueña + Gerente</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.5s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">[13]</span><span class="lbl">scope</span><span class="nm">Filtrado por rol</span><span class="sub">jefe ve depto · líder ve tienda</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>POST /api/v1/emprendedores</span>
+        <span class="badge ok"><span class="dot"></span>GET/POST /api/v1/usuarios</span>
+        <span class="badge">middleware JWT con scope</span>
+      </div>
+    </div>
+
+    <div class="visio-stage" data-flow="pwa">
+      <div class="visio-head">
+        <div>
+          <div class="visio-title">Grupo F · PWA mobile · 1 flujo</div>
+          <div class="visio-sub">Verificado · ítem [14] del PDF · instalable sin App Store</div>
+        </div>
+        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
+      </div>
+      <div class="dyn-controls">
+        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
+        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
+        <span class="dyn-status">paso 0 de 3 · listo</span>
+      </div>
+      <div class="ce-flow f3">
+        <div class="ce-node start"><span class="corner">android</span><span class="lbl">chrome</span><span class="nm">⋮ → Agregar a inicio</span><span class="sub">manifest.json detectado</span></div>
+        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
+        <div class="ce-node start"><span class="corner">iphone</span><span class="lbl">safari</span><span class="nm">↑ → Agregar a inicio</span><span class="sub">no funciona en Chrome iOS</span></div>
+        <div class="ce-arrow"><span class="pulse" style="animation-delay:.5s"></span><span class="tip">→</span></div>
+        <div class="ce-node end"><span class="corner">✓</span><span class="lbl">app</span><span class="nm">Modo standalone</span><span class="sub">sin barra navegador</span></div>
+      </div>
+      <div class="ce-meta">
+        <span class="badge ok"><span class="dot"></span>service worker activo</span>
+        <span class="badge ok"><span class="dot"></span>manifest BCapricho</span>
+        <span class="badge">assets cacheados offline</span>
+        <span class="badge warn"><span class="dot"></span>datos requieren conexión</span>
+      </div>
+    </div>
+
+    <!-- ROADMAP PROCESOS FASE 2-3 -->
+    <div class="section-header" style="margin-top:60px;margin-bottom:30px">
+      <div class="section-eyebrow" style="color:var(--warn)">02b · Procesos Fase 2-3 · planificados</div>
+      <h2 class="section-title" style="font-size:24px">Lo que NO está construido aún</h2>
+      <p class="section-desc">Estos procesos son <strong>problemas reales del negocio BC hoy</strong> (cierres de caja en Excel local, pagos a emprendedores calculados a mano, inventario en papel, captación perdida en DMs). Pero la app de Fase 1 <strong>no los resuelve todavía</strong> · están en el roadmap.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card" style="border-left:3px solid var(--warn)">
+        <div class="card-icon" style="background:var(--warn-soft);color:var(--warn)">💰</div>
+        <h3>Cierre de caja diario</h3>
+        <p>5 medios de pago · cuadratura automática · foto arqueo · depósito con comprobante · alerta descuadre · 2do filtro Joel mensual.</p>
+        <div class="meta" style="color:var(--warn)">FASE 2 · planificado · ~3-4 sem</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--warn)">
+        <div class="card-icon" style="background:var(--warn-soft);color:var(--warn)">💸</div>
+        <h3>Pago a emprendedor</h3>
+        <p>Sistema calcula ventas − comisión − mermas atribuibles − subarriendo. Francis revisa, María José aprueba si &gt; umbral.</p>
+        <div class="meta" style="color:var(--warn)">FASE 2 · planificado · quincenal</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--warn)">
+        <div class="card-icon" style="background:var(--warn-soft);color:var(--warn)">🛒</div>
+        <h3>Pipeline captación 7 etapas</h3>
+        <p>Kanban Airtable: Prospecto → Contacto → Validación → Exclusividad → Cierre → Integración → Activo. SLA por etapa.</p>
+        <div class="meta" style="color:var(--warn)">FASE 2 · Dani · genera revenue subarriendo</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--ink-mute)">
+        <div class="card-icon" style="background:#f5f5f5;color:var(--ink-mute)">📦</div>
+        <h3>Inventario 8 pasos</h3>
+        <p>Recepción → validación → SKU → registro → foto Drive → bibliorato → muestreo coherencia → habilitar. Plazo 48hrs hábiles.</p>
+        <div class="meta" style="color:var(--ink-mute)">FASE 3 · planificado · ~2-3 sem</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--ink-mute)">
+        <div class="card-icon" style="background:#f5f5f5;color:var(--ink-mute)">🏷️</div>
+        <h3>Mermas con foto obligatoria</h3>
+        <p>Registro de cada merma con foto · clasificación producto (descuenta emprendedor) vs operación tienda (asume BC).</p>
+        <div class="meta" style="color:var(--ink-mute)">FASE 3 · planificado · informe semanal</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--ink-mute)">
+        <div class="card-icon" style="background:#f5f5f5;color:var(--ink-mute)">👥</div>
+        <h3>Asistencia digital</h3>
+        <p>Reemplazo libro físico (art. 33 CT). Liquidaciones día 01, bonos día 10, imposiciones día 12, archivo digital de contratos.</p>
+        <div class="meta" style="color:var(--ink-mute)">FASE 4 · planificado · 2 sem</div>
+      </div>
+    </div>
+
+    <!-- DUPLICADOS ELIMINADOS · estos procesos viven ahora arriba como roadmap Fase 2-3 -->
+    <script type="application/json" id="removed-old-pipelines">
+      Bloque viejo eliminado en refactor 2026-05-11 19:55 · contenía 3 procesos inventados
+      (inventario 8 pasos · cierre caja · captación 7 etapas) presentados como si fueran Fase 1
+      cuando en realidad son Fase 2-3 planificados. Movidos arriba a sección 02b con badge correcto.
+    </script>
+    <div style="display:none" aria-hidden="true">
     <!-- Pipeline 1: Inventario 8 pasos · VISIO horizontal DINÁMICO -->
     <div class="visio-stage" data-flow="inv">
       <div class="visio-head">
@@ -1095,9 +1327,11 @@ footer{
       </div>
     </div>
 
-    <div class="callout">
-      <div class="callout-title">💡 Por qué estos 3 flujos primero</div>
-      <p>Son los que tocan dinero (cierres + pagos), inventario (riesgo merma) y revenue (captación = subarriendo recurrente). Cada uno tiene hoy un punto de fricción medible: hojas perdidas, descuadres no investigados y prospectos sin seguimiento. La app reemplaza el WhatsApp como fuente de verdad.</p>
+    </div><!-- end display:none wrapper -->
+
+    <div class="callout success" style="margin-top:32px">
+      <div class="callout-title">✓ Resumen real Fase 1 según PDF Créalo</div>
+      <p>La app construida hoy automatiza <strong>la supervisión de checklists y tareas</strong>. Reemplaza el WhatsApp para esos dos casos, no más. Los procesos de negocio core (cierres, pagos, inventario, captación) son los próximos en el roadmap (Fase 2-3) · hoy siguen en Excel y Word como antes.</p>
     </div>
   </div>
 </section>
@@ -1188,10 +1422,10 @@ footer{
                 </div>
               </div>
               <ul class="visio-box-bullets">
-                <li>12 páginas · 25+ componentes</li>
-                <li>RSC + Server Actions + Zod</li>
+                <li>11 rutas · 25+ componentes</li>
+                <li>Server Actions + Zod v4.4.3</li>
                 <li>Tailwind v4 + shadcn/ui</li>
-                <li>TypeScript strict</li>
+                <li>TypeScript 5.x strict</li>
               </ul>
             </div>
             <div class="visio-box">
@@ -1231,29 +1465,30 @@ footer{
               <div class="visio-box-head">
                 <div class="visio-logo air">A</div>
                 <div>
-                  <div class="visio-box-title">Airtable Base</div>
-                  <div class="visio-box-host">appy1mVnWcGIxa1rh</div>
+                  <div class="visio-box-title">Airtable Base · Fase 1</div>
+                  <div class="visio-box-host">API v0 · Free → Team $100/mes</div>
                 </div>
               </div>
               <ul class="visio-box-bullets">
-                <li>18 tablas · 5 grupos lógicos</li>
-                <li>36 plantillas · 172 ítems</li>
-                <li>Plan Free · ~1.000 rows</li>
-                <li>API REST v0</li>
+                <li>8 tablas activas hoy</li>
+                <li>36 plantillas · ~172 ítems</li>
+                <li>Plan Free · 1.000 rows max</li>
+                <li>+10 tablas en Fases 2-5</li>
               </ul>
             </div>
             <div class="visio-box">
               <div class="visio-box-head">
                 <div class="visio-logo air">A</div>
                 <div>
-                  <div class="visio-box-title">Airtable Automations</div>
-                  <div class="visio-box-host">12 triggers · notificaciones</div>
+                  <div class="visio-box-title">Cron único Fase 1</div>
+                  <div class="visio-box-host">/api/v1/cron/generar-checklists</div>
                 </div>
               </div>
               <ul class="visio-box-bullets">
-                <li>alertas descuadre &gt; $5K</li>
-                <li>escalada nivel 1→2→3</li>
-                <li>recordatorios calendario</li>
+                <li>10:00 UTC · 36 plantillas evaluadas</li>
+                <li>genera instancias del día</li>
+                <li>token CRON_SECRET</li>
+                <li>automations $ + escaladas → Fase 2</li>
               </ul>
             </div>
             <div class="visio-box">
@@ -1334,10 +1569,10 @@ footer{
           <div class="visio-note">
             <div class="visio-note-title">📌 En Airtable</div>
             <ul class="visio-note-bullets">
-              <li>18 tablas con relaciones Link · sin SQL · sin schemas a mantener</li>
-              <li>Automations dispara webhooks · escalada nivel 1 → 2 → 3</li>
+              <li>8 tablas Fase 1 con relaciones Link · sin SQL</li>
+              <li>+10 tablas en Fases 2-5 (cierres, mermas, pagos, stands…)</li>
               <li>UI admin para edición directa sin developer</li>
-              <li>⚠ Free 1K rows → Team antes de 3 sem · ~$20-100 USD/mes</li>
+              <li>⚠ Free 1K rows → Team antes de 3 sem · $100 USD/mes según PDF</li>
             </ul>
           </div>
         </div>
@@ -1926,7 +2161,7 @@ footer{
 
     <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Base de datos</h3>
     <div class="cifras-grid" style="margin-bottom:36px">
-      <div class="cifra"><div class="cifra-num">18</div><div class="cifra-label">Tablas Airtable</div><div class="cifra-sub">5 grupos lógicos relacionados</div></div>
+      <div class="cifra"><div class="cifra-num">8</div><div class="cifra-label">Tablas Airtable Fase 1</div><div class="cifra-sub">+10 tablas planificadas para Fases 2-5</div></div>
       <div class="cifra"><div class="cifra-num">36</div><div class="cifra-label">Plantillas checklist</div><div class="cifra-sub">Diario · semanal · mensual</div></div>
       <div class="cifra"><div class="cifra-num">172</div><div class="cifra-label">Ítems verificación</div><div class="cifra-sub">~5 ítems por plantilla</div></div>
       <div class="cifra"><div class="cifra-num">12</div><div class="cifra-label">Automations</div><div class="cifra-sub">Triggers + notifications</div></div>
@@ -2008,9 +2243,10 @@ footer{
       <p style="font-size:14px;color:var(--ink-soft);line-height:1.65;margin-bottom:12px">
         Hoy toda la operación vive en <b>Word, Excel local y WhatsApp</b>. El equipo de 19 personas trabaja sin visibilidad central. María José y David descubren problemas en la cuadratura mensual, no cuando ocurren.
       </p>
-      <div class="callout">
-        <div class="callout-title">💡 Insight</div>
-        <p>El negocio funciona pero la dueña vive apagando incendios. Sin trazabilidad real, los descuadres se detectan tarde y los emprendedores reciben pagos atrasados porque el cálculo es manual. La plataforma no agrega trabajo · reemplaza WhatsApp como fuente de verdad.</p>
+      <div class="callout warn">
+        <div class="callout-title">⚠ Qué resuelve Fase 1 vs qué NO resuelve</div>
+        <p><b>Resuelve hoy:</b> los checklists diarios/semanales/mensuales y la trazabilidad de tareas adhoc. Reemplaza WhatsApp para esos dos casos · todo queda registrado con timestamp y María José ve cumplimiento en dashboard tipo semáforo.</p>
+        <p style="margin-top:8px"><b>NO resuelve aún:</b> cierres de caja, pagos a emprendedores, inventario operativo ni captación comercial. Eso sigue en Excel y WhatsApp como antes · vendrá en Fases 2-3 según el PDF de entrega Créalo.</p>
       </div>
     </div>
 
@@ -2018,16 +2254,18 @@ footer{
     <div class="card" style="margin-bottom:18px;padding:28px">
       <h3 style="font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:8px;display:flex;align-items:center;gap:12px">
         <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:5px">02</span>
-        🔥 Problemas concretos hoy
+        🔥 Problemas del negocio hoy
       </h3>
+      <p style="font-size:13px;color:var(--ink-mute);margin-bottom:14px;font-style:italic">Status indica qué pain points resuelve Fase 1 entregada y cuáles quedan pendientes para fases siguientes.</p>
       <ul style="list-style:none;padding:0;margin:0">
-        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Cierres de caja sin cuadratura automática:</b> cada tienda usa Excel propio · descuadres se descubren en cuadratura mensual con Joel</li>
-        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Hojas de inventario en papel:</b> emprendedor entrega · líder firma · se pierden en bibliorato · 48 hrs convertidas en 7 días</li>
-        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Checklists por WhatsApp:</b> "¿completaste lo de hoy?" en grupos · sin registro de quién hizo qué · sin alertas</li>
-        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Pagos a emprendedores manuales:</b> Francis calcula a mano · ventas − comisión − mermas · pagos quincenales atrasan 3-5 días</li>
-        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Mermas reportadas verbalmente:</b> sin foto · sin clasificación producto/operación · costos asumidos por BC sin tracking</li>
-        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">Captación emprendedores se pierde:</b> DMs Instagram sueltos · sin pipeline · prospectos calientes se enfrían en mensajes</li>
-        <li style="padding:10px 0 10px 22px;position:relative;font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800;top:10px">›</span><b style="color:var(--ink)">María José sin visibilidad real-time:</b> revisa estado de la empresa el fin de semana cuando ya pasó la quincena</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--success);font-weight:800;top:10px">✓</span><b style="color:var(--ink)">Checklists por WhatsApp:</b> "¿completaste lo de hoy?" en grupos · <span style="color:var(--success);font-weight:700">RESUELTO Fase 1 ✓</span> · 36 plantillas digitales con cron 7am + dashboard semáforo</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--success);font-weight:800;top:10px">✓</span><b style="color:var(--ink)">Tareas adhoc sin trazabilidad:</b> "te paso por WA esto urgente" · <span style="color:var(--success);font-weight:700">RESUELTO Fase 1 ✓</span> · módulo tareas con prioridad, plazo, asignación, comentarios</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--success);font-weight:800;top:10px">✓</span><b style="color:var(--ink)">María José sin visibilidad real-time:</b> revisaba estado el fin de semana · <span style="color:var(--success);font-weight:700">RESUELTO Fase 1 ✓</span> · dashboard semáforo en vivo + reportes semanales con ranking</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--warn);font-weight:800;top:10px">⏳</span><b style="color:var(--ink)">Cierres de caja sin cuadratura automática:</b> Excel propio por tienda · descuadres mensuales · <span style="color:var(--warn);font-weight:700">PENDIENTE Fase 2</span></li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--warn);font-weight:800;top:10px">⏳</span><b style="color:var(--ink)">Pagos a emprendedores manuales:</b> Francis calcula a mano · atrasos 3-5 días · <span style="color:var(--warn);font-weight:700">PENDIENTE Fase 2</span></li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--warn);font-weight:800;top:10px">⏳</span><b style="color:var(--ink)">Captación emprendedores se pierde:</b> DMs Instagram sueltos · sin pipeline · <span style="color:var(--warn);font-weight:700">PENDIENTE Fase 2</span> (en Fase 1 solo hay CRUD emprendedores)</li>
+        <li style="padding:10px 0 10px 22px;position:relative;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--ink-mute);font-weight:800;top:10px">⏳</span><b style="color:var(--ink)">Hojas de inventario en papel:</b> emprendedor entrega · líder firma · se pierden · <span style="color:var(--ink-mute);font-weight:700">PENDIENTE Fase 3</span></li>
+        <li style="padding:10px 0 10px 22px;position:relative;font-size:14px;color:var(--ink-soft)"><span style="position:absolute;left:0;color:var(--ink-mute);font-weight:800;top:10px">⏳</span><b style="color:var(--ink)">Mermas reportadas verbalmente:</b> sin foto, sin clasificación · <span style="color:var(--ink-mute);font-weight:700">PENDIENTE Fase 3</span></li>
       </ul>
     </div>
 
@@ -2038,12 +2276,12 @@ footer{
         💡 Hipótesis
       </h3>
       <div class="callout success">
-        <div class="callout-title">Hipótesis principal</div>
-        <p>Digitalizando los <b>45+ checklists</b>, <b>cierres de caja</b>, <b>flujo inventario 8 pasos</b> y <b>pipeline emprendedores 7 etapas</b> en una sola plataforma con dashboard semáforo en vivo · María José deja de descubrir problemas en cuadratura mensual y los descubre el mismo día · los pagos a emprendedores salen a tiempo · los descuadres bajan a 0 reportados (no porque no ocurran sino porque se detectan al cierre).</p>
+        <div class="callout-title">Hipótesis Fase 1 (entregada)</div>
+        <p>Digitalizando los <b>36 checklists</b> y las <b>tareas adhoc</b> en una sola plataforma con dashboard semáforo en vivo · María José pasa de revisar el fin de semana a ver el estado en tiempo real · el cumplimiento de checklists sube de ~60% (estimado WhatsApp) a ≥90% al mes 2 · cada responsable tiene su Mi Día con lo asignado.</p>
       </div>
       <div class="callout" style="margin-top:10px">
-        <div class="callout-title">Hipótesis secundaria</div>
-        <p>Con pipeline visible de captación (7 etapas Kanban), Dani convierte <b>prospecto → activo</b> del 15% al <b>25%+</b> en 6 meses. Cada punto de conversión adicional = revenue mensual recurrente por subarriendo.</p>
+        <div class="callout-title">Hipótesis Fases 2-3 (planificadas)</div>
+        <p>Cuando se digitalicen cierres de caja, pagos a emprendedores e inventario 8 pasos · los descuadres se detectan el mismo día (no en cuadratura mensual) · los pagos salen a tiempo · las mermas se atribuyen correctamente. Pipeline captación 7 etapas mejora conversión prospecto→activo del 15% al 25%+.</p>
       </div>
     </div>
 
@@ -2106,7 +2344,7 @@ footer{
       <ul style="list-style:none;padding:0;margin:0">
         <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Frontend:</b> Next.js 16 App Router · Tailwind v4 + shadcn/ui · PWA · TypeScript strict</li>
         <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Auth:</b> NextAuth v5 magic link email · sin password · 8 roles · JWT con scope</li>
-        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Datos:</b> Airtable <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--primary-soft);padding:2px 6px;border-radius:4px;color:var(--primary)">appy1mVnWcGIxa1rh</code> · 18 tablas · 12 automations · UI admin para MJ</li>
+        <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Datos:</b> Airtable API v0 · <strong>8 tablas Fase 1</strong> (+10 planificadas Fases 2-5) · 36 plantillas · ~172 ítems · UI admin para María José</li>
         <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Infra:</b> Vercel Hobby · auto-deploy git push · SSL · Edge CDN · cron 10:00 UTC</li>
         <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Integraciones (fase 2+):</b> WhatsApp Business API (notificaciones) · Google Drive (respaldo fotos) · Bsale/POS (cierres)</li>
         <li style="padding:7px 0 7px 22px;position:relative;font-size:13.5px;color:var(--ink-soft);border-bottom:1px solid var(--border)"><span style="position:absolute;left:0;color:var(--primary);font-weight:800">›</span><b style="color:var(--ink)">Domain:</b> <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--primary-soft);padding:2px 6px;border-radius:4px;color:var(--primary)">app.benditocapricho.cl</code> · CNAME → <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--primary-soft);padding:2px 6px;border-radius:4px;color:var(--primary)">cname.vercel-dns.com</code></li>
