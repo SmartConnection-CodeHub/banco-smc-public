@@ -797,6 +797,72 @@ footer{
 .visio-legend-item .swatch.dashed-red{background:repeating-linear-gradient(90deg,#dc2626 0 4px,transparent 4px 8px)}
 
 /* =======================================
+   BLOQUES · síntesis minimalista
+   3 grupos: Funcional · Técnico · Cierre
+   ======================================= */
+.toc-block{
+  font-size:11px !important;font-weight:800 !important;
+  letter-spacing:.1em !important;text-transform:uppercase !important;
+  color:var(--primary) !important;padding:6px 10px !important;
+  border:1px solid var(--primary-soft);border-radius:6px;
+  background:var(--primary-soft);
+}
+.toc-block:hover{background:var(--primary) !important;color:#fff !important}
+.toc-sub{font-size:11.5px !important;color:var(--ink-mute) !important;padding:6px 6px !important}
+.toc-sub:hover{color:var(--primary) !important;background:transparent !important}
+.toc-divider{display:inline-block;width:1px;height:14px;background:var(--border-strong);margin:0 4px;vertical-align:middle}
+
+.block-divider{
+  padding:80px 0 24px;text-align:center;
+  position:relative;
+}
+.block-divider::before{
+  content:"";position:absolute;left:50%;top:0;width:1px;height:60px;
+  background:linear-gradient(180deg,transparent,var(--border-strong));
+  transform:translateX(-50%);
+}
+.block-divider-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;font-weight:800;letter-spacing:.2em;
+  color:var(--primary);text-transform:uppercase;margin-bottom:14px;
+  display:inline-flex;align-items:center;gap:14px;
+}
+.block-divider-num::before,
+.block-divider-num::after{
+  content:"";width:40px;height:1px;background:var(--primary);opacity:.4;
+}
+.block-divider-title{
+  font-size:36px;font-weight:800;color:var(--ink);
+  letter-spacing:-.025em;line-height:1.05;margin-bottom:12px;
+  max-width:720px;margin-left:auto;margin-right:auto;
+}
+@media(min-width:768px){.block-divider-title{font-size:52px}}
+.block-divider-title em{
+  font-style:normal;background:linear-gradient(135deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.block-divider-sub{
+  font-size:15px;color:var(--ink-soft);max-width:560px;
+  margin:0 auto;line-height:1.6;
+}
+@media(min-width:768px){.block-divider-sub{font-size:17px}}
+.block-divider-chips{
+  margin-top:24px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+}
+.block-divider-chip{
+  font:600 11.5px 'Inter',sans-serif;
+  padding:6px 13px;border-radius:99px;
+  background:#fff;border:1px solid var(--border-strong);
+  color:var(--ink-soft);letter-spacing:-.005em;
+  transition:all .15s;cursor:default;
+}
+.block-divider-chip:hover{border-color:var(--primary);color:var(--primary)}
+.block-divider-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* Hide sections que ya no van en el flujo principal */
+section.hidden-section{display:none !important}
+
+/* =======================================
    CIFRAS · DASHBOARDS VISUALES
    donut · barras · sparkline · heatmap · timeline
    ======================================= */
@@ -1022,17 +1088,19 @@ footer{
       </div>
     </div>
     <nav class="toc">
-      <a href="#vision">Visión</a>
-      <a href="#procesos">Procesos</a>
-      <a href="#arquitectura">Arquitectura</a>
-      <a href="#mapa">Mapa</a>
-      <a href="#ba">BA</a>
-      <a href="#opp">Opp</a>
-      <a href="#approval">Approval</a>
-      <a href="#secuencias">Secuencias</a>
-      <a href="#cifras">Cifras</a>
-      <a href="#rfp">RFP</a>
-      <a href="#reporte">Reporte</a>
+      <a href="#bloque-funcional" class="toc-block">Funcional</a>
+      <a href="#vision" class="toc-sub">· Visión</a>
+      <a href="#procesos" class="toc-sub">· Proceso</a>
+      <a href="#approval" class="toc-sub">· Aprobación</a>
+      <a href="#rfp" class="toc-sub">· RFP</a>
+      <span class="toc-divider"></span>
+      <a href="#bloque-tecnico" class="toc-block">Técnico</a>
+      <a href="#arquitectura" class="toc-sub">· Arq</a>
+      <a href="#reporte" class="toc-sub">· Assessment</a>
+      <span class="toc-divider"></span>
+      <a href="#bloque-cierre" class="toc-block">Cierre</a>
+      <a href="#opp" class="toc-sub">· Opp</a>
+      <a href="#cifras" class="toc-sub">· Cifras</a>
     </nav>
     <button class="menu-btn" onclick="toggleMenu()">☰ Menú</button>
   </div>
@@ -1053,6 +1121,21 @@ footer{
       <div class="hero-meta-item"><strong>36</strong>Plantillas checklist</div>
       <div class="hero-meta-item"><strong>8</strong>Roles con permisos</div>
       <div class="hero-meta-item"><strong>7:00 AM</strong>Cron diario activo</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ BLOQUE 1 · MIRADA FUNCIONAL ============ -->
+<div id="bloque-funcional" class="block-divider">
+  <div class="container">
+    <div class="block-divider-num">Bloque 01 · Mirada Funcional</div>
+    <h2 class="block-divider-title">Qué hace el sistema <em>en lenguaje de negocio</em></h2>
+    <p class="block-divider-sub">La plataforma desde la perspectiva del cliente · sin diagramas técnicos. Visión, los flujos digitalizados, cómo se aprueban las decisiones y el documento de propuesta.</p>
+    <div class="block-divider-chips">
+      <span class="block-divider-chip">Visión</span>
+      <span class="block-divider-chip">Proceso</span>
+      <span class="block-divider-chip">Aprobación</span>
+      <span class="block-divider-chip">RFP</span>
     </div>
   </div>
 </div>
@@ -1488,6 +1571,19 @@ footer{
   </div>
 </section>
 
+<!-- ============ BLOQUE 2 · MIRADA TÉCNICA ============ -->
+<div id="bloque-tecnico" class="block-divider">
+  <div class="container">
+    <div class="block-divider-num">Bloque 02 · Mirada Técnica</div>
+    <h2 class="block-divider-title">Cómo está <em>construido</em> el sistema</h2>
+    <p class="block-divider-sub">La plataforma desde la perspectiva del ingeniero · stack, decisiones de arquitectura y evaluación independiente SMC de la entrega Créalo.</p>
+    <div class="block-divider-chips">
+      <span class="block-divider-chip">Diagrama Arquitectura</span>
+      <span class="block-divider-chip">Reporte Assessment · 67 → 88</span>
+    </div>
+  </div>
+</div>
+
 <!-- ARQUITECTURA -->
 <section id="arquitectura">
   <div class="container">
@@ -1780,7 +1876,7 @@ footer{
 </section>
 
 <!-- MAPA INT - MODULOS x ROLES -->
-<section id="mapa" class="alt">
+<section id="mapa" class="alt hidden-section">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">04 · Mapa de integraciones</div>
@@ -1925,7 +2021,7 @@ footer{
 </section>
 
 <!-- BA - Business Analysis -->
-<section id="ba">
+<section id="ba" class="hidden-section">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">05 · Business Analysis</div>
@@ -2006,6 +2102,18 @@ footer{
 </section>
 
 <!-- OPP - Pipeline Captación -->
+<div id="bloque-cierre" class="block-divider">
+  <div class="container">
+    <div class="block-divider-num">Bloque 03 · Cierre y Números</div>
+    <h2 class="block-divider-title">Las <em>oportunidades</em> y los números</h2>
+    <p class="block-divider-sub">Pipeline de captación de emprendedores · revenue recurrente · y el dashboard visual con los KPIs del proyecto en gráficos.</p>
+    <div class="block-divider-chips">
+      <span class="block-divider-chip">Oportunidades</span>
+      <span class="block-divider-chip">Cifras · 9 dashboards</span>
+    </div>
+  </div>
+</div>
+
 <section id="opp" class="alt">
   <div class="container">
     <div class="section-header">
@@ -2184,7 +2292,7 @@ footer{
 </section>
 
 <!-- SECUENCIAS -->
-<section id="secuencias" class="alt">
+<section id="secuencias" class="alt hidden-section">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">08 · Diagramas de secuencia</div>
@@ -3351,6 +3459,66 @@ function playFlow(btn){
   },1100);
   flowState.set(stage,id);
 }
+
+// ============= REORDER DOM · 3 BLOQUES (síntesis minimalista) =============
+(function reorderToBlocks(){
+  const get = id => document.getElementById(id);
+  const visionSec = get('vision');
+  const procesosSec = get('procesos');
+  const arqSec = get('arquitectura');
+  const reporteSec = get('reporte');
+  const approvalSec = get('approval');
+  const rfpSec = get('rfp');
+  const oppSec = get('opp');
+  const cifrasSec = get('cifras');
+  const blockTec = get('bloque-tecnico');
+  const blockCierre = get('bloque-cierre');
+  const footer = document.querySelector('footer');
+
+  if(!blockTec || !blockCierre || !footer) return;
+
+  // Funcional: Approval + RFP van DESPUÉS de Procesos, ANTES de bloque-tecnico
+  if(approvalSec && blockTec) blockTec.parentNode.insertBefore(approvalSec, blockTec);
+  if(rfpSec && blockTec) blockTec.parentNode.insertBefore(rfpSec, blockTec);
+
+  // Técnico: Reporte va DESPUÉS de Arquitectura, ANTES de bloque-cierre
+  if(reporteSec && blockCierre) blockCierre.parentNode.insertBefore(reporteSec, blockCierre);
+
+  // Cierre: Opp y Cifras van AL FINAL, antes del footer
+  if(oppSec && footer) footer.parentNode.insertBefore(oppSec, footer);
+  if(cifrasSec && footer) footer.parentNode.insertBefore(cifrasSec, footer);
+
+  // Cambiar la clase alt para que el patrón visual no quede dos secciones blancas o dos alt seguidas
+  const allSections = document.querySelectorAll('section:not(.hidden-section)');
+  allSections.forEach((s,i) => {
+    s.classList.remove('alt');
+    if(i % 2 === 1) s.classList.add('alt');
+  });
+
+  // Actualizar números de eyebrow para reflejar nuevo orden
+  const renumber = {
+    'vision': '01 · Visión',
+    'procesos': '02 · Proceso',
+    'approval': '03 · Flujo de aprobación',
+    'rfp': '04 · RFP',
+    'arquitectura': '05 · Arquitectura',
+    'reporte': '06 · Assessment',
+    'opp': '07 · Oportunidades',
+    'cifras': '08 · Cifras'
+  };
+  Object.entries(renumber).forEach(([id,label])=>{
+    const sec = get(id); if(!sec) return;
+    const eyebrow = sec.querySelector('.section-eyebrow');
+    if(eyebrow){
+      const colorMap = {
+        'arquitectura':'#1e40af','reporte':'#1d4ed8',
+        'opp':'#15803d','cifras':'#15803d'
+      };
+      eyebrow.textContent = label;
+      if(colorMap[id]) eyebrow.style.color = colorMap[id];
+    }
+  });
+})();
 
 // ============= COUNTERS animados en CIFRAS =============
 const animCounters = new Map();
