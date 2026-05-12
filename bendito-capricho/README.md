@@ -9,10 +9,19 @@
 
 ## 📄 Documentos
 
-- [**index.html**](index.html) — Maqueta completa con arquitectura Visio + 10 secciones (Versión corregida 2026-05-11 20:10 · solo procesos REALES de Fase 1)
+- [**index.html**](index.html) — Maqueta completa con arquitectura Visio + 11 secciones (v3 2026-05-11 20:14 · ahora incluye REPORTE)
 - [**ENTREGA-FASE1-CREALO.pdf**](ENTREGA-FASE1-CREALO.pdf) — PDF oficial firmado por Sergio Gary · 9 páginas · fuente de verdad
+- [**reporte/reporte-crealo-fase1-standalone.html**](reporte/reporte-crealo-fase1-standalone.html) — Reporte SMC original standalone · Score 67 → 88 · 7 secciones + plan acción 30d
 
-## 🔄 Versión actual: v2 (corregida)
+## 🔄 Versión actual: v3 (con reporte assessment)
+
+**v3 agrega sección "Reporte"** con el assessment técnico SMC de la entrega Créalo:
+- Score actual **67/100 (C+)** → objetivo **88/100 (B+)** con correcciones
+- Inversión adicional: **$45 USD/mes** (Vercel Pro + Supabase)
+- Tiempo para estabilizar: **1 semana** para los críticos
+- 7 secciones en tabs: Scan tech · Arquitectura · Roadmap · Tickets · Manual · Mejoras UX · Auditoría + Plan acción 30 días
+
+## 🔄 Versión anterior: v2 (procesos reales)
 
 **Cambio importante respecto a v1:** la primera versión inventó 3 procesos (cierres de caja, inventario 8 pasos, pipeline captación 7 etapas) presentándolos como si fueran de Fase 1, cuando el PDF oficial los lista como Fase 2-3 planificadas. **v2 separa explícitamente lo entregado de lo planificado:**
 

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación Técnica — Bendito Capricho · Fase 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0f172a;--ink2:#1e293b;--ink3:#374151;--muted:#64748b;--faint:#94a3b8;
+  --border:#e2e8f0;--surface:#f8fafc;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);background:#edf1f7;font-size:14px;line-height:1.65}
+
+/* PORTADA */
+.cover{background:linear-gradient(150deg,#020617 0%,#0c1a3a 50%,#1e3a8a 100%);color:#fff;position:relative;overflow:hidden}
+.cover-fx{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 78% 18%,rgba(79,70,229,.22),transparent),radial-gradient(ellipse 45% 55% at 15% 85%,rgba(5,150,105,.1),transparent)}
+.cover-in{padding:56px 52px;position:relative;z-index:1}
+.cover-eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#60a5fa;margin-bottom:36px}
+.cover-scores{float:right;display:flex;gap:12px}
+.cs{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:16px 22px;text-align:center}
+.cs-l{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.cs-n{font-size:42px;font-weight:900;line-height:1}
+.cs-s{font-size:11px;margin-top:3px}
+.cover-h1{font-size:48px;font-weight:900;line-height:1.1;clear:both;margin-bottom:12px}
+.cover-h1 em{font-style:normal;background:linear-gradient(90deg,#60a5fa,#a78bfa 60%,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-size:15px;color:#93c5fd;margin-bottom:36px;max-width:540px}
+.cover-meta{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid rgba(255,255,255,.1);padding-top:24px}
+.cm-l{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.cm-v{font-size:13px;font-weight:700;color:#e2e8f0}
+
+/* LAYOUT */
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.card{background:#fff;border-radius:20px;border:1px solid var(--border);padding:36px;margin:20px 0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-alt{background:var(--surface)}
+.sh{display:flex;align-items:flex-start;gap:11px;margin-bottom:5px}
+.sh-n{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-top:3px;min-width:22px}
+.sh-title{font-size:22px;font-weight:900;color:var(--ink);line-height:1.2}
+.sh-sub{font-size:13px;color:var(--muted);margin-top:4px;margin-bottom:22px}
+
+/* RESUMEN EJECUTIVO */
+.exec{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.exec-card{border-radius:14px;padding:18px 20px;border:1px solid transparent}
+.ec-ok{background:#f0fdf4;border-color:#bbf7d0}
+.ec-warn{background:#fefce8;border-color:#fde047}
+.ec-crit{background:#fef2f2;border-color:#fecaca}
+.ec-blue{background:#eff6ff;border-color:#bfdbfe}
+.exec-card-icon{font-size:22px;margin-bottom:8px}
+.exec-card-title{font-weight:800;font-size:14px;margin-bottom:6px}
+.ec-ok .exec-card-title{color:#15803d}
+.ec-warn .exec-card-title{color:#a16207}
+.ec-crit .exec-card-title{color:#b91c1c}
+.ec-blue .exec-card-title{color:#1d4ed8}
+.exec-card-body{font-size:13px;color:var(--ink3);line-height:1.7}
+
+/* ÍNDICE */
+.idx{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ic{border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;border:1px solid transparent;transition:transform .12s}
+.ic:hover{transform:translateY(-2px)}
+.ic-n{font-size:17px;font-weight:900;opacity:.3;min-width:20px;line-height:1}
+.ic-t{font-weight:700;font-size:13px}
+.ic-s{font-size:11px;color:var(--muted);margin-top:1px}
+.c1{background:#eff6ff;border-color:#bfdbfe}
+.c2{background:#faf5ff;border-color:#ddd6fe}
+.c3{background:#fef2f2;border-color:#fecaca}
+.c4{background:#f0fdf4;border-color:#bbf7d0}
+.c5{background:#fffbeb;border-color:#fde68a}
+.c6{background:#ecfeff;border-color:#a5f3fc}
+.c7{background:#eef2ff;border-color:#c7d2fe}
+
+/* BADGES */
+.b{display:inline-block;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;white-space:nowrap}
+.ok{background:#d1fae5;color:#065f46}
+.warn{background:#fef3c7;color:#92400e}
+.crit{background:#fee2e2;color:#991b1b}
+.info{background:#dbeafe;color:#1e40af}
+.soft{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0}
+.pur{background:#ede9fe;color:#5b21b6}
+
+/* ALERTS */
+.al{border-radius:12px;padding:14px 18px;display:flex;gap:10px;align-items:flex-start;font-size:13px;margin:14px 0}
+.al-i{font-size:17px;flex-shrink:0;margin-top:1px}
+.al-r{background:#fef2f2;border:1px solid #fca5a5}
+.al-y{background:#fefce8;border:1px solid #fde047}
+.al-b{background:#dbeafe;border:1px solid #93c5fd}
+.al-g{background:#dcfce7;border:1px solid #86efac}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8fafc;font-weight:700;text-align:left;padding:10px 13px;border-bottom:2px solid var(--border);color:var(--ink3);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+td{padding:10px 13px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+
+/* COMPARISON */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cc{border-radius:14px;padding:20px;border:1px solid var(--border)}
+.cc.now{background:#fff7ed;border-color:#fed7aa}
+.cc.rec{background:#f0fdf4;border-color:#bbf7d0}
+.cc-head{font-weight:800;font-size:14px;margin-bottom:14px}
+.cc.now .cc-head{color:#9a3412}
+.cc.rec .cc-head{color:#14532d}
+.cc-row{display:flex;gap:8px;margin-bottom:8px;font-size:13px;align-items:flex-start}
+
+/* ARCH */
+.arch{background:#0f172a;border-radius:14px;padding:26px;color:#e2e8f0;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.8;overflow-x:auto;white-space:pre}
+.ab{color:#60a5fa}.ag{color:#34d399}.ay{color:#fbbf24}.ar{color:#f87171}.ap{color:#c084fc}.as{color:#64748b}.ao{color:#fb923c}
+
+/* SCORES */
+.sr{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.sr3{grid-template-columns:repeat(3,1fr)}
+.sc{border-radius:14px;padding:18px;text-align:center;border:1px solid transparent}
+.sc .la{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.sc .nu{font-size:34px;font-weight:900;line-height:1}
+.sc .mx{font-size:11px;opacity:.5;margin-top:3px}
+.sa{background:#ecfdf5;border-color:#6ee7b7}.sa .nu{color:#065f46}
+.sb{background:#eff6ff;border-color:#93c5fd}.sb .nu{color:#1e40af}
+.sc2{background:#fffbeb;border-color:#fcd34d}.sc2 .nu{color:#92400e}
+.sd{background:#fef2f2;border-color:#fca5a5}.sd .nu{color:#991b1b}
+
+/* AUDIT HERO */
+.ah{background:linear-gradient(135deg,#020617,#0f172a,#1e3a8a);border-radius:18px;padding:28px 34px;color:#fff;display:flex;align-items:center;gap:28px;margin-bottom:22px}
+.ah-n{font-size:68px;font-weight:900;color:#fbbf24;line-height:1;min-width:90px;text-align:center}
+.ah-sep{width:1px;background:rgba(255,255,255,.12);height:68px;flex-shrink:0}
+.ah-g{font-size:28px;font-weight:900;color:#a3e635}
+.ah-d{font-size:13px;color:#cbd5e1;line-height:2}
+
+/* ROADMAP */
+.rm{display:flex;flex-direction:column;gap:10px}
+.rp{border-radius:12px;padding:18px 20px;border:1px solid var(--border);border-left:5px solid}
+.rp-h{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rtag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:20px}
+.rp-t{font-weight:800;font-size:14px}
+.rp-d{font-size:13px;color:var(--ink3);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;padding:3px 10px;border-radius:20px;background:var(--surface);border:1px solid var(--border)}
+.rp1{border-left-color:#d97706}.rp1 .rtag{background:#fef3c7;color:#92400e}
+.rp2{border-left-color:#1d4ed8}.rp2 .rtag{background:#dbeafe;color:#1e40af}
+.rp3{border-left-color:#059669}.rp3 .rtag{background:#d1fae5;color:#065f46}
+.rp4{border-left-color:#7c3aed}.rp4 .rtag{background:#ede9fe;color:#5b21b6}
+.rp5{border-left-color:#0891b2}.rp5 .rtag{background:#cffafe;color:#155e75}
+
+/* SLA */
+.sla{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sl{border-radius:12px;padding:16px;text-align:center;border:2px solid transparent}
+.sl .sn{font-weight:800;font-size:14px;margin-bottom:4px}
+.sl .st{font-size:26px;font-weight:900;margin:4px 0}
+.sl .sd{font-size:11px;opacity:.7;line-height:1.4}
+.sl-r{background:#fef2f2;border-color:#fca5a5}.sl-r .sn{color:#991b1b}.sl-r .st{color:#dc2626}
+.sl-o{background:#fffbeb;border-color:#fcd34d}.sl-o .sn{color:#92400e}.sl-o .st{color:#d97706}
+.sl-b{background:#eff6ff;border-color:#93c5fd}.sl-b .sn{color:#1e40af}.sl-b .st{color:#1d4ed8}
+.sl-g{background:#f0fdf4;border-color:#86efac}.sl-g .sn{color:#065f46}.sl-g .st{color:#059669}
+
+/* MANUAL */
+.mg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mc{border-radius:12px;padding:16px;border:1px solid var(--border);background:var(--surface)}
+.mc-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.mc-t{font-weight:800;font-size:13px;flex:1}
+.mc-r{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.mc-l{font-size:12px;color:var(--ink3)}
+.mc-l li{margin-bottom:4px;list-style:disc;margin-left:14px}
+
+/* VISUAL ISSUES */
+.vi{display:flex;flex-direction:column;gap:14px}
+.vi-item{border-radius:14px;border:1px solid var(--border);overflow:hidden}
+.vi-head{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--border)}
+.vi-prio{font-size:18px;flex-shrink:0}
+.vi-title{font-weight:800;font-size:14px;flex:1}
+.vi-meta{font-size:11px;color:var(--muted)}
+.vi-cols{display:grid;grid-template-columns:1fr 1fr}
+.vi-col{padding:16px 20px}
+.vi-col:first-child{background:#fff7ed;border-right:1px solid var(--border)}
+.vi-col:last-child{background:#f0fdf4}
+.vi-col-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.vi-col:first-child .vi-col-label{color:#9a3412}
+.vi-col:last-child .vi-col-label{color:#14532d}
+.vi-row{display:flex;gap:8px;margin-bottom:8px;font-size:13px;align-items:flex-start}
+.vi-small{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:14px 18px;display:flex;gap:12px;align-items:flex-start}
+
+/* ACTIONS */
+.acts{display:flex;flex-direction:column;gap:8px}
+.act{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:#fff}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.d0{background:#dc2626}.d1{background:#d97706}.d2{background:#059669}
+.at{flex:1;font-size:13px}
+.atag{font-size:11px;font-weight:700;padding:2px 10px;border-radius:12px;flex-shrink:0}
+
+/* STRIPE */
+.stripe{height:4px;border-radius:4px;margin:24px 0;background:linear-gradient(90deg,#1d4ed8,#7c3aed,#059669)}
+
+/* CLOSE */
+.close{background:linear-gradient(135deg,#020617,#0f172a,#1e3a8a);border-radius:20px;padding:44px;color:#fff;text-align:center}
+.close-kpis{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:26px}
+.ck{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px 22px}
+.ck .lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.ck .num{font-size:26px;font-weight:900;color:#fbbf24}
+.ck .sub{font-size:11px;color:#93c5fd;margin-top:2px}
+
+/* UTILS */
+h3{font-size:15px;font-weight:700;color:var(--ink2);margin:22px 0 10px}
+footer{text-align:center;padding:28px;color:var(--faint);font-size:12px;margin-top:20px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<!-- ══ PORTADA ══ -->
+<div class="cover">
+  <div class="cover-fx"></div>
+  <div class="cover-in">
+    <div class="cover-eyebrow">Evaluación Técnica · Fase 1 · Mayo 2026</div>
+    <div class="cover-scores">
+      <div class="cs">
+        <div class="cs-l">Score actual</div>
+        <div class="cs-n" style="color:#fbbf24">67</div>
+        <div class="cs-s" style="color:#fca5a5">C+ · Mejorable</div>
+      </div>
+      <div class="cs">
+        <div class="cs-l">Score objetivo</div>
+        <div class="cs-n" style="color:#a3e635">88</div>
+        <div class="cs-s" style="color:#86efac">B+ · Con correcciones</div>
+      </div>
+    </div>
+    <h1 class="cover-h1">Evaluación Técnica<br><em>Bendito Capricho</em></h1>
+    <div class="cover-sub">Análisis completo de la entrega Fase 1 · Créalo SpA · Hallazgos, brechas y recomendaciones</div>
+    <div class="cover-meta">
+      <div><div class="cm-l">Producto</div><div class="cm-v">Bendito Capricho</div></div>
+      <div><div class="cm-l">Proveedor</div><div class="cm-v">Créalo SpA</div></div>
+      <div><div class="cm-l">Revisado por</div><div class="cm-v">SMC</div></div>
+      <div><div class="cm-l">Fecha</div><div class="cm-v">Mayo 2026</div></div>
+      <div><div class="cm-l">Módulos</div><div class="cm-v">12 · 172 ítems</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ══ RESUMEN EJECUTIVO ══ -->
+<div class="card" style="margin-top:24px">
+  <div class="sh"><div class="sh-n">—</div><div><div class="sh-title">Resumen Ejecutivo</div><div class="sh-sub">Los cuatro puntos clave de esta evaluación</div></div></div>
+  <div class="exec">
+    <div class="exec-card ec-ok">
+      <div class="exec-card-icon">✅</div>
+      <div class="exec-card-title">La plataforma funciona correctamente</div>
+      <div class="exec-card-body">El código entregado es moderno, limpio y bien estructurado. Los 12 módulos operan, los 36 checklists se generan automáticamente a las 7 AM y la PWA está instalable en móvil sin problemas.</div>
+    </div>
+    <div class="exec-card ec-crit">
+      <div class="exec-card-icon">🚨</div>
+      <div class="exec-card-title">Un riesgo crítico que bloquea la operación real</div>
+      <div class="exec-card-body">La base de datos usa Airtable plan gratuito, que tiene límite de 1.000 registros. Con 36 checklists diarios, ese límite se alcanza en menos de <strong>3 semanas</strong>. Requiere migración urgente antes de operar.</div>
+    </div>
+    <div class="exec-card ec-warn">
+      <div class="exec-card-icon">⚠️</div>
+      <div class="exec-card-title">Tres entregables importantes ausentes</div>
+      <div class="exec-card-body">La entrega no incluyó: (1) manual de usuario por módulo, (2) sistema de tickets para reportar problemas con tiempos de respuesta definidos, y (3) un roadmap claro de las fases siguientes.</div>
+    </div>
+    <div class="exec-card ec-blue">
+      <div class="exec-card-icon">🎯</div>
+      <div class="exec-card-title">Con dos semanas de trabajo, el sistema está listo</div>
+      <div class="exec-card-body">Migrar la base de datos, separar el dashboard por tipo de usuario y agregar los entregables faltantes eleva el score de <strong>67 → 88 puntos</strong>. La inversión mensual adicional es de ~$45 USD.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ÍNDICE ══ -->
+<div class="card card-alt">
+  <div class="sh"><div class="sh-n">—</div><div><div class="sh-title">Contenido del reporte</div><div class="sh-sub">7 secciones · cada una aborda una brecha o hallazgo distinto</div></div></div>
+  <div class="idx">
+    <a href="#s1" class="ic c1"><div class="ic-n">01</div><div><div class="ic-t">Scan Tecnológico</div><div class="ic-s">Lo que tiene vs lo que recomendamos</div></div></a>
+    <a href="#s2" class="ic c2"><div class="ic-n">02</div><div><div class="ic-t">Arquitectura</div><div class="ic-s">Estado actual vs objetivo recomendado</div></div></a>
+    <a href="#s3" class="ic c3"><div class="ic-n">03</div><div><div class="ic-t">Roadmap</div><div class="ic-s">Lo entregado vs lo que se esperaba</div></div></a>
+    <a href="#s4" class="ic c4"><div class="ic-n">04</div><div><div class="ic-t">Sistema de Tickets</div><div class="ic-s">Módulo faltante con SLA definidos</div></div></a>
+    <a href="#s5" class="ic c5"><div class="ic-n">05</div><div><div class="ic-t">Manual de Usuario</div><div class="ic-s">Entregable ausente · 9 módulos</div></div></a>
+    <a href="#s6" class="ic c6"><div class="ic-n">06</div><div><div class="ic-t">Mejoras Visuales</div><div class="ic-s">5 cambios concretos · antes y después</div></div></a>
+    <a href="#s7" class="ic c7"><div class="ic-n">07</div><div><div class="ic-t">Auditoría Técnica</div><div class="ic-s">Score por área · hallazgos de QA</div></div></a>
+  </div>
+</div>
+
+<!-- ══ 01 SCAN ══ -->
+<div class="card" id="s1">
+  <div class="sh"><div class="sh-n">01</div><div><div class="sh-title">Scan Tecnológico · Actual vs Recomendado</div><div class="sh-sub">Diagnóstico de cada capa del sistema con recomendación concreta. Verde = mantener. Amarillo = mejorar. Rojo = cambiar urgente.</div></div></div>
+
+  <table>
+    <thead>
+      <tr><th>Capa</th><th>Lo que tiene Créalo</th><th>Estado</th><th>Recomendación</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Framework</strong></td>
+        <td>Next.js — versión documentada como "v16.2.4" <em>(no existe)</em></td>
+        <td><span class="b warn">Revisar</span></td>
+        <td>Solicitar a Créalo el package.json para confirmar la versión real instalada. La última versión estable es v14/v15.</td>
+      </tr>
+      <tr>
+        <td><strong>Lenguaje</strong></td>
+        <td>TypeScript 5.x</td>
+        <td><span class="b ok">Correcto</span></td>
+        <td>Mantener. Buena elección que reduce errores y facilita el mantenimiento a largo plazo.</td>
+      </tr>
+      <tr>
+        <td><strong>Componentes UI</strong></td>
+        <td>Tailwind CSS + shadcn/ui v4</td>
+        <td><span class="b ok">Correcto</span></td>
+        <td>Mantener. Stack moderno con componentes accesibles y consistentes. Agregar tokens de color semánticos (ver Sección 06).</td>
+      </tr>
+      <tr style="background:#fef2f2">
+        <td><strong>Base de datos</strong></td>
+        <td>Airtable API v0 — plan gratuito<br><span style="font-size:12px;color:#dc2626">⚠ Límite: 1.000 registros totales</span></td>
+        <td><span class="b crit">Cambiar urgente</span></td>
+        <td><strong>Migrar a Supabase (PostgreSQL).</strong> Sin límite de registros, con backups automáticos, transacciones confiables y sin riesgo de que la API cambie sin aviso. Plan gratuito suficiente para el primer año.</td>
+      </tr>
+      <tr>
+        <td><strong>Autenticación</strong></td>
+        <td>NextAuth.js v5 · acceso por magic link (solo email)</td>
+        <td><span class="b ok">Correcto</span></td>
+        <td>Mantener. Ideal para operarios que no deben recordar contraseñas. Verificar que los links expiren en 15 minutos.</td>
+      </tr>
+      <tr>
+        <td><strong>Validación de datos</strong></td>
+        <td>Zod 4.4.3</td>
+        <td><span class="b ok">Correcto</span></td>
+        <td>Mantener. Verificar que todos los formularios y endpoints validen datos antes de procesarlos.</td>
+      </tr>
+      <tr>
+        <td><strong>Plataforma de deploy</strong></td>
+        <td>Vercel — plan gratuito (Hobby)</td>
+        <td><span class="b warn">Insuficiente</span></td>
+        <td><strong>Ruta A (ahora):</strong> Vercel Pro ($20/mes) — upgrade en 30 min, sin cambios de código, con SLA garantizado. <strong>Ruta B (Fase 5+):</strong> migrar a AWS cuando escalen a múltiples clientes. Ver Sección 02 para la comparación con ventajas y desventajas de cada uno.</td>
+      </tr>
+      <tr>
+        <td><strong>Automatización</strong></td>
+        <td>Vercel Cron · genera 36 checklists a las 7 AM Chile</td>
+        <td><span class="b ok">Funcional</span></td>
+        <td>Mantener. Funciona correctamente. Agregar un monitor que envíe alerta si el proceso falla.</td>
+      </tr>
+      <tr>
+        <td><strong>App móvil</strong></td>
+        <td>PWA instalable en iOS y Android</td>
+        <td><span class="b ok">Correcto</span></td>
+        <td>Agregar sincronización offline real: que el operario pueda completar checklists sin señal y que se envíen automáticamente al reconectarse.</td>
+      </tr>
+      <tr>
+        <td><strong>Seguridad</strong></td>
+        <td>Clave secreta del cron en variables de entorno</td>
+        <td><span class="b warn">Incompleto</span></td>
+        <td>Agregar: validación de permisos por rol en el servidor (no solo en la pantalla), cabeceras de seguridad HTTP y registro de acciones críticas de los usuarios.</td>
+      </tr>
+      <tr>
+        <td><strong>Monitoreo de errores</strong></td>
+        <td>Sin implementar</td>
+        <td><span class="b crit">Ausente</span></td>
+        <td>Instalar <strong>Sentry</strong> (herramienta gratuita). Detecta y avisa automáticamente cuando algo falla en producción. Sin esto, los errores son invisibles.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ 02 ARQUITECTURA ══ -->
+<div class="card" id="s2">
+  <div class="sh"><div class="sh-n">02</div><div><div class="sh-title">Arquitectura · Estado Actual vs Objetivo</div><div class="sh-sub">Cómo está construido el sistema hoy y hacia dónde debería evolucionar para operar con estabilidad y escalar a más clientes</div></div></div>
+
+  <h3>Cómo está construido hoy</h3>
+  <div class="arch">
+<span class="ay">USUARIO</span> (navegador o app instalada en celular)
+         │
+         ▼
+<span class="ab">┌─────────────────────────────────────────┐</span>
+<span class="ab">│  Plataforma Next.js                      │</span>  ← alojada en Vercel (plan gratuito)
+<span class="ab">│  Pantallas + Lógica + API               │</span>  ← sin garantía de disponibilidad
+<span class="ab">│  Autenticación por email (magic link)   │</span>
+<span class="ab">└──────────────────┬──────────────────────┘</span>
+                   │
+      <span class="as">┌────────────┴──────────────┐</span>
+      ▼                         ▼
+<span class="ar">┌──────────────────┐</span>    <span class="ab">┌────────────────────────┐</span>
+<span class="ar">│  Airtable        │</span>    <span class="ab">│  Correo electrónico    │</span>
+<span class="ar">│  Base de datos   │</span>    <span class="ab">│  (envía magic links)   │</span>
+<span class="ar">│  ⚠ 1.000 reg max│</span>    <span class="ab">└────────────────────────┘</span>
+<span class="ar">│  sin respaldo    │</span>
+<span class="ar">└──────────────────┘</span>
+         │
+<span class="ag">┌────────┴─────────────────────────────┐</span>
+<span class="ag">│  Tarea automática (Cron)              │</span>
+<span class="ag">│  7:00 AM Chile → crea 36 checklists  │</span>
+<span class="ag">└──────────────────────────────────────┘</span>
+
+<span class="ar">Riesgos activos:</span> base de datos con límite · sin backups · sin alertas de errores · plan sin garantías</div>
+
+  <h3>Dos rutas recomendadas — cuál elegir y cuándo</h3>
+
+  <table style="margin-bottom:20px">
+    <thead>
+      <tr><th>Factor</th><th>Ruta A · Vercel Pro</th><th>Ruta B · AWS</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Tiempo de setup</strong></td><td>30 minutos · upgrade en 1 clic</td><td>4–8 semanas · requiere DevOps dedicado</td></tr>
+      <tr><td><strong>Costo mensual</strong></td><td>$20 USD · fijo y predecible</td><td>$80–250+ USD · varía según uso</td></tr>
+      <tr><td><strong>Conocimiento técnico</strong></td><td>Ninguno — Vercel lo gestiona todo</td><td>DevOps dedicado necesario</td></tr>
+      <tr><td><strong>Compatibilidad con Next.js</strong></td><td>Total — mismo equipo que desarrolla Next.js</td><td>Requiere adaptación (App Runner o Lambda)</td></tr>
+      <tr><td><strong>Aislamiento de datos por empresa</strong></td><td>Solo a nivel de código</td><td>Total — cuenta AWS separada por cada cliente</td></tr>
+      <tr><td><strong>Procesamiento de reportes</strong></td><td>Limitado — timeout de 30 segundos</td><td>Sin límite — Lambda ejecuta en background</td></tr>
+      <tr><td><strong>Almacenamiento de archivos</strong></td><td>Vercel Blob · fácil de integrar</td><td>S3 · más control y menor costo en alto volumen</td></tr>
+      <tr style="background:#eff6ff">
+        <td><strong>¿Cuándo usar?</strong></td>
+        <td style="font-weight:700;color:#1d4ed8">Ahora hasta Fase 4<br><span style="font-size:11px;font-weight:400;color:#64748b">Un cliente · operación estable</span></td>
+        <td style="font-weight:700;color:#1d4ed8">Fase 5+ · Mes 4-5<br><span style="font-size:11px;font-weight:400;color:#64748b">3+ clientes · venta a otras empresas</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Ruta A · Vercel Pro — lo que necesita ahora</h3>
+  <div class="arch">
+<span class="ay">USUARIO</span> (navegador o app en celular)
+         │
+         ▼
+<span class="ab">┌─────────────────────────────────────────┐</span>
+<span class="ab">│  Plataforma Next.js                      │</span>  ← Vercel Pro ($20/mes) · 99.9% disponible
+<span class="ab">│  Mismas pantallas y funcionalidad       │</span>  ← sin cambios en lo que el usuario ve
+<span class="ab">│  + permisos validados por rol           │</span>  ← seguridad reforzada
+<span class="ab">└──────────────────┬──────────────────────┘</span>
+                   │
+      <span class="as">┌────────────┴──────────────────────┐</span>
+      ▼                               ▼
+<span class="ag">┌──────────────────────┐</span>   <span class="ao">┌──────────────────────┐</span>
+<span class="ag">│  Supabase            │</span>   <span class="ao">│  Archivos            │</span>
+<span class="ag">│  Base de datos       │</span>   <span class="ao">│  Fotos de checklists │</span>
+<span class="ag">│  Sin límite          │</span>   <span class="ao">│  Vercel Blob o S3    │</span>
+<span class="ag">│  Backups automáticos │</span>   <span class="ao">└──────────────────────┘</span>
+<span class="ag">└──────────────────────┘</span>
+         │
+<span class="ag">┌────────┴─────────────────────────────┐</span>
+<span class="ag">│  Cron (se mantiene igual)             │</span>
+<span class="ag">│  + monitor: alerta si falla           │</span>
+<span class="ag">└──────────────────────────────────────┘</span>
+<span class="ar">┌──────────────────────────────────────┐</span>
+<span class="ar">│  Sentry · detecta errores en tiempo  │</span>
+<span class="ar">│  real y notifica por email           │</span>
+<span class="ar">└──────────────────────────────────────┘</span>
+
+<span class="ag">✓ Setup: 30 min · Costo: $20/mes · Sin DevOps · Ideal para operación actual con un cliente</span></div>
+
+  <h3>Ruta B · AWS — cuando escalen a múltiples empresas (Fase 5)</h3>
+  <div class="arch">
+<span class="ay">EMPRESA A</span>         <span class="ay">EMPRESA B</span>         <span class="ay">EMPRESA C</span>
+     │                   │                   │
+     └───────────────────┴───────────────────┘
+                         │
+                         ▼
+           <span class="ab">┌────────────────────────────┐</span>
+           <span class="ab">│  CloudFront (CDN global)    │</span>  ← carga rápida en toda Latinoamérica
+           <span class="ab">└───────────────┬────────────┘</span>
+                           │
+                           ▼
+           <span class="ab">┌────────────────────────────┐</span>
+           <span class="ab">│  Next.js en App Runner     │</span>  ← escala automático · sin timeout
+           <span class="ab">└───────────────┬────────────┘</span>
+                           │
+        <span class="as">┌──────────────────┼────────────────────┐</span>
+        ▼                  ▼                    ▼
+<span class="ag">┌─────────────┐</span>    <span class="ao">┌──────────┐</span>    <span class="ab">┌─────────────────────┐</span>
+<span class="ag">│ RDS Aurora  │</span>    <span class="ao">│    S3    │</span>    <span class="ab">│ SES · magic links   │</span>
+<span class="ag">│ PostgreSQL  │</span>    <span class="ao">│ fotos    │</span>    <span class="ab">│ Lambda · reportes   │</span>
+<span class="ag">│ 1 BD por    │</span>    <span class="ao">│ PDFs     │</span>    <span class="ab">│ Cognito · auth      │</span>
+<span class="ag">│ empresa     │</span>    <span class="ao">│ backups  │</span>    <span class="ab">└─────────────────────┘</span>
+<span class="ag">└─────────────┘</span>    <span class="ao">└──────────┘</span>
+        │
+<span class="ap">┌───────┴──────────────────────────────────────┐</span>
+<span class="ap">│  AWS Organizations · cuentas separadas        │</span>
+<span class="ap">│  Empresa A → su propia cuenta AWS            │</span>
+<span class="ap">│  Empresa B → su propia cuenta AWS            │</span>
+<span class="ap">│  Datos 100% aislados · sin mezcla posible    │</span>
+<span class="ap">└──────────────────────────────────────────────┘</span>
+<span class="ab">CloudWatch</span> · monitoreo centralizado de todas las cuentas
+
+<span class="as">✓ Setup: 4-8 semanas · Costo: $80-250+/mes · Requiere DevOps · Ideal para 3+ clientes</span></div>
+
+  <div class="al al-b"><div class="al-i">💡</div><div><strong>Recomendación:</strong> implementar <strong>Ruta A (Vercel Pro)</strong> esta semana — 30 minutos, $20/mes, sin tocar el código. Evaluar migración a <strong>Ruta B (AWS)</strong> en Fase 5, cuando haya 3 o más empresas usando la plataforma. La complejidad operacional de AWS no se justifica antes de ese punto.</div></div>
+</div>
+
+<!-- ══ 03 ROADMAP ══ -->
+<div class="card" id="s3">
+  <div class="sh"><div class="sh-n">03</div><div><div class="sh-title">Roadmap · Lo Entregado vs Lo Esperado</div><div class="sh-sub">Qué incluyó Créalo en la Fase 1 y qué debería haber acompañado a cualquier entrega de software profesional</div></div></div>
+
+  <div class="cmp" style="margin-bottom:24px">
+    <div class="cc now">
+      <div class="cc-head">📦 Lo que entregó Créalo — Fase 1</div>
+      <div style="font-weight:600;font-size:12px;color:#9a3412;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em">Funcionalidad ✓</div>
+      <div class="cc-row"><span>✅</span><span>Login con magic link (solo email, sin contraseña)</span></div>
+      <div class="cc-row"><span>✅</span><span>Módulo Mi Día para operarios</span></div>
+      <div class="cc-row"><span>✅</span><span>36 plantillas de checklist con 172 ítems totales</span></div>
+      <div class="cc-row"><span>✅</span><span>Generación automática de checklists a las 7 AM</span></div>
+      <div class="cc-row"><span>✅</span><span>Revisión de checklists para supervisores</span></div>
+      <div class="cc-row"><span>✅</span><span>Tareas, emprendedores, reportes, calendario</span></div>
+      <div class="cc-row"><span>✅</span><span>Gestión de usuarios con roles</span></div>
+      <div class="cc-row"><span>✅</span><span>App instalable en celular (PWA)</span></div>
+      <div style="border-top:1px solid #fed7aa;margin:12px 0;padding-top:12px;font-weight:600;font-size:12px;color:#9a3412;text-transform:uppercase;letter-spacing:.04em">Entregables de proyecto ✗</div>
+      <div class="cc-row"><span>❌</span><span>Sin manual de usuario por módulo</span></div>
+      <div class="cc-row"><span>❌</span><span>Sin sistema de soporte ni tiempos de respuesta</span></div>
+      <div class="cc-row"><span>❌</span><span>Sin roadmap de fases siguientes</span></div>
+      <div class="cc-row"><span>❌</span><span>Sin plan de backup de datos</span></div>
+      <div class="cc-row"><span>❌</span><span>Sin ambiente de pruebas separado del productivo</span></div>
+      <div class="cc-row"><span>❌</span><span>Sin criterios claros de aceptación por funcionalidad</span></div>
+    </div>
+    <div class="cc rec">
+      <div class="cc-head">📋 Lo que debería acompañar toda entrega</div>
+      <div class="cc-row"><span>📄</span><span><strong>Documento de alcance:</strong> qué entra y qué no en cada fase, firmado por ambas partes</span></div>
+      <div class="cc-row"><span>🗺️</span><span><strong>Roadmap de fases:</strong> objetivos, entregables y tiempos de cada etapa siguiente</span></div>
+      <div class="cc-row"><span>📚</span><span><strong>Manual de usuario:</strong> una guía por módulo con capturas de pantalla</span></div>
+      <div class="cc-row"><span>🎫</span><span><strong>Protocolo de soporte:</strong> cómo se reportan problemas y en cuánto tiempo se responden</span></div>
+      <div class="cc-row"><span>💾</span><span><strong>Plan de backups:</strong> con qué frecuencia se respalda la información y cómo se recupera</span></div>
+      <div class="cc-row"><span>🧪</span><span><strong>Ambiente de staging:</strong> un entorno de pruebas idéntico al productivo para probar cambios sin riesgo</span></div>
+      <div class="cc-row"><span>✅</span><span><strong>Criterios de aceptación:</strong> qué define que cada módulo está aprobado y listo para uso real</span></div>
+      <div class="cc-row"><span>📊</span><span><strong>Métricas de éxito:</strong> cómo medir si la plataforma cumple su objetivo de negocio</span></div>
+    </div>
+  </div>
+
+  <h3>Fases recomendadas de aquí en adelante</h3>
+  <div class="rm">
+    <div class="rp rp1">
+      <div class="rp-h"><span class="rtag">FASE 2 · Semanas 2-5</span><span class="rp-t">Completar los entregables faltantes</span></div>
+      <div class="rp-d">Funcionalidades necesarias para operar sin fricción que no se incluyeron en la Fase 1.</div>
+      <div class="chips">
+        <span class="chip">Manual de usuario por módulo</span>
+        <span class="chip">Notificaciones push para alertas</span>
+        <span class="chip">Exportar reportes en PDF y Excel</span>
+        <span class="chip">Dashboard diferenciado por rol</span>
+        <span class="chip">Sincronización offline en la app</span>
+      </div>
+    </div>
+    <div class="rp rp2">
+      <div class="rp-h"><span class="rtag">FASE 3 · Mes 2</span><span class="rp-t">Sistema de tickets y seguimiento formal</span></div>
+      <div class="rp-d">Reemplaza el manejo informal de problemas por WhatsApp con un sistema con registro, responsable y tiempos comprometidos.</div>
+      <div class="chips">
+        <span class="chip">Módulo de tickets</span>
+        <span class="chip">SLA por prioridad</span>
+        <span class="chip">Escalación automática</span>
+        <span class="chip">Historial de resolución</span>
+      </div>
+    </div>
+    <div class="rp rp3">
+      <div class="rp-h"><span class="rtag">FASE 4 · Mes 3</span><span class="rp-t">Reportes y métricas ejecutivas</span></div>
+      <div class="rp-d">Convertir los datos acumulados en información útil para tomar decisiones: tendencias, comparativas y alertas automáticas.</div>
+      <div class="chips">
+        <span class="chip">Indicadores clave por local</span>
+        <span class="chip">Comparativa entre períodos</span>
+        <span class="chip">Alertas automáticas por umbral</span>
+        <span class="chip">Envío automático de reportes</span>
+      </div>
+    </div>
+    <div class="rp rp4">
+      <div class="rp-h"><span class="rtag">FASE 5 · Mes 4-5</span><span class="rp-t">Infraestructura para múltiples clientes</span></div>
+      <div class="rp-d">Migrar a infraestructura AWS (Ruta B — ver Sección 02): una cuenta AWS por empresa, datos 100% aislados, panel multi-cliente y facturación independiente por negocio.</div>
+      <div class="chips">
+        <span class="chip">Base de datos separada por empresa</span>
+        <span class="chip">Panel de administración multi-cliente</span>
+        <span class="chip">Facturación por empresa</span>
+        <span class="chip">Infraestructura AWS</span>
+      </div>
+    </div>
+    <div class="rp rp5">
+      <div class="rp-h"><span class="rtag">FASE 6 · Mes 6+</span><span class="rp-t">Inteligencia operacional</span></div>
+      <div class="rp-d">Con datos de varios meses acumulados, detectar patrones y anticipar problemas antes de que ocurran.</div>
+      <div class="chips">
+        <span class="chip">Detección de locales en riesgo</span>
+        <span class="chip">Sugerencias automáticas de checklists</span>
+        <span class="chip">Asistente de supervisión con IA</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 04 TICKETS ══ -->
+<div class="card" id="s4">
+  <div class="sh"><div class="sh-n">04</div><div><div class="sh-title">Sistema de Tickets · Módulo Faltante</div><div class="sh-sub">La plataforma no tiene forma estructurada de reportar y dar seguimiento a problemas. Hoy todo se maneja por WhatsApp o email sin registro ni tiempos comprometidos.</div></div></div>
+
+  <div class="cmp" style="margin-bottom:24px">
+    <div class="cc now">
+      <div class="cc-head">⚠️ Cómo se gestionan los problemas hoy</div>
+      <div class="cc-row"><span>❌</span><span>El operario tiene un problema y avisa por WhatsApp</span></div>
+      <div class="cc-row"><span>❌</span><span>No hay registro de qué pasó ni cuándo</span></div>
+      <div class="cc-row"><span>❌</span><span>No hay responsable claro ni fecha de resolución</span></div>
+      <div class="cc-row"><span>❌</span><span>El supervisor no puede hacer seguimiento sin preguntar</span></div>
+      <div class="cc-row"><span>❌</span><span>Los problemas urgentes y los menores se tratan igual</span></div>
+      <div class="cc-row"><span>❌</span><span>No se sabe cuánto tarda en resolverse un problema en promedio</span></div>
+      <div class="cc-row"><span>❌</span><span>Los problemas se pierden entre chats y emails</span></div>
+    </div>
+    <div class="cc rec">
+      <div class="cc-head">✅ Cómo debería funcionar con tickets</div>
+      <div class="cc-row"><span>✅</span><span>El operario crea el ticket desde la app con foto y descripción</span></div>
+      <div class="cc-row"><span>✅</span><span>El ticket queda registrado con número único y fecha</span></div>
+      <div class="cc-row"><span>✅</span><span>Se asigna automáticamente y el responsable recibe aviso</span></div>
+      <div class="cc-row"><span>✅</span><span>El estado es visible para todos en tiempo real</span></div>
+      <div class="cc-row"><span>✅</span><span>Cada prioridad tiene un tiempo máximo de respuesta</span></div>
+      <div class="cc-row"><span>✅</span><span>Se puede medir la eficiencia del equipo de soporte</span></div>
+      <div class="cc-row"><span>✅</span><span>Historial completo para identificar problemas recurrentes</span></div>
+    </div>
+  </div>
+
+  <h3>Tiempos de respuesta por prioridad (SLA)</h3>
+  <div class="sla">
+    <div class="sl sl-r">
+      <div style="font-size:26px;margin-bottom:6px">🔴</div>
+      <div class="sn">Crítico</div>
+      <div class="st">1 hora</div>
+      <div class="sd">Plataforma caída · sin acceso · pérdida de datos</div>
+    </div>
+    <div class="sl sl-o">
+      <div style="font-size:26px;margin-bottom:6px">🟠</div>
+      <div class="sn">Alto</div>
+      <div class="st">4 horas</div>
+      <div class="sd">Módulo no funciona · checklists sin generar</div>
+    </div>
+    <div class="sl sl-b">
+      <div style="font-size:26px;margin-bottom:6px">🟡</div>
+      <div class="sn">Medio</div>
+      <div class="st">24 horas</div>
+      <div class="sd">Error menor · tiene solución alternativa</div>
+    </div>
+    <div class="sl sl-g">
+      <div style="font-size:26px;margin-bottom:6px">🟢</div>
+      <div class="sn">Bajo</div>
+      <div class="st">72 horas</div>
+      <div class="sd">Consulta · mejora visual · petición de cambio</div>
+    </div>
+  </div>
+
+  <h3>Flujo de estados de un ticket</h3>
+  <div class="arch"><span class="ay">NUEVO</span>  →  <span class="ab">ASIGNADO</span>  →  <span class="ao">EN PROGRESO</span>  →  <span class="ap">EN REVISIÓN</span>  →  <span class="ag">RESUELTO</span>  →  <span class="as">CERRADO</span>
+
+Reglas automáticas:
+  · Al crear: se asigna responsable según categoría y prioridad
+  · Al 80% del tiempo SLA: recordatorio automático al responsable
+  · Al vencer el SLA: escalación al supervisor + alerta en dashboard
+  · Sin respuesta del cliente en 48h tras resolver: cierre automático</div>
+</div>
+
+<!-- ══ 05 MANUAL ══ -->
+<div class="card" id="s5">
+  <div class="sh"><div class="sh-n">05</div><div><div class="sh-title">Manual de Usuario · Entregable Ausente</div><div class="sh-sub">No se entregó ninguna guía de uso. Sin un manual, cada usuario nuevo requiere capacitación presencial y los errores de operación aumentan el soporte innecesariamente.</div></div></div>
+
+  <div class="al al-y"><div class="al-i">⚠️</div><div><strong>Estándar de entrega:</strong> En cualquier proyecto de software profesional, el manual de usuario es un entregable obligatorio junto con la primera versión funcional. Créalo debe producirlo como parte del cierre de Fase 1.</div></div>
+
+  <div class="mg" style="margin-top:16px">
+    <div class="mc">
+      <div class="mc-h"><span>🔐</span><div class="mc-t">Acceso al sistema</div><span class="mc-r" style="background:#f1f5f9;color:#334155">Todos</span></div>
+      <ul class="mc-l">
+        <li>Cómo ingresar con solo el email</li>
+        <li>Abrir el enlace del correo antes de que expire</li>
+        <li>Instalar la app en iPhone y Android</li>
+        <li>Qué hacer si no llega el correo de acceso</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mc-h"><span>☀️</span><div class="mc-t">Mi Día</div><span class="mc-r" style="background:#fee2e2;color:#991b1b">Operario</span></div>
+      <ul class="mc-l">
+        <li>Ver los checklists asignados para hoy</li>
+        <li>Completar un ítem con foto o comentario</li>
+        <li>Guardar borrador y continuar después</li>
+        <li>Enviar el checklist al supervisor</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mc-h"><span>✅</span><div class="mc-t">Checklists</div><span class="mc-r" style="background:#fee2e2;color:#991b1b">Operario</span></div>
+      <ul class="mc-l">
+        <li>Los 36 checklists se crean solos a las 7 AM</li>
+        <li>Completar ítem a ítem con la cámara del celular</li>
+        <li>Agregar observaciones a ítems con problemas</li>
+        <li>Enviar solo cuando todos los ítems estén completos</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mc-h"><span>📊</span><div class="mc-t">Dashboard</div><span class="mc-r" style="background:#fef3c7;color:#92400e">Supervisor</span></div>
+      <ul class="mc-l">
+        <li>Leer el porcentaje de cumplimiento del día</li>
+        <li>Identificar locales con alertas activas</li>
+        <li>Filtrar por local, fecha o responsable</li>
+        <li>Acceder al detalle de checklists de un local</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mc-h"><span>🔎</span><div class="mc-t">Revisión</div><span class="mc-r" style="background:#fef3c7;color:#92400e">Supervisor</span></div>
+      <ul class="mc-l">
+        <li>Ver checklists enviados pendientes de revisión</li>
+        <li>Aprobar o rechazar con comentario</li>
+        <li>Ver fotos adjuntas ítem por ítem</li>
+        <li>El operario recibe aviso del resultado</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mc-h"><span>📝</span><div class="mc-t">Tareas</div><span class="mc-r" style="background:#fef3c7;color:#92400e">Supervisor</span></div>
+      <ul class="mc-l">
+        <li>Crear tarea con descripción, plazo y responsable</li>
+        <li>Ver tareas pendientes por fecha de vencimiento</li>
+        <li>Cambiar el estado (pendiente / en progreso / listo)</li>
+        <li>El responsable recibe notificación al asignarle</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mc-h"><span>🏪</span><div class="mc-t">Emprendedores</div><span class="mc-r" style="background:#fef3c7;color:#92400e">Supervisor</span></div>
+      <ul class="mc-l">
+        <li>Buscar un local por nombre o categoría</li>
+        <li>Ver ficha del local y su historial de cumplimiento</li>
+        <li>Agregar notas privadas al perfil del local</li>
+        <li>Activar o desactivar un local</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mc-h"><span>📈</span><div class="mc-t">Reportes</div><span class="mc-r" style="background:#fef3c7;color:#92400e">Supervisor</span></div>
+      <ul class="mc-l">
+        <li>Ver cumplimiento mensual por local</li>
+        <li>Comparar semana actual vs semana anterior</li>
+        <li>Identificar los ítems más incumplidos</li>
+        <li>Exportar a PDF o Excel (disponible en Fase 2)</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mc-h"><span>👥</span><div class="mc-t">Usuarios</div><span class="mc-r" style="background:#dbeafe;color:#1e40af">Admin</span></div>
+      <ul class="mc-l">
+        <li>Crear usuario con email, nombre y rol</li>
+        <li>Diferencia entre Admin, Supervisor y Operario</li>
+        <li>Invitar: el sistema envía el acceso por correo</li>
+        <li>Desactivar un usuario sin perder su historial</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="al al-b" style="margin-top:14px"><div class="al-i">📋</div><div><strong>Formato recomendado:</strong> Un documento PDF por módulo con capturas de pantalla numeradas paso a paso. Disponible además dentro de la app con un botón de "Ayuda" en cada pantalla. Prioridad de entrega: primero Mi Día y Checklists (uso diario), luego Login/App (usuarios nuevos), luego el resto.</div></div>
+</div>
+
+<!-- ══ 06 MEJORAS VISUALES ══ -->
+<div class="card" id="s6">
+  <div class="sh"><div class="sh-n">06</div><div><div class="sh-title">Mejoras Visuales · Antes y Después</div><div class="sh-sub">Cinco cambios concretos que mejoran significativamente la experiencia del usuario. Cada uno incluye qué cambiar y cómo implementarlo.</div></div></div>
+
+  <div class="vi">
+
+    <div class="vi-item">
+      <div class="vi-head">
+        <div class="vi-prio">🔴</div>
+        <div>
+          <div class="vi-title">El dashboard muestra todo a todos — sin filtrar por tipo de usuario</div>
+          <div class="vi-meta">Prioridad 1 · Impacto alto · 3-5 días de desarrollo</div>
+        </div>
+        <span class="b crit">Urgente</span>
+      </div>
+      <div class="vi-cols">
+        <div class="vi-col">
+          <div class="vi-col-label">❌ Problema actual</div>
+          <div class="vi-row"><span>·</span><span>Un operario ve métricas de otros locales que no le corresponden</span></div>
+          <div class="vi-row"><span>·</span><span>El menú muestra los 12 módulos a todos por igual, incluyendo opciones de administración para usuarios simples</span></div>
+          <div class="vi-row"><span>·</span><span>El operario no sabe qué tiene que hacer hoy — hay demasiada información sin jerarquía</span></div>
+        </div>
+        <div class="vi-col">
+          <div class="vi-col-label">✅ Cómo debe quedar</div>
+          <div class="vi-row"><span>·</span><span><strong>Operario:</strong> solo ve sus checklists del día con estado claro (pendiente / en progreso / enviado). Sin gráficas ni métricas de otros.</span></div>
+          <div class="vi-row"><span>·</span><span><strong>Supervisor:</strong> 3 números clave arriba (% cumplimiento del día, alertas activas, checklists vencidos) y listado de locales con problemas.</span></div>
+          <div class="vi-row"><span>·</span><span><strong>Implementación:</strong> agregar lógica según el rol del usuario autenticado para mostrar u ocultar secciones. No requiere rediseño completo.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vi-item">
+      <div class="vi-head">
+        <div class="vi-prio">🔴</div>
+        <div>
+          <div class="vi-title">Las pantallas vacías no explican nada — el usuario cree que hay un error</div>
+          <div class="vi-meta">Prioridad 1 · Impacto alto · 1 día de desarrollo</div>
+        </div>
+        <span class="b crit">Urgente</span>
+      </div>
+      <div class="vi-cols">
+        <div class="vi-col">
+          <div class="vi-col-label">❌ Problema actual</div>
+          <div class="vi-row"><span>·</span><span>Cuando no hay checklists, tareas o revisiones, la pantalla queda en blanco o con un indicador girando</span></div>
+          <div class="vi-row"><span>·</span><span>El usuario no sabe si es un error técnico o si simplemente no hay datos</span></div>
+          <div class="vi-row"><span>·</span><span>Genera desconfianza en la plataforma</span></div>
+        </div>
+        <div class="vi-col">
+          <div class="vi-col-label">✅ Cómo debe quedar</div>
+          <div class="vi-row"><span>·</span><span>Mensaje contextual: "No hay checklists pendientes hoy 🎉 Todo al día" / "Aún no tienes tareas asignadas"</span></div>
+          <div class="vi-row"><span>·</span><span>Ícono ilustrativo y descripción breve de qué hacer si necesita algo</span></div>
+          <div class="vi-row"><span>·</span><span><strong>Implementación:</strong> componente reutilizable de 20 líneas con ícono, título y mensaje. Aplicar en todos los listados que pueden estar vacíos.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vi-item">
+      <div class="vi-head">
+        <div class="vi-prio">🟡</div>
+        <div>
+          <div class="vi-title">Los botones no tienen jerarquía — el usuario no sabe cuál apretar</div>
+          <div class="vi-meta">Prioridad 2 · Impacto medio · 2 días de desarrollo</div>
+        </div>
+        <span class="b warn">Importante</span>
+      </div>
+      <div class="vi-cols">
+        <div class="vi-col">
+          <div class="vi-col-label">❌ Problema actual</div>
+          <div class="vi-row"><span>·</span><span>"Enviar al supervisor", "Guardar borrador" y "Cancelar" tienen el mismo tamaño y peso visual</span></div>
+          <div class="vi-row"><span>·</span><span>El usuario duda cuál es la acción correcta y en qué orden</span></div>
+        </div>
+        <div class="vi-col">
+          <div class="vi-col-label">✅ Cómo debe quedar</div>
+          <div class="vi-row"><span>·</span><span><strong>Acción principal:</strong> botón con fondo de color, ancho completo en celular. Solo uno por pantalla. Ej: "Enviar al supervisor"</span></div>
+          <div class="vi-row"><span>·</span><span><strong>Acción secundaria:</strong> solo borde visible, sin fondo. Ej: "Guardar borrador"</span></div>
+          <div class="vi-row"><span>·</span><span><strong>Cancelar:</strong> solo texto. Si es una acción destructiva, texto en rojo.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vi-item">
+      <div class="vi-head">
+        <div class="vi-prio">🟡</div>
+        <div>
+          <div class="vi-title">Sin confirmación visual después de realizar una acción</div>
+          <div class="vi-meta">Prioridad 2 · Impacto medio · Medio día de desarrollo</div>
+        </div>
+        <span class="b warn">Importante</span>
+      </div>
+      <div class="vi-cols">
+        <div class="vi-col">
+          <div class="vi-col-label">❌ Problema actual</div>
+          <div class="vi-row"><span>·</span><span>Al enviar un checklist o aprobar una revisión, no hay ningún mensaje que confirme que funcionó</span></div>
+          <div class="vi-row"><span>·</span><span>El usuario presiona el botón varias veces pensando que no respondió</span></div>
+        </div>
+        <div class="vi-col">
+          <div class="vi-col-label">✅ Cómo debe quedar</div>
+          <div class="vi-row"><span>·</span><span>Mensaje verde de éxito: "Checklist enviado correctamente" · desaparece en 4 segundos</span></div>
+          <div class="vi-row"><span>·</span><span>Mensaje amarillo de advertencia: "Faltan 3 ítems por completar"</span></div>
+          <div class="vi-row"><span>·</span><span>Mensaje rojo de error: "No se pudo guardar — intenta de nuevo"</span></div>
+          <div class="vi-row"><span>·</span><span><strong>Implementación:</strong> librería Sonner (incluida en shadcn/ui). Una función por acción. Menos de medio día.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vi-item">
+      <div class="vi-head">
+        <div class="vi-prio">🟡</div>
+        <div>
+          <div class="vi-title">Sin indicador de progreso en checklists con muchos ítems</div>
+          <div class="vi-meta">Prioridad 2 · Impacto medio · Medio día de desarrollo</div>
+        </div>
+        <span class="b warn">Importante</span>
+      </div>
+      <div class="vi-cols">
+        <div class="vi-col">
+          <div class="vi-col-label">❌ Problema actual</div>
+          <div class="vi-row"><span>·</span><span>Un checklist puede tener hasta 47 ítems y el operario no sabe cuánto le falta</span></div>
+          <div class="vi-row"><span>·</span><span>No hay señal de cuándo puede enviar el checklist al supervisor</span></div>
+          <div class="vi-row"><span>·</span><span>Favorece el abandono sin completar el proceso</span></div>
+        </div>
+        <div class="vi-col">
+          <div class="vi-col-label">✅ Cómo debe quedar</div>
+          <div class="vi-row"><span>·</span><span>Barra de progreso fija arriba: "14 de 47 completados"</span></div>
+          <div class="vi-row"><span>·</span><span>Color cambia de gris a azul a verde según avanza</span></div>
+          <div class="vi-row"><span>·</span><span>Al llegar al 100%: "¡Listo! Ya puedes enviar al supervisor" con el botón de envío resaltado</span></div>
+          <div class="vi-row"><span>·</span><span><strong>Implementación:</strong> componente Progress de shadcn/ui + contador de ítems completados. Menos de medio día.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mejoras menores como lista compacta -->
+    <div class="vi-small">
+      <div style="font-size:20px;flex-shrink:0">📋</div>
+      <div>
+        <div style="font-weight:800;font-size:14px;margin-bottom:8px">Mejoras adicionales de menor impacto</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div style="font-size:13px;color:var(--ink3)">🎨 <strong>Colores de estado consistentes</strong> — definir verde=completado, azul=en progreso, amarillo=pendiente, rojo=vencido en toda la plataforma</div>
+          <div style="font-size:13px;color:var(--ink3)">⏳ <strong>Skeleton loaders</strong> — reemplazar el círculo girando por placeholders grises con la forma del contenido que va a aparecer</div>
+          <div style="font-size:13px;color:var(--ink3)">❓ <strong>Botón de ayuda</strong> — ícono "?" en cada pantalla que abre el manual del módulo correspondiente</div>
+          <div style="font-size:13px;color:var(--ink3)">👋 <strong>Onboarding de bienvenida</strong> — guía de 3 pasos para usuarios nuevos que entran por primera vez</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ 07 AUDITORÍA ══ -->
+<div class="card" id="s7">
+  <div class="sh"><div class="sh-n">07</div><div><div class="sh-title">Auditoría Técnica y QA</div><div class="sh-sub">Evaluación área por área con score de 0 a 100 — hallazgos de calidad y pruebas recomendadas antes de operar con usuarios reales</div></div></div>
+
+  <div class="ah">
+    <div style="text-align:center">
+      <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Score actual</div>
+      <div class="ah-n">67</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:4px">de 100 puntos</div>
+    </div>
+    <div class="ah-sep"></div>
+    <div>
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:5px">Calificación</div>
+      <div class="ah-g">C+ · Mejorable</div>
+    </div>
+    <div class="ah-sep"></div>
+    <div style="text-align:center">
+      <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Score objetivo</div>
+      <div class="ah-n" style="color:#a3e635">88</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:4px">con correcciones</div>
+    </div>
+    <div class="ah-sep"></div>
+    <div class="ah-d">
+      ✅ Código TypeScript limpio y bien organizado<br>
+      ✅ Componentes de UI modernos (shadcn/ui)<br>
+      ✅ Autenticación por magic link correctamente implementada<br>
+      ✅ Automatización de checklists funcional<br>
+      🔴 Base de datos con límite que bloquea la operación<br>
+      🟡 Sin manual, sin tickets, sin monitoreo de errores
+    </div>
+  </div>
+
+  <div class="sr">
+    <div class="sc sb"><div class="la">Arquitectura</div><div class="nu">14</div><div class="mx">/ 20</div></div>
+    <div class="sc sd"><div class="la">Base de datos</div><div class="nu">8</div><div class="mx">/ 20</div></div>
+    <div class="sc sb"><div class="la">Seguridad</div><div class="nu">14</div><div class="mx">/ 20</div></div>
+    <div class="sc sc2"><div class="la">Funcionalidad</div><div class="nu">12</div><div class="mx">/ 20</div></div>
+  </div>
+  <div class="sr sr3">
+    <div class="sc sc2"><div class="la">Documentación</div><div class="nu">7</div><div class="mx">/ 15</div></div>
+    <div class="sc sc2"><div class="la">UX · Usabilidad</div><div class="nu">10</div><div class="mx">/ 15</div></div>
+    <div class="sc sc2"><div class="la">Infraestructura</div><div class="nu">7</div><div class="mx">/ 10</div></div>
+  </div>
+
+  <h3>Hallazgo por área — qué baja el score</h3>
+  <table style="margin-top:8px">
+    <thead><tr><th>Área</th><th>Puntos perdidos</th><th>Motivo principal</th><th>Cómo recuperarlos</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Base de datos</strong></td><td><span class="b crit">−12 pts</span></td><td>Airtable Free: límite de registros, sin backups, sin transacciones confiables</td><td>Migrar a Supabase PostgreSQL — 3 a 5 días de trabajo</td></tr>
+      <tr><td><strong>Documentación</strong></td><td><span class="b warn">−8 pts</span></td><td>Sin manual de usuario, error de versión en documentación, sin evidencia de pruebas</td><td>Créalo entrega manual + corrección de versión Next.js</td></tr>
+      <tr><td><strong>UX</strong></td><td><span class="b warn">−5 pts</span></td><td>Dashboard sin diferenciación por rol, sin estados vacíos, sin feedback de acciones</td><td>Los 5 cambios visuales descritos en Sección 06</td></tr>
+      <tr><td><strong>Funcionalidad</strong></td><td><span class="b warn">−8 pts</span></td><td>Sin sistema de tickets, sin notificaciones push, sin exportación de reportes</td><td>Fase 2 y Fase 3 del roadmap</td></tr>
+      <tr><td><strong>Infraestructura</strong></td><td><span class="b warn">−3 pts</span></td><td>Vercel plan gratuito sin garantía de disponibilidad, sin monitoreo de errores</td><td>Upgrade a Vercel Pro + instalar Sentry</td></tr>
+      <tr><td><strong>Seguridad</strong></td><td><span class="b warn">−6 pts</span></td><td>Permisos por rol no verificados en el servidor, sin registro de acciones de usuarios</td><td>Agregar verificación server-side + audit log de acciones</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Pruebas de calidad recomendadas antes de operar</h3>
+  <table style="margin-top:8px">
+    <thead><tr><th>Escenario a probar</th><th>Por qué es importante</th></tr></thead>
+    <tbody>
+      <tr><td>Operario completa y envía un checklist</td><td>Es el flujo principal. Un error aquí afecta el trabajo diario de todo el equipo.</td></tr>
+      <tr><td>Supervisor aprueba y rechaza una revisión</td><td>El rechazo sin notificación al operario sería un error silencioso difícil de detectar.</td></tr>
+      <tr><td>Los 36 checklists se generan a las 7 AM</td><td>Si el proceso automático falla, el día entero queda sin checklists sin que nadie se entere.</td></tr>
+      <tr><td>Un operario no puede ver datos de otro local</td><td>El acceso cruzado entre usuarios es el riesgo de privacidad más grave del sistema.</td></tr>
+      <tr><td>La app funciona sin señal y sincroniza al reconectarse</td><td>Los operarios en locales con mala cobertura necesitan poder trabajar offline.</td></tr>
+      <tr><td>El enlace de acceso por email expira en 15 minutos</td><td>Un enlace que no expira es un riesgo de seguridad si el correo cae en manos equivocadas.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PLAN DE ACCIÓN -->
+<div class="card card-alt">
+  <div class="sh"><div class="sh-n">—</div><div><div class="sh-title">Plan de Acción · Próximos 30 días</div><div class="sh-sub">Qué hacer, en qué orden y por qué no puede esperar</div></div></div>
+
+  <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="dot d0"></div><strong>Esta semana</strong> — debe resolverse antes de operar</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="dot d1"></div><strong>Próximas 2 semanas</strong> — alta prioridad</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="dot d2"></div><strong>Mes 1</strong> — importante para la calidad del producto</div>
+  </div>
+
+  <div class="acts">
+    <div class="act"><div class="dot d0"></div><div class="at"><strong>1. Confirmar la versión real de Next.js</strong> — Solicitar a Créalo el archivo package.json. La versión "v16.2.4" indicada en la documentación no existe.</div><span class="atag" style="background:#fee2e2;color:#991b1b">Esta semana · 1h</span></div>
+    <div class="act"><div class="dot d0"></div><div class="at"><strong>2. Migrar la base de datos de Airtable a Supabase</strong> — El límite de 1.000 registros se agota en menos de 3 semanas de operación. Este es el único punto que puede dejar la plataforma sin funcionar.</div><span class="atag" style="background:#fee2e2;color:#991b1b">Esta semana · 3-5 días</span></div>
+    <div class="act"><div class="dot d0"></div><div class="at"><strong>3. Upgrade de Vercel Hobby a Vercel Pro ($20/mes)</strong> — Garantía de disponibilidad, sin timeout de 10s y con soporte incluido. Es la Ruta A de infraestructura recomendada. La Ruta B (AWS) se evalúa en Fase 5 cuando haya múltiples clientes. Ver Sección 02.</div><span class="atag" style="background:#fee2e2;color:#991b1b">Esta semana · 30 min</span></div>
+    <div class="act"><div class="dot d0"></div><div class="at"><strong>4. Activar backups automáticos de la base de datos</strong> — Una vez migrado a Supabase, los backups diarios se activan con un clic. Mientras tanto: exportar los datos de Airtable manualmente cada noche.</div><span class="atag" style="background:#fee2e2;color:#991b1b">Esta semana · 1h</span></div>
+    <div class="act"><div class="dot d1"></div><div class="at"><strong>5. Separar el dashboard según el tipo de usuario</strong> — El operario debe ver solo sus checklists del día. El supervisor ve métricas y alertas. Ver Sección 06 para el detalle exacto.</div><span class="atag" style="background:#fef3c7;color:#92400e">2 semanas · 3-5 días</span></div>
+    <div class="act"><div class="dot d1"></div><div class="at"><strong>6. Instalar Sentry para detectar errores en producción</strong> — Herramienta gratuita. Una línea de código en la configuración. A partir de ahí, cualquier error se registra y notifica automáticamente.</div><span class="atag" style="background:#fef3c7;color:#92400e">2 semanas · 0.5 días</span></div>
+    <div class="act"><div class="dot d1"></div><div class="at"><strong>7. Solicitar a Créalo el manual de usuario por módulo</strong> — Es un entregable estándar de cualquier proyecto de software. Prioridad: Mi Día, Checklists y Login para los operarios que entren primero.</div><span class="atag" style="background:#fef3c7;color:#92400e">2 semanas · a coordinar</span></div>
+    <div class="act"><div class="dot d2"></div><div class="at"><strong>8. Aplicar las mejoras visuales P1 y P2</strong> — Estados vacíos, feedback de acciones, jerarquía de botones e indicador de progreso en checklists. Ver Sección 06 para la implementación exacta de cada uno.</div><span class="atag" style="background:#d1fae5;color:#065f46">Mes 1 · 1 semana</span></div>
+    <div class="act"><div class="dot d2"></div><div class="at"><strong>9. Iniciar diseño del módulo de tickets</strong> — Define el modelo de datos, flujo y SLA. Reemplaza el manejo informal de problemas por WhatsApp. Ver Sección 04 para el diseño completo.</div><span class="atag" style="background:#d1fae5;color:#065f46">Mes 1 · 2-3 semanas</span></div>
+  </div>
+  <div class="al al-y" style="margin-top:14px"><div class="al-i">⚠️</div><div><strong>Si Créalo no entrega algo de esta lista — qué hacer:</strong><ul style="margin-top:8px;padding-left:16px;font-size:13px;line-height:2.1"><li><strong>Manual de usuario:</strong> solicitarlo por escrito con fecha límite. Es un entregable contractual estándar — no cerrar Fase 1 sin él.</li><li><strong>Migración de Airtable:</strong> si Créalo no puede o demora, contratar un desarrollador externo. El costo es menor que el riesgo de colapso operacional en 3 semanas.</li><li><strong>Versión correcta de Next.js:</strong> pedir el archivo package.json por email. No firmar el cierre de Fase 1 sin esta confirmación.</li><li><strong>Ambiente de staging:</strong> si no existe, acordar que ningún cambio va directo a producción sin revisión previa aprobada.</li><li><strong>Infraestructura (Vercel Pro):</strong> si Créalo cree que el plan gratuito es suficiente, mostrar la Sección 02 del reporte con los riesgos documentados y el costo de solo $20/mes.</li></ul></div></div>
+</div>
+
+<div class="stripe"></div>
+
+<!-- CIERRE -->
+<div class="close">
+  <div style="font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px">Conclusión</div>
+  <div style="font-size:30px;font-weight:900;line-height:1.25;margin-bottom:14px">El código está bien.<br>La infraestructura necesita ajustes.<br>Hay tres entregables pendientes.</div>
+  <div style="font-size:15px;color:#94a3b8;max-width:600px;margin:0 auto 6px;line-height:1.9">
+    Créalo entregó una plataforma construida con tecnología moderna y correctamente implementada. Los problemas están en las decisiones de infraestructura —que se resuelven en una semana— y en los entregables estándar que no se incluyeron: manual, tickets y roadmap. Con estas correcciones, la plataforma pasa de <strong style="color:#fbbf24">67 a 88 puntos</strong> y puede operar con confianza.
+  </div>
+  <div class="close-kpis">
+    <div class="ck"><div class="lbl">Score actual</div><div class="num">67</div><div class="sub">C+ · Mejorable</div></div>
+    <div class="ck"><div class="lbl">Score objetivo</div><div class="num" style="color:#a3e635">88</div><div class="sub">B+ · Con correcciones</div></div>
+    <div class="ck"><div class="lbl">Inversión adicional</div><div class="num" style="color:#60a5fa">$45</div><div class="sub">USD/mes · Vercel Pro + Supabase</div></div>
+    <div class="ck"><div class="lbl">Tiempo para estabilizar</div><div class="num" style="color:#c084fc">1</div><div class="sub">semana para los puntos críticos</div></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <strong>Evaluación Técnica Fase 1 — Bendito Capricho · Créalo SpA</strong><br>
+  Preparado por SMC · smconnection.cl · Mayo 2026
+</footer>
+
+</body>
+</html>
