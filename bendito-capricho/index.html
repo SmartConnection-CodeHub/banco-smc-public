@@ -797,6 +797,98 @@ footer{
 .visio-legend-item .swatch.dashed-red{background:repeating-linear-gradient(90deg,#dc2626 0 4px,transparent 4px 8px)}
 
 /* =======================================
+   PROCESOS COMPACTOS · selector + canvas dinámico
+   ======================================= */
+.proc-shell{
+  background:#fff;border:1px solid var(--border);border-radius:18px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.proc-index{
+  display:flex;gap:0;border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,#fafbfc,#fff);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.proc-tab{
+  flex:1 0 auto;padding:14px 18px;cursor:pointer;border:none;background:transparent;
+  font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;color:var(--ink-soft);
+  display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  border-right:1px solid var(--border);position:relative;
+  transition:all .2s;text-align:left;letter-spacing:-.01em;
+  min-width:140px;
+}
+.proc-tab:last-child{border-right:none}
+.proc-tab .ix{font:800 10px 'JetBrains Mono',monospace;color:var(--ink-mute);letter-spacing:.08em}
+.proc-tab:hover{background:var(--primary-soft);color:var(--primary)}
+.proc-tab:hover .ix{color:var(--primary)}
+.proc-tab.on{background:#fff;color:var(--primary);box-shadow:inset 0 -3px 0 var(--primary)}
+.proc-tab.on .ix{color:var(--primary)}
+.proc-canvas{
+  padding:24px 22px 28px;min-height:280px;position:relative;
+  background:linear-gradient(180deg,#fff,#fdfaf6);
+}
+.proc-canvas::before{
+  content:"";position:absolute;inset:0;opacity:.4;pointer-events:none;
+  background-image:linear-gradient(rgba(139,44,77,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,44,77,.04) 1px,transparent 1px);
+  background-size:20px 20px;
+}
+.proc-scene{display:none;position:relative;z-index:1;animation:procIn .3s ease}
+.proc-scene.on{display:block}
+@keyframes procIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.proc-scene-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.proc-scene-name{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.015em}
+.proc-scene-sub{font:600 11px 'JetBrains Mono',monospace;color:var(--ink-mute);letter-spacing:.04em;text-transform:uppercase}
+.proc-scene-tag{font:700 10px 'JetBrains Mono',monospace;background:var(--success);color:#fff;padding:3px 10px;border-radius:99px;letter-spacing:.08em;text-transform:uppercase}
+.proc-scene-tag.warn{background:var(--warn)}
+.proc-scene-tag.idle{background:var(--ink-mute)}
+
+/* Mini flow con cajitas pequeñas */
+.proc-flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;justify-content:center}
+.proc-step{
+  flex:1 1 130px;max-width:170px;
+  background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  padding:10px 12px;display:flex;flex-direction:column;gap:4px;
+  position:relative;transition:all .2s;
+}
+.proc-step:hover{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 6px 14px rgba(139,44,77,.1)}
+.proc-step .pn{font:800 9px 'JetBrains Mono',monospace;color:var(--ink-mute);letter-spacing:.1em}
+.proc-step .pa{font:700 10px 'JetBrains Mono',monospace;color:var(--primary);text-transform:uppercase;letter-spacing:.06em}
+.proc-step .pname{font-size:12px;font-weight:700;color:var(--ink);line-height:1.25}
+.proc-step .pmeta{font-size:10.5px;color:var(--ink-mute);line-height:1.3}
+.proc-step.s-start{border-color:var(--success)}
+.proc-step.s-start .pa{color:var(--success)}
+.proc-step.s-end{border-color:var(--success);background:#f0fdf4}
+.proc-step.s-end .pa{color:var(--success)}
+.proc-step.s-warn{border-color:#fbbf24;background:#fffbeb}
+.proc-step.s-warn .pa{color:#b45309}
+.proc-step.s-sys{background:var(--ink);color:#f7efdf;border:none}
+.proc-step.s-sys .pn,.proc-step.s-sys .pmeta{color:#d0c5b3}
+.proc-step.s-sys .pa{color:var(--secondary)}
+.proc-step.s-sys .pname{color:#fff}
+.proc-arr{
+  align-self:center;display:flex;align-items:center;justify-content:center;
+  color:var(--primary);font-size:14px;font-weight:700;
+  padding:0 4px;position:relative;min-width:24px;
+}
+.proc-arr::after{content:"→"}
+@media(max-width:639px){
+  .proc-flow{flex-direction:column;align-items:stretch}
+  .proc-step{max-width:none}
+  .proc-arr{transform:rotate(90deg);min-height:14px}
+}
+
+.proc-meta{
+  margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;
+  padding-top:14px;border-top:1px dashed var(--border);position:relative;z-index:1;
+}
+.proc-meta .b{
+  font:600 11px 'JetBrains Mono',monospace;
+  padding:4px 10px;border-radius:99px;
+  background:#fff;border:1px solid var(--border);color:var(--ink-soft);
+}
+.proc-meta .b.ok{background:#dcfce7;color:#15803d;border:none}
+.proc-meta .b.warn{background:#fef3c7;color:#b45309;border:none}
+
+/* =======================================
    BLOQUES · síntesis minimalista
    3 grupos: Funcional · Técnico · Cierre
    ======================================= */
@@ -1092,6 +1184,7 @@ section.hidden-section{display:none !important}
       <a href="#vision" class="toc-sub">· Visión</a>
       <a href="#procesos" class="toc-sub">· Proceso</a>
       <a href="#approval" class="toc-sub">· Aprobación</a>
+      <a href="#mapa" class="toc-sub">· Matriz</a>
       <a href="#rfp" class="toc-sub">· RFP</a>
       <span class="toc-divider"></span>
       <a href="#bloque-tecnico" class="toc-block">Técnico</a>
@@ -1199,374 +1292,134 @@ section.hidden-section{display:none !important}
 <section id="procesos" class="alt">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">02 · Procesos · Fase 1 entregada</div>
-      <h2 class="section-title">14 flujos verificados en producción</h2>
-      <p class="section-desc">Estos son los flujos <strong>realmente entregados</strong> por Créalo en Fase 1 (ver PDF ENTREGA-FASE1 punto 12). Los procesos de negocio core (cierres de caja, pagos a emprendedores, inventario 8 pasos, pipeline captación) <strong>NO están construidos en Fase 1</strong> · están planificados para Fases 2-3.</p>
+      <div class="section-eyebrow">02 · Proceso</div>
+      <h2 class="section-title">14 flujos en 6 escenarios · click para ver cada uno</h2>
+      <p class="section-desc">Procesos verificados Fase 1 según PDF Créalo. Selecciona un escenario abajo y se carga el mini-diagrama. Sin scroll · sin diagramas gigantes · todo en un solo viewport.</p>
     </div>
 
-    <div class="callout warn" style="margin-bottom:32px">
-      <div class="callout-title">⚠ Disclaimer importante</div>
-      <p>Lo que digitaliza Fase 1 hoy: <strong>los checklists y el seguimiento de tareas</strong>. NO digitaliza aún cierres de caja, pagos a emprendedores ni inventario operativo. Esos vienen en Fase 2-3. Tener clara la diferencia entre <em>lo entregado</em> y <em>lo planificado</em> es clave para la conversación con Sebastián.</p>
-    </div>
+    <div class="proc-shell">
+      <div class="proc-index" role="tablist">
+        <button class="proc-tab on" onclick="showProc('p-auth')"><span class="ix">A · 2 flujos</span><span>Auth + Cron</span></button>
+        <button class="proc-tab" onclick="showProc('p-check')"><span class="ix">B · 4 flujos</span><span>Checklists</span></button>
+        <button class="proc-tab" onclick="showProc('p-tareas')"><span class="ix">C · 1 flujo</span><span>Tareas adhoc</span></button>
+        <button class="proc-tab" onclick="showProc('p-sup')"><span class="ix">D · 3 flujos</span><span>Supervisión</span></button>
+        <button class="proc-tab" onclick="showProc('p-gest')"><span class="ix">E · 3 flujos</span><span>Gestión</span></button>
+        <button class="proc-tab" onclick="showProc('p-pwa')"><span class="ix">F · 1 flujo</span><span>PWA mobile</span></button>
+      </div>
 
-    <!-- 14 FLUJOS VERIFICADOS FASE 1 -->
-    <div class="visio-stage" data-flow="auth">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Grupo A · Autenticación + Cron · 2 flujos</div>
-          <div class="visio-sub">Verificados end-to-end · ítems [1] y [2] del PDF</div>
+      <div class="proc-canvas">
+        <div id="p-auth" class="proc-scene on">
+          <div class="proc-scene-head"><div><div class="proc-scene-name">Auth + Cron</div><div class="proc-scene-sub">Ítems [1] [2] · entregado · activo en producción</div></div><span class="proc-scene-tag">✓ LIVE</span></div>
+          <div class="proc-flow">
+            <div class="proc-step s-start"><span class="pn">01</span><span class="pa">login</span><span class="pname">Email magic link</span><span class="pmeta">NextAuth v5</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-end"><span class="pn">02</span><span class="pa">dashboard</span><span class="pname">Redirige por rol</span><span class="pmeta">middleware JWT</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-sys"><span class="pn">03</span><span class="pa">cron 10utc</span><span class="pname">Genera 36 checklists</span><span class="pmeta">CRON_SECRET</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-end"><span class="pn">04</span><span class="pa">listas</span><span class="pname">Visibles en Mi Día</span><span class="pmeta">Airtable</span></div>
+          </div>
+          <div class="proc-meta">
+            <span class="b ok">POST /api/auth/[...nextauth]</span>
+            <span class="b ok">GET /api/v1/cron/generar-checklists</span>
+            <span class="b">07:00 CL · diario</span>
+          </div>
         </div>
-        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 4 · listo</span>
-      </div>
-      <div class="ce-flow f4">
-        <div class="ce-node start"><span class="corner">[1]</span><span class="lbl">login</span><span class="nm">Email magic link</span><span class="sub">NextAuth v5 · sin password</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">→</span><span class="lbl">dashboard</span><span class="nm">Redirige según rol</span><span class="sub">middleware JWT + scope</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.5s"></span><span class="tip">cron</span></div>
-        <div class="ce-node system"><span class="corner">[2]</span><span class="lbl">10:00 UTC</span><span class="nm">Genera 36 checklists</span><span class="sub">CRON_SECRET · diario</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:1s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">✓</span><span class="lbl">listas</span><span class="nm">Instancias en Airtable</span><span class="sub">visibles en Mi Día</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>POST /api/auth/[...nextauth]</span>
-        <span class="badge ok"><span class="dot"></span>GET /api/v1/cron/generar-checklists</span>
-        <span class="badge">protegido por token</span>
-      </div>
-    </div>
 
-    <div class="visio-stage" data-flow="checklist">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Grupo B · Checklists · 4 flujos</div>
-          <div class="visio-sub">Verificados end-to-end · ítems [3] [4] [6] [7] del PDF</div>
+        <div id="p-check" class="proc-scene">
+          <div class="proc-scene-head"><div><div class="proc-scene-name">Checklists · CRUD + revisión</div><div class="proc-scene-sub">Ítems [3] [4] [6] [7] · 36 plantillas + 172 ítems</div></div><span class="proc-scene-tag">✓ LIVE</span></div>
+          <div class="proc-flow">
+            <div class="proc-step s-start"><span class="pn">01</span><span class="pa">usuario</span><span class="pname">Abre checklist</span><span class="pmeta">desde Mi Día</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step"><span class="pn">02</span><span class="pa">responde</span><span class="pname">5 tipos de ítem</span><span class="pmeta">check · texto · núm · sel · foto</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step"><span class="pn">03</span><span class="pa">comenta</span><span class="pname">Muro chat</span><span class="pmeta">opcional</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-warn"><span class="pn">04</span><span class="pa">supervisor</span><span class="pname">Aprueba/rechaza</span><span class="pmeta">con observación</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-end"><span class="pn">05</span><span class="pa">filtra</span><span class="pname">Por depto/tienda</span><span class="pmeta">scope por rol</span></div>
+          </div>
+          <div class="proc-meta">
+            <span class="b ok">/responder</span>
+            <span class="b ok">/completar</span>
+            <span class="b ok">/revisar</span>
+            <span class="b ok">/evidencia</span>
+          </div>
         </div>
-        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 5 · listo</span>
-      </div>
-      <div class="ce-flow f5">
-        <div class="ce-node lider"><span class="corner">[3]</span><span class="lbl">usuario</span><span class="nm">Abre checklist</span><span class="sub">desde Mi Día o lista filtrada</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node"><span class="corner">5 tipos</span><span class="lbl">responde</span><span class="nm">Check/Texto/Núm/Sel/Foto</span><span class="sub">cada respuesta con timestamp</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">→</span></div>
-        <div class="ce-node system"><span class="corner">[6]</span><span class="lbl">comenta</span><span class="nm">Opcional · muro chat</span><span class="sub">POST /api/v1/comentarios</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">→</span></div>
-        <div class="ce-node francis"><span class="corner">[4]</span><span class="lbl">supervisor</span><span class="nm">Aprueba o rechaza</span><span class="sub">con observaciones</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">[7]</span><span class="lbl">filtra</span><span class="nm">Por depto/tienda/estado</span><span class="sub">scope auto por rol</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>POST /api/v1/checklists/responder</span>
-        <span class="badge ok"><span class="dot"></span>POST /api/v1/checklists/completar</span>
-        <span class="badge ok"><span class="dot"></span>POST /api/v1/checklists/revisar</span>
-        <span class="badge ok"><span class="dot"></span>POST /api/v1/checklists/evidencia</span>
-      </div>
-    </div>
 
-    <div class="visio-stage" data-flow="tareas">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Grupo C · Tareas Ad-Hoc · 1 flujo</div>
-          <div class="visio-sub">Verificado end-to-end · ítem [5] del PDF · reemplaza WhatsApp para tareas puntuales</div>
+        <div id="p-tareas" class="proc-scene">
+          <div class="proc-scene-head"><div><div class="proc-scene-name">Tareas ad-hoc</div><div class="proc-scene-sub">Ítem [5] · reemplaza WhatsApp para tareas puntuales</div></div><span class="proc-scene-tag">✓ LIVE</span></div>
+          <div class="proc-flow">
+            <div class="proc-step s-start"><span class="pn">01</span><span class="pa">creador</span><span class="pname">+ Nueva tarea</span><span class="pmeta">Dueña/Gerente/Jefe</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step"><span class="pn">02</span><span class="pa">define</span><span class="pname">Título + prioridad</span><span class="pmeta">Urg/Alta/Med/Baja</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-warn"><span class="pn">03</span><span class="pa">asigna</span><span class="pname">A responsable</span><span class="pmeta">aparece en Mi Día</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-end"><span class="pn">04</span><span class="pa">completa</span><span class="pname">Marca hecha</span><span class="pmeta">muro comentarios</span></div>
+          </div>
+          <div class="proc-meta">
+            <span class="b ok">POST /api/v1/tareas</span>
+            <span class="b">4 niveles prioridad</span>
+          </div>
         </div>
-        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 4 · listo</span>
-      </div>
-      <div class="ce-flow f4">
-        <div class="ce-node start"><span class="corner">[5]</span><span class="lbl">creador</span><span class="nm">+ Nueva tarea</span><span class="sub">Dueña / Gerente / Jefe</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node"><span class="corner">campos</span><span class="lbl">define</span><span class="nm">Título · prioridad · responsable · plazo</span><span class="sub">Urgente/Alta/Media/Baja</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">→</span></div>
-        <div class="ce-node francis"><span class="corner">asign</span><span class="lbl">responsable</span><span class="nm">Aparece en su Mi Día</span><span class="sub">notificación in-app</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">✓</span><span class="lbl">completa</span><span class="nm">Marca como hecha</span><span class="sub">cambia a Completada</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>POST /api/v1/tareas</span>
-        <span class="badge">muro de comentarios</span>
-        <span class="badge">4 niveles prioridad</span>
-      </div>
-    </div>
 
-    <div class="visio-stage" data-flow="supervision">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Grupo D · Supervisión · 3 flujos</div>
-          <div class="visio-sub">Verificados end-to-end · ítems [8] [9] [10] del PDF</div>
+        <div id="p-sup" class="proc-scene">
+          <div class="proc-scene-head"><div><div class="proc-scene-name">Supervisión · dashboards</div><div class="proc-scene-sub">Ítems [8] [9] [10] · vista en vivo MJ + David</div></div><span class="proc-scene-tag">✓ LIVE</span></div>
+          <div class="proc-flow">
+            <div class="proc-step s-start"><span class="pn">01</span><span class="pa">dashboard</span><span class="pname">Semáforo 8 deptos</span><span class="pmeta">verde/amarillo/rojo</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step"><span class="pn">02</span><span class="pa">reportes</span><span class="pname">Comparativa semanal</span><span class="pmeta">% + ranking</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-end"><span class="pn">03</span><span class="pa">calendar</span><span class="pname">Vista mensual</span><span class="pmeta">puntos por estado</span></div>
+          </div>
+          <div class="proc-meta">
+            <span class="b ok">/dashboard</span>
+            <span class="b ok">/reportes</span>
+            <span class="b ok">/calendario</span>
+            <span class="b">racha 100% cumplim.</span>
+          </div>
         </div>
-        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 3 · listo</span>
-      </div>
-      <div class="ce-flow f3">
-        <div class="ce-node maria"><span class="corner">[8]</span><span class="lbl">dashboard</span><span class="nm">Semáforo 8 deptos</span><span class="sub">verde/amarillo/rojo · alertas en banner</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node lider"><span class="corner">[9]</span><span class="lbl">reportes</span><span class="nm">Semanal comparativa</span><span class="sub">% cumplimiento + ranking responsables</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.5s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">[10]</span><span class="lbl">calendario</span><span class="nm">Vista mensual</span><span class="sub">puntos colores por estado del día</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>Dashboard /dashboard</span>
-        <span class="badge ok"><span class="dot"></span>Reportes /reportes</span>
-        <span class="badge ok"><span class="dot"></span>Calendario /calendario</span>
-        <span class="badge">racha días 100% cumplimiento</span>
-      </div>
-    </div>
 
-    <div class="visio-stage" data-flow="gestion">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Grupo E · Gestión · 3 flujos</div>
-          <div class="visio-sub">Verificados end-to-end · ítems [11] [12] [13] del PDF · CRUD básico</div>
+        <div id="p-gest" class="proc-scene">
+          <div class="proc-scene-head"><div><div class="proc-scene-name">Gestión · CRUD básico</div><div class="proc-scene-sub">Ítems [11] [12] [13] · emprendedores + usuarios + scope</div></div><span class="proc-scene-tag">✓ LIVE</span></div>
+          <div class="proc-flow">
+            <div class="proc-step s-warn"><span class="pn">01</span><span class="pa">emprend.</span><span class="pname">Crear · editar · estado</span><span class="pmeta">sin pipeline aún</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step"><span class="pn">02</span><span class="pa">usuarios</span><span class="pname">Admin CRUD</span><span class="pmeta">Dueña + Gerente</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-end"><span class="pn">03</span><span class="pa">scope</span><span class="pname">Filtrado por rol</span><span class="pmeta">jefe→depto · líder→tienda</span></div>
+          </div>
+          <div class="proc-meta">
+            <span class="b ok">POST /emprendedores</span>
+            <span class="b ok">GET/POST /usuarios</span>
+            <span class="b">middleware JWT</span>
+          </div>
         </div>
-        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 3 · listo</span>
-      </div>
-      <div class="ce-flow f3">
-        <div class="ce-node gate"><span class="corner">[11]</span><span class="lbl">emprendedores</span><span class="nm">Crear · editar · estado</span><span class="sub">solo registro · sin pipeline aún</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node maria"><span class="corner">[12]</span><span class="lbl">usuarios</span><span class="nm">Admin · crear/editar/desactivar</span><span class="sub">Dueña + Gerente</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.5s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">[13]</span><span class="lbl">scope</span><span class="nm">Filtrado por rol</span><span class="sub">jefe ve depto · líder ve tienda</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>POST /api/v1/emprendedores</span>
-        <span class="badge ok"><span class="dot"></span>GET/POST /api/v1/usuarios</span>
-        <span class="badge">middleware JWT con scope</span>
-      </div>
-    </div>
 
-    <div class="visio-stage" data-flow="pwa">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Grupo F · PWA mobile · 1 flujo</div>
-          <div class="visio-sub">Verificado · ítem [14] del PDF · instalable sin App Store</div>
+        <div id="p-pwa" class="proc-scene">
+          <div class="proc-scene-head"><div><div class="proc-scene-name">PWA mobile</div><div class="proc-scene-sub">Ítem [14] · instalable sin App Store en Android+iOS</div></div><span class="proc-scene-tag">✓ LIVE</span></div>
+          <div class="proc-flow">
+            <div class="proc-step s-start"><span class="pn">01</span><span class="pa">android</span><span class="pname">Chrome ⋮ → inicio</span><span class="pmeta">manifest detectado</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-start"><span class="pn">02</span><span class="pa">iphone</span><span class="pname">Safari ↑ → inicio</span><span class="pmeta">no en Chrome iOS</span></div>
+            <div class="proc-arr"></div>
+            <div class="proc-step s-end"><span class="pn">03</span><span class="pa">app</span><span class="pname">Modo standalone</span><span class="pmeta">sin barra navegador</span></div>
+          </div>
+          <div class="proc-meta">
+            <span class="b ok">service worker activo</span>
+            <span class="b ok">manifest BCapricho</span>
+            <span class="b warn">datos requieren conexión</span>
+          </div>
         </div>
-        <span class="visio-tag" style="background:var(--success)">✓ LIVE</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 3 · listo</span>
-      </div>
-      <div class="ce-flow f3">
-        <div class="ce-node start"><span class="corner">android</span><span class="lbl">chrome</span><span class="nm">⋮ → Agregar a inicio</span><span class="sub">manifest.json detectado</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node start"><span class="corner">iphone</span><span class="lbl">safari</span><span class="nm">↑ → Agregar a inicio</span><span class="sub">no funciona en Chrome iOS</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.5s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">✓</span><span class="lbl">app</span><span class="nm">Modo standalone</span><span class="sub">sin barra navegador</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>service worker activo</span>
-        <span class="badge ok"><span class="dot"></span>manifest BCapricho</span>
-        <span class="badge">assets cacheados offline</span>
-        <span class="badge warn"><span class="dot"></span>datos requieren conexión</span>
       </div>
     </div>
 
-    <!-- ROADMAP PROCESOS FASE 2-3 -->
-    <div class="section-header" style="margin-top:60px;margin-bottom:30px">
-      <div class="section-eyebrow" style="color:var(--warn)">02b · Procesos Fase 2-3 · planificados</div>
-      <h2 class="section-title" style="font-size:24px">Lo que NO está construido aún</h2>
-      <p class="section-desc">Estos procesos son <strong>problemas reales del negocio BC hoy</strong> (cierres de caja en Excel local, pagos a emprendedores calculados a mano, inventario en papel, captación perdida en DMs). Pero la app de Fase 1 <strong>no los resuelve todavía</strong> · están en el roadmap.</p>
-    </div>
-
-    <div class="grid-3">
-      <div class="card" style="border-left:3px solid var(--warn)">
-        <div class="card-icon" style="background:var(--warn-soft);color:var(--warn)">💰</div>
-        <h3>Cierre de caja diario</h3>
-        <p>5 medios de pago · cuadratura automática · foto arqueo · depósito con comprobante · alerta descuadre · 2do filtro Joel mensual.</p>
-        <div class="meta" style="color:var(--warn)">FASE 2 · planificado · ~3-4 sem</div>
-      </div>
-      <div class="card" style="border-left:3px solid var(--warn)">
-        <div class="card-icon" style="background:var(--warn-soft);color:var(--warn)">💸</div>
-        <h3>Pago a emprendedor</h3>
-        <p>Sistema calcula ventas − comisión − mermas atribuibles − subarriendo. Francis revisa, María José aprueba si &gt; umbral.</p>
-        <div class="meta" style="color:var(--warn)">FASE 2 · planificado · quincenal</div>
-      </div>
-      <div class="card" style="border-left:3px solid var(--warn)">
-        <div class="card-icon" style="background:var(--warn-soft);color:var(--warn)">🛒</div>
-        <h3>Pipeline captación 7 etapas</h3>
-        <p>Kanban Airtable: Prospecto → Contacto → Validación → Exclusividad → Cierre → Integración → Activo. SLA por etapa.</p>
-        <div class="meta" style="color:var(--warn)">FASE 2 · Dani · genera revenue subarriendo</div>
-      </div>
-      <div class="card" style="border-left:3px solid var(--ink-mute)">
-        <div class="card-icon" style="background:#f5f5f5;color:var(--ink-mute)">📦</div>
-        <h3>Inventario 8 pasos</h3>
-        <p>Recepción → validación → SKU → registro → foto Drive → bibliorato → muestreo coherencia → habilitar. Plazo 48hrs hábiles.</p>
-        <div class="meta" style="color:var(--ink-mute)">FASE 3 · planificado · ~2-3 sem</div>
-      </div>
-      <div class="card" style="border-left:3px solid var(--ink-mute)">
-        <div class="card-icon" style="background:#f5f5f5;color:var(--ink-mute)">🏷️</div>
-        <h3>Mermas con foto obligatoria</h3>
-        <p>Registro de cada merma con foto · clasificación producto (descuenta emprendedor) vs operación tienda (asume BC).</p>
-        <div class="meta" style="color:var(--ink-mute)">FASE 3 · planificado · informe semanal</div>
-      </div>
-      <div class="card" style="border-left:3px solid var(--ink-mute)">
-        <div class="card-icon" style="background:#f5f5f5;color:var(--ink-mute)">👥</div>
-        <h3>Asistencia digital</h3>
-        <p>Reemplazo libro físico (art. 33 CT). Liquidaciones día 01, bonos día 10, imposiciones día 12, archivo digital de contratos.</p>
-        <div class="meta" style="color:var(--ink-mute)">FASE 4 · planificado · 2 sem</div>
-      </div>
-    </div>
-
-    <!-- DUPLICADOS ELIMINADOS · estos procesos viven ahora arriba como roadmap Fase 2-3 -->
-    <script type="application/json" id="removed-old-pipelines">
-      Bloque viejo eliminado en refactor 2026-05-11 19:55 · contenía 3 procesos inventados
-      (inventario 8 pasos · cierre caja · captación 7 etapas) presentados como si fueran Fase 1
-      cuando en realidad son Fase 2-3 planificados. Movidos arriba a sección 02b con badge correcto.
-    </script>
-    <div style="display:none" aria-hidden="true">
-    <!-- Pipeline 1: Inventario 8 pasos · VISIO horizontal DINÁMICO -->
-    <div class="visio-stage" data-flow="inv">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Flujo 1 · Recepción de mercadería en tienda</div>
-          <div class="visio-sub">8 etapas · plazo 48 hrs hábiles · líder tienda + encargada inventario</div>
-        </div>
-        <span class="visio-tag">Inventario · Fase 3</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play flow</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 8 · listo</span>
-        <span class="live-pill" style="margin-left:auto">click "Play" para ver animación paso a paso</span>
-      </div>
-      <!-- Fila 1: pasos 1-4 -->
-      <div class="ce-flow f4" style="margin-bottom:14px">
-        <div class="ce-node start"><span class="corner">01</span><span class="lbl">recepción</span><span class="nm">Líder recibe hoja</span><span class="sub">canal oficial · firma emprendedor</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node"><span class="corner">02</span><span class="lbl">validación</span><span class="nm">Verificar campos</span><span class="sub">2 hrs hábiles · completitud</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.3s"></span><span class="tip">→</span></div>
-        <div class="ce-node gate"><span class="corner">03</span><span class="lbl">alta empr.</span><span class="nm">Crear familia + prefijo</span><span class="sub">si emprendedor nuevo</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.6s"></span><span class="tip">→</span></div>
-        <div class="ce-node"><span class="corner">04</span><span class="lbl">alta prod.</span><span class="nm">SKU + precio + categoría</span><span class="sub">PREFIJO-CAT-NNN</span></div>
-      </div>
-      <!-- Fila 2: pasos 5-8 -->
-      <div class="ce-flow f4">
-        <div class="ce-node system"><span class="corner">05</span><span class="lbl">registro</span><span class="nm">Operación en sistema</span><span class="sub">stock actualiza en vivo</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.9s"></span><span class="tip">→</span></div>
-        <div class="ce-node"><span class="corner">06</span><span class="lbl">digital</span><span class="nm">Foto + Drive + bibliorato</span><span class="sub">trazabilidad completa</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
-        <div class="ce-node gate"><span class="corner">07</span><span class="lbl">verif.</span><span class="nm">Muestreo físico</span><span class="sub">semanal · 10-15 SKU random</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.5s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">08</span><span class="lbl">habilitar</span><span class="nm">Notificar → etiquetar</span><span class="sub">listo para venta</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>SLA 48 hrs</span>
-        <span class="badge">~12 hojas/día</span>
-        <span class="badge">2 sucursales</span>
-        <span class="badge warn"><span class="dot"></span>rechazo si campo incompleto</span>
-        <span class="badge">muestreo coherencia 2%</span>
-      </div>
-    </div>
-
-    <!-- Pipeline 2: Cierre caja · VISIO horizontal DINÁMICO + log terminal -->
-    <div class="visio-stage" data-flow="caja">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Flujo 2 · Cierre de caja diario</div>
-          <div class="visio-sub">5 medios de pago · cuadratura automática · 2 sucursales × 1 cierre/día</div>
-        </div>
-        <span class="visio-tag">Finanzas · Fase 2</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play flow</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 5 · listo</span>
-        <span class="live-pill" style="margin-left:auto">datos reales simulados · ver log abajo</span>
-      </div>
-      <div class="ce-flow f5">
-        <div class="ce-node lider"><span class="corner">17:00</span><span class="lbl">líder</span><span class="nm">Cuenta efectivo + POS</span><span class="sub">5 medios de pago · foto arqueo</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node system"><span class="corner">auto</span><span class="lbl">sistema</span><span class="nm">Calcula diferencias</span><span class="sub">real − esperado · por medio</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.4s"></span><span class="tip">→</span></div>
-        <div class="ce-node alert"><span class="corner">if &gt;$5K</span><span class="lbl">alerta</span><span class="nm">Notify Francis</span><span class="sub">push + email · escalable</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.8s"></span><span class="tip">→</span></div>
-        <div class="ce-node francis"><span class="corner">~30 min</span><span class="lbl">francis</span><span class="nm">Revisa + aprueba</span><span class="sub">o pide investigación</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">mes</span><span class="lbl">joel</span><span class="nm">2do filtro · testigo</span><span class="sub">cuadratura mensual</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>vivo · 0 descuadres &gt;5K esta semana</span>
-        <span class="badge">~$1.2M/día Quilpué</span>
-        <span class="badge">~$850K/día San Antonio</span>
-        <span class="badge warn"><span class="dot"></span>alerta auto si Δ&gt;$5.000</span>
-        <span class="badge danger"><span class="dot"></span>escalada Gerencia si Δ&gt;$50.000</span>
-      </div>
-      <div class="ce-log">
-<span class="ts">17:42:18</span> <span class="ok">OK</span> <span class="actor">LIDER_QUI</span> <span class="arr">→</span> cierre · efectivo $385.420 · débito $612.880 · crédito $228.140 · Δ=$0<br>
-<span class="ts">17:55:02</span> <span class="ok">OK</span> <span class="actor">LIDER_SA</span> <span class="arr">→</span> cierre · efectivo $241.300 · débito $448.520 · Δ=$0<br>
-<span class="ts">18:02:11</span> <span class="warn">DEPOSITO</span> <span class="actor">LIDER_QUI</span> <span class="arr">→</span> $360.000 · comprobante adjunto · OK<br>
-<span class="ts">18:18:44</span> <span class="ok">OK</span> <span class="actor">FRANCIS</span> aprueba cierre QUI · pasa a Joel para cuadratura mes<br>
-<span class="ts">18:22:09</span> <span class="warn">ALERTA</span> <span class="actor">LIDER_SA</span> · descuadre $7.200 efectivo · investigando<br>
-<span class="ts">18:25:33</span> <span class="ok">OK</span> <span class="actor">FRANCIS</span> notifica · líder revisa boletas anuladas
-      </div>
-    </div>
-
-    <!-- Pipeline 3: Captación · VISIO 7 etapas DINÁMICO -->
-    <div class="visio-stage" data-flow="capt">
-      <div class="visio-head">
-        <div>
-          <div class="visio-title">Flujo 3 · Captación de emprendedores</div>
-          <div class="visio-sub">Pipeline 7 etapas · ciclo típico 14-21 días · genera revenue por subarriendo</div>
-        </div>
-        <span class="visio-tag">Comercial · Fase 2</span>
-      </div>
-      <div class="dyn-controls">
-        <button class="dyn-btn" onclick="playFlow(this)"><span class="ico">▶</span> Play flow</button>
-        <button class="dyn-btn ghost" onclick="resetFlow(this)"><span class="ico">↻</span> Reset</button>
-        <span class="dyn-status">paso 0 de 7 · listo</span>
-        <span class="live-pill" style="margin-left:auto">owner · Dani (socio)</span>
-      </div>
-      <div class="ce-flow f4" style="margin-bottom:14px">
-        <div class="ce-node start"><span class="corner">01</span><span class="lbl">prospecto</span><span class="nm">DM · referido · presencial</span><span class="sub">mismo día · registro Airtable</span></div>
-        <div class="ce-arrow"><span class="pulse"></span><span class="tip">→</span></div>
-        <div class="ce-node"><span class="corner">02</span><span class="lbl">contacto</span><span class="nm">WhatsApp · presentación BC</span><span class="sub">SLA 24 hrs</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.3s"></span><span class="tip">→</span></div>
-        <div class="ce-node gate"><span class="corner">03</span><span class="lbl">validación</span><span class="nm">Fotos · rubro compatible</span><span class="sub">SLA 48-72 hrs</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.6s"></span><span class="tip">→</span></div>
-        <div class="ce-node gate"><span class="corner">04</span><span class="lbl">exclusiv.</span><span class="nm">¿Rubro saturado?</span><span class="sub">cruce Stands Layout</span></div>
-      </div>
-      <div class="ce-flow f3">
-        <div class="ce-node francis"><span class="corner">05</span><span class="lbl">cierre</span><span class="nm">Contrato + tarifa</span><span class="sub">firma electrónica</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:.9s"></span><span class="tip">→</span></div>
-        <div class="ce-node system"><span class="corner">06</span><span class="lbl">integración</span><span class="nm">WA + Drive + stand + onboarding</span><span class="sub">7 días · 4 deptos en paralelo</span></div>
-        <div class="ce-arrow"><span class="pulse" style="animation-delay:1.2s"></span><span class="tip">→</span></div>
-        <div class="ce-node end"><span class="corner">07</span><span class="lbl">activo</span><span class="nm">Vende + paga subarriendo</span><span class="sub">revenue recurrente</span></div>
-      </div>
-      <div class="ce-meta">
-        <span class="badge ok"><span class="dot"></span>conversión target: prospecto → activo 25%</span>
-        <span class="badge">~14-21 días ciclo</span>
-        <span class="badge">subarriendo + comisión ventas</span>
-        <span class="badge warn"><span class="dot"></span>cuello: validación rubro</span>
-      </div>
-    </div>
-
-    </div><!-- end display:none wrapper -->
-
-    <div class="callout success" style="margin-top:32px">
-      <div class="callout-title">✓ Resumen real Fase 1 según PDF Créalo</div>
-      <p>La app construida hoy automatiza <strong>la supervisión de checklists y tareas</strong>. Reemplaza el WhatsApp para esos dos casos, no más. Los procesos de negocio core (cierres, pagos, inventario, captación) son los próximos en el roadmap (Fase 2-3) · hoy siguen en Excel y Word como antes.</p>
+    <!-- Procesos Fase 2-3 planificados · resumen breve -->
+    <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:24px">
+      <div style="background:linear-gradient(180deg,#fffbeb,#fff);border:1px solid #fde047;border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center"><span style="font-size:20px">💰</span><div style="flex:1"><div style="font-weight:700;font-size:13px">Cierre caja · pago empr · captación 7 etapas</div><div style="font-size:11px;color:#a16207;margin-top:2px">FASE 2 · planificado · 3-4 sem</div></div></div>
+      <div style="background:#fafafa;border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center"><span style="font-size:20px">📦</span><div style="flex:1"><div style="font-weight:700;font-size:13px">Inventario 8 pasos · mermas con foto</div><div style="font-size:11px;color:var(--ink-mute);margin-top:2px">FASE 3 · planificado · 2-3 sem</div></div></div>
+      <div style="background:#fafafa;border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center"><span style="font-size:20px">👥</span><div style="flex:1"><div style="font-weight:700;font-size:13px">Asistencia · liquidaciones · bonos</div><div style="font-size:11px;color:var(--ink-mute);margin-top:2px">FASE 4 · planificado · 2 sem</div></div></div>
     </div>
   </div>
 </section>
@@ -1876,12 +1729,12 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- MAPA INT - MODULOS x ROLES -->
-<section id="mapa" class="alt hidden-section">
+<section id="mapa">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">04 · Mapa de integraciones</div>
-      <h2 class="section-title">¿Quién hace qué en cada módulo?</h2>
-      <p class="section-desc">Matriz de permisos × módulos × roles. 8 roles definidos (de Dueña a Vendedor), filtrado automático de datos por scope (jefe ve solo su departamento, líder ve solo su tienda). Configura las views Airtable que cada persona usa.</p>
+      <div class="section-eyebrow">· Matriz</div>
+      <h2 class="section-title">Matriz · quién hace qué en cada módulo</h2>
+      <p class="section-desc">Navegable con cajitas · sin scroll vertical. Cambia entre permisos, departamentos, usuarios y fases tocando las pestañas. 8 roles · 10 módulos · scope automático por departamento o tienda.</p>
     </div>
 
     <div class="tabs" role="tablist">
@@ -3460,6 +3313,19 @@ function playFlow(btn){
   flowState.set(stage,id);
 }
 
+// ============= PROCESOS · selector dinámico =============
+function showProc(id){
+  const ev = (window.event && window.event.currentTarget);
+  if(!ev) return;
+  const shell = ev.closest('.proc-shell');
+  if(!shell) return;
+  shell.querySelectorAll('.proc-tab').forEach(t=>t.classList.remove('on'));
+  ev.classList.add('on');
+  shell.querySelectorAll('.proc-scene').forEach(s=>s.classList.remove('on'));
+  const target = document.getElementById(id);
+  if(target) target.classList.add('on');
+}
+
 // ============= REORDER DOM · 3 BLOQUES (síntesis minimalista) =============
 (function reorderToBlocks(){
   const get = id => document.getElementById(id);
@@ -3477,8 +3343,10 @@ function playFlow(btn){
 
   if(!blockTec || !blockCierre || !footer) return;
 
-  // Funcional: Approval + RFP van DESPUÉS de Procesos, ANTES de bloque-tecnico
+  // Funcional: Approval + Matriz + RFP van DESPUÉS de Procesos, ANTES de bloque-tecnico
+  const mapaSec = get('mapa');
   if(approvalSec && blockTec) blockTec.parentNode.insertBefore(approvalSec, blockTec);
+  if(mapaSec && blockTec) blockTec.parentNode.insertBefore(mapaSec, blockTec);
   if(rfpSec && blockTec) blockTec.parentNode.insertBefore(rfpSec, blockTec);
 
   // Técnico: Reporte va DESPUÉS de Arquitectura, ANTES de bloque-cierre
@@ -3500,11 +3368,12 @@ function playFlow(btn){
     'vision': '01 · Visión',
     'procesos': '02 · Proceso',
     'approval': '03 · Flujo de aprobación',
-    'rfp': '04 · RFP',
-    'arquitectura': '05 · Arquitectura',
-    'reporte': '06 · Assessment',
-    'opp': '07 · Oportunidades',
-    'cifras': '08 · Cifras'
+    'mapa': '04 · Matriz',
+    'rfp': '05 · RFP',
+    'arquitectura': '06 · Arquitectura',
+    'reporte': '07 · Assessment',
+    'opp': '08 · Oportunidades',
+    'cifras': '09 · Cifras'
   };
   Object.entries(renumber).forEach(([id,label])=>{
     const sec = get(id); if(!sec) return;
