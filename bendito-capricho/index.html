@@ -797,6 +797,157 @@ footer{
 .visio-legend-item .swatch.dashed-red{background:repeating-linear-gradient(90deg,#dc2626 0 4px,transparent 4px 8px)}
 
 /* =======================================
+   CIFRAS · DASHBOARDS VISUALES
+   donut · barras · sparkline · heatmap · timeline
+   ======================================= */
+.dash-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:24px}
+@media(min-width:768px){.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.dash-grid.three{grid-template-columns:repeat(3,1fr)}}
+
+.dash-card{
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  transition:transform .25s,box-shadow .25s;
+}
+.dash-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-strong)}
+.dash-card.dark{background:linear-gradient(135deg,#1f1416,#0f0a0c);color:#f7efdf;border-color:transparent}
+.dash-card.dark .dash-title{color:#fff}
+.dash-card.dark .dash-sub{color:#c9a66b}
+.dash-title{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:4px}
+.dash-sub{font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;letter-spacing:.03em;margin-bottom:18px;text-transform:uppercase}
+
+/* Donut chart */
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center}
+.donut{width:160px;height:160px;flex-shrink:0;position:relative}
+.donut svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut .ring-bg{fill:none;stroke:var(--border);stroke-width:14}
+.donut .ring{fill:none;stroke-width:14;stroke-linecap:round;transition:stroke-dasharray 1.2s var(--ease-out,cubic-bezier(.16,1,.3,1))}
+.donut-center{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+}
+.donut-center .big{font-size:36px;font-weight:900;color:var(--primary);letter-spacing:-.03em;line-height:1}
+.dash-card.dark .donut-center .big{color:var(--secondary)}
+.donut-center .lbl{font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-top:4px}
+.donut-legend{flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px}
+.donut-legend-item{display:flex;align-items:center;gap:10px;font-size:12px}
+.donut-legend-item .sw{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.donut-legend-item .nm{flex:1;color:var(--ink-soft)}
+.donut-legend-item .vl{font-weight:700;color:var(--ink);font-family:'JetBrains Mono',monospace}
+.dash-card.dark .donut-legend-item .nm{color:#d0c5b3}
+.dash-card.dark .donut-legend-item .vl{color:#fff}
+
+/* Barras horizontales */
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:grid;grid-template-columns:110px 1fr 60px;gap:10px;align-items:center;font-size:12px}
+.bar-row .lbl{color:var(--ink-soft);font-weight:600;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.02em}
+.bar-track{height:18px;background:#f1f5f9;border-radius:99px;overflow:hidden;position:relative}
+.dash-card.dark .bar-track{background:rgba(255,255,255,.08)}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--primary-dark));position:relative;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-size:10px;font-weight:700;transition:width 1.2s cubic-bezier(.16,1,.3,1);min-width:24px}
+.bar-fill.gold{background:linear-gradient(90deg,var(--secondary),#a37f3a)}
+.bar-fill.success{background:linear-gradient(90deg,#22c55e,#15803d)}
+.bar-fill.warn{background:linear-gradient(90deg,#fbbf24,#d97706)}
+.bar-fill.danger{background:linear-gradient(90deg,#f87171,#b91c1c)}
+.bar-fill.info{background:linear-gradient(90deg,#60a5fa,#1e40af)}
+.bar-row .vl{color:var(--ink);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:12px}
+.dash-card.dark .bar-row .vl{color:#fff}
+
+/* Sparkline */
+.spark{width:100%;height:60px;display:block}
+.spark .line{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.spark .area{fill:url(#sparkgrad);opacity:.3}
+.spark .dot{fill:var(--primary);stroke:#fff;stroke-width:2}
+
+/* Heatmap calendar */
+.heatmap{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
+.heatmap .cell{aspect-ratio:1;border-radius:3px;background:#f1f5f9;position:relative;transition:transform .15s}
+.heatmap .cell:hover{transform:scale(1.3);z-index:5;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.heatmap .cell.l1{background:#f5e6ec}
+.heatmap .cell.l2{background:#e4a4bc}
+.heatmap .cell.l3{background:#b85580}
+.heatmap .cell.l4{background:#8b2c4d}
+.heatmap .cell.l5{background:#5e1a33}
+.heatmap-legend{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--ink-mute);margin-top:10px;justify-content:flex-end;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+.heatmap-legend .sc{display:inline-flex;gap:2px}
+.heatmap-legend .sc span{width:10px;height:10px;border-radius:2px}
+
+/* Score breakdown radial */
+.scores-radial{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.scores-radial{grid-template-columns:repeat(3,1fr)}}
+.score-circle{
+  position:relative;width:90px;height:90px;margin:0 auto;
+}
+.score-circle svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-circle .bg{fill:none;stroke:#f1f5f9;stroke-width:8}
+.score-circle .fg{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dasharray 1.2s cubic-bezier(.16,1,.3,1)}
+.score-circle .num{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;letter-spacing:-.02em;
+}
+.score-item{text-align:center;padding:14px;border-radius:12px;background:#fff;border:1px solid var(--border)}
+.score-item .nm{font-size:11px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-top:8px}
+.score-item .sub{font-size:10px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-top:2px}
+
+/* Timeline horizontal */
+.timeline{
+  display:flex;align-items:center;position:relative;padding:24px 0 14px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.timeline::before{
+  content:"";position:absolute;left:32px;right:32px;top:50%;
+  height:3px;background:linear-gradient(90deg,var(--success),var(--warn),var(--ink-mute));
+  border-radius:2px;
+}
+.tl-step{
+  flex:1 0 130px;position:relative;text-align:center;z-index:2;
+}
+.tl-dot{
+  width:32px;height:32px;border-radius:50%;
+  background:#fff;border:3px solid var(--ink-mute);
+  margin:0 auto 8px;display:grid;place-items:center;
+  font-family:'JetBrains Mono',monospace;font-weight:800;font-size:11px;
+  color:var(--ink-mute);
+}
+.tl-step.done .tl-dot{background:var(--success);border-color:var(--success);color:#fff;box-shadow:0 0 0 4px rgba(21,128,61,.15)}
+.tl-step.active .tl-dot{background:var(--warn);border-color:var(--warn);color:#fff;box-shadow:0 0 0 4px rgba(180,83,9,.15);animation:livepulse 1.6s ease-in-out infinite}
+.tl-name{font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
+.tl-step.done .tl-name{color:var(--success)}
+.tl-step.active .tl-name{color:var(--warn)}
+.tl-meta{font-size:10px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-top:2px}
+
+/* Status dots grid */
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:640px){.status-grid{grid-template-columns:repeat(5,1fr)}}
+.status-item{
+  display:flex;align-items:center;gap:7px;padding:9px 12px;
+  background:#f8fafc;border-radius:8px;border:1px solid var(--border);
+  font-size:11px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;
+}
+.status-item .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--success);box-shadow:0 0 0 3px rgba(21,128,61,.2)}
+.status-item.warn .dot{background:var(--warn);box-shadow:0 0 0 3px rgba(180,83,9,.2)}
+.status-item.danger .dot{background:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.2)}
+.status-item.idle .dot{background:var(--ink-mute);box-shadow:none}
+
+/* Mini stat KPI tiles */
+.mini-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:640px){.mini-stats{grid-template-columns:repeat(4,1fr)}}
+.mini-stat{
+  background:linear-gradient(180deg,#fff,#fafafa);
+  border:1px solid var(--border);border-radius:10px;
+  padding:14px 12px;text-align:center;position:relative;overflow:hidden;
+}
+.mini-stat::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--primary);
+}
+.mini-stat.gold::before{background:var(--secondary)}
+.mini-stat.ok::before{background:var(--success)}
+.mini-stat.warn::before{background:var(--warn)}
+.mini-stat.info::before{background:#1e40af}
+.mini-stat .num{font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+.mini-stat .lbl{font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-top:4px}
+
+/* =======================================
    PROCESOS DINÁMICOS · play controller
    ======================================= */
 .dyn-controls{
@@ -2143,16 +2294,235 @@ footer{
   </div>
 </section>
 
-<!-- CIFRAS -->
+<!-- CIFRAS · DASHBOARDS VISUALES -->
 <section id="cifras">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">09 · Cifras</div>
-      <h2 class="section-title">El proyecto en números</h2>
-      <p class="section-desc">Lo que ya está construido, lo que falta y los costos reales de operación. Snapshot al 11 de mayo de 2026.</p>
+      <div class="section-eyebrow">09 · Cifras · dashboard visual</div>
+      <h2 class="section-title">El proyecto en gráficos</h2>
+      <p class="section-desc">Lo construido, lo que falta y los costos · con donut charts, barras animadas, heatmap de actividad y timeline. Snapshot al 11 de mayo de 2026.</p>
     </div>
 
-    <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Estado del producto</h3>
+    <!-- KPIs mini stats fila top -->
+    <div class="mini-stats" style="margin-bottom:24px">
+      <div class="mini-stat ok"><div class="num">14</div><div class="lbl">flujos verificados</div></div>
+      <div class="mini-stat"><div class="num">36</div><div class="lbl">plantillas activas</div></div>
+      <div class="mini-stat info"><div class="num">10</div><div class="lbl">usuarios cargados</div></div>
+      <div class="mini-stat gold"><div class="num">8</div><div class="lbl">roles RBAC</div></div>
+    </div>
+
+    <!-- Row 1: Donut Airtable + Barras Plantillas -->
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-title">Tablas Airtable · cobertura por fase</div>
+        <div class="dash-sub">8 tablas hoy (44%) · 10 planificadas (56%)</div>
+        <div class="donut-wrap">
+          <div class="donut">
+            <svg viewBox="0 0 100 100">
+              <circle class="ring-bg" cx="50" cy="50" r="40"/>
+              <circle class="ring" cx="50" cy="50" r="40" stroke="#8b2c4d" stroke-dasharray="111 251" stroke-dashoffset="0"/>
+            </svg>
+            <div class="donut-center"><div class="big">44%</div><div class="lbl">Fase 1 LIVE</div></div>
+          </div>
+          <div class="donut-legend">
+            <div class="donut-legend-item"><span class="sw" style="background:#8b2c4d"></span><span class="nm">Fase 1 · entregada</span><span class="vl">8</span></div>
+            <div class="donut-legend-item"><span class="sw" style="background:#c9a66b"></span><span class="nm">Fases 2-5 · plan</span><span class="vl">10</span></div>
+            <div class="donut-legend-item"><span class="sw" style="background:#e5e7eb"></span><span class="nm">Total roadmap</span><span class="vl">18</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-title">Plantillas por departamento</div>
+        <div class="dash-sub">36 plantillas · ~172 ítems · líderes concentran 50%</div>
+        <div class="bars">
+          <div class="bar-row"><span class="lbl">Líderes tienda</span><div class="bar-track"><div class="bar-fill" style="width:100%">18</div></div><span class="vl">50%</span></div>
+          <div class="bar-row"><span class="lbl">Inventario</span><div class="bar-track"><div class="bar-fill gold" style="width:22%">4</div></div><span class="vl">11%</span></div>
+          <div class="bar-row"><span class="lbl">Logística web</span><div class="bar-track"><div class="bar-fill gold" style="width:22%">4</div></div><span class="vl">11%</span></div>
+          <div class="bar-row"><span class="lbl">Gerencia</span><div class="bar-track"><div class="bar-fill info" style="width:11%">2</div></div><span class="vl">6%</span></div>
+          <div class="bar-row"><span class="lbl">Finanzas</span><div class="bar-track"><div class="bar-fill info" style="width:11%">2</div></div><span class="vl">6%</span></div>
+          <div class="bar-row"><span class="lbl">Marketing</span><div class="bar-track"><div class="bar-fill info" style="width:11%">2</div></div><span class="vl">6%</span></div>
+          <div class="bar-row"><span class="lbl">Comercial</span><div class="bar-track"><div class="bar-fill info" style="width:11%">2</div></div><span class="vl">6%</span></div>
+          <div class="bar-row"><span class="lbl">Administración</span><div class="bar-track"><div class="bar-fill info" style="width:11%">2</div></div><span class="vl">6%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Score breakdown radial + Timeline fases -->
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-title">Score auditoría SMC · 67/100 → 88 objetivo</div>
+        <div class="dash-sub">Breakdown por área · ver Reporte para fix</div>
+        <div class="scores-radial">
+          <div class="score-item">
+            <div class="score-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="40"/>
+                <circle class="fg" cx="50" cy="50" r="40" stroke="#1e40af" stroke-dasharray="176 251" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="num" style="color:#1e40af">14</div>
+            </div>
+            <div class="nm">Arquitectura</div>
+            <div class="sub">14/20 · sólido</div>
+          </div>
+          <div class="score-item">
+            <div class="score-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="40"/>
+                <circle class="fg" cx="50" cy="50" r="40" stroke="#dc2626" stroke-dasharray="100 251" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="num" style="color:#dc2626">8</div>
+            </div>
+            <div class="nm">Base datos</div>
+            <div class="sub">8/20 · crítico</div>
+          </div>
+          <div class="score-item">
+            <div class="score-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="40"/>
+                <circle class="fg" cx="50" cy="50" r="40" stroke="#1e40af" stroke-dasharray="176 251" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="num" style="color:#1e40af">14</div>
+            </div>
+            <div class="nm">Seguridad</div>
+            <div class="sub">14/20 · sólido</div>
+          </div>
+          <div class="score-item">
+            <div class="score-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="40"/>
+                <circle class="fg" cx="50" cy="50" r="40" stroke="#d97706" stroke-dasharray="150 251" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="num" style="color:#d97706">12</div>
+            </div>
+            <div class="nm">Funcionalidad</div>
+            <div class="sub">12/20 · mejorable</div>
+          </div>
+          <div class="score-item">
+            <div class="score-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="40"/>
+                <circle class="fg" cx="50" cy="50" r="40" stroke="#d97706" stroke-dasharray="117 251" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="num" style="color:#d97706">7</div>
+            </div>
+            <div class="nm">Documentación</div>
+            <div class="sub">7/15 · falta</div>
+          </div>
+          <div class="score-item">
+            <div class="score-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="40"/>
+                <circle class="fg" cx="50" cy="50" r="40" stroke="#d97706" stroke-dasharray="167 251" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="num" style="color:#d97706">10</div>
+            </div>
+            <div class="nm">UX</div>
+            <div class="sub">10/15 · mejorable</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-title">Timeline 6 fases · roadmap completo</div>
+        <div class="dash-sub">~14-18 semanas total · entrega independiente</div>
+        <div class="timeline">
+          <div class="tl-step done"><div class="tl-dot">✓</div><div class="tl-name">Fase 1</div><div class="tl-meta">LIVE</div></div>
+          <div class="tl-step active"><div class="tl-dot">2</div><div class="tl-name">Fase 2</div><div class="tl-meta">3-4 sem</div></div>
+          <div class="tl-step"><div class="tl-dot">3</div><div class="tl-name">Fase 3</div><div class="tl-meta">2-3 sem</div></div>
+          <div class="tl-step"><div class="tl-dot">4</div><div class="tl-name">Fase 4</div><div class="tl-meta">2 sem</div></div>
+          <div class="tl-step"><div class="tl-dot">5</div><div class="tl-name">Fase 5</div><div class="tl-meta">2-3 sem</div></div>
+          <div class="tl-step"><div class="tl-dot">6</div><div class="tl-name">Fase 6</div><div class="tl-meta">2 sem</div></div>
+        </div>
+        <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)">
+          <div style="font-size:11px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:10px">Tokens estimados Claude · ~4M total</div>
+          <div class="bars">
+            <div class="bar-row"><span class="lbl">F1 · MVP</span><div class="bar-track"><div class="bar-fill success" style="width:35%">~1.4M</div></div><span class="vl">35%</span></div>
+            <div class="bar-row"><span class="lbl">F2 · Finanzas</span><div class="bar-track"><div class="bar-fill warn" style="width:22%">~900K</div></div><span class="vl">22%</span></div>
+            <div class="bar-row"><span class="lbl">F3 · Inventario</span><div class="bar-track"><div class="bar-fill" style="width:15%">~600K</div></div><span class="vl">15%</span></div>
+            <div class="bar-row"><span class="lbl">F4-F6</span><div class="bar-track"><div class="bar-fill" style="width:28%">~1.1M</div></div><span class="vl">28%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Heatmap + Endpoints status + Sparkline costo -->
+    <div class="dash-grid three">
+      <div class="dash-card">
+        <div class="dash-title">Heatmap actividad · 30 días simulados</div>
+        <div class="dash-sub">Cumplimiento checklists día por día · target ≥90%</div>
+        <div class="heatmap">
+          <div class="cell l3"></div><div class="cell l4"></div><div class="cell l4"></div><div class="cell l5"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l2"></div>
+          <div class="cell l4"></div><div class="cell l5"></div><div class="cell l5"></div><div class="cell l4"></div><div class="cell l5"></div><div class="cell l4"></div><div class="cell l3"></div>
+          <div class="cell l5"></div><div class="cell l4"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l5"></div><div class="cell l4"></div>
+          <div class="cell l4"></div><div class="cell l5"></div><div class="cell l5"></div><div class="cell l5"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l4"></div>
+          <div class="cell l5"></div><div class="cell l5"></div>
+        </div>
+        <div class="heatmap-legend">
+          <span>menos</span><span class="sc"><span style="background:#f1f5f9"></span><span style="background:#f5e6ec"></span><span style="background:#e4a4bc"></span><span style="background:#b85580"></span><span style="background:#8b2c4d"></span><span style="background:#5e1a33"></span></span><span>más</span>
+        </div>
+      </div>
+
+      <div class="dash-card dark">
+        <div class="dash-title">Endpoints API · 10 rutas LIVE</div>
+        <div class="dash-sub">Todos verdes · uptime simulado 99.9%</div>
+        <div class="status-grid" style="margin-top:8px">
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>auth</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>responder</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>completar</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>revisar</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>evidencia</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>tareas</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>comentarios</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>emprendedores</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>usuarios</div>
+          <div class="status-item" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#f7efdf"><span class="dot"></span>cron</div>
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-family:'JetBrains Mono',monospace;font-size:11px;color:#c9a66b">
+          ● 10/10 OK · p95 280ms · cron 07:00 CL
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-title">Costo infra · proyección 12 meses</div>
+        <div class="dash-sub">Crece según fases · $0 hoy → $121/mes prod</div>
+        <svg class="spark" viewBox="0 0 300 80" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="sparkgrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8b2c4d" stop-opacity=".4"/>
+              <stop offset="100%" stop-color="#8b2c4d" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="area" d="M 0 78 L 0 72 L 30 70 L 60 64 L 90 55 L 120 40 L 150 32 L 180 28 L 210 26 L 240 22 L 270 18 L 300 18 L 300 78 Z"/>
+          <path class="line" d="M 0 72 L 30 70 L 60 64 L 90 55 L 120 40 L 150 32 L 180 28 L 210 26 L 240 22 L 270 18 L 300 18"/>
+          <circle class="dot" cx="0" cy="72" r="3"/>
+          <circle class="dot" cx="90" cy="55" r="3"/>
+          <circle class="dot" cx="150" cy="32" r="3"/>
+          <circle class="dot" cx="300" cy="18" r="4"/>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-top:6px">
+          <span>Mes 0<br>$0</span>
+          <span style="text-align:center">Mes 3<br>~$30</span>
+          <span style="text-align:center">Mes 6<br>~$80</span>
+          <span style="text-align:right">Mes 12<br>$121</span>
+        </div>
+        <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+          <div style="background:#f5e6ec;border-radius:8px;padding:10px 12px"><div style="font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.05em;font-weight:700">Vercel Pro</div><div style="font-size:16px;font-weight:800;color:var(--primary);margin-top:2px">$20</div><div style="font-size:10px;color:var(--ink-mute)">USD/mes recomendado</div></div>
+          <div style="background:#fef3c7;border-radius:8px;padding:10px 12px"><div style="font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.05em;font-weight:700">Airtable Team</div><div style="font-size:16px;font-weight:800;color:#d97706;margin-top:2px">$100</div><div style="font-size:10px;color:var(--ink-mute);">obligatorio mes 1</div></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin:32px 0 14px">Operación cliente · realidad BC</h3>
+    <div class="cifras-grid" style="margin-bottom:24px">
+      <div class="cifra"><div class="cifra-num">8</div><div class="cifra-label">Departamentos</div><div class="cifra-sub">GER · FIN · MKT · COM · ADM · INV · LID · LOG</div></div>
+      <div class="cifra"><div class="cifra-num">2</div><div class="cifra-label">Sucursales</div><div class="cifra-sub">Quilpué · San Antonio</div></div>
+      <div class="cifra"><div class="cifra-num">19</div><div class="cifra-label">Trabajadores</div><div class="cifra-sub">10 con acceso al sistema</div></div>
+      <div class="cifra"><div class="cifra-num">8</div><div class="cifra-label">Roles RBAC</div><div class="cifra-sub">Dueña · Gerente · Socio · 4 más</div></div>
+    </div>
+
+    <div style="display:none" aria-hidden="true">
+    <h3>Estado del producto · LEGACY (oculto · ahora en dashboards arriba)</h3>
     <div class="cifras-grid" style="margin-bottom:36px">
       <div class="cifra"><div class="cifra-num">12</div><div class="cifra-label">Páginas en producción</div><div class="cifra-sub">Login · Mi Día · Dashboard · 9 más</div></div>
       <div class="cifra"><div class="cifra-num">10</div><div class="cifra-label">Endpoints API REST</div><div class="cifra-sub">/api/v1/checklists, tareas, usuarios...</div></div>
@@ -2191,11 +2561,7 @@ footer{
       <div class="cifra"><div class="cifra-num">~4M</div><div class="cifra-label">Tokens Claude estimados</div><div class="cifra-sub">Total proyecto end-to-end</div></div>
       <div class="cifra"><div class="cifra-num">30</div><div class="cifra-label">Días soporte post-entrega</div><div class="cifra-sub">Fix bugs + ajustes incluidos</div></div>
     </div>
-
-    <div class="callout success" style="margin-top:40px">
-      <div class="callout-title">✓ Pasos inmediatos para ir a producción real</div>
-      <p><strong>1.</strong> Lista definitiva de correos por persona (María José). <strong>2.</strong> Activar Google Workspace o usar correos personales. <strong>3.</strong> Acceso al DNS de benditocapricho.cl → agregar CNAME `app` → `cname.vercel-dns.com`. <strong>4.</strong> Upgrade Airtable Free → Team antes de superar 1.000 registros. <strong>5.</strong> Capacitación 1h al equipo. Tras esto, Fase 1 corre en operación normal y arranca Fase 2.</p>
-    </div>
+    </div><!-- end legacy hidden -->
   </div>
 </section>
 
