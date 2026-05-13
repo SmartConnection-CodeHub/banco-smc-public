@@ -3236,7 +3236,7 @@ section.hidden-section{display:none !important}
     <div class="section-header">
       <div class="section-eyebrow">08 · Evaluación Técnica Definitiva</div>
       <h2 class="section-title">Score 49/100 · 5 Agentes SMC OS · Mayo 2026</h2>
-      <p class="section-desc">Análisis exhaustivo por Claus (Arquitectura), Aníbal (Backend/Seguridad), Francis (Frontend), Victor (DevOps) y Cami (QA). Evaluados con 4,200+ líneas de documentación técnica de Fase 1.</p>
+      <p class="section-desc">Análisis exhaustivo por 5 evaluadores independientes: Arquitectura, Backend/Seguridad, Frontend, DevOps y QA. Evaluados con 4,200+ líneas de documentación técnica de Fase 1.</p>
     </div>
 
     <!-- Hero métricas -->
@@ -3268,17 +3268,17 @@ section.hidden-section{display:none !important}
       </div>
       <div class="grid-3" style="margin-top:24px">
         <div class="card danger-card">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">Victor (DevOps) · Hallazgo #1</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">DevOps · Hallazgo #1</div>
           <div style="font-size:26px;font-weight:800;color:#b91c1c;margin-bottom:8px">4–7 días</div>
           <p>Airtable Free colapsa en 4–7 días de uso real. El cálculo correcto: <strong>742 registros disponibles ÷ 182/día = 4.1 días promedio.</strong> No 3 semanas como se estimó antes.</p>
         </div>
         <div class="card danger-card">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">Aníbal (Backend) · Hallazgo #2</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">Backend · Hallazgo #2</div>
           <div style="font-size:26px;font-weight:800;color:#b91c1c;margin-bottom:8px">IDOR Confirmado</div>
           <p>Los permisos RBAC están implementados <strong>solo en la UI</strong>, no en las API routes. Cualquier usuario autenticado accede a datos de otros departamentos vía API directa. El roadmap de Créalo lo confirma como "P1 pendiente".</p>
         </div>
         <div class="card danger-card">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">Claus (Arquitectura) · Hallazgo #3</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">Arquitectura · Hallazgo #3</div>
           <div style="font-size:26px;font-weight:800;color:#b91c1c;margin-bottom:8px">Mes 7–10</div>
           <p>La tabla <code>Respuestas_Checklist</code> alcanza 240,000+ registros en 12 meses, superando el límite Airtable Team (125K). <strong>Colapso arquitectónico proyectado mes 7–10</strong> sin migración planificada.</p>
         </div>
@@ -3325,39 +3325,34 @@ section.hidden-section{display:none !important}
           <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 1 · Arquitectura</div>
           <div class="agent-score-big" style="color:var(--warn)">69</div>
           <div class="agent-grade badge-warn">C+</div>
-          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Claus</div>
           <p style="font-size:12px;margin-top:4px">ADRs, escalabilidad, deuda técnica estructural, colapso proyectado DB</p>
           <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 25%</div>
         </div>
         <div class="agent-card danger-agent">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 2 · Backend</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Evaluador 2 · Backend</div>
           <div class="agent-score-big" style="color:#b91c1c">44</div>
           <div class="agent-grade badge-s1">D+</div>
-          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Aníbal</div>
           <p style="font-size:12px;margin-top:4px">OWASP, autenticación, API routes, lógica de negocio, seguridad</p>
           <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 25%</div>
         </div>
         <div class="agent-card danger-agent">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 3 · Frontend</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Evaluador 3 · Frontend</div>
           <div class="agent-score-big" style="color:#b91c1c">48</div>
           <div class="agent-grade badge-s1">D+</div>
-          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Francis</div>
           <p style="font-size:12px;margin-top:4px">Core Web Vitals, React patterns, UX, PWA, accesibilidad, error states</p>
           <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 20%</div>
         </div>
         <div class="agent-card danger-agent">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 4 · DevOps</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Evaluador 4 · DevOps</div>
           <div class="agent-score-big" style="color:#b91c1c">32</div>
           <div class="agent-grade badge-s1">F</div>
-          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Victor</div>
           <p style="font-size:12px;margin-top:4px">CI/CD, observabilidad, infra, runbooks, planes de contingencia</p>
           <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 15%</div>
         </div>
         <div class="agent-card danger-agent">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 5 · QA</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Evaluador 5 · QA</div>
           <div class="agent-score-big" style="color:#b91c1c">43</div>
           <div class="agent-grade badge-s1">F+</div>
-          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Cami</div>
           <p style="font-size:12px;margin-top:4px">Defect classification, cobertura testing, edge cases, flujos críticos</p>
           <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 15%</div>
         </div>
@@ -3392,13 +3387,13 @@ section.hidden-section{display:none !important}
         </div>
         <div class="dash-card" style="text-align:center">
           <div class="dash-title">Score radial por dimensión</div>
-          <div class="dash-sub">5 agentes independientes</div>
+          <div class="dash-sub">5 evaluadores independientes</div>
           <div class="scores-radial" style="margin-top:12px;grid-template-columns:repeat(5,1fr)">
-            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#d97706" stroke-dasharray="173 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#d97706">69</div></div><div class="nm">Claus</div><div class="sub">Arq.</div></div>
-            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="121 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">48</div></div><div class="nm">Francis</div><div class="sub">Front.</div></div>
-            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="110 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">44</div></div><div class="nm">Aníbal</div><div class="sub">Back.</div></div>
-            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="108 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">43</div></div><div class="nm">Cami</div><div class="sub">QA</div></div>
-            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="80 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">32</div></div><div class="nm">Victor</div><div class="sub">DevOps</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#d97706" stroke-dasharray="173 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#d97706">69</div></div><div class="nm">Arquitectura</div><div class="sub">Arq.</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="121 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">48</div></div><div class="nm">Frontend</div><div class="sub">Front.</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="110 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">44</div></div><div class="nm">Backend</div><div class="sub">Back.</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="108 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">43</div></div><div class="nm">QA</div><div class="sub">QA</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="80 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">32</div></div><div class="nm">DevOps</div><div class="sub">DevOps</div></div>
           </div>
           <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
             <div style="font-size:11px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-family:'JetBrains Mono',monospace;margin-bottom:8px">Score Final Ponderado</div>
@@ -3408,11 +3403,11 @@ section.hidden-section{display:none !important}
         </div>
       </div>
       <div class="mathbox">
-<span class="cdim">Claus  (Arquitectura) </span><span class="cop"> 69 × 0.25 = </span><span class="cnum">17.25</span>
-<span class="cdim">Aníbal (Backend/Seg.) </span><span class="cop"> 44 × 0.25 = </span><span class="cnum">11.00</span>
-<span class="cdim">Francis(Frontend)     </span><span class="cop"> 48 × 0.20 = </span><span class="cnum"> 9.60</span>
-<span class="cdim">Victor (DevOps)       </span><span class="cop"> 32 × 0.15 = </span><span class="cnum"> 4.80</span>
-<span class="cdim">Cami   (QA)           </span><span class="cop"> 43 × 0.15 = </span><span class="cnum"> 6.45</span>
+<span class="cdim">Arquitectura          </span><span class="cop"> 69 × 0.25 = </span><span class="cnum">17.25</span>
+<span class="cdim">Backend/Seg.          </span><span class="cop"> 44 × 0.25 = </span><span class="cnum">11.00</span>
+<span class="cdim">Frontend              </span><span class="cop"> 48 × 0.20 = </span><span class="cnum"> 9.60</span>
+<span class="cdim">DevOps                </span><span class="cop"> 32 × 0.15 = </span><span class="cnum"> 4.80</span>
+<span class="cdim">QA                    </span><span class="cop"> 43 × 0.15 = </span><span class="cnum"> 6.45</span>
 <span class="cop">────────────────────────────────────────────</span>
 <span class="cdim">TOTAL PONDERADO       </span><span class="cop">            = </span><span class="ctot">49.10 / 100</span>
       </div>
@@ -3422,14 +3417,14 @@ section.hidden-section{display:none !important}
     <div id="et-dimensiones" class="et-tab-content">
       <div class="section-header" style="margin-bottom:24px">
         <div class="section-eyebrow">04 · Dimensiones</div>
-        <h2 class="section-title" style="font-size:24px">Hallazgos por Agente</h2>
+        <h2 class="section-title" style="font-size:24px">Hallazgos por Dimensión</h2>
       </div>
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('et-dim','claus',this)">🏗️ Claus 69</button>
-        <button class="tab-btn" onclick="switchTab('et-dim','anibal',this)">🔒 Aníbal 44</button>
-        <button class="tab-btn" onclick="switchTab('et-dim','francis',this)">🖥️ Francis 48</button>
-        <button class="tab-btn" onclick="switchTab('et-dim','victor',this)">⚙️ Victor 32</button>
-        <button class="tab-btn" onclick="switchTab('et-dim','cami',this)">🧪 Cami 43</button>
+        <button class="tab-btn active" onclick="switchTab('et-dim','claus',this)">🏗️ Arquitectura 69</button>
+        <button class="tab-btn" onclick="switchTab('et-dim','anibal',this)">🔒 Backend 44</button>
+        <button class="tab-btn" onclick="switchTab('et-dim','francis',this)">🖥️ Frontend 48</button>
+        <button class="tab-btn" onclick="switchTab('et-dim','victor',this)">⚙️ DevOps 32</button>
+        <button class="tab-btn" onclick="switchTab('et-dim','cami',this)">🧪 QA 43</button>
       </div>
       <div id="et-dim-claus" class="tab-content active">
         <div class="grid-3">
@@ -3596,7 +3591,7 @@ section.hidden-section{display:none !important}
       <div class="dash-grid" style="margin-top:20px">
         <div class="dash-card">
           <div class="dash-title">Estado defectos por severidad</div>
-          <div class="dash-sub">29 defectos totales identificados por Cami</div>
+          <div class="dash-sub">29 defectos totales identificados</div>
           <div class="bars" style="margin-top:14px">
             <div class="bar-row"><span class="lbl">S1 Críticos</span><div class="bar-track"><div class="bar-fill danger" style="width:100%">8</div></div><span class="vl"><span class="badge badge-s1">S1</span></span></div>
             <div class="bar-row"><span class="lbl">S2 Altos</span><div class="bar-track"><div class="bar-fill warn" style="width:100%">10</div></div><span class="vl"><span class="badge badge-s2">S2</span></span></div>
@@ -3856,9 +3851,11 @@ function playFlow(btn){
 const REPO_URL = "https://github.com/SmartConnection-CodeHub/banco-smc-public";
 const REPO_COMPARE = REPO_URL + "/compare";
 const VERSIONS = [
-  { tag:"v10", author:"s", name:"Sebastián", date:"2026-05-12 13:00", current:true, sha:"HEAD",
+  { tag:"v11", author:"s", name:"Sebastián", date:"2026-05-12 14:00", current:true, sha:"HEAD",
+    msg:"Evaluación Técnica sin nombres de agentes · solo roles/dimensiones" },
+  { tag:"v10", author:"s", name:"Sebastián", date:"2026-05-12 13:00", sha:"HEAD~1",
     msg:"Mobile drawer tipo Principal · hamburger + overlay + cierre al navegar" },
-  { tag:"v9", author:"s", name:"Sebastián", date:"2026-05-12 12:00", sha:"HEAD~1",
+  { tag:"v9", author:"s", name:"Sebastián", date:"2026-05-12 12:00", sha:"HEAD~2",
     msg:"Evaluación Técnica Definitiva integrada · 8 secciones con tabs en menú Técnico" },
   { tag:"v8", author:"s", name:"Sebastián", date:"2026-05-12 10:00", sha:"HEAD~2",
     msg:"Layout Principal · sidebar accordion + secciones independientes" },
