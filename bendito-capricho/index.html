@@ -3277,7 +3277,9 @@ function playFlow(btn){
 const REPO_URL = "https://github.com/SmartConnection-CodeHub/banco-smc-public";
 const REPO_COMPARE = REPO_URL + "/compare";
 const VERSIONS = [
-  { tag:"v7", author:"g", name:"Guillermo", date:"2026-05-11 20:35", current:true, sha:"HEAD",
+  { tag:"v8", author:"s", name:"Sebastián", date:"2026-05-12 10:00", current:true, sha:"HEAD",
+    msg:"Layout Principal · sidebar accordion + secciones independientes" },
+  { tag:"v7", author:"g", name:"Guillermo", date:"2026-05-11 20:35", sha:"d05d488",
     msg:"Proceso homologado a estilo Aprobación + sidebar versiones" },
   { tag:"v6", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 20:25", sha:"5709336",
     msg:"Procesos compactos dinámicos + Matriz navegable" },
@@ -3290,9 +3292,7 @@ const VERSIONS = [
   { tag:"v2", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 20:05", sha:"5a18ff0",
     msg:"Procesos reales Fase 1 según PDF · sin invenciones" },
   { tag:"v1", author:"c", name:"Claude (Cerebro)", date:"2026-05-11 19:46", sha:"e6834c4",
-    msg:"Maqueta inicial · arquitectura + RFP para review Sebas" },
-  { tag:"·", author:"s", name:"Sebastián (pendiente)", date:"esperando review", sha:null, pending:true,
-    msg:"Aún no ha clonado el repo · espacio reservado para sus aportes vía PR" }
+    msg:"Maqueta inicial · arquitectura + RFP para review Sebas" }
 ];
 
 function renderVersions(filter='all'){
