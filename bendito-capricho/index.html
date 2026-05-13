@@ -49,13 +49,13 @@ code,.mono{font-family:'JetBrains Mono',monospace;font-size:.875em}
 
 /* HEADER */
 header{
-  background:rgba(255,255,255,0.92);
+  background:rgba(255,255,255,0.95);
   border-bottom:1px solid var(--border);
-  padding:18px 0;
-  position:sticky;top:0;z-index:100;
+  height:64px;
+  position:fixed;top:0;left:0;right:0;z-index:200;
   backdrop-filter:blur(12px);
 }
-.header-grid{display:flex;justify-content:space-between;align-items:center;gap:24px}
+.header-grid{display:flex;justify-content:space-between;align-items:center;height:100%;padding:0 24px}
 .brand{display:flex;align-items:center;gap:12px;font-weight:700;color:var(--primary);font-size:16px;letter-spacing:-.01em}
 .brand-mark{
   width:36px;height:36px;border-radius:10px;
@@ -64,16 +64,56 @@ header{
   box-shadow:0 4px 12px rgba(139,44,77,0.25);
 }
 .brand-sub{font-size:11px;color:var(--ink-mute);font-weight:500;display:block;letter-spacing:.04em;text-transform:uppercase}
-nav.toc{display:none;gap:2px;flex-wrap:wrap}
-@media(min-width:1024px){nav.toc{display:flex}}
-nav.toc a{
-  text-decoration:none;color:var(--ink-soft);
-  font-size:12.5px;font-weight:500;
-  padding:6px 10px;border-radius:6px;transition:all .15s;
+.header-actions{display:flex;align-items:center;gap:16px}
+.header-link{font-size:13px;font-weight:500;color:var(--primary);text-decoration:none;padding:7px 16px;border:1.5px solid var(--primary);border-radius:8px;transition:all .15s}
+.header-link:hover{background:var(--primary);color:white}
+/* SIDEBAR */
+.sidebar{
+  position:fixed;left:0;top:64px;
+  width:220px;height:calc(100vh - 64px);
+  padding:16px 0 24px;
+  background:#fff;
+  border-right:1px solid var(--border);
+  overflow:hidden;
+  z-index:100;
 }
-nav.toc a:hover{color:var(--primary);background:var(--primary-soft)}
-.menu-btn{display:flex;background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px;color:var(--ink-soft)}
-@media(min-width:1024px){.menu-btn{display:none}}
+.sidebar-group{margin-bottom:2px}
+.sidebar-label{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13.5px;font-weight:600;color:var(--ink);
+  padding:10px 20px;cursor:pointer;user-select:none;
+  transition:color .15s;
+}
+.sidebar-label:hover{color:var(--primary)}
+.sidebar-label .chevron{
+  font-size:12px;color:var(--ink-mute);
+  transition:transform .22s ease;display:inline-block;
+}
+.sidebar-group.open .chevron{transform:rotate(90deg)}
+.sidebar-group-items{
+  overflow:hidden;max-height:0;
+  transition:max-height .25s ease;
+}
+.sidebar-group.open .sidebar-group-items{max-height:240px}
+.sidebar-item{
+  display:block;padding:8px 20px 8px 28px;
+  font-size:13.5px;font-weight:500;
+  color:var(--ink-soft);text-decoration:none;
+  border-left:3px solid transparent;transition:all .15s;
+  cursor:pointer;
+}
+.sidebar-item:hover{color:var(--primary);background:var(--primary-soft)}
+.sidebar-item.active{color:var(--primary);background:var(--primary-soft);border-left-color:var(--primary);font-weight:600}
+.sidebar-divider{height:1px;background:var(--border);margin:4px 0}
+/* LAYOUT PRINCIPAL */
+main.main-content{margin-left:220px;padding-top:64px;min-height:calc(100vh - 64px)}
+/* SECCIONES — solo la activa visible */
+.content-section{display:none}
+.content-section.active{display:block}
+/* legado — ocultar */
+nav.toc{display:none}
+.menu-btn{display:none}
+.toc-divider{display:none}
 
 /* HERO · más minimalista */
 .hero{
@@ -422,6 +462,7 @@ tr:hover td:first-child{background:#fafbfc}
 footer{
   background:linear-gradient(180deg,#fff,#fafafa);
   padding:48px 0 32px;border-top:1px solid var(--border);margin-top:0;
+  margin-left:220px;
 }
 .footer-grid{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px}
 .footer-meta{font-size:13px;color:var(--ink-mute);line-height:1.7}
@@ -996,7 +1037,7 @@ footer{
 .toc-block:hover{background:var(--primary) !important;color:#fff !important}
 .toc-sub{font-size:11.5px !important;color:var(--ink-mute) !important;padding:6px 6px !important}
 .toc-sub:hover{color:var(--primary) !important;background:transparent !important}
-.toc-divider{display:inline-block;width:1px;height:14px;background:var(--border-strong);margin:0 4px;vertical-align:middle}
+.toc-divider{display:block;width:100%;height:1px;background:var(--border-strong);margin:6px 0}
 
 .block-divider{
   padding:120px 0 32px;text-align:center;
@@ -1247,7 +1288,7 @@ section.hidden-section{display:none !important}
 
 <!-- HEADER -->
 <header>
-  <div class="container header-grid">
+  <div class="header-grid">
     <div class="brand">
       <div class="brand-mark">BC</div>
       <div>
@@ -1255,27 +1296,57 @@ section.hidden-section{display:none !important}
         <span class="brand-sub">Plataforma de supervisión · Créalo SpA</span>
       </div>
     </div>
-    <nav class="toc">
-      <a href="#bloque-funcional" class="toc-block">Funcional</a>
-      <a href="#vision" class="toc-sub">· Visión</a>
-      <a href="#procesos" class="toc-sub">· Proceso</a>
-      <a href="#approval" class="toc-sub">· Aprobación</a>
-      <a href="#mapa" class="toc-sub">· Matriz</a>
-      <a href="#rfp" class="toc-sub">· RFP</a>
-      <span class="toc-divider"></span>
-      <a href="#bloque-tecnico" class="toc-block">Técnico</a>
-      <a href="#arquitectura" class="toc-sub">· Arq</a>
-      <a href="#reporte" class="toc-sub">· Assessment</a>
-      <span class="toc-divider"></span>
-      <a href="#bloque-cierre" class="toc-block">Cierre</a>
-      <a href="#opp" class="toc-sub">· Opp</a>
-      <a href="#cifras" class="toc-sub">· Cifras</a>
-    </nav>
-    <button class="menu-btn" onclick="toggleMenu()">☰ Menú</button>
+    <div class="header-actions">
+      <a href="https://app-alpha-beige-15.vercel.app" class="header-link" target="_blank">Abrir plataforma →</a>
+    </div>
   </div>
 </header>
 
-<!-- HERO -->
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-group">
+    <a class="sidebar-item active" data-section="home" onclick="showSection('home')" style="padding-left:20px;border-left:3px solid transparent">Inicio</a>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-group" id="group-funcional">
+    <div class="sidebar-label" onclick="toggleGroup('group-funcional')">
+      Funcional <span class="chevron">›</span>
+    </div>
+    <div class="sidebar-group-items">
+      <a class="sidebar-item" data-section="vision" onclick="showSection('vision')">Visión</a>
+      <a class="sidebar-item" data-section="procesos" onclick="showSection('procesos')">Proceso</a>
+      <a class="sidebar-item" data-section="approval" onclick="showSection('approval')">Aprobación</a>
+      <a class="sidebar-item" data-section="mapa" onclick="showSection('mapa')">Matriz de roles</a>
+      <a class="sidebar-item" data-section="rfp" onclick="showSection('rfp')">RFP / Propuesta</a>
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-group" id="group-tecnico">
+    <div class="sidebar-label" onclick="toggleGroup('group-tecnico')">
+      Técnico <span class="chevron">›</span>
+    </div>
+    <div class="sidebar-group-items">
+      <a class="sidebar-item" data-section="arquitectura" onclick="showSection('arquitectura')">Arquitectura</a>
+      <a class="sidebar-item" data-section="reporte" onclick="showSection('reporte')">Assessment</a>
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-group" id="group-cierre">
+    <div class="sidebar-label" onclick="toggleGroup('group-cierre')">
+      Cierre <span class="chevron">›</span>
+    </div>
+    <div class="sidebar-group-items">
+      <a class="sidebar-item" data-section="opp" onclick="showSection('opp')">Oportunidad</a>
+      <a class="sidebar-item" data-section="cifras" onclick="showSection('cifras')">Cifras</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main-content">
+
+<!-- INICIO / HERO -->
+<div id="home" class="content-section active">
 <div class="hero">
   <div class="container">
     <span class="hero-eyebrow">Fase 1 · Mayo 2026</span>
@@ -1286,9 +1357,10 @@ section.hidden-section{display:none !important}
     </div>
   </div>
 </div>
+</div>
 
 <!-- ============ BLOQUE 1 · MIRADA FUNCIONAL ============ -->
-<div id="bloque-funcional" class="block-divider">
+<div id="bloque-funcional" class="block-divider" style="display:none">
   <div class="container">
     <div class="block-divider-num">Bloque 01 · Mirada Funcional</div>
     <h2 class="block-divider-title">Qué hace el sistema <em>en lenguaje de negocio</em></h2>
@@ -1303,7 +1375,7 @@ section.hidden-section{display:none !important}
 </div>
 
 <!-- VISIÓN -->
-<section id="vision">
+<section id="vision" class="content-section">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">01 · Visión</div>
@@ -1332,7 +1404,7 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- PROCESOS -->
-<section id="procesos" class="alt">
+<section id="procesos" class="alt content-section">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">02 · Proceso</div>
@@ -1461,7 +1533,7 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- ============ BLOQUE 2 · MIRADA TÉCNICA ============ -->
-<div id="bloque-tecnico" class="block-divider">
+<div id="bloque-tecnico" class="block-divider" style="display:none">
   <div class="container">
     <div class="block-divider-num">Bloque 02 · Mirada Técnica</div>
     <h2 class="block-divider-title">Cómo está <em>construido</em> el sistema</h2>
@@ -1474,10 +1546,10 @@ section.hidden-section{display:none !important}
 </div>
 
 <!-- ARQUITECTURA -->
-<section id="arquitectura">
+<section id="arquitectura" class="content-section">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">03 · Arquitectura técnica</div>
+      <div class="section-eyebrow">06 · Arquitectura técnica</div>
       <h2 class="section-title">Next.js 16 + Airtable + Vercel · stack en producción</h2>
       <p class="section-desc">Stack elegido para escala real del cliente: 19 usuarios, no 19.000. La dueña puede editar datos sin developer (Airtable como UI admin), deploy automático con cada commit, PWA instalable en celular sin App Store, cron nativo en Vercel.</p>
     </div>
@@ -1765,10 +1837,10 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- MAPA INT - MODULOS x ROLES -->
-<section id="mapa">
+<section id="mapa" class="content-section">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">· Matriz</div>
+      <div class="section-eyebrow">04 · Matriz de roles</div>
       <h2 class="section-title">Matriz · quién hace qué en cada módulo</h2>
       <p class="section-desc">Navegable con cajitas · sin scroll vertical. Cambia entre permisos, departamentos, usuarios y fases tocando las pestañas. 8 roles · 10 módulos · scope automático por departamento o tienda.</p>
     </div>
@@ -1991,7 +2063,7 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- OPP - Pipeline Captación -->
-<div id="bloque-cierre" class="block-divider">
+<div id="bloque-cierre" class="block-divider" style="display:none">
   <div class="container">
     <div class="block-divider-num">Bloque 03 · Cierre y Números</div>
     <h2 class="block-divider-title">Las <em>oportunidades</em> y los números</h2>
@@ -2003,10 +2075,10 @@ section.hidden-section{display:none !important}
   </div>
 </div>
 
-<section id="opp" class="alt">
+<section id="opp" class="alt content-section">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">06 · Oportunidades</div>
+      <div class="section-eyebrow">08 · Oportunidades</div>
       <h2 class="section-title">Pipeline de captación de emprendedores — Kanban 7 etapas</h2>
       <p class="section-desc">El modelo de subarriendo de stands es el motor de ingresos de BC. Cada nuevo emprendedor activo = revenue mensual recurrente + comisión sobre ventas. Dani lidera, pero hoy todo vive en DMs sueltos. La app convierte el flujo en pipeline Kanban con SLA por etapa.</p>
     </div>
@@ -2064,10 +2136,10 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- APPROVAL - Flujos de aprobación -->
-<section id="approval">
+<section id="approval" class="content-section">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">07 · Flujos de aprobación</div>
+      <div class="section-eyebrow">03 · Flujos de aprobación</div>
       <h2 class="section-title">Quién aprueba qué, en qué orden, con qué evidencia</h2>
       <p class="section-desc">Tres procesos donde hay dinero o decisión irreversible: cierre de caja diario (descuadre puede ser robo), pago a emprendedores (movimiento mensual de varios millones de pesos consolidado) y gastos no presupuestados (control de cash flow por departamento).</p>
     </div>
@@ -2288,7 +2360,7 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- CIFRAS · MINIMALISTA · menos es más -->
-<section id="cifras">
+<section id="cifras" class="content-section">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">09 · Cifras</div>
@@ -2402,10 +2474,10 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- ============== RFP · DOCUMENTO BUSINESS ============== -->
-<section id="rfp" class="alt">
+<section id="rfp" class="alt content-section">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow">10 · RFP · Documento business</div>
+      <div class="section-eyebrow">05 · RFP · Documento business</div>
       <h2 class="section-title">Request for Proposal · Bendito Capricho × Créalo SpA</h2>
       <p class="section-desc">Contexto · problema · hipótesis · KPIs · riesgos · roadmap. Formato heredado del RFP InfoPet del banco SMC.</p>
     </div>
@@ -2609,10 +2681,10 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- ============== REPORTE · ASSESSMENT SMC ============== -->
-<section id="reporte" class="alt">
+<section id="reporte" class="alt content-section">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow" style="color:#1d4ed8">11 · Reporte · evaluación técnica SMC</div>
+      <div class="section-eyebrow" style="color:#1d4ed8">07 · Reporte · evaluación técnica SMC</div>
       <h2 class="section-title">Assessment de la Entrega Fase 1 · Créalo SpA</h2>
       <p class="section-desc">Evaluación independiente del código, infraestructura y entregables. Score actual <strong style="color:#d97706">67/100 (C+)</strong> · con 2 semanas de correcciones llega a <strong style="color:#15803d">88/100 (B+)</strong> · inversión adicional ~$45 USD/mes.</p>
     </div>
@@ -3012,6 +3084,8 @@ section.hidden-section{display:none !important}
 </section>
 
 <!-- FOOTER -->
+</main><!-- /main-content -->
+
 <footer>
   <div class="container footer-grid">
     <div class="footer-meta">
@@ -3064,6 +3138,36 @@ section.hidden-section{display:none !important}
 <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
 
 <script>
+// ── NAVEGACIÓN POR SECCIONES ──────────────────────────────────
+function showSection(id){
+  document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
+  const target=document.getElementById(id);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(a=>a.classList.remove('active'));
+  const link=document.querySelector(`.sidebar-item[data-section="${id}"]`);
+  if(link) link.classList.add('active');
+  // Abrir el grupo padre y cerrar los demás
+  const groups=['group-funcional','group-tecnico','group-cierre'];
+  groups.forEach(gid=>{
+    const g=document.getElementById(gid);
+    if(!g) return;
+    const hasActive=g.querySelector(`.sidebar-item[data-section="${id}"]`);
+    g.classList.toggle('open', !!hasActive);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleGroup(id){
+  const groups=['group-funcional','group-tecnico','group-cierre'];
+  groups.forEach(gid=>{
+    const g=document.getElementById(gid);
+    if(!g) return;
+    if(gid===id) g.classList.toggle('open');
+    else g.classList.remove('open');
+  });
+}
+// Mostrar Inicio por defecto al cargar
+document.addEventListener('DOMContentLoaded',()=>{ showSection('home'); });
+
 function showTab(id){
   const btn=event.currentTarget;
   const tabs=btn.parentElement;
@@ -3256,8 +3360,9 @@ function showScene(ev,id){
   if(target) target.classList.add('on');
 }
 
-// ============= REORDER DOM · 3 BLOQUES (síntesis minimalista) =============
-(function reorderToBlocks(){
+// ============= REORDER DOM · desactivado (nuevo layout por secciones) =============
+(function reorderToBlocks(){ return; // desactivado — secciones manejadas por showSection()
+
   const get = id => document.getElementById(id);
   const visionSec = get('vision');
   const procesosSec = get('procesos');
