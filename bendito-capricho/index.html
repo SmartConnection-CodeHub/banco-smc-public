@@ -95,6 +95,7 @@ header{
   transition:max-height .25s ease;
 }
 .sidebar-group.open .sidebar-group-items{max-height:240px}
+#group-tecnico.open .sidebar-group-items{max-height:320px}
 .sidebar-item{
   display:block;padding:8px 20px 8px 28px;
   font-size:13.5px;font-weight:500;
@@ -357,6 +358,7 @@ tr:hover td:first-child{background:#fafbfc}
 .seq .arrow{color:#c9a66b}
 .seq .msg{color:#f7efdf}
 .seq .note{color:#8b7a82;font-style:italic}
+.seq .ok{color:#4ade80}.seq .warn{color:#fcd34d}.seq .err{color:#fca5a5}.seq .lbl{color:#8b7a82}
 
 /* CIFRAS */
 .cifras-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
@@ -1282,6 +1284,83 @@ section.hidden-section{display:none !important}
 }
 .scroll-top.visible{opacity:1;pointer-events:auto}
 .scroll-top:hover{background:var(--primary-dark);transform:translateY(-2px)}
+
+/* ── EVAL-TECNICA · estilos adicionales ─────────────────────── */
+.grid-5{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:640px){.grid-5{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1280px){.grid-5{grid-template-columns:repeat(5,1fr)}}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.badge-s1{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.badge-s2{background:#fff7ed;color:#b45309;border:1px solid #fed7aa}
+.badge-s3{background:#fef9c3;color:#a16207;border:1px solid #fde047}
+.badge-s4{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+.badge-ok{background:var(--success-soft);color:var(--success)}
+.badge-warn{background:var(--warn-soft);color:var(--warn)}
+.badge-info{background:var(--info-soft);color:var(--info);border:1px solid #bfdbfe}
+.card.danger-card{border-left:3px solid #b91c1c;background:linear-gradient(180deg,#fff5f5,#fff)}
+.card.warn-card{border-left:3px solid var(--warn);background:linear-gradient(180deg,#fffbeb,#fff)}
+.card.ok-card{border-left:3px solid var(--success);background:linear-gradient(180deg,#f0fdf4,#fff)}
+.callout.danger{background:linear-gradient(135deg,#fef2f2,#fff);border-color:#b91c1c}
+.callout.danger .callout-title{color:#b91c1c}
+.cifra-num.danger{color:#b91c1c}
+.cifra-num.warn{color:var(--warn)}
+.cifra-num.info{color:var(--info)}
+.cifra-num.success{color:var(--success)}
+.bar-fill.muted{background:#94a3b8}
+.mini-stat.danger::before{background:#b91c1c}
+.mini-stat.danger .num{color:#b91c1c}
+.mini-stat.gold .num{color:#825615}
+.agent-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;transition:all .2s;position:relative;overflow:hidden}
+.agent-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary)}
+.agent-card.danger-agent::before{background:#b91c1c}
+.agent-card.warn-agent::before{background:var(--warn)}
+.agent-card.info-agent::before{background:var(--info)}
+.agent-card.success-agent::before{background:var(--success)}
+.agent-card:hover{box-shadow:var(--shadow-strong);transform:translateY(-2px)}
+.agent-score-big{font-size:52px;font-weight:800;line-height:1;letter-spacing:-.04em}
+.agent-grade{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;display:inline-block;margin-top:4px}
+.mathbox{background:#1a1416;color:#f7efdf;border-radius:12px;padding:18px 22px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;overflow-x:auto;margin:14px 0}
+.mathbox .cdim{color:#fcb6c8;font-weight:600}.mathbox .cnum{color:#c9a66b}.mathbox .cop{color:#8b7a82}.mathbox .ctot{color:#fca5a5;font-weight:800;font-size:14px}
+.defect-card{background:#fff;border:1.5px solid #fecaca;border-left:5px solid #b91c1c;border-radius:0 12px 12px 0;padding:20px;margin-bottom:12px}
+.defect-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.defect-id{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;background:#f1f5f9;padding:2px 8px;border-radius:6px;color:var(--ink-soft)}
+.defect-title{font-weight:700;font-size:15px;color:var(--ink);flex:1}
+.defect-body{font-size:13px;color:var(--ink-soft);line-height:1.75}
+.defect-fix{background:#f8fafc;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:12px;line-height:1.65;border:1px solid var(--border)}
+.defect-fix strong{color:var(--primary)}
+.action-item{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:12px;border:1px solid;margin-bottom:8px}
+.action-item.p0{background:#fef2f2;border-color:#fecaca}
+.action-item.p1{background:#fffbeb;border-color:#fde68a}
+.action-item.p2{background:#fefce8;border-color:#fde047}
+.action-item.p3{background:#f0fdf4;border-color:#bbf7d0}
+.action-badge{font-size:10px;font-weight:900;text-transform:uppercase;padding:5px 12px;border-radius:999px;flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace;letter-spacing:.06em}
+.action-item.p0 .action-badge{background:#b91c1c;color:#fff}
+.action-item.p1 .action-badge{background:#d97706;color:#fff}
+.action-item.p2 .action-badge{background:#ca8a04;color:#fff}
+.action-item.p3 .action-badge{background:#15803d;color:#fff}
+.action-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.action-item.p0 .action-title{color:#b91c1c}
+.action-item.p1 .action-title{color:#b45309}
+.action-item.p2 .action-title{color:#a16207}
+.action-item.p3 .action-title{color:#15803d}
+.action-body{font-size:12.5px;line-height:1.65;color:var(--ink-soft)}
+.action-meta{font-size:11px;color:var(--ink-mute);margin-top:5px;font-family:'JetBrains Mono',monospace;font-style:italic}
+.adr-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--warn-soft);border-left:3px solid var(--warn);background:var(--warn-soft);border-radius:0 8px 8px 0;margin-bottom:6px;font-size:12.5px}
+.adr-id{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--warn);min-width:64px}
+.adr-title{flex:1;color:var(--ink)}
+.et-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:24px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:6px;overflow-x:auto}
+.et-tab-btn{flex:1 0 auto;min-width:90px;padding:9px 12px;background:transparent;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;color:var(--ink-soft);transition:all .15s;text-align:center}
+.et-tab-btn:hover{background:var(--primary-soft);color:var(--primary)}
+.et-tab-btn.active{background:var(--primary);color:white;box-shadow:0 4px 12px rgba(139,44,77,.25)}
+.et-tab-content{display:none}
+.et-tab-content.active{display:block;animation:fadeIn .25s ease}
+.block-divider-et{background:linear-gradient(135deg,var(--ink) 0%,var(--primary-dark) 100%);color:#fff;padding:32px 0;border-radius:12px;margin:24px 0}
+.bd-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;padding:0 28px}
+.bd-title{font-size:20px;font-weight:800;letter-spacing:-.02em}
+@media(min-width:768px){.bd-title{font-size:26px}}
+.bd-title em{font-style:normal;color:var(--secondary)}
+.bd-sub{font-size:13px;color:rgba(255,255,255,.6);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.bd-tag{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:8px 18px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -1328,6 +1407,7 @@ section.hidden-section{display:none !important}
     <div class="sidebar-group-items">
       <a class="sidebar-item" data-section="arquitectura" onclick="showSection('arquitectura')">Arquitectura</a>
       <a class="sidebar-item" data-section="reporte" onclick="showSection('reporte')">Assessment</a>
+      <a class="sidebar-item" data-section="eval-tecnica" onclick="showSection('eval-tecnica')">Evaluación Técnica</a>
     </div>
   </div>
   <div class="sidebar-divider"></div>
@@ -3083,6 +3163,397 @@ section.hidden-section{display:none !important}
   </div>
 </section>
 
+<!-- ============ EVALUACIÓN TÉCNICA DEFINITIVA ============ -->
+<section id="eval-tecnica" class="content-section">
+  <div class="container" style="padding-top:32px;padding-bottom:64px">
+
+    <div class="section-header">
+      <div class="section-eyebrow">08 · Evaluación Técnica Definitiva</div>
+      <h2 class="section-title">Score 49/100 · 5 Agentes SMC OS · Mayo 2026</h2>
+      <p class="section-desc">Análisis exhaustivo por Claus (Arquitectura), Aníbal (Backend/Seguridad), Francis (Frontend), Victor (DevOps) y Cami (QA). Evaluados con 4,200+ líneas de documentación técnica de Fase 1.</p>
+    </div>
+
+    <!-- Hero métricas -->
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 18px;text-align:center"><div style="font-size:28px;font-weight:900;color:#b91c1c;line-height:1">49</div><div style="font-size:11px;color:#b91c1c;font-family:'JetBrains Mono',monospace;font-weight:700">/ 100 · F+</div></div>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 18px;text-align:center"><div style="font-size:28px;font-weight:900;color:#b91c1c;line-height:1">8</div><div style="font-size:11px;color:#b91c1c;font-family:'JetBrains Mono',monospace;font-weight:700">Defectos S1</div></div>
+      <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px 18px;text-align:center"><div style="font-size:28px;font-weight:900;color:#b45309;line-height:1">4–7d</div><div style="font-size:11px;color:#b45309;font-family:'JetBrains Mono',monospace;font-weight:700">Airtable colapsa</div></div>
+      <div style="background:var(--primary-soft);border:1px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--primary);line-height:1">5</div><div style="font-size:11px;color:var(--primary);font-family:'JetBrains Mono',monospace;font-weight:700">Agentes</div></div>
+      <div style="background:var(--success-soft);border:1px solid #bbf7d0;border-radius:10px;padding:14px 18px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--success);line-height:1">75+</div><div style="font-size:11px;color:var(--success);font-family:'JetBrains Mono',monospace;font-weight:700">Post P0+P1</div></div>
+    </div>
+
+    <!-- Tabs de navegación interna -->
+    <div class="et-tabs" role="tablist">
+      <button class="et-tab-btn active" onclick="switchEtTab('resumen',this)">01 · Resumen</button>
+      <button class="et-tab-btn" onclick="switchEtTab('metodologia',this)">02 · Metodología</button>
+      <button class="et-tab-btn" onclick="switchEtTab('score',this)">03 · Score</button>
+      <button class="et-tab-btn" onclick="switchEtTab('dimensiones',this)">04 · Dimensiones</button>
+      <button class="et-tab-btn" onclick="switchEtTab('defectos',this)">05 · Defectos S1</button>
+      <button class="et-tab-btn" onclick="switchEtTab('adrs',this)">06 · ADRs</button>
+      <button class="et-tab-btn" onclick="switchEtTab('plan',this)">07 · Plan P0–P3</button>
+      <button class="et-tab-btn" onclick="switchEtTab('cifras',this)">08 · Cifras</button>
+    </div>
+
+    <!-- ─── TAB 01: RESUMEN ─── -->
+    <div id="et-resumen" class="et-tab-content active">
+      <div class="callout danger">
+        <div class="callout-title">🚨 ACCIÓN REQUERIDA ANTES DEL 16 DE MAYO</div>
+        <p>Airtable Free tiene 1,000 registros. Con <strong>182 registros dinámicos/día</strong> de uso real, el límite se alcanza en <strong>4–7 días</strong>. Tras ese punto todos los usuarios ven error "Base limits reached". Actualizar a Airtable Team ($20/mes) es la única acción que previene un corte total de servicio.</p>
+      </div>
+      <div class="grid-3" style="margin-top:24px">
+        <div class="card danger-card">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">Victor (DevOps) · Hallazgo #1</div>
+          <div style="font-size:26px;font-weight:800;color:#b91c1c;margin-bottom:8px">4–7 días</div>
+          <p>Airtable Free colapsa en 4–7 días de uso real. El cálculo correcto: <strong>742 registros disponibles ÷ 182/día = 4.1 días promedio.</strong> No 3 semanas como se estimó antes.</p>
+        </div>
+        <div class="card danger-card">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">Aníbal (Backend) · Hallazgo #2</div>
+          <div style="font-size:26px;font-weight:800;color:#b91c1c;margin-bottom:8px">IDOR Confirmado</div>
+          <p>Los permisos RBAC están implementados <strong>solo en la UI</strong>, no en las API routes. Cualquier usuario autenticado accede a datos de otros departamentos vía API directa. El roadmap de Créalo lo confirma como "P1 pendiente".</p>
+        </div>
+        <div class="card danger-card">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;margin-bottom:8px;font-family:'JetBrains Mono',monospace">Claus (Arquitectura) · Hallazgo #3</div>
+          <div style="font-size:26px;font-weight:800;color:#b91c1c;margin-bottom:8px">Mes 7–10</div>
+          <p>La tabla <code>Respuestas_Checklist</code> alcanza 240,000+ registros en 12 meses, superando el límite Airtable Team (125K). <strong>Colapso arquitectónico proyectado mes 7–10</strong> sin migración planificada.</p>
+        </div>
+      </div>
+      <div style="margin-top:28px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">¿Por qué bajó de 74 a 49?</h3>
+        <div class="before-after">
+          <div class="ba-col before">
+            <h4>❌ Score 74/100 — contrarespuesta anterior</h4>
+            <ul>
+              <li>Evaluación basada en documentación de propuesta</li>
+              <li>Sin cálculo real de registros/día Airtable</li>
+              <li>IDOR marcado como "por implementar" sin gravedad</li>
+              <li>Cron timeout estimado como "en riesgo" sin cálculo exacto</li>
+              <li>Sin evaluación de QA formal ni cobertura de defectos</li>
+              <li>Sin evaluación de observabilidad productiva</li>
+            </ul>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-col after">
+            <h4>✓ Score 49/100 — evaluación 5 agentes</h4>
+            <ul>
+              <li>Evaluación de documentación técnica completa (4,200+ líneas)</li>
+              <li>Cálculo exacto: 742 disponibles ÷ 182/día = 4.1 días</li>
+              <li>IDOR clasificado S1 con vectores de ataque concretos</li>
+              <li>Cron: 36×220ms=7.92s base, 16.2s worst case vs 10s límite</li>
+              <li>8 defectos S1, 10 S2, 8 S3 documentados</li>
+              <li>Observabilidad: 10/100 — sistema ciego en producción</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TAB 02: METODOLOGÍA ─── -->
+    <div id="et-metodologia" class="et-tab-content">
+      <div class="section-header" style="margin-bottom:24px">
+        <div class="section-eyebrow">02 · Metodología</div>
+        <h2 class="section-title" style="font-size:24px">Cómo se evaluó la plataforma</h2>
+        <p class="section-desc">Cada agente recibió la documentación técnica completa de Fase 1 y evaluó su dimensión de forma independiente. Sin coordinación previa entre ellos.</p>
+      </div>
+      <div class="grid-5">
+        <div class="agent-card info-agent">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 1 · Arquitectura</div>
+          <div class="agent-score-big" style="color:var(--warn)">69</div>
+          <div class="agent-grade badge-warn">C+</div>
+          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Claus</div>
+          <p style="font-size:12px;margin-top:4px">ADRs, escalabilidad, deuda técnica estructural, colapso proyectado DB</p>
+          <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 25%</div>
+        </div>
+        <div class="agent-card danger-agent">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 2 · Backend</div>
+          <div class="agent-score-big" style="color:#b91c1c">44</div>
+          <div class="agent-grade badge-s1">D+</div>
+          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Aníbal</div>
+          <p style="font-size:12px;margin-top:4px">OWASP, autenticación, API routes, lógica de negocio, seguridad</p>
+          <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 25%</div>
+        </div>
+        <div class="agent-card danger-agent">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 3 · Frontend</div>
+          <div class="agent-score-big" style="color:#b91c1c">48</div>
+          <div class="agent-grade badge-s1">D+</div>
+          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Francis</div>
+          <p style="font-size:12px;margin-top:4px">Core Web Vitals, React patterns, UX, PWA, accesibilidad, error states</p>
+          <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 20%</div>
+        </div>
+        <div class="agent-card danger-agent">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 4 · DevOps</div>
+          <div class="agent-score-big" style="color:#b91c1c">32</div>
+          <div class="agent-grade badge-s1">F</div>
+          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Victor</div>
+          <p style="font-size:12px;margin-top:4px">CI/CD, observabilidad, infra, runbooks, planes de contingencia</p>
+          <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 15%</div>
+        </div>
+        <div class="agent-card danger-agent">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;margin-bottom:12px">Agente 5 · QA</div>
+          <div class="agent-score-big" style="color:#b91c1c">43</div>
+          <div class="agent-grade badge-s1">F+</div>
+          <div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--ink)">Cami</div>
+          <p style="font-size:12px;margin-top:4px">Defect classification, cobertura testing, edge cases, flujos críticos</p>
+          <div style="margin-top:10px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace">Peso: 15%</div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:24px">
+        <div class="callout-title">Fuentes evaluadas</div>
+        <p>ENTREGA-FASE1.md (12 módulos, 10 endpoints, 14 flujos verificados) · propuesta-arquitectura.md (1,459 líneas, 18 tablas) · RESPUESTA-STACK-GUILLERMO.md · PROPUESTA-BENDITO-CAPRICHO.md · analisis-finanzas.md · analisis-operaciones-admin.md · analisis-marketing-comercial.md. Total: ~4,200 líneas de documentación técnica.</p>
+      </div>
+    </div>
+
+    <!-- ─── TAB 03: SCORE ─── -->
+    <div id="et-score" class="et-tab-content">
+      <div class="section-header" style="margin-bottom:24px">
+        <div class="section-eyebrow">03 · Score Ponderado</div>
+        <h2 class="section-title" style="font-size:24px">49/100 — Grado F+</h2>
+        <p class="section-desc">La arquitectura conceptual es sólida (69/100) pero la deuda técnica en seguridad, DevOps y QA arrastra el score total a 49. Con P0+P1 resueltos, el score sube a 75+.</p>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-title">Score por dimensión</div>
+          <div class="dash-sub">5 agentes · pesos asignados por criticidad</div>
+          <div class="bars" style="margin-top:8px">
+            <div class="bar-row"><span class="lbl">Arquitectura (25%)</span><div class="bar-track"><div class="bar-fill gold" style="width:69%">69</div></div><span class="vl">C+</span></div>
+            <div class="bar-row"><span class="lbl">Frontend (20%)</span><div class="bar-track"><div class="bar-fill danger" style="width:48%">48</div></div><span class="vl">D+</span></div>
+            <div class="bar-row"><span class="lbl">Backend/Seg. (25%)</span><div class="bar-track"><div class="bar-fill danger" style="width:44%">44</div></div><span class="vl">D+</span></div>
+            <div class="bar-row"><span class="lbl">QA (15%)</span><div class="bar-track"><div class="bar-fill danger" style="width:43%">43</div></div><span class="vl">F+</span></div>
+            <div class="bar-row"><span class="lbl">DevOps (15%)</span><div class="bar-track"><div class="bar-fill danger" style="width:32%">32</div></div><span class="vl">F</span></div>
+            <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px">
+              <div class="bar-row"><span class="lbl" style="font-weight:700;color:var(--ink)">TOTAL PONDERADO</span><div class="bar-track"><div class="bar-fill danger" style="width:49%">49</div></div><span class="vl" style="font-weight:700;color:#b91c1c">F+</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card" style="text-align:center">
+          <div class="dash-title">Score radial por dimensión</div>
+          <div class="dash-sub">5 agentes independientes</div>
+          <div class="scores-radial" style="margin-top:12px;grid-template-columns:repeat(5,1fr)">
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#d97706" stroke-dasharray="173 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#d97706">69</div></div><div class="nm">Claus</div><div class="sub">Arq.</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="121 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">48</div></div><div class="nm">Francis</div><div class="sub">Front.</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="110 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">44</div></div><div class="nm">Aníbal</div><div class="sub">Back.</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="108 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">43</div></div><div class="nm">Cami</div><div class="sub">QA</div></div>
+            <div class="score-item"><div class="score-circle"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="40"/><circle class="fg" cx="50" cy="50" r="40" stroke="#b91c1c" stroke-dasharray="80 251" transform="rotate(-90 50 50)"/></svg><div class="num" style="color:#b91c1c">32</div></div><div class="nm">Victor</div><div class="sub">DevOps</div></div>
+          </div>
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+            <div style="font-size:11px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;font-family:'JetBrains Mono',monospace;margin-bottom:8px">Score Final Ponderado</div>
+            <div style="font-size:56px;font-weight:800;color:#b91c1c;letter-spacing:-.04em;line-height:1">49</div>
+            <div style="font-size:13px;color:var(--ink-mute)">/ 100 · Grado F+ · anterior 74/100 B−</div>
+          </div>
+        </div>
+      </div>
+      <div class="mathbox">
+<span class="cdim">Claus  (Arquitectura) </span><span class="cop"> 69 × 0.25 = </span><span class="cnum">17.25</span>
+<span class="cdim">Aníbal (Backend/Seg.) </span><span class="cop"> 44 × 0.25 = </span><span class="cnum">11.00</span>
+<span class="cdim">Francis(Frontend)     </span><span class="cop"> 48 × 0.20 = </span><span class="cnum"> 9.60</span>
+<span class="cdim">Victor (DevOps)       </span><span class="cop"> 32 × 0.15 = </span><span class="cnum"> 4.80</span>
+<span class="cdim">Cami   (QA)           </span><span class="cop"> 43 × 0.15 = </span><span class="cnum"> 6.45</span>
+<span class="cop">────────────────────────────────────────────</span>
+<span class="cdim">TOTAL PONDERADO       </span><span class="cop">            = </span><span class="ctot">49.10 / 100</span>
+      </div>
+    </div>
+
+    <!-- ─── TAB 04: DIMENSIONES ─── -->
+    <div id="et-dimensiones" class="et-tab-content">
+      <div class="section-header" style="margin-bottom:24px">
+        <div class="section-eyebrow">04 · Dimensiones</div>
+        <h2 class="section-title" style="font-size:24px">Hallazgos por Agente</h2>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('et-dim','claus',this)">🏗️ Claus 69</button>
+        <button class="tab-btn" onclick="switchTab('et-dim','anibal',this)">🔒 Aníbal 44</button>
+        <button class="tab-btn" onclick="switchTab('et-dim','francis',this)">🖥️ Francis 48</button>
+        <button class="tab-btn" onclick="switchTab('et-dim','victor',this)">⚙️ Victor 32</button>
+        <button class="tab-btn" onclick="switchTab('et-dim','cami',this)">🧪 Cami 43</button>
+      </div>
+      <div id="et-dim-claus" class="tab-content active">
+        <div class="grid-3">
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>Colapso DB mes 7–10</h3><p><code>Respuestas_Checklist</code>: 36 plantillas × 19 usuarios × 365 días × ~10 ítems = <strong>240,000+ registros/año</strong>. Límite Airtable Team: 125,000 filas/base. Colapso mes 7–10 sin migración planificada.</p></div>
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>8 ADRs faltantes</h3><p>Decisiones arquitectónicas críticas sin documentar: Airtable vs DB relacional, NextAuth beta en prod, Vercel Hobby como hosting de negocio, cron via API route, Airtable Free en producción.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>Lógica financiera sin versionado</h3><p>Las fórmulas de Airtable (ventas − comisiones − mermas − subarriendo) son lógica de negocio crítica <strong>sin control de versiones, sin historial, sin rollback</strong>. Un cambio accidental destruye los cálculos de pagos.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>Observabilidad 2/10</h3><p>No hay Sentry, no hay logging estructurado, no hay métricas de negocio. El sistema es ciego en producción. El primer aviso de falla llega por WhatsApp de un usuario.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>Sin idempotencia en cron</h3><p>El cron de 7AM genera checklists sin verificar si ya existen. Un retry de Vercel crea duplicados que los usuarios ven como tareas nuevas. Sin mecanismo de deduplicación documentado.</p></div>
+          <div class="card ok-card"><span class="badge badge-ok" style="margin-bottom:10px">Positivo</span><h3>Stack apropiado para la escala</h3><p>Next.js + Airtable + Vercel es la decisión correcta para 15–19 usuarios con el presupuesto disponible. La propuesta de migrar a Supabase + AWS implicaría 3–4 semanas de reescritura sin ganancia funcional real.</p></div>
+        </div>
+      </div>
+      <div id="et-dim-anibal" class="tab-content">
+        <div class="callout danger"><div class="callout-title">IDOR Confirmado — Insecure Direct Object Reference</div><p>Los 10 API routes validan autenticación (usuario logueado) pero <strong>no validan autorización</strong> (qué datos puede ver). Un Trabajador autenticado llama a <code>GET /api/checklists?departamento=finanzas</code> y obtiene datos de Finanzas. El roadmap de Créalo lo confirma como "P1 pendiente" — sabían de la vulnerabilidad y eligieron deployar con ella.</p></div>
+        <div class="grid-3" style="margin-top:16px">
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>Cron timeout 2.25× sobre límite</h3><p>36 plantillas × 220ms = <strong>7.92s</strong> en escenario base. Worst case: <strong>16.2s</strong> vs límite Vercel Hobby de <strong>10s</strong>. El cron falla silenciosamente sin alerta, sin retry, sin notificación al supervisor.</p></div>
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>Airtable API v0 Deprecated</h3><p>La documentación menciona Airtable API v0 como dependencia. Esta versión está deprecated — Airtable puede eliminar el soporte sin aviso. SDK 0.12.2 es estable pero si hay código usando la API REST directamente, es deuda activa.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>NextAuth v5 beta.31 en producción</h3><p>NextAuth v5 estaba en beta al momento del deploy. Un breaking change en beta.32+ puede invalidar las sesiones de todos los usuarios simultáneamente. La versión estable v5 existe desde diciembre 2024.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>Sin transacciones compensatorias</h3><p>El flujo Cierre de Caja escribe en múltiples tablas Airtable secuencialmente. Si falla en el paso 3 de 5, las tablas quedan en estado inconsistente. Airtable no soporta transacciones ACID — no hay rollback.</p></div>
+          <div class="card ok-card"><span class="badge badge-ok" style="margin-bottom:10px">Positivo</span><h3>RBAC 8 roles implementado</h3><p><code>lib/auth/permissions.ts</code> con <code>hasPermission()</code> y <code>getDataScope()</code> cubre los 8 roles. Es un diseño sólido — el problema es que solo está aplicado en la capa UI, no en las API routes.</p></div>
+          <div class="card ok-card"><span class="badge badge-ok" style="margin-bottom:10px">Positivo</span><h3>Headers de seguridad en next.config</h3><p>CSP, X-Frame-Options, X-XSS-Protection configurados en <code>next.config.ts</code>. Es una práctica correcta que Créalo implementó proactivamente.</p></div>
+        </div>
+      </div>
+      <div id="et-dim-francis" class="tab-content">
+        <div class="grid-3">
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>LCP 3.5–4.5s en móvil</h3><p>Sin skeleton loaders, sin lazy loading declarado, sin optimización de imágenes confirmada. Los líderes de tienda usan la PWA en celulares con conexión variable. Google considera LCP crítico >4s — inutilizable en 3G.</p></div>
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>Sonner cobertura 20%</h3><p>Solo 20% de los flujos críticos tienen notificaciones Sonner. El 80% restante (incluyendo cierres de caja y rechazos de checklist) falla silenciosamente — sin confirmación de éxito ni feedback de error.</p></div>
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>Sin persistencia local de checklists</h3><p>Los formularios de checklist no guardan progreso en <code>localStorage</code>. Si la sesión expira a la mitad de un checklist de 20 preguntas, el usuario pierde todo el progreso sin posibilidad de recuperación.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>Sin estados de error en formularios críticos</h3><p>Cierre de Caja, Depósitos y Checklists no tienen estados de error. Si Airtable falla, el usuario no sabe si su data fue guardada — riesgo de enviar el cierre de caja dos veces.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>Tailwind v4 OKLch en producción</h3><p>OKLch es el default en Tailwind v4, pero el soporte no es uniforme en Android 10–11 (prevalentes en Chile). Los colores semánticos pueden renderizar diferente en los dispositivos de los líderes de tienda.</p></div>
+          <div class="card ok-card"><span class="badge badge-ok" style="margin-bottom:10px">Positivo</span><h3>PWA instalable + shadcn/ui v4</h3><p>Los trabajadores pueden instalar la app sin App Store. shadcn/ui v4 proporciona componentes accesibles y consistentes. El diseño visual es profesional para el contexto del cliente.</p></div>
+        </div>
+      </div>
+      <div id="et-dim-victor" class="tab-content">
+        <div class="callout danger"><div class="callout-title">Hallazgo más urgente de toda la evaluación</div><p>Airtable Free tiene 1,000 registros. Con 258 de seed y <strong>182 registros dinámicos/día</strong> (36 instancias + 144 respuestas + 2 cierres), los <strong>742 disponibles se agotan en 4.1 días</strong>. El cálculo anterior de "3 semanas" no contaba las respuestas individuales por ítem.</p></div>
+        <div class="grid-3" style="margin-top:16px">
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>Observabilidad 10/100</h3><p>No hay Sentry, no hay logging estructurado, no hay alertas de infra, no hay métricas de negocio, no hay dashboard de estado. El primer aviso de falla en producción llega por WhatsApp.</p></div>
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>Sin CI/CD formal</h3><p>Los deploys son manuales vía <code>git push</code> a Vercel. No hay pipeline que corra tests antes del deploy, no hay preview environments, no hay rollback documentado ante un deploy roto.</p></div>
+          <div class="card danger-card"><span class="badge badge-s1" style="margin-bottom:10px">Crítico</span><h3>Sin runbooks</h3><p>No existe documentación de "qué hacer cuando falla X". Si el cron falla a las 7AM: ¿quién lo detecta? ¿cómo se ejecuta manualmente? ¿quién tiene acceso al panel de Vercel? No hay respuestas documentadas.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>Vercel Hobby sin SLA</h3><p>Vercel Hobby no tiene SLA. Un incidente puede dejar la plataforma caída horas sin compensación ni soporte prioritario. Para una plataforma que reemplaza WhatsApp en operaciones diarias, este es un riesgo real.</p></div>
+          <div class="card warn-card"><span class="badge badge-s2" style="margin-bottom:10px">Alto</span><h3>Sin plan de migración DB</h3><p>Cuando Airtable Team alcance 125,000 filas (~mes 7–10), no hay plan de migración documentado. Migrar a Supabase o PostgreSQL con datos en producción es un proyecto de 2–4 semanas de riesgo alto.</p></div>
+          <div class="card ok-card"><span class="badge badge-ok" style="margin-bottom:10px">Positivo</span><h3>Deploy automático con Vercel</h3><p>La integración git → Vercel con deploy en 30s es una ventaja real frente a AWS EC2. Para un desarrollador solo manteniendo el proyecto, esto elimina la carga operacional de DevOps tradicional.</p></div>
+        </div>
+      </div>
+      <div id="et-dim-cami" class="tab-content">
+        <div class="mini-stats" style="margin-bottom:20px;display:flex;flex-wrap:wrap;gap:10px">
+          <div class="mini-stat danger"><div class="num">8</div><div class="lbl">S1 Críticos</div></div>
+          <div class="mini-stat warn"><div class="num">10</div><div class="lbl">S2 Altos</div></div>
+          <div class="mini-stat gold"><div class="num">8</div><div class="lbl">S3 Medios</div></div>
+          <div class="mini-stat ok"><div class="num">3</div><div class="lbl">S4 Bajos</div></div>
+          <div class="mini-stat"><div class="num">29</div><div class="lbl">Total defectos</div></div>
+        </div>
+        <div class="callout warn"><div class="callout-title">Cobertura de pruebas no documentada</div><p>La ENTREGA-FASE1.md lista "14 flujos verificados" pero no especifica qué tipo de pruebas se corrieron (unitarias, integración, e2e, manuales). No hay evidencia de un plan de testing formal, suite de tests automatizados, ni criterios de aceptación con resultados de prueba.</p></div>
+        <p style="margin-top:16px;font-size:13.5px;color:var(--ink-soft)">Los 8 defectos S1 se detallan en la sección siguiente. Los defectos S2 más relevantes incluyen: sin alertas automáticas de mora para emprendedores, sin validación de montos negativos en cierres de caja, sin modo offline para checklists, y sin estado de confirmación visual en flujo de pago a emprendedores.</p>
+      </div>
+    </div>
+
+    <!-- ─── TAB 05: DEFECTOS S1 ─── -->
+    <div id="et-defectos" class="et-tab-content">
+      <div class="section-header" style="margin-bottom:24px">
+        <div class="section-eyebrow">05 · Defectos S1</div>
+        <h2 class="section-title" style="font-size:24px">8 Defectos Críticos Bloqueantes</h2>
+        <p class="section-desc">Estos defectos deben resolverse antes de que María José dependa de la plataforma para operaciones financieras críticas o supervisión diaria real.</p>
+      </div>
+      <div class="defect-card"><div class="defect-head"><span class="defect-id">S1-01</span><span class="badge badge-s1">CRÍTICO</span><span class="defect-title">Permisos no validados en API routes — IDOR</span></div><div class="defect-body">Los 10 endpoints API validan autenticación pero no autorización. Un Trabajador accede a datos de Finanzas directamente vía API. El roadmap de Créalo lo confirma como "P1 pendiente" — deploy consciente con vulnerabilidad activa.</div><div class="defect-fix"><strong>Fix:</strong> Aplicar <code>hasPermission()</code> y <code>getDataScope()</code> (ya implementados en <code>lib/auth/permissions.ts</code>) en cada uno de los 10 API routes antes de consultar Airtable. Tiempo estimado: 1–2 días.</div></div>
+      <div class="defect-card"><div class="defect-head"><span class="defect-id">S1-02</span><span class="badge badge-s1">CRÍTICO</span><span class="defect-title">Cron 7AM falla silenciosamente — timeout 2.25× sobre límite</span></div><div class="defect-body">36 plantillas × 220ms = 7.92s base · 16.2s worst case. Vercel Hobby cancela a los 10s sin retry. El dashboard muestra 0/0 que los supervisores interpretan como "todo correcto" (falso negativo).</div><div class="defect-fix"><strong>Fix:</strong> Migrar a Vercel Pro ($20/mes → 60s timeout) o reestructurar el cron en batches de 5 plantillas con queue. La opción A es más rápida.</div></div>
+      <div class="defect-card"><div class="defect-head"><span class="defect-id">S1-03</span><span class="badge badge-s1">CRÍTICO</span><span class="defect-title">Timezone UTC vs Chile — cron se dispara a hora incorrecta</span></div><div class="defect-body">Vercel ejecuta crons en UTC. Si está configurado a las 7:00 UTC y Chile está en UTC-3/UTC-4, el cron se dispara a las 10–11 AM hora Chile — 3 horas después del inicio del turno de los trabajadores.</div><div class="defect-fix"><strong>Fix:</strong> Configurar el cron a las 10:00 UTC (= 7:00 AM UTC-3). Usar <code>America/Santiago</code> como timezone de referencia en toda la lógica temporal.</div></div>
+      <div class="defect-card"><div class="defect-head"><span class="defect-id">S1-04</span><span class="badge badge-s1">CRÍTICO</span><span class="defect-title">Sin protección doble envío en cierre de caja — datos financieros duplicados</span></div><div class="defect-body">En conexiones lentas (habitual en retail), el usuario presiona "Enviar", no ve respuesta inmediata, y presiona de nuevo. Resultado: dos cierres de caja registrados para el mismo día.</div><div class="defect-fix"><strong>Fix:</strong> Deshabilitar el botón submit después del primer click. Deduplicar por (fecha, tienda, turno) en la API route antes de escribir a Airtable.</div></div>
+      <div class="defect-card"><div class="defect-head"><span class="defect-id">S1-05</span><span class="badge badge-s1">CRÍTICO</span><span class="defect-title">Falla Airtable durante cierre de caja — datos del formulario perdidos</span></div><div class="defect-body">Si Airtable retorna error 503 durante el cierre de caja, el formulario muestra error genérico y los datos se pierden. El líder de tienda no tiene copia de lo que ingresó.</div><div class="defect-fix"><strong>Fix:</strong> Guardar el estado del formulario en <code>localStorage</code> antes de enviar. Si falla, mostrar modal de recuperación con los datos guardados. Implementar retry automático con backoff exponencial.</div></div>
+      <div class="defect-card"><div class="defect-head"><span class="defect-id">S1-06</span><span class="badge badge-s1">CRÍTICO</span><span class="defect-title">Dashboard muestra 0/0 como correcto cuando el cron falla — falso negativo</span></div><div class="defect-body">Cuando el cron falla, el dashboard de David y María José muestra "0 de 0 completados" sin distinción entre "todos completaron" y "ningún checklist fue generado".</div><div class="defect-fix"><strong>Fix:</strong> Agregar indicador de estado del cron como métrica separada. Si no corrió a las 7:15 AM ± 30 min, mostrar alerta visual roja en el dashboard de supervisión.</div></div>
+      <div class="defect-card"><div class="defect-head"><span class="defect-id">S1-07</span><span class="badge badge-s1">CRÍTICO</span><span class="defect-title">Sesión expirada durante checklist — todo el progreso perdido</span></div><div class="defect-body">Si la sesión NextAuth expira mientras el trabajador completa un checklist de 20 preguntas, al presionar "Guardar" es redirigido al login. Todo el progreso se pierde sin posibilidad de recuperación.</div><div class="defect-fix"><strong>Fix:</strong> Implementar <code>localStorage</code> para guardar el estado del checklist en tiempo real (debounce 2s). Al re-autenticar, ofrecer "Continuar donde dejaste" con los datos guardados.</div></div>
+      <div class="defect-card"><div class="defect-head"><span class="defect-id">S1-08</span><span class="badge badge-s1">CRÍTICO</span><span class="defect-title">Cambio de rol con sesión activa — permisos no actualizados hasta expiración del token</span></div><div class="defect-body">Si un admin cambia el rol de un usuario en Airtable (ej. Trabajador → Jefe_Departamento), el usuario sigue con permisos del rol anterior hasta que el JWT expire.</div><div class="defect-fix"><strong>Fix:</strong> Implementar revocación de sesión al cambiar roles. Usar <code>session: { strategy: 'database' }</code> en NextAuth para invalidar sesiones inmediatamente al cambiar permisos.</div></div>
+    </div>
+
+    <!-- ─── TAB 06: ADRs ─── -->
+    <div id="et-adrs" class="et-tab-content">
+      <div class="section-header" style="margin-bottom:24px">
+        <div class="section-eyebrow">06 · ADRs Faltantes</div>
+        <h2 class="section-title" style="font-size:24px">8 Decisiones sin Documentar</h2>
+        <p class="section-desc">Un ADR (Architecture Decision Record) documenta el "por qué" de una decisión técnica. Sin ADRs, cualquier desarrollador nuevo parte de cero sin contexto. Créalo debe documentar estas 8 decisiones — no cambiarlas, documentarlas.</p>
+      </div>
+      <div class="adr-row"><div class="adr-id">ADR-001</div><div class="adr-title">Airtable como base de datos principal vs PostgreSQL/Supabase — justificación de la elección</div><span class="badge badge-s2">Alto</span></div>
+      <div class="adr-row" style="border-color:#fecaca;border-left-color:#b91c1c;background:#fef2f2"><div class="adr-id" style="color:#b91c1c">ADR-002</div><div class="adr-title">NextAuth v5.0.0-beta.31 en producción — decisión de usar beta vs esperar stable</div><span class="badge badge-s1">Crítico</span></div>
+      <div class="adr-row" style="border-color:#fecaca;border-left-color:#b91c1c;background:#fef2f2"><div class="adr-id" style="color:#b91c1c">ADR-003</div><div class="adr-title">Vercel Hobby (10s timeout, sin SLA) como hosting de plataforma de negocio</div><span class="badge badge-s1">Crítico</span></div>
+      <div class="adr-row"><div class="adr-id">ADR-004</div><div class="adr-title">Cron implementado como API route (/api/cron/generate-checklists) — alternativas evaluadas</div><span class="badge badge-s2">Alto</span></div>
+      <div class="adr-row" style="border-color:#fecaca;border-left-color:#b91c1c;background:#fef2f2"><div class="adr-id" style="color:#b91c1c">ADR-005</div><div class="adr-title">Airtable Free en producción con 1,000 registros como límite — plan de upgrade</div><span class="badge badge-s1">Crítico</span></div>
+      <div class="adr-row"><div class="adr-id">ADR-006</div><div class="adr-title">Tailwind CSS v4 con tokens OKLch — compatibilidad en Android 10–11 en Chile</div><span class="badge badge-s3">Medio</span></div>
+      <div class="adr-row"><div class="adr-id">ADR-007</div><div class="adr-title">Airtable SDK 0.12.2 vs API REST v0 (deprecated) — cuál se usa realmente</div><span class="badge badge-s2">Alto</span></div>
+      <div class="adr-row"><div class="adr-id">ADR-008</div><div class="adr-title">PWA sin estrategia de cache offline — decisión de no soportar checklists offline</div><span class="badge badge-s2">Alto</span></div>
+      <div class="callout success" style="margin-top:24px">
+        <div class="callout-title">Acción: 1 día de trabajo</div>
+        <p>Documentar estos 8 ADRs es aproximadamente 1 día de trabajo para Sergio Gary (Créalo). No cambia ningún código — solo documenta lo que ya fue decidido. Sin esta documentación, el proyecto es técnicamente insostenible a largo plazo.</p>
+      </div>
+    </div>
+
+    <!-- ─── TAB 07: PLAN P0-P3 ─── -->
+    <div id="et-plan" class="et-tab-content">
+      <div class="section-header" style="margin-bottom:24px">
+        <div class="section-eyebrow">07 · Plan de Acción</div>
+        <h2 class="section-title" style="font-size:24px">P0 esta semana · P1 en 2 semanas · P2 en 1 mes · P3 en Q3</h2>
+      </div>
+      <h3 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#b91c1c;font-family:'JetBrains Mono',monospace;margin-bottom:12px">P0 — Antes del 16 de mayo (urgente)</h3>
+      <div class="action-item p0"><div class="action-badge">P0</div><div><div class="action-title">Actualizar Airtable Free → Team ($20/mes)</div><div class="action-body">Con 182 registros dinámicos/día, los 742 disponibles se agotan en 4.1 días. Tras ese punto, todos los usuarios ven "Base limits reached". Esta es la única acción que previene un corte total de servicio.</div><div class="action-meta">Responsable: Créalo SpA o cliente · Tiempo: 5 min · Costo: $20 USD/mes</div></div></div>
+      <div class="action-item p0"><div class="action-badge">P0</div><div><div class="action-title">Corregir timezone cron (UTC → America/Santiago)</div><div class="action-body">Si el cron está en 7:00 UTC, los checklists se generan a las 10–11 AM Chile. Los trabajadores llegan a las 9 AM sin checklists. Cambiar la expresión cron para compensar el offset UTC-3/UTC-4.</div><div class="action-meta">Responsable: Sergio Gary · Tiempo: 30 min · Riesgo: Bajo</div></div></div>
+      <div class="action-item p0"><div class="action-badge">P0</div><div><div class="action-title">Aplicar permisos en todas las API routes (resolver IDOR)</div><div class="action-body">Aplicar <code>hasPermission()</code> y <code>getDataScope()</code> ya implementados en <code>lib/auth/permissions.ts</code> a los 10 API routes. Actualmente la seguridad está solo en la UI.</div><div class="action-meta">Responsable: Sergio Gary · Tiempo: 1–2 días · Requiere testing posterior</div></div></div>
+      <h3 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#d97706;font-family:'JetBrains Mono',monospace;margin:28px 0 12px">P1 — Antes del 25 de mayo (alta prioridad)</h3>
+      <div class="action-item p1"><div class="action-badge">P1</div><div><div class="action-title">Instalar Sentry (error tracking gratuito)</div><div class="action-body">Sentry Free se integra con Next.js en 15 minutos. Captura errores con stack trace, contexto de usuario y frecuencia. Sin Sentry, el sistema es ciego en producción — los errores llegan por WhatsApp.</div><div class="action-meta">Responsable: Créalo · Tiempo: 2 horas · Costo: $0</div></div></div>
+      <div class="action-item p1"><div class="action-badge">P1</div><div><div class="action-title">Migrar Vercel Hobby → Pro (o reestructurar cron en batches)</div><div class="action-body">El cron falla con 36+ plantillas en Vercel Hobby (10s). Opción A: Vercel Pro da 60s de timeout por $20/mes. Opción B: procesar en batches de 5 plantillas. Opción A es más rápida.</div><div class="action-meta">Responsable: Créalo · Tiempo: 1 día · Costo: $20/mes Vercel Pro</div></div></div>
+      <div class="action-item p1"><div class="action-badge">P1</div><div><div class="action-title">Proteger cierre de caja contra doble submit + persistencia localStorage</div><div class="action-body">Agregar protección doble-click en Cierre de Caja y Depósitos. Implementar guardado automático en localStorage para checklists. Estos dos cambios resuelven S1-04, S1-05 y S1-07 simultáneamente.</div><div class="action-meta">Responsable: Sergio · Tiempo: 2–3 días</div></div></div>
+      <div class="action-item p1"><div class="action-badge">P1</div><div><div class="action-title">Agregar indicador de estado del cron en dashboard de supervisión</div><div class="action-body">El dashboard debe mostrar si el cron corrió exitosamente hoy. Si no corrió a las 7:15 AM ± 30 min, mostrar alerta roja. Elimina el falso negativo S1-06 donde "0/0" aparece como correcto.</div><div class="action-meta">Responsable: Sergio · Tiempo: 1 día</div></div></div>
+      <h3 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a16207;font-family:'JetBrains Mono',monospace;margin:28px 0 12px">P2 — Antes del 15 de junio</h3>
+      <div class="action-item p2"><div class="action-badge">P2</div><div><div class="action-title">Documentar los 8 ADRs faltantes</div><div class="action-body">No cambia la arquitectura — la documenta. Sin ADRs, cualquier cambio futuro parte de cero. Créalo debe documentar las 8 decisiones técnicas en formato estándar.</div><div class="action-meta">Responsable: Sergio (Créalo) · Tiempo: 1 día</div></div></div>
+      <div class="action-item p2"><div class="action-badge">P2</div><div><div class="action-title">Diseñar plan de migración DB para mes 7–10</div><div class="action-body">La tabla Respuestas_Checklist alcanza 125,000 filas (límite Team) en ~8 meses. El plan debe incluir: schema PostgreSQL, script de migración, plan de rollback y ventana de mantenimiento. Diseñarlo ahora, ejecutarlo en Q3.</div><div class="action-meta">Responsable: Créalo + SMC · Tiempo: 1 semana de diseño</div></div></div>
+      <div class="action-item p2"><div class="action-badge">P2</div><div><div class="action-title">Completar cobertura Sonner al 80% de flujos críticos</div><div class="action-body">Llevar las notificaciones toast de 20% a 80% de cobertura. Prioritario: cierre de caja exitoso, rechazo de checklist, descuadre detectado, depósito confirmado, pago a emprendedor ejecutado.</div><div class="action-meta">Responsable: Sergio · Tiempo: 3–5 días</div></div></div>
+      <h3 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#15803d;font-family:'JetBrains Mono',monospace;margin:28px 0 12px">P3 — Q3 2026 (julio–septiembre)</h3>
+      <div class="action-item p3"><div class="action-badge">P3</div><div><div class="action-title">Ejecutar migración Respuestas_Checklist → Supabase</div><div class="action-body">Implementar la migración diseñada en P2. Opción recomendada: mover solo Respuestas_Checklist a Supabase Free (mantener el resto en Airtable). Más rápida y menos riesgosa que migración completa.</div><div class="action-meta">Estimado: julio 2026 · Duración: 2–3 semanas · Riesgo: Medio con plan previo</div></div></div>
+      <div class="action-item p3"><div class="action-badge">P3</div><div><div class="action-title">Implementar CI/CD formal con GitHub Actions</div><div class="action-body">Pipeline mínimo: type-check → lint → tests → preview deploy en PR → prod deploy en merge. Garantiza que no se rompan features existentes con cada deploy.</div><div class="action-meta">Estimado: agosto 2026 · Duración: 1 semana</div></div></div>
+    </div>
+
+    <!-- ─── TAB 08: CIFRAS ─── -->
+    <div id="et-cifras" class="et-tab-content">
+      <div class="section-header" style="margin-bottom:24px">
+        <div class="section-eyebrow">08 · Cifras</div>
+        <h2 class="section-title" style="font-size:24px">El proyecto en números</h2>
+      </div>
+      <div class="cifras-grid" style="margin-bottom:28px;grid-template-columns:repeat(2,1fr)">
+        <div class="cifra"><div class="cifra-num danger">49</div><div class="cifra-label">Score final ponderado</div><div class="cifra-sub">/ 100 · F+ · vs 74 anterior</div></div>
+        <div class="cifra"><div class="cifra-num danger">8</div><div class="cifra-label">Defectos S1 críticos</div><div class="cifra-sub">bloqueantes producción</div></div>
+        <div class="cifra"><div class="cifra-num danger">4–7</div><div class="cifra-label">Días hasta colapso</div><div class="cifra-sub">Airtable Free · 182 reg/día</div></div>
+        <div class="cifra"><div class="cifra-num warn">8</div><div class="cifra-label">ADRs faltantes</div><div class="cifra-sub">decisiones sin documentar</div></div>
+        <div class="cifra"><div class="cifra-num" style="color:var(--primary)">12</div><div class="cifra-label">Módulos en producción</div><div class="cifra-sub">de 12 planificados Fase 1</div></div>
+        <div class="cifra"><div class="cifra-num success">75+</div><div class="cifra-label">Score con P0+P1</div><div class="cifra-sub">objetivo 2 semanas</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-title">Score histórico del debate</div>
+          <div class="dash-sub">Evolución de la evaluación</div>
+          <div class="bars" style="margin-top:14px">
+            <div class="bar-row"><span class="lbl">SMC Original</span><div class="bar-track"><div class="bar-fill muted" style="width:67%">67/100</div></div><span class="vl">C+</span></div>
+            <div class="bar-row"><span class="lbl">Créalo reclama</span><div class="bar-track"><div class="bar-fill gold" style="width:78%">78/100</div></div><span class="vl">B</span></div>
+            <div class="bar-row"><span class="lbl">SMC ajustado</span><div class="bar-track"><div class="bar-fill info" style="width:74%">74/100</div></div><span class="vl">B−</span></div>
+            <div class="bar-row"><span class="lbl" style="font-weight:700;color:var(--ink)">SMC definitivo</span><div class="bar-track"><div class="bar-fill danger" style="width:49%">49/100</div></div><span class="vl" style="font-weight:700;color:#b91c1c">F+</span></div>
+            <div class="bar-row"><span class="lbl">Con P0+P1 resueltos</span><div class="bar-track"><div class="bar-fill success" style="width:75%">75+</div></div><span class="vl" style="color:#15803d">B</span></div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-title">Cálculo Airtable Free — días hasta colapso</div>
+          <div class="dash-sub">182 registros dinámicos/día · 742 disponibles</div>
+          <div class="bars" style="margin-top:14px">
+            <div class="bar-row"><span class="lbl">Instancias cron</span><div class="bar-track"><div class="bar-fill" style="width:20%">36</div></div><span class="vl">/día</span></div>
+            <div class="bar-row"><span class="lbl">Respuestas ítems</span><div class="bar-track"><div class="bar-fill" style="width:79%">144</div></div><span class="vl">/día</span></div>
+            <div class="bar-row"><span class="lbl">Cierres de caja</span><div class="bar-track"><div class="bar-fill gold" style="width:1%;min-width:20px">2</div></div><span class="vl">/día</span></div>
+            <div style="border-top:1px solid var(--border);margin:10px 0;padding-top:10px">
+              <div class="bar-row"><span class="lbl" style="font-weight:700">Total dinámico</span><div class="bar-track"><div class="bar-fill danger" style="width:100%">182</div></div><span class="vl" style="font-weight:700;color:#b91c1c">/día</span></div>
+            </div>
+          </div>
+          <div class="seq" style="margin-top:12px;padding:14px;font-size:11.5px">
+<span class="lbl">Límite Free:   </span><span class="ok">1,000 registros</span>
+<span class="lbl">Seed inicial:  </span><span class="warn"> 258 registros</span>
+<span class="lbl">Disponibles:   </span><span class="warn"> 742 registros</span>
+<span class="lbl">÷ 182/día  =   </span><span class="err"> 4.1 días → COLAPSO</span>
+          </div>
+        </div>
+      </div>
+      <div class="dash-grid" style="margin-top:20px">
+        <div class="dash-card">
+          <div class="dash-title">Estado defectos por severidad</div>
+          <div class="dash-sub">29 defectos totales identificados por Cami</div>
+          <div class="bars" style="margin-top:14px">
+            <div class="bar-row"><span class="lbl">S1 Críticos</span><div class="bar-track"><div class="bar-fill danger" style="width:100%">8</div></div><span class="vl"><span class="badge badge-s1">S1</span></span></div>
+            <div class="bar-row"><span class="lbl">S2 Altos</span><div class="bar-track"><div class="bar-fill warn" style="width:100%">10</div></div><span class="vl"><span class="badge badge-s2">S2</span></span></div>
+            <div class="bar-row"><span class="lbl">S3 Medios</span><div class="bar-track"><div class="bar-fill gold" style="width:80%">8</div></div><span class="vl"><span class="badge badge-s3">S3</span></span></div>
+            <div class="bar-row"><span class="lbl">S4 Bajos</span><div class="bar-track"><div class="bar-fill success" style="width:30%">3</div></div><span class="vl"><span class="badge badge-s4">S4</span></span></div>
+          </div>
+        </div>
+        <div class="dash-card dark">
+          <div class="dash-title">Score proyectado por fase</div>
+          <div class="dash-sub">Con resolución progresiva de deuda</div>
+          <div class="bars" style="margin-top:14px">
+            <div class="bar-row"><span class="lbl" style="color:#8b7a82">Hoy (F+)</span><div class="bar-track" style="background:rgba(255,255,255,.1)"><div class="bar-fill danger" style="width:49%">49</div></div><span class="vl" style="color:#8b7a82">49</span></div>
+            <div class="bar-row"><span class="lbl" style="color:#8b7a82">Post P0</span><div class="bar-track" style="background:rgba(255,255,255,.1)"><div class="bar-fill gold" style="width:63%">63</div></div><span class="vl" style="color:#8b7a82">63</span></div>
+            <div class="bar-row"><span class="lbl" style="color:#8b7a82">Post P0+P1</span><div class="bar-track" style="background:rgba(255,255,255,.1)"><div class="bar-fill success" style="width:75%">75</div></div><span class="vl" style="color:#c9a66b">75</span></div>
+            <div class="bar-row"><span class="lbl" style="color:#8b7a82">Post P2+P3</span><div class="bar-track" style="background:rgba(255,255,255,.1)"><div class="bar-fill success" style="width:86%">86+</div></div><span class="vl" style="color:#c9a66b">86</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- FOOTER -->
 </main><!-- /main-content -->
 
@@ -3168,6 +3639,26 @@ function toggleGroup(id){
 // Mostrar Inicio por defecto al cargar
 document.addEventListener('DOMContentLoaded',()=>{ showSection('home'); });
 
+function switchEtTab(id, btn){
+  document.querySelectorAll('#eval-tecnica .et-tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#eval-tecnica .et-tab-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('et-'+id);
+  if(el) el.classList.add('active');
+  if(btn) btn.classList.add('active');
+  // reset inner dim tabs
+  document.querySelectorAll('[id^="et-dim-"]').forEach(t=>t.classList.remove('active'));
+  const firstDim=document.getElementById('et-dim-claus');
+  if(firstDim) firstDim.classList.add('active');
+  document.querySelectorAll('#et-dimensiones .tab-btn').forEach((b,i)=>{if(i===0)b.classList.add('active');else b.classList.remove('active')});
+}
+function switchTab(group, id, btn){
+  document.querySelectorAll('[id^="'+group+'-"]').forEach(t=>t.classList.remove('active'));
+  const parentSection=btn ? btn.closest('.et-tab-content,section') : document;
+  if(parentSection) parentSection.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById(group+'-'+id);
+  if(el) el.classList.add('active');
+  if(btn) btn.classList.add('active');
+}
 function showTab(id){
   const btn=event.currentTarget;
   const tabs=btn.parentElement;
@@ -3277,7 +3768,9 @@ function playFlow(btn){
 const REPO_URL = "https://github.com/SmartConnection-CodeHub/banco-smc-public";
 const REPO_COMPARE = REPO_URL + "/compare";
 const VERSIONS = [
-  { tag:"v8", author:"s", name:"Sebastián", date:"2026-05-12 10:00", current:true, sha:"HEAD",
+  { tag:"v9", author:"s", name:"Sebastián", date:"2026-05-12 12:00", current:true, sha:"HEAD",
+    msg:"Evaluación Técnica Definitiva integrada · 8 secciones con tabs en menú Técnico" },
+  { tag:"v8", author:"s", name:"Sebastián", date:"2026-05-12 10:00", sha:"HEAD~1",
     msg:"Layout Principal · sidebar accordion + secciones independientes" },
   { tag:"v7", author:"g", name:"Guillermo", date:"2026-05-11 20:35", sha:"d05d488",
     msg:"Proceso homologado a estilo Aprobación + sidebar versiones" },
