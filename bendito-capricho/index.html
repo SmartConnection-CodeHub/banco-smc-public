@@ -1273,6 +1273,56 @@ section.hidden-section{display:none !important}
 }
 .ce-arrow.dyn-active .pulse{animation-duration:.6s !important;background:var(--success) !important;box-shadow:0 0 16px var(--success),0 0 0 6px rgba(21,128,61,.25) !important}
 
+/* ── MOBILE DRAWER ──────────────────────────────────────────── */
+.hamburger-btn{
+  display:none;
+  background:none;border:none;cursor:pointer;
+  padding:8px;border-radius:8px;
+  color:var(--ink);font-size:20px;line-height:1;
+  transition:background .15s;
+}
+.hamburger-btn:hover{background:var(--primary-soft);color:var(--primary)}
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(31,20,22,.45);z-index:149;
+  backdrop-filter:blur(2px);
+  opacity:0;transition:opacity .28s ease;
+}
+.sidebar-overlay.active{opacity:1}
+@media(max-width:767px){
+  .hamburger-btn{display:grid;place-items:center}
+  .header-actions .header-link{display:none}
+  .sidebar{
+    transform:translateX(-100%);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+    top:0;height:100vh;z-index:150;
+    overflow-y:auto;overflow-x:hidden;
+    box-shadow:4px 0 32px rgba(31,20,22,.18);
+    padding-bottom:40px;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-close{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px 12px;border-bottom:1px solid var(--border);
+    margin-bottom:8px;
+  }
+  .sidebar-close .close-btn{
+    background:none;border:none;cursor:pointer;
+    font-size:22px;color:var(--ink-mute);padding:4px;border-radius:6px;
+    transition:color .15s;line-height:1;
+  }
+  .sidebar-close .close-btn:hover{color:var(--ink)}
+  .sidebar-brand{font-size:14px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:8px}
+  .sidebar-brand-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));display:grid;place-items:center;color:#fff;font-weight:800;font-size:11px}
+  .sidebar-overlay{display:block}
+  main.main-content{margin-left:0;padding-top:64px}
+  footer{margin-left:0}
+  .hero{padding:48px 0 40px}
+  @media(min-width:768px){.hero{padding:120px 0 96px}}
+}
+@media(min-width:768px){
+  .sidebar-close{display:none}
+}
 /* SCROLL TO TOP */
 .scroll-top{
   position:fixed;bottom:24px;right:24px;
@@ -1365,14 +1415,22 @@ section.hidden-section{display:none !important}
 </head>
 <body>
 
+<!-- OVERLAY mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileMenu()"></div>
+
 <!-- HEADER -->
 <header>
   <div class="header-grid">
-    <div class="brand">
-      <div class="brand-mark">BC</div>
-      <div>
-        Bendito Capricho
-        <span class="brand-sub">Plataforma de supervisión · Créalo SpA</span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menú">
+        &#9776;
+      </button>
+      <div class="brand">
+        <div class="brand-mark">BC</div>
+        <div>
+          Bendito Capricho
+          <span class="brand-sub">Plataforma de supervisión · Créalo SpA</span>
+        </div>
       </div>
     </div>
     <div class="header-actions">
@@ -1382,7 +1440,15 @@ section.hidden-section{display:none !important}
 </header>
 
 <!-- SIDEBAR -->
-<nav class="sidebar">
+<nav class="sidebar" id="mainSidebar">
+  <!-- Header interno del drawer (solo mobile) -->
+  <div class="sidebar-close">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-mark">BC</div>
+      Bendito Capricho
+    </div>
+    <button class="close-btn" onclick="closeMobileMenu()" aria-label="Cerrar menú">&#10005;</button>
+  </div>
   <div class="sidebar-group">
     <a class="sidebar-item active" data-section="home" onclick="showSection('home')" style="padding-left:20px;border-left:3px solid transparent">Inicio</a>
   </div>
@@ -3609,6 +3675,26 @@ section.hidden-section{display:none !important}
 <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
 
 <script>
+// ── MOBILE DRAWER ─────────────────────────────────────────────
+function toggleMobileMenu(){
+  const sidebar=document.getElementById('mainSidebar');
+  const overlay=document.getElementById('sidebarOverlay');
+  const isOpen=sidebar.classList.contains('open');
+  if(isOpen){ closeMobileMenu(); }
+  else {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+    document.body.style.overflow='hidden';
+  }
+}
+function closeMobileMenu(){
+  const sidebar=document.getElementById('mainSidebar');
+  const overlay=document.getElementById('sidebarOverlay');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('active');
+  document.body.style.overflow='';
+}
+
 // ── NAVEGACIÓN POR SECCIONES ──────────────────────────────────
 function showSection(id){
   document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
@@ -3625,6 +3711,8 @@ function showSection(id){
     const hasActive=g.querySelector(`.sidebar-item[data-section="${id}"]`);
     g.classList.toggle('open', !!hasActive);
   });
+  // Cerrar drawer en mobile
+  if(window.innerWidth < 768) closeMobileMenu();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function toggleGroup(id){
@@ -3768,9 +3856,11 @@ function playFlow(btn){
 const REPO_URL = "https://github.com/SmartConnection-CodeHub/banco-smc-public";
 const REPO_COMPARE = REPO_URL + "/compare";
 const VERSIONS = [
-  { tag:"v9", author:"s", name:"Sebastián", date:"2026-05-12 12:00", current:true, sha:"HEAD",
+  { tag:"v10", author:"s", name:"Sebastián", date:"2026-05-12 13:00", current:true, sha:"HEAD",
+    msg:"Mobile drawer tipo Principal · hamburger + overlay + cierre al navegar" },
+  { tag:"v9", author:"s", name:"Sebastián", date:"2026-05-12 12:00", sha:"HEAD~1",
     msg:"Evaluación Técnica Definitiva integrada · 8 secciones con tabs en menú Técnico" },
-  { tag:"v8", author:"s", name:"Sebastián", date:"2026-05-12 10:00", sha:"HEAD~1",
+  { tag:"v8", author:"s", name:"Sebastián", date:"2026-05-12 10:00", sha:"HEAD~2",
     msg:"Layout Principal · sidebar accordion + secciones independientes" },
   { tag:"v7", author:"g", name:"Guillermo", date:"2026-05-11 20:35", sha:"d05d488",
     msg:"Proceso homologado a estilo Aprobación + sidebar versiones" },
