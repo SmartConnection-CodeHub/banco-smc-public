@@ -42,9 +42,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 /* TOPBAR */
 .topbar{position:sticky;top:0;z-index:60;color:#fff;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-md);position:relative;overflow:hidden;isolation:isolate}
 .topbar-bg{position:absolute;inset:0;z-index:-1;transition:clip-path 800ms var(--ease-fiori),opacity 400ms ease}
-.topbar-bg.all{background:linear-gradient(120deg,var(--smc-burdeo) 0%,var(--smc-burdeo-dark) 100%);clip-path:inset(0 0 0 0)}
+.topbar-bg.all{background:linear-gradient(120deg,var(--sap-brand) 0%,var(--smc-burdeo) 100%);clip-path:inset(0 0 0 0)}
 .topbar-bg.sap{background:linear-gradient(120deg,var(--sap-blue) 0%,var(--sap-brand) 100%);clip-path:inset(0 100% 0 0)}
-.topbar-bg.pyme{background:linear-gradient(120deg,var(--ia-green) 0%,#005F55 100%);clip-path:inset(0 100% 0 0)}
+.topbar-bg.pyme{background:linear-gradient(120deg,var(--ia-green) 0%,var(--sap-brand) 100%);clip-path:inset(0 100% 0 0)}
 .topbar[data-current="sap"] .topbar-bg.sap{clip-path:inset(0 0 0 0)}
 .topbar[data-current="pyme"] .topbar-bg.pyme{clip-path:inset(0 0 0 0);transition-delay:80ms}
 .topbar[data-current="pyme"] .topbar-bg.sap{clip-path:inset(0 0 0 0)}
@@ -52,9 +52,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .topbar.is-sweep::after{opacity:1;transform:translateX(400%);transition:transform 900ms var(--ease-fiori),opacity 900ms ease}
 .topbar-inner{max-width:1600px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:relative;z-index:2}
 .brand{display:flex;align-items:center;gap:10px}
-.brand-mark{width:34px;height:34px;border-radius:8px;background:var(--smc-cream);color:var(--smc-burdeo);display:grid;place-items:center;font-weight:800;font-size:15px;transition:color 600ms var(--ease-fiori),background 600ms var(--ease-fiori)}
-.topbar[data-current="sap"] .brand-mark{background:#fff;color:var(--sap-blue)}
-.topbar[data-current="pyme"] .brand-mark{background:#fff;color:var(--ia-green)}
+.brand-mark{width:34px;height:34px;border-radius:8px;background:#fff;color:var(--sap-brand);display:grid;place-items:center;font-weight:800;font-size:15px;transition:color 600ms var(--ease-fiori),background 600ms var(--ease-fiori)}
+.topbar[data-current="all"] .brand-mark{color:var(--sap-brand)}
+.topbar[data-current="sap"] .brand-mark{color:var(--sap-blue)}
+.topbar[data-current="pyme"] .brand-mark{color:var(--ia-green)}
 .brand-title{font-size:15px;font-weight:700;letter-spacing:-.01em}
 .brand-sub{font-size:11px;font-weight:500;opacity:.75;display:block;margin-top:-2px;letter-spacing:.04em;text-transform:uppercase}
 .spacer{flex:1}
@@ -63,7 +64,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .btn-sidebar svg{width:13px;height:13px}
 .track-toggle{display:flex;background:rgba(0,0,0,.18);border-radius:99px;padding:3px;gap:2px}
 .track-btn{padding:7px 14px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.7);border-radius:99px;transition:all var(--dur) var(--ease-fiori)}
-.track-btn.is-active{background:#fff;color:var(--smc-burdeo)}
+.track-btn.is-active{background:#fff;color:var(--sap-brand)}
+.topbar[data-current="all"] .track-btn.is-active{color:var(--sap-brand)}
 .topbar[data-current="sap"] .track-btn.is-active{color:var(--sap-blue)}
 .topbar[data-current="pyme"] .track-btn.is-active{color:var(--ia-green)}
 .track-btn .dot{display:inline-block;width:7px;height:7px;border-radius:99px;margin-right:6px;vertical-align:middle}
