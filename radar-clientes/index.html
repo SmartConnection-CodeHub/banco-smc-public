@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RADAR Clientes · SMC Connection</title>
+<style>
+:root{
+  --smc-burdeo:#722F37; --smc-burdeo-dark:#5A252C; --smc-cream:#F5F1E8;
+  --smc-black:#1a1a1a; --smc-gray-900:#0f1115; --smc-gray-700:#3a3f47;
+  --smc-gray-500:#7b8290; --smc-gray-300:#d6d9de; --smc-gray-100:#f1f2f5;
+  --sap-blue:#1B3A5C; --sap-blue-soft:#dbe5f0;
+  --ia-green:#00897B; --ia-green-soft:#d4eae6;
+  --p1:#c0392b; --p2:#e67e22; --p3:#f1c40f;
+  --shadow-sm:0 1px 2px rgba(15,17,21,.06);
+  --shadow-md:0 4px 12px rgba(15,17,21,.08);
+  --shadow-lg:0 12px 32px rgba(15,17,21,.12);
+  --radius:14px; --radius-sm:8px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:var(--font);color:var(--smc-black);background:var(--smc-cream);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{line-height:1.45;font-size:15px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* HEADER */
+.topbar{position:sticky;top:0;z-index:50;background:var(--smc-burdeo);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+.topbar-inner{max-width:1400px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:var(--smc-cream);color:var(--smc-burdeo);display:grid;place-items:center;font-weight:800;font-size:14px}
+.brand-title{font-size:15px}
+.brand-sub{font-size:11px;font-weight:500;opacity:.75;display:block;margin-top:-2px}
+.spacer{flex:1}
+
+.track-toggle{display:flex;background:rgba(0,0,0,.18);border-radius:99px;padding:3px;gap:2px}
+.track-btn{padding:7px 14px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.7);border-radius:99px;transition:all .2s}
+.track-btn.is-active{background:#fff;color:var(--smc-burdeo)}
+.track-btn .dot{display:inline-block;width:7px;height:7px;border-radius:99px;margin-right:6px;vertical-align:middle}
+.track-btn[data-track="sap"] .dot{background:var(--sap-blue)}
+.track-btn[data-track="pyme"] .dot{background:var(--ia-green)}
+.track-btn[data-track="all"] .dot{background:var(--smc-gray-500)}
+
+/* KPI ROW */
+.kpis{max-width:1400px;margin:0 auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.kpi{background:#fff;border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-sm);border:1px solid var(--smc-gray-100);position:relative;overflow:hidden}
+.kpi-label{font-size:11.5px;color:var(--smc-gray-500);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.kpi-value{font-size:26px;font-weight:700;margin-top:4px;line-height:1.1;color:var(--smc-black);font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:12px;color:var(--smc-gray-500);margin-top:4px}
+.kpi-accent{height:3px;border-radius:99px;margin-top:10px;background:var(--smc-gray-100);overflow:hidden;position:relative}
+.kpi-accent::after{content:"";display:block;height:100%;background:var(--smc-burdeo);width:65%}
+.kpi.is-money .kpi-value{color:var(--smc-burdeo)}
+.kpi.is-pipeline .kpi-accent::after{background:linear-gradient(90deg,var(--p1),var(--p2),var(--p3));width:80%}
+
+/* CHARTS */
+.charts{max-width:1400px;margin:0 auto;padding:0 20px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px}
+.chart-card{background:#fff;border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow-sm);border:1px solid var(--smc-gray-100)}
+.chart-title{font-size:13.5px;font-weight:700;color:var(--smc-black);display:flex;justify-content:space-between;align-items:baseline}
+.chart-title .hint{font-size:11px;font-weight:500;color:var(--smc-gray-500)}
+.chart-sub{font-size:11.5px;color:var(--smc-gray-500);margin-top:2px;margin-bottom:14px}
+.chart-svg{width:100%;height:auto;display:block;font-family:var(--font);overflow:visible}
+.chart-svg text{font-size:10.5px;fill:var(--smc-gray-700)}
+.chart-svg .axis{stroke:var(--smc-gray-300);stroke-width:1}
+.chart-svg .lbl-y{font-size:11px;fill:var(--smc-gray-700);font-weight:600}
+.chart-svg .lbl-val{font-size:10.5px;fill:var(--smc-gray-700);font-variant-numeric:tabular-nums}
+.chart-svg .bar-sap{fill:var(--sap-blue)}
+.chart-svg .bar-pyme{fill:var(--ia-green)}
+.chart-svg .bar:hover{opacity:.8;cursor:pointer}
+.chart-legend{display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--smc-gray-700)}
+.chart-legend span{display:flex;align-items:center;gap:5px}
+.chart-legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+/* FILTERS */
+.filters{max-width:1400px;margin:0 auto;padding:0 20px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:220px;position:relative;display:flex;align-items:center;background:#fff;border:1px solid var(--smc-gray-300);border-radius:var(--radius-sm);padding:0 12px;box-shadow:var(--shadow-sm)}
+.search input{flex:1;padding:10px 0;border:none;background:none;outline:none;font-size:14px;font-family:inherit}
+.search .kbd{font-family:var(--font-mono);font-size:11px;background:var(--smc-gray-100);color:var(--smc-gray-700);padding:2px 6px;border-radius:4px}
+.icon{width:16px;height:16px;color:var(--smc-gray-500);margin-right:8px}
+
+.view-toggle{display:flex;background:#fff;border:1px solid var(--smc-gray-300);border-radius:var(--radius-sm);padding:3px;gap:2px;box-shadow:var(--shadow-sm)}
+.view-btn{padding:7px 12px;font-size:12px;font-weight:600;color:var(--smc-gray-500);border-radius:6px;transition:all .15s;display:flex;align-items:center;gap:5px}
+.view-btn.is-active{background:var(--smc-burdeo);color:#fff}
+.view-btn svg{width:13px;height:13px}
+
+.chip-group{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:7px 12px;font-size:12.5px;font-weight:500;background:#fff;color:var(--smc-gray-700);border:1px solid var(--smc-gray-300);border-radius:99px;transition:all .15s}
+.chip:hover{border-color:var(--smc-burdeo);color:var(--smc-burdeo)}
+.chip.is-active{background:var(--smc-burdeo);color:#fff;border-color:var(--smc-burdeo)}
+.chip .count{opacity:.7;font-weight:400;margin-left:4px}
+
+.filters-row{max-width:1400px;margin:0 auto;padding:0 20px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--smc-gray-500)}
+.filters-row strong{color:var(--smc-gray-700);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;margin-right:8px}
+
+/* GRID CARDS */
+.grid{max-width:1400px;margin:0 auto;padding:8px 20px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.grid.is-hidden{display:none}
+.card{background:#fff;border-radius:var(--radius);padding:18px;border:1px solid var(--smc-gray-100);box-shadow:var(--shadow-sm);transition:all .2s;cursor:pointer;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--smc-gray-300)}
+.card[data-track="sap"]::before{background:var(--sap-blue)}
+.card[data-track="pyme"]::before{background:var(--ia-green)}
+.card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--smc-burdeo)}
+
+.card-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.card-name{font-size:16px;font-weight:700;color:var(--smc-black);line-height:1.25}
+.card-badge{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.card-badge.sap{background:var(--sap-blue-soft);color:var(--sap-blue)}
+.card-badge.pyme{background:var(--ia-green-soft);color:var(--ia-green)}
+
+.card-industry{font-size:12px;color:var(--smc-gray-500);font-weight:500}
+.card-revenue{display:flex;align-items:baseline;gap:6px;margin-top:4px}
+.card-revenue .v{font-size:22px;font-weight:700;color:var(--smc-black);font-variant-numeric:tabular-nums}
+.card-revenue .u{font-size:11px;color:var(--smc-gray-500);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.card-revenue.nd .v{font-size:14px;color:var(--smc-gray-500);font-weight:600}
+
+.card-software{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.sw-pill{font-size:11px;font-weight:500;background:var(--smc-gray-100);color:var(--smc-gray-700);padding:3px 8px;border-radius:6px;font-family:var(--font-mono)}
+.sw-pill.is-sap{background:var(--sap-blue-soft);color:var(--sap-blue)}
+.sw-pill.is-ia{background:var(--ia-green-soft);color:var(--ia-green)}
+
+.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:10px;border-top:1px solid var(--smc-gray-100)}
+.card-notes{font-size:11.5px;color:var(--smc-gray-500);font-style:italic}
+.pipeline-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px}
+.pipeline-tag.p1{background:#fde2dc;color:var(--p1)}
+.pipeline-tag.p2{background:#fde8d4;color:var(--p2)}
+.pipeline-tag.p3{background:#fdf5cd;color:#b7960c}
+.pipeline-tag.smc{background:#e8d9dc;color:var(--smc-burdeo)}
+
+/* TABLE VIEW */
+.tbl-wrap{max-width:1400px;margin:0 auto;padding:8px 20px 60px;display:none}
+.tbl-wrap.is-active{display:block}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);font-size:13px}
+.tbl thead{background:var(--smc-gray-100)}
+.tbl th{padding:11px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--smc-gray-700);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;white-space:nowrap}
+.tbl th:hover{color:var(--smc-burdeo)}
+.tbl th .sort{opacity:.4;font-size:9px;margin-left:3px}
+.tbl th.asc .sort,.tbl th.desc .sort{opacity:1;color:var(--smc-burdeo)}
+.tbl td{padding:10px 12px;border-top:1px solid var(--smc-gray-100);vertical-align:middle}
+.tbl tr:hover{background:var(--smc-cream);cursor:pointer}
+.tbl .col-name{font-weight:600;color:var(--smc-black)}
+.tbl .col-rev{text-align:right;font-variant-numeric:tabular-nums}
+.tbl .col-rev.nd{color:var(--smc-gray-500);font-style:italic;font-size:11.5px}
+.tbl .col-tkt{text-align:right;font-variant-numeric:tabular-nums;color:var(--smc-burdeo);font-weight:600}
+.tbl .col-sw{max-width:240px;font-size:11.5px;color:var(--smc-gray-700)}
+.tbl .col-pip{text-align:center}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(15,17,21,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;backdrop-filter:blur(4px)}
+.modal-bg.is-open{display:flex}
+.modal{background:#fff;border-radius:var(--radius);max-width:560px;width:100%;max-height:90vh;overflow:auto;box-shadow:var(--shadow-lg);animation:slide .3s ease}
+@keyframes slide{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.modal-head{padding:24px 24px 14px;border-bottom:1px solid var(--smc-gray-100);position:sticky;top:0;background:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.modal-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:6px}
+.modal-close{width:32px;height:32px;border-radius:99px;background:var(--smc-gray-100);color:var(--smc-gray-700);font-size:20px;display:grid;place-items:center;flex-shrink:0}
+.modal-close:hover{background:var(--smc-gray-300)}
+.modal-body{padding:18px 24px 24px}
+.modal-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--smc-gray-100);font-size:13.5px}
+.modal-row .k{color:var(--smc-gray-500);font-weight:500}
+.modal-row .v{color:var(--smc-black);font-weight:600;text-align:right}
+.modal-section-title{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--smc-gray-500);font-weight:700;margin:20px 0 8px}
+.modal-prompt{background:var(--smc-cream);border-left:3px solid var(--smc-burdeo);padding:12px 14px;border-radius:6px;font-size:13px;color:var(--smc-gray-700);font-style:italic}
+.modal-cta{margin-top:18px;display:flex;gap:10px}
+.btn{padding:11px 16px;font-size:13px;font-weight:600;border-radius:var(--radius-sm);transition:all .15s}
+.btn-primary{background:var(--smc-burdeo);color:#fff}
+.btn-primary:hover{background:var(--smc-burdeo-dark)}
+.btn-ghost{background:var(--smc-gray-100);color:var(--smc-gray-700)}
+.btn-ghost:hover{background:var(--smc-gray-300)}
+
+/* EMPTY */
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--smc-gray-500)}
+.empty-icon{font-size:42px;margin-bottom:10px;opacity:.5}
+
+/* FOOTER */
+.foot{max-width:1400px;margin:0 auto;padding:30px 20px 50px;font-size:11.5px;color:var(--smc-gray-500);border-top:1px solid var(--smc-gray-300);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center}
+
+@media (max-width:540px){
+  .kpis{padding:14px;gap:8px}
+  .kpi{padding:12px 14px}
+  .kpi-value{font-size:20px}
+  .charts{padding:0 14px 14px;gap:10px}
+  .chart-card{padding:14px 16px}
+  .filters{padding:0 14px 12px}
+  .grid{padding:6px 14px 40px;grid-template-columns:1fr;gap:10px}
+  .card{padding:15px}
+  .topbar-inner{padding:12px 14px}
+  .track-btn{padding:6px 10px;font-size:11.5px}
+  .tbl-wrap{padding:6px 14px 40px;overflow-x:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div>
+        <div class="brand-title">RADAR · Clientes</div>
+        <span class="brand-sub">SMC Connection · Chile · v2</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="track-toggle" role="tablist" aria-label="Track de cliente">
+      <button class="track-btn is-active" data-track="all">Todos</button>
+      <button class="track-btn" data-track="sap"><span class="dot"></span>SAP</button>
+      <button class="track-btn" data-track="pyme"><span class="dot"></span>No-SAP · IA</button>
+    </div>
+  </div>
+</header>
+
+<section class="kpis" id="kpis"></section>
+
+<section class="charts" id="charts"></section>
+
+<section class="filters">
+  <label class="search" aria-label="Buscar empresa o software">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" placeholder="Buscar empresa, industria o software…" autocomplete="off">
+    <span class="kbd">⌘K</span>
+  </label>
+  <div class="view-toggle" role="tablist" aria-label="Vista">
+    <button class="view-btn is-active" data-view="cards">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Cards
+    </button>
+    <button class="view-btn" data-view="table">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      Tabla
+    </button>
+  </div>
+</section>
+
+<div class="filters-row">
+  <strong>Industria</strong>
+  <div class="chip-group" id="industryChips"></div>
+</div>
+<div class="filters-row">
+  <strong>Software</strong>
+  <div class="chip-group" id="softwareChips"></div>
+</div>
+
+<main class="grid" id="grid"></main>
+<section class="tbl-wrap" id="tableWrap"></section>
+
+<footer class="foot">
+  <div>📡 RADAR · Banco vivo · refresco cada 6 meses · Fuente: CMF + casos públicos + inferencia SMC</div>
+  <a href="Prospectos_SAP_Chile_2026.xlsx" download style="background:#722F37;color:#fff;padding:8px 14px;border-radius:8px;font-weight:600;font-size:12px;text-decoration:none">⬇ Excel CRM (69 prospectos · 35 columnas)</a>
+</footer>
+
+<!-- MODAL DETALLE -->
+<div class="modal-bg" id="modalBg" role="dialog" aria-modal="true">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <div>
+        <h2 class="modal-title" id="mTitle"></h2>
+        <div id="mBadgeWrap"></div>
+      </div>
+      <button class="modal-close" id="mClose" aria-label="Cerrar">×</button>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+// ====================== DATA ======================
+const DATA = [
+  // SAP TRACK
+  {t:"sap",ind:"Retail",e:"Cencosud",rev:16000,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"],pip:"P2"},
+  {t:"sap",ind:"Retail",e:"Falabella",rev:11500,note:"Grupo regional · áreas migradas a Oracle",sw:["SAP ECC","Oracle Fusion","Workday"]},
+  {t:"sap",ind:"Retail",e:"Walmart Chile (Líder)",rev:6500,note:"Solo Chile",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Retail",e:"SMU (Unimarc)",rev:3200,note:"Solo Chile",sw:["SAP ECC","Talana"]},
+  {t:"sap",ind:"Retail",e:"Ripley",rev:1900,note:"Chile + Perú",sw:["SAP ECC","Salesforce"]},
+  {t:"sap",ind:"Minería",e:"Codelco",rev:16700,note:"Estatal · cobre",sw:["SAP S/4HANA","SuccessFactors"],pip:"P3"},
+  {t:"sap",ind:"Minería",e:"BHP Escondida",rev:13000,note:"Mina única más grande",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Minería",e:"SQM",rev:7500,note:"Litio + yodo",sw:["SAP S/4HANA","Salesforce"],pip:"P1"},
+  {t:"sap",ind:"Minería",e:"Antofagasta Minerals",rev:5800,note:"Grupo Luksic",sw:["SAP ECC","Talana"],pip:"P1"},
+  {t:"sap",ind:"Minería",e:"Collahuasi",rev:5200,note:"Anglo+Glencore",sw:["SAP S/4HANA"],pip:"P1"},
+  {t:"sap",ind:"Energía",e:"ENAP",rev:7500,note:"Petróleo estatal",sw:["SAP S/4HANA","SuccessFactors"]},
+  {t:"sap",ind:"Energía",e:"Enel Chile",rev:4500,note:"Generación + distribución",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Energía",e:"Colbún",rev:2500,note:"Generación",sw:["SAP ECC","Salesforce"]},
+  {t:"sap",ind:"Energía",e:"AES Andes",rev:2200,note:"Generación",sw:["SAP S/4HANA"]},
+  {t:"sap",ind:"Energía",e:"Engie Chile",rev:1500,note:"Generación",sw:["SAP S/4HANA"]},
+  {t:"sap",ind:"Forestal",e:"CMPC",rev:7500,note:"Grupo Matte",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Forestal",e:"Arauco",rev:6500,note:"Grupo Angelini",sw:["SAP S/4HANA","Salesforce"]},
+  {t:"sap",ind:"Forestal",e:"Masisa",rev:350,note:"Tableros",sw:["SAP ECC","Talana"]},
+  {t:"sap",ind:"Alimentos",e:"Agrosuper",rev:4200,note:"Grupo Vial",sw:["SAP S/4HANA","Salesforce"]},
+  {t:"sap",ind:"Alimentos",e:"Embotelladora Andina",rev:3300,note:"Coca-Cola bottler",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Alimentos",e:"CCU",rev:2700,note:"Bebidas",sw:["SAP S/4HANA","SuccessFactors","Salesforce"]},
+  {t:"sap",ind:"Alimentos",e:"Carozzi",rev:1800,note:"Alimentos",sw:["SAP S/4HANA"]},
+  {t:"sap",ind:"Alimentos",e:"Nestlé Chile",rev:1500,note:"Multinacional",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Vitivinícola",e:"Concha y Toro",rev:1700,note:"Líder exportador",sw:["SAP S/4HANA","Salesforce"],pip:"P2"},
+  {t:"sap",ind:"Vitivinícola",e:"VSPT",rev:350,note:"Grupo CCU",sw:["SAP S/4HANA"]},
+  {t:"sap",ind:"Vitivinícola",e:"Santa Rita",rev:300,note:"Grupo Claro",sw:["SAP ECC"],pip:"P2"},
+  {t:"sap",ind:"Vitivinícola",e:"Errázuriz",rev:150,note:"Familia Chadwick",sw:["SAP B1"]},
+  {t:"sap",ind:"Vitivinícola",e:"Undurraga",rev:130,note:"Familiar",sw:["SAP B1"]},
+  {t:"sap",ind:"Banca",e:"Santander Chile",rev:2800,note:"Ingreso operacional",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Banca",e:"BCI",rev:2700,note:"Ingreso operacional",sw:["SAP S/4HANA","Salesforce"]},
+  {t:"sap",ind:"Banca",e:"Banco de Chile",rev:2500,note:"Ingreso operacional",sw:["SAP ECC","Workday"]},
+  {t:"sap",ind:"Banca",e:"BancoEstado",rev:2000,note:"Estatal",sw:["SAP ECC"]},
+  {t:"sap",ind:"Banca",e:"Scotiabank Chile",rev:1400,note:"Ingreso operacional",sw:["SAP S/4HANA","Workday"],pip:"P1"},
+  {t:"sap",ind:"Construcción",e:"Sigdo Koppers",rev:3500,note:"Grupo conglomerado",sw:["SAP S/4HANA","Talana"],pip:"P2"},
+  {t:"sap",ind:"Construcción",e:"Salfacorp",rev:1900,note:"Edificación + ICSA",sw:["SAP ECC","Buk"],pip:"P2"},
+  {t:"sap",ind:"Construcción",e:"Echeverría Izquierdo",rev:700,note:"Construcción",sw:["SAP B1","Buk"]},
+  {t:"sap",ind:"Construcción",e:"Moller & Pérez-Cotapos",rev:350,note:"Inmobiliaria",sw:["SAP B1"]},
+  {t:"sap",ind:"Construcción",e:"Bbosch",rev:200,note:"Montaje industrial",sw:["SAP B1"]},
+  {t:"sap",ind:"Telecom",e:"Entel",rev:3400,note:"Chile + Perú",sw:["SAP S/4HANA","Salesforce"]},
+  {t:"sap",ind:"Telecom",e:"Movistar Chile",rev:2000,note:"Telefónica",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Telecom",e:"Claro Chile",rev:1200,note:"América Móvil",sw:["SAP ECC"]},
+  {t:"sap",ind:"Telecom",e:"WOM",rev:850,note:"Solo Chile",sw:["SAP ECC","Salesforce"]},
+  {t:"sap",ind:"Telecom",e:"VTR",rev:700,note:"Solo Chile",sw:["SAP ECC"]},
+  {t:"sap",ind:"Logística",e:"Ultramar",rev:1500,note:"Grupo Von Appen",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Logística",e:"CSAV",rev:800,note:"Naviera",sw:["SAP ECC"]},
+  {t:"sap",ind:"Logística",e:"SAAM",rev:700,note:"Logística portuaria",sw:["SAP S/4HANA"]},
+  {t:"sap",ind:"Logística",e:"Sitrans",rev:300,note:"Logística",sw:["SAP B1","Buk"]},
+  {t:"sap",ind:"Logística",e:"DHL Chile",rev:250,note:"Courier",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Salud",e:"Banmédica",rev:1500,note:"Isapre + clínicas",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Salud",e:"Cruz Blanca",rev:900,note:"Isapre + Integramédica",sw:["SAP ECC","Salesforce"]},
+  {t:"sap",ind:"Salud",e:"RedSalud",rev:600,note:"Red CChC",sw:["SAP ECC","Buk"]},
+  {t:"sap",ind:"Salud",e:"Clínica Alemana",rev:450,note:"Santiago",sw:["SAP S/4HANA","Talana"]},
+  {t:"sap",ind:"Salud",e:"Clínica Las Condes",rev:400,note:"Santiago",sw:["SAP ECC","Salesforce"]},
+  {t:"sap",ind:"Educación superior",e:"UNAB",rev:600,note:"Ex Laureate",sw:["SAP S/4HANA","Workday"]},
+  {t:"sap",ind:"Educación superior",e:"INACAP",rev:400,note:"CFT + IP",sw:["SAP ECC","Buk"]},
+  {t:"sap",ind:"Educación superior",e:"DUOC UC",rev:380,note:"IP · cliente SMC PI 7.5",sw:["SAP PI 7.5","SAP ECC"],pip:"SMC"},
+  {t:"sap",ind:"Educación superior",e:"U. San Sebastián",rev:280,note:"Universidad",sw:["SAP ECC"]},
+  {t:"sap",ind:"Educación superior",e:"U. de los Andes",rev:220,note:"Universidad",sw:["SAP ECC","Buk"]},
+  {t:"sap",ind:"Real Estate",e:"Mall Plaza",rev:400,note:"Solo Chile",sw:["SAP S/4HANA","Salesforce"],pip:"P3"},
+  {t:"sap",ind:"Real Estate",e:"Parque Arauco",rev:290,note:"Cliente SMC · CPI",sw:["SAP S/4HANA","SAP CPI"],pip:"SMC"},
+  {t:"sap",ind:"Real Estate",e:"Cencosud Shopping",rev:250,note:"Solo Chile",sw:["SAP S/4HANA"]},
+  {t:"sap",ind:"Transporte aéreo",e:"LATAM Airlines",rev:12500,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"]},
+  {t:"sap",ind:"Transporte aéreo",e:"SKY Airline",rev:800,note:"Solo Chile",sw:["SAP ECC","Talana"]},
+  // PYME / NO-SAP TRACK
+  {t:"pyme",ind:"Retail PyME",e:"Casaideas",rev:180,note:"Decoración hogar",sw:["Defontana","Shopify","Buk"]},
+  {t:"pyme",ind:"Retail PyME",e:"Tricot",rev:150,note:"Multi-tienda local",sw:["Manager","Jumpseller"]},
+  {t:"pyme",ind:"Retail PyME",e:"Corona (calzado)",rev:110,note:"Calzado nacional",sw:["Softland","Bsale POS"]},
+  {t:"pyme",ind:"Retail PyME",e:"Bata Chile",rev:90,note:"Calzado",sw:["SAP B1","Bsale"]},
+  {t:"pyme",ind:"Retail PyME",e:"Aldo",note:"Calzado",sw:["Defontana","Shopify"]},
+  {t:"pyme",ind:"HORECA",e:"Pizza Hut Chile",rev:120,note:"Franquicia Telepizza",sw:["Defontana","Toteat","Talana"]},
+  {t:"pyme",ind:"HORECA",e:"Doggis",rev:80,note:"Hamburguesería",sw:["Toteat","Nubox"]},
+  {t:"pyme",ind:"HORECA",e:"Juan Maestro",rev:60,note:"Empanadas",sw:["Defontana","Toteat"]},
+  {t:"pyme",ind:"HORECA",e:"Tip Top",rev:45,note:"Helados",sw:["Manager","Bsale POS"]},
+  {t:"pyme",ind:"HORECA",e:"Schop Dog",rev:30,note:"Comida rápida",sw:["Toteat","Nubox"]},
+  {t:"pyme",ind:"Bebidas artesanales",e:"Capel",rev:120,note:"Cooperativa pisco",sw:["Softland","Salesforce"]},
+  {t:"pyme",ind:"Bebidas artesanales",e:"Cervecería Kross",rev:25,note:"Artesanal premium",sw:["Bsale","Nubox","Shopify"]},
+  {t:"pyme",ind:"Bebidas artesanales",e:"Kunstmann",rev:30,note:"Artesanal Valdivia",sw:["Manager","Defontana"]},
+  {t:"pyme",ind:"Bebidas artesanales",e:"Bauzá",rev:40,note:"Pisco premium",sw:["Defontana","Jumpseller"]},
+  {t:"pyme",ind:"Bebidas artesanales",e:"Mistral",note:"Pisco premium · es CCU",sw:["SAP S/4HANA"]},
+  {t:"pyme",ind:"Facility · B2B",e:"Sodexo Chile",rev:250,note:"Casino industrial",sw:["SAP S/4HANA","Workday"]},
+  {t:"pyme",ind:"Facility · B2B",e:"Compass Group",rev:200,note:"Casino industrial",sw:["Oracle NetSuite","Workday"]},
+  {t:"pyme",ind:"Facility · B2B",e:"ISS Chile",rev:150,note:"Aseo + facility",sw:["SAP S/4HANA","Talana"]},
+  {t:"pyme",ind:"Facility · B2B",e:"Eulen Chile",rev:120,note:"Seguridad + aseo",sw:["Manager","Buk"]},
+  {t:"pyme",ind:"Facility · B2B",e:"G4S Chile",rev:100,note:"Seguridad",sw:["SAP B1","Talana"]},
+  {t:"pyme",ind:"Educación menor",e:"Wall Street English",rev:40,note:"Idiomas",sw:["HubSpot","Defontana","Buk"]},
+  {t:"pyme",ind:"Educación menor",e:"Pedro de Valdivia",rev:30,note:"Preuniversitario",sw:["Defontana","Salesforce","Buk"]},
+  {t:"pyme",ind:"Educación menor",e:"CPECh",rev:25,note:"Preuniversitario",sw:["Defontana","Buk"]},
+  {t:"pyme",ind:"Educación menor",e:"Jardines Vitamina",rev:20,note:"Salas cuna",sw:["Manager","Nubox"]},
+  {t:"pyme",ind:"Educación menor",e:"Colegios particulares",note:"Red ~200+ colegios",sw:["Nubox","Defontana","Rankmi"]},
+  {t:"pyme",ind:"Construcción mediana",e:"Constructora Manquehue",rev:220,note:"Inmobiliaria mediana",sw:["Softland","Buk"]},
+  {t:"pyme",ind:"Construcción mediana",e:"Imperial",rev:180,note:"Materiales",sw:["Defontana","Jumpseller"]},
+  {t:"pyme",ind:"Construcción mediana",e:"Constructora Pocuro",rev:80,note:"Edificación",sw:["Softland","Manager"]},
+  {t:"pyme",ind:"Construcción mediana",e:"Constructora Maccaferri",rev:60,note:"Industrial",sw:["Flexline","Buk"]},
+  {t:"pyme",ind:"Construcción mediana",e:"EBCO",rev:250,note:"Mediana-grande",sw:["SAP B1","Talana"]},
+  {t:"pyme",ind:"Salud mediana",e:"GMO Ópticas",rev:150,note:"Cadena óptica",sw:["Defontana","Bsale","Buk"]},
+  {t:"pyme",ind:"Salud mediana",e:"Schilling Ópticas",rev:100,note:"Cadena óptica",sw:["Defontana","Bsale"]},
+  {t:"pyme",ind:"Salud mediana",e:"Dental Group",rev:60,note:"Cadenas dentales",sw:["Manager","Nubox"]},
+  {t:"pyme",ind:"Salud mediana",e:"Laboratorios PyME",note:"Regionales",sw:["Flexline","Manager"]},
+  {t:"pyme",ind:"Salud mediana",e:"Centros médicos boutique",note:"Privados Santiago",sw:["Defontana","Nubox"]},
+  {t:"pyme",ind:"Turismo · Hotelería",e:"Hoteles Diego de Almagro",rev:80,note:"Cadena nacional",sw:["Softland","Salesforce"]},
+  {t:"pyme",ind:"Turismo · Hotelería",e:"Cocha",rev:70,note:"Turismo emisivo",sw:["Defontana","HubSpot"]},
+  {t:"pyme",ind:"Turismo · Hotelería",e:"Hoteles Atton / Plaza",rev:60,note:"Boutique",sw:["Manager","Nubox"]},
+  {t:"pyme",ind:"Turismo · Hotelería",e:"Latitur",note:"Online travel",sw:["Pipedrive","Nubox"]},
+  {t:"pyme",ind:"Turismo · Hotelería",e:"Hoteles boutique sur",note:"Patagonia",sw:["Manager","Toteat","Nubox"]},
+  {t:"pyme",ind:"Tech · SaaS",e:"Betterfly",rev:50,note:"Wellness B2B",sw:["HubSpot","Rankmi","Notion"]},
+  {t:"pyme",ind:"Tech · SaaS",e:"Buk",rev:40,note:"HR SaaS · usa su propio",sw:["Buk","HubSpot","Notion"]},
+  {t:"pyme",ind:"Tech · SaaS",e:"Toteat",rev:25,note:"POS HORECA",sw:["HubSpot","Notion","Buk"]},
+  {t:"pyme",ind:"Tech · SaaS",e:"Defontana",rev:30,note:"ERP cloud",sw:["Defontana","Salesforce","Buk"]},
+  {t:"pyme",ind:"Tech · SaaS",e:"Cumplo / Khipu",note:"Fintech",sw:["Salesforce","NetSuite","Rankmi"]},
+  {t:"pyme",ind:"Agropecuario",e:"Lácteos Quillayes",rev:80,note:"Lácteos mediana",sw:["Flexline","Defontana"]},
+  {t:"pyme",ind:"Agropecuario",e:"Frutícolas exportadoras",note:"Cherry, kiwi",sw:["Softland","Flexline"]},
+  {t:"pyme",ind:"Agropecuario",e:"Avícolas regionales",note:"Sur de Chile",sw:["Manager","Buk"]},
+  {t:"pyme",ind:"Agropecuario",e:"Vino boutique",note:"<100k cajas/año",sw:["Defontana","Shopify"]},
+  {t:"pyme",ind:"Agropecuario",e:"Apícolas / mieles",note:"Exportación premium",sw:["Nubox","Jumpseller"]},
+];
+
+// ====================== HELPERS COMERCIALES ======================
+// Ticket potencial USD por empresa (default según tamaño y track)
+function ticketUSD(d){
+  if (d.t === "sap"){
+    if (!d.rev) return 100000;
+    if (d.rev > 10000) return 1500000;
+    if (d.rev > 3000) return 700000;
+    if (d.rev > 500) return 350000;
+    return 150000;
+  } else {
+    if (!d.rev) return 30000;
+    if (d.rev > 150) return 70000;
+    if (d.rev > 50) return 35000;
+    return 18000;
+  }
+}
+// Probabilidad cierre según pipeline
+function prob(d){
+  switch(d.pip){
+    case "SMC": return 0.95;
+    case "P1": return 0.40;
+    case "P2": return 0.25;
+    case "P3": return 0.15;
+    default: return 0.05;
+  }
+}
+const pipelineLabel = p => p === "SMC" ? "SMC ACTIVO" : (p || "Cold");
+
+// ====================== STATE ======================
+const state = { track:"all", q:"", industries:new Set(), software:new Set(), view:"cards", sortKey:"rev", sortDir:"desc" };
+
+// ====================== UTILS ======================
+const fmtUSD = v => {
+  if (v == null) return {v:"n/d",u:""};
+  if (v >= 1000) return {v:(v/1000).toFixed(1).replace(/\.0$/,""), u:"USD Bn"};
+  return {v:Math.round(v).toLocaleString("es-CL"), u:"USD M"};
+};
+const fmtMoney = v => v >= 1e6 ? "$" + (v/1e6).toFixed(1) + "M" : "$" + Math.round(v/1000) + "K";
+const swClass = sw => /^SAP/i.test(sw) ? "is-sap" : (/Hubspot|Salesforce|Notion|Rankmi|Talana|Buk|OpenAI|Groq/i.test(sw) ? "is-ia" : "");
+
+// ====================== FILTERING ======================
+function filtered(){
+  return DATA.filter(d => {
+    if (state.track !== "all" && d.t !== state.track) return false;
+    if (state.industries.size && !state.industries.has(d.ind)) return false;
+    if (state.software.size){
+      const has = d.sw.some(s => state.software.has(s));
+      if (!has) return false;
+    }
+    if (state.q){
+      const q = state.q.toLowerCase();
+      const hay = [d.e, d.ind, d.note||"", ...(d.sw||[])].join(" ").toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+// ====================== RENDER KPIs ======================
+function renderKPIs(){
+  const rows = filtered();
+  const totalRev = rows.reduce((a,b) => a + (b.rev||0), 0);
+  const totalTicket = rows.reduce((a,b) => a + ticketUSD(b), 0);
+  const weightedPipe = rows.reduce((a,b) => a + ticketUSD(b) * prob(b), 0);
+  const sapCount = rows.filter(r => r.t === "sap").length;
+  const pymeCount = rows.filter(r => r.t === "pyme").length;
+  const smcActive = rows.filter(r => r.pip === "SMC").length;
+
+  const kpis = [
+    {l:"Empresas en vista", v:rows.length.toLocaleString("es-CL"), s:`${sapCount} SAP · ${pymeCount} No-SAP`},
+    {l:"Facturación combinada", v:`USD ${(totalRev/1000).toFixed(1)} Bn`, s:"Ventas anuales suma del filtro", cls:"is-money"},
+    {l:"Ticket pipeline total", v:fmtMoney(totalTicket), s:"Suma ticket potencial SMC", cls:"is-money"},
+    {l:"Pipeline ponderado", v:fmtMoney(weightedPipe), s:"Ticket × probabilidad cierre", cls:"is-money is-pipeline"},
+    {l:"SMC activos", v:smcActive, s:"Proyectos en curso hoy"},
+  ];
+  document.getElementById("kpis").innerHTML = kpis.map(k => `
+    <div class="kpi ${k.cls||""}">
+      <div class="kpi-label">${k.l}</div>
+      <div class="kpi-value">${k.v}</div>
+      <div class="kpi-sub">${k.s}</div>
+      <div class="kpi-accent"></div>
+    </div>`).join("");
+}
+
+// ====================== CHARTS · SVG INLINE ======================
+function renderCharts(){
+  const rows = filtered();
+  // Chart 1: Top industrias bar stacked (ventas SAP vs PyME)
+  const indMap = {};
+  rows.forEach(d => {
+    if (!d.rev) return;
+    if (!indMap[d.ind]) indMap[d.ind] = {sap:0,pyme:0};
+    indMap[d.ind][d.t] += d.rev;
+  });
+  const indSorted = Object.entries(indMap).sort((a,b) => (b[1].sap+b[1].pyme) - (a[1].sap+a[1].pyme)).slice(0,8);
+  const maxInd = Math.max(1, ...indSorted.map(([k,v]) => v.sap + v.pyme));
+
+  let chart1 = `<div class="chart-card"><div class="chart-title">📊 Top 8 Industrias por Facturación<span class="hint">USD Bn</span></div>
+    <div class="chart-sub">Stacked · azul = SAP · verde = No-SAP</div>
+    <svg class="chart-svg" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet">`;
+  indSorted.forEach(([ind,v], i) => {
+    const y = 20 + i * 30;
+    const sapW = (v.sap / maxInd) * 280;
+    const pymeW = (v.pyme / maxInd) * 280;
+    const total = v.sap + v.pyme;
+    chart1 += `<text x="0" y="${y+13}" class="lbl-y">${ind.length>16?ind.slice(0,15)+'…':ind}</text>`;
+    chart1 += `<rect class="bar bar-sap" x="140" y="${y}" width="${sapW}" height="20" rx="3"><title>${ind} · SAP: USD ${v.sap.toLocaleString()} M</title></rect>`;
+    chart1 += `<rect class="bar bar-pyme" x="${140+sapW}" y="${y}" width="${pymeW}" height="20" rx="3"><title>${ind} · No-SAP: USD ${v.pyme.toLocaleString()} M</title></rect>`;
+    chart1 += `<text x="${140+sapW+pymeW+6}" y="${y+13}" class="lbl-val">${(total/1000).toFixed(1)}Bn</text>`;
+  });
+  chart1 += `</svg><div class="chart-legend"><span><i style="background:var(--sap-blue)"></i>SAP</span><span><i style="background:var(--ia-green)"></i>No-SAP · IA</span></div></div>`;
+
+  // Chart 2: Pipeline funnel
+  const buckets = { "SMC":0, "P1":0, "P2":0, "P3":0, "Cold":0 };
+  const ticketsByBucket = { "SMC":0, "P1":0, "P2":0, "P3":0, "Cold":0 };
+  rows.forEach(d => {
+    const k = d.pip || "Cold";
+    buckets[k] = (buckets[k]||0) + 1;
+    ticketsByBucket[k] = (ticketsByBucket[k]||0) + ticketUSD(d);
+  });
+  const order = ["Cold","P3","P2","P1","SMC"];
+  const colors = {"Cold":"#94a3b8","P3":"#f1c40f","P2":"#e67e22","P1":"#c0392b","SMC":"#722F37"};
+  const maxBucket = Math.max(1, ...order.map(k => buckets[k]));
+  let chart2 = `<div class="chart-card"><div class="chart-title">🔻 Pipeline Funnel<span class="hint">empresas + ticket USD</span></div>
+    <div class="chart-sub">De Cold a SMC ACTIVO · oportunidad real</div>
+    <svg class="chart-svg" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet">`;
+  order.forEach((k,i) => {
+    const y = 20 + i * 48;
+    const w = (buckets[k] / maxBucket) * 280;
+    const x = 140 + (280 - w)/2;
+    chart2 += `<text x="0" y="${y+25}" class="lbl-y">${k === "SMC" ? "✅ SMC ACTIVO" : k}</text>`;
+    chart2 += `<rect x="${x}" y="${y}" width="${w}" height="36" rx="6" fill="${colors[k]}"><title>${k} · ${buckets[k]} empresas · ${fmtMoney(ticketsByBucket[k])}</title></rect>`;
+    chart2 += `<text x="${x + w/2}" y="${y+18}" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">${buckets[k]} empresa${buckets[k]===1?'':'s'}</text>`;
+    chart2 += `<text x="${x + w/2}" y="${y+31}" text-anchor="middle" fill="#fff" font-size="10" opacity=".9">${fmtMoney(ticketsByBucket[k])}</text>`;
+  });
+  chart2 += `</svg></div>`;
+
+  // Chart 3: Heatmap industria × software (top 6 × top 8)
+  const indMap2 = {};
+  const swSet = {};
+  rows.forEach(d => {
+    if (!indMap2[d.ind]) indMap2[d.ind] = {};
+    d.sw.forEach(s => {
+      indMap2[d.ind][s] = (indMap2[d.ind][s]||0) + 1;
+      swSet[s] = (swSet[s]||0) + 1;
+    });
+  });
+  const topIndustries = Object.entries(indMap2).map(([k,v]) => [k, Object.values(v).reduce((a,b)=>a+b,0)]).sort((a,b)=>b[1]-a[1]).slice(0,6).map(x=>x[0]);
+  const topSoftware = Object.entries(swSet).sort((a,b)=>b[1]-a[1]).slice(0,8).map(x=>x[0]);
+  const maxCell = Math.max(1, ...topIndustries.flatMap(ind => topSoftware.map(s => (indMap2[ind]||{})[s] || 0)));
+
+  let chart3 = `<div class="chart-card"><div class="chart-title">🌡️ Heatmap Industria × Software<span class="hint">frecuencia uso</span></div>
+    <div class="chart-sub">Top 6 industrias × top 8 software · más oscuro = más uso</div>
+    <svg class="chart-svg" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet">`;
+  const colW = 40;
+  const rowH = 28;
+  const offsetX = 130;
+  const offsetY = 60;
+  topSoftware.forEach((s,i) => {
+    const x = offsetX + i*colW + colW/2;
+    chart3 += `<text x="${x}" y="${offsetY - 8}" text-anchor="middle" font-size="9.5" transform="rotate(-25 ${x} ${offsetY-8})" fill="var(--smc-gray-700)">${s.length>10?s.slice(0,9)+'…':s}</text>`;
+  });
+  topIndustries.forEach((ind,r) => {
+    const y = offsetY + r*rowH;
+    chart3 += `<text x="0" y="${y+18}" class="lbl-y">${ind.length>16?ind.slice(0,15)+'…':ind}</text>`;
+    topSoftware.forEach((s,c) => {
+      const x = offsetX + c*colW;
+      const v = (indMap2[ind]||{})[s] || 0;
+      const intensity = v / maxCell;
+      const isSAP = /^SAP/i.test(s);
+      const baseColor = isSAP ? "27,58,92" : (intensity > 0 ? "114,47,55" : "200,200,200");
+      const alpha = v === 0 ? 0.06 : 0.15 + intensity * 0.85;
+      chart3 += `<rect x="${x+2}" y="${y+2}" width="${colW-4}" height="${rowH-4}" rx="3" fill="rgba(${baseColor},${alpha})"><title>${ind} × ${s}: ${v} empresa${v===1?'':'s'}</title></rect>`;
+      if (v > 0) chart3 += `<text x="${x+colW/2}" y="${y+18}" text-anchor="middle" font-size="10" font-weight="700" fill="${intensity>0.5?'#fff':'var(--smc-gray-700)'}">${v}</text>`;
+    });
+  });
+  chart3 += `</svg></div>`;
+
+  document.getElementById("charts").innerHTML = chart1 + chart2 + chart3;
+}
+
+// ====================== RENDER CHIPS ======================
+function renderChips(){
+  const subset = DATA.filter(d => state.track === "all" || d.t === state.track);
+  const indCount = {}, swCount = {};
+  subset.forEach(d => {
+    indCount[d.ind] = (indCount[d.ind]||0) + 1;
+    d.sw.forEach(s => swCount[s] = (swCount[s]||0) + 1);
+  });
+  const indSorted = Object.entries(indCount).sort((a,b) => b[1]-a[1]);
+  const swSorted = Object.entries(swCount).sort((a,b) => b[1]-a[1]).slice(0,18);
+
+  document.getElementById("industryChips").innerHTML = indSorted.map(([k,n]) => `
+    <button class="chip ${state.industries.has(k)?"is-active":""}" data-ind="${k}">${k}<span class="count">${n}</span></button>`).join("");
+  document.getElementById("softwareChips").innerHTML = swSorted.map(([k,n]) => `
+    <button class="chip ${state.software.has(k)?"is-active":""}" data-sw="${k}">${k}<span class="count">${n}</span></button>`).join("");
+}
+
+// ====================== RENDER GRID (cards) ======================
+function renderGrid(){
+  const rows = filtered();
+  const grid = document.getElementById("grid");
+  if (!rows.length){
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">📭</div>Sin resultados con esos filtros · ajusta arriba</div>`;
+    return;
+  }
+  grid.innerHTML = rows.map((d) => {
+    const r = fmtUSD(d.rev);
+    return `
+    <article class="card" data-track="${d.t}" data-i="${DATA.indexOf(d)}">
+      <div class="card-head">
+        <div>
+          <div class="card-name">${d.e}</div>
+          <div class="card-industry">${d.ind}</div>
+        </div>
+        <span class="card-badge ${d.t}">${d.t === "sap" ? "SAP" : "No-SAP"}</span>
+      </div>
+      <div class="card-revenue ${d.rev?"":"nd"}">
+        <span class="v">${r.v}</span><span class="u">${r.u}</span>
+      </div>
+      <div class="card-software">
+        ${d.sw.map(s => `<span class="sw-pill ${swClass(s)}">${s}</span>`).join("")}
+      </div>
+      <div class="card-foot">
+        <span class="card-notes">${d.note||""}</span>
+        ${d.pip ? `<span class="pipeline-tag ${d.pip === "SMC" ? "smc" : d.pip.toLowerCase()}">${pipelineLabel(d.pip)}</span>` : ""}
+      </div>
+    </article>`;
+  }).join("");
+  grid.querySelectorAll(".card").forEach(c => c.addEventListener("click", () => openModal(parseInt(c.dataset.i))));
+}
+
+// ====================== RENDER TABLE ======================
+function renderTable(){
+  const rows = filtered().slice();
+  const cmp = (a,b) => {
+    let va, vb;
+    switch(state.sortKey){
+      case "name": va = a.e; vb = b.e; break;
+      case "ind": va = a.ind; vb = b.ind; break;
+      case "rev": va = a.rev||-1; vb = b.rev||-1; break;
+      case "tkt": va = ticketUSD(a); vb = ticketUSD(b); break;
+      case "pip": va = a.pip||"z"; vb = b.pip||"z"; break;
+      default: va = 0; vb = 0;
+    }
+    if (va < vb) return state.sortDir === "asc" ? -1 : 1;
+    if (va > vb) return state.sortDir === "asc" ? 1 : -1;
+    return 0;
+  };
+  rows.sort(cmp);
+  const wrap = document.getElementById("tableWrap");
+  if (!rows.length){
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">📭</div>Sin resultados</div>`;
+    return;
+  }
+  const arrow = (k) => state.sortKey === k ? (state.sortDir === "asc" ? "▲" : "▼") : "↕";
+  const sortClass = (k) => state.sortKey === k ? state.sortDir : "";
+  wrap.innerHTML = `<table class="tbl">
+    <thead><tr>
+      <th data-sort="name" class="${sortClass('name')}">Empresa<span class="sort">${arrow('name')}</span></th>
+      <th data-sort="ind" class="${sortClass('ind')}">Industria<span class="sort">${arrow('ind')}</span></th>
+      <th>Track</th>
+      <th data-sort="rev" class="col-rev ${sortClass('rev')}">Ventas USD M<span class="sort">${arrow('rev')}</span></th>
+      <th data-sort="tkt" class="col-tkt ${sortClass('tkt')}">Ticket SMC<span class="sort">${arrow('tkt')}</span></th>
+      <th class="col-sw">Software</th>
+      <th data-sort="pip" class="col-pip ${sortClass('pip')}">Pipeline<span class="sort">${arrow('pip')}</span></th>
+    </tr></thead>
+    <tbody>
+    ${rows.map(d => `
+      <tr data-i="${DATA.indexOf(d)}">
+        <td class="col-name">${d.e}</td>
+        <td>${d.ind}</td>
+        <td><span class="card-badge ${d.t}">${d.t === "sap" ? "SAP" : "No-SAP"}</span></td>
+        <td class="col-rev ${d.rev?'':'nd'}">${d.rev?d.rev.toLocaleString("es-CL"):"n/d"}</td>
+        <td class="col-tkt">${fmtMoney(ticketUSD(d))}</td>
+        <td class="col-sw">${d.sw.join(" · ")}</td>
+        <td class="col-pip">${d.pip ? `<span class="pipeline-tag ${d.pip === 'SMC' ? 'smc' : d.pip.toLowerCase()}">${pipelineLabel(d.pip)}</span>` : '<span style="color:var(--smc-gray-500);font-size:11px">Cold</span>'}</td>
+      </tr>`).join("")}
+    </tbody>
+  </table>`;
+  wrap.querySelectorAll("th[data-sort]").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.sort;
+    if (state.sortKey === k) state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+    else { state.sortKey = k; state.sortDir = "desc"; }
+    renderTable();
+  }));
+  wrap.querySelectorAll("tr[data-i]").forEach(tr => tr.addEventListener("click", () => openModal(parseInt(tr.dataset.i))));
+}
+
+// ====================== MODAL ======================
+function openModal(i){
+  const d = DATA[i];
+  const r = fmtUSD(d.rev);
+  document.getElementById("mTitle").textContent = d.e;
+  document.getElementById("mBadgeWrap").innerHTML = `
+    <span class="card-badge ${d.t}">${d.t === "sap" ? "SAP" : "No-SAP · IA"}</span>
+    ${d.pip ? `<span class="pipeline-tag ${d.pip === "SMC" ? "smc" : d.pip.toLowerCase()}" style="margin-left:8px">${pipelineLabel(d.pip)}</span>` : ""}`;
+  const ticket = ticketUSD(d);
+  const p = prob(d);
+  const pitch = d.t === "sap"
+    ? `Integración SAP CPI / PI 7.5 · adapter terceros · migración ECC→S/4HANA. Ticket referencia ${fmtMoney(ticket)}. Probabilidad ${(p*100).toFixed(0)}% según pipeline.`
+    : `Conectar stack ${d.sw.slice(0,3).join(" + ")} con IA · agente especializado industria · automatización procesos. Ticket referencia ${fmtMoney(ticket)}. Probabilidad ${(p*100).toFixed(0)}%.`;
+  document.getElementById("mBody").innerHTML = `
+    <div class="modal-row"><span class="k">Industria</span><span class="v">${d.ind}</span></div>
+    <div class="modal-row"><span class="k">Ventas anuales</span><span class="v">${r.v} ${r.u || ""}</span></div>
+    <div class="modal-row"><span class="k">Ticket potencial SMC</span><span class="v" style="color:var(--smc-burdeo)">${fmtMoney(ticket)}</span></div>
+    <div class="modal-row"><span class="k">Probabilidad cierre</span><span class="v">${(p*100).toFixed(0)}%</span></div>
+    <div class="modal-row"><span class="k">Pipeline ponderado</span><span class="v" style="color:var(--smc-burdeo)">${fmtMoney(ticket*p)}</span></div>
+    <div class="modal-row"><span class="k">Notas</span><span class="v">${d.note||"—"}</span></div>
+    <div class="modal-section-title">Stack de software</div>
+    <div class="card-software" style="margin-top:0">
+      ${d.sw.map(s => `<span class="sw-pill ${swClass(s)}">${s}</span>`).join("")}
+    </div>
+    <div class="modal-section-title">Pitch comercial SMC</div>
+    <div class="modal-prompt">${pitch}</div>
+    <div class="modal-cta">
+      <button class="btn btn-primary">📋 Copiar a CRM</button>
+      <button class="btn btn-ghost">🔎 Investigar más</button>
+    </div>`;
+  document.getElementById("modalBg").classList.add("is-open");
+}
+function closeModal(){ document.getElementById("modalBg").classList.remove("is-open"); }
+
+// ====================== EVENTS ======================
+document.querySelectorAll(".track-btn").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".track-btn").forEach(x => x.classList.remove("is-active"));
+  b.classList.add("is-active");
+  state.track = b.dataset.track;
+  state.industries.clear();
+  state.software.clear();
+  renderAll();
+}));
+document.querySelectorAll(".view-btn").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".view-btn").forEach(x => x.classList.remove("is-active"));
+  b.classList.add("is-active");
+  state.view = b.dataset.view;
+  document.getElementById("grid").classList.toggle("is-hidden", state.view !== "cards");
+  document.getElementById("tableWrap").classList.toggle("is-active", state.view === "table");
+  if (state.view === "table") renderTable();
+  else renderGrid();
+}));
+document.getElementById("q").addEventListener("input", e => { state.q = e.target.value; renderAll(); });
+document.getElementById("mClose").addEventListener("click", closeModal);
+document.getElementById("modalBg").addEventListener("click", e => { if (e.target.id === "modalBg") closeModal(); });
+document.addEventListener("keydown", e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k"){ e.preventDefault(); document.getElementById("q").focus(); }
+  if (e.key === "Escape") closeModal();
+});
+document.addEventListener("click", e => {
+  const ic = e.target.closest("[data-ind]");
+  if (ic){
+    const k = ic.dataset.ind;
+    state.industries.has(k) ? state.industries.delete(k) : state.industries.add(k);
+    renderAll(); return;
+  }
+  const sc = e.target.closest("[data-sw]");
+  if (sc){
+    const k = sc.dataset.sw;
+    state.software.has(k) ? state.software.delete(k) : state.software.add(k);
+    renderAll();
+  }
+});
+
+// ====================== INIT ======================
+function renderAll(){
+  renderKPIs();
+  renderCharts();
+  renderChips();
+  if (state.view === "cards") renderGrid();
+  else renderTable();
+}
+renderAll();
+</script>
+</body>
+</html>
