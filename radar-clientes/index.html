@@ -339,34 +339,37 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       <input class="pin-box" data-i="0" type="text" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text">
       <input class="pin-box" data-i="1" type="text" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text">
       <input class="pin-box" data-i="2" type="text" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text">
+      <input class="pin-box" data-i="3" type="text" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text">
     </div>
-    <div class="pin-hint">3 caracteres</div>
+    <div class="pin-hint">4 caracteres</div>
     <div class="pin-error" id="pinError"></div>
     <div class="pin-foot">SMC Connection SpA · acceso autorizado</div>
   </div>
 </div>
 <script>
 (function(){
-  var PIN = "FER";
+  var PIN = "HOKU";
   var gate = document.getElementById("pinGate");
   var boxesWrap = document.getElementById("pinBoxes");
   var boxes = boxesWrap.querySelectorAll(".pin-box");
   var err = document.getElementById("pinError");
   // Invalidate previous version cache · pide PIN siempre al refresh
-  if (localStorage.getItem("radar_pin_v") !== "v4"){
+  if (localStorage.getItem("smc_pin_v") !== "v5"){
     localStorage.removeItem("radar_pin_ok");
-    localStorage.setItem("radar_pin_v","v4");
+    localStorage.removeItem("radar_pin_v");
+    sessionStorage.removeItem("radar_pin_ok_v4");
+    localStorage.setItem("smc_pin_v","v5");
   }
   // Si ya autorizado, ocultar
-  if (sessionStorage.getItem("radar_pin_ok_v4") === "1"){ gate.style.display = "none"; }
+  if (sessionStorage.getItem("smc_pin_ok_v5") === "1"){ gate.style.display = "none"; }
   else { setTimeout(function(){ boxes[0].focus(); }, 200); }
 
   function getCode(){ return Array.from(boxes).map(b => (b.value||"").toUpperCase()).join(""); }
   function validate(){
     var code = getCode();
-    if (code.length < 3) return;
+    if (code.length < 4) return;
     if (code === PIN){
-      sessionStorage.setItem("radar_pin_ok_v4","1");
+      sessionStorage.setItem("smc_pin_ok_v5","1");
       boxes.forEach(b => b.classList.add("filled"));
       gate.style.transition = "opacity 400ms ease, transform 400ms ease";
       setTimeout(function(){ gate.style.opacity = "0"; gate.style.transform = "scale(1.04)"; }, 200);
@@ -399,10 +402,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     });
     b.addEventListener("paste", function(e){
       e.preventDefault();
-      var t = (e.clipboardData||window.clipboardData).getData("text").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,3);
+      var t = (e.clipboardData||window.clipboardData).getData("text").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,4);
       boxes.forEach(function(box, idx){ box.value = t[idx] || ""; if (t[idx]) box.classList.add("filled"); });
-      if (t.length === 3) setTimeout(validate, 80);
-      else boxes[Math.min(t.length, 2)].focus();
+      if (t.length === 4) setTimeout(validate, 80);
+      else boxes[Math.min(t.length, 3)].focus();
     });
   });
 })();
