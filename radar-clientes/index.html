@@ -480,7 +480,111 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <div id="grid"></div>
     <section class="tbl-wrap" id="tableWrap"></section>
 
-    <footer class="foot">
+    <!-- HISTORIAL · VERSIONES · Regla 38 -->
+<style>
+.history-tab{position:fixed;right:0;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;background:linear-gradient(180deg,var(--smc-burdeo) 0%,var(--smc-burdeo-dark) 100%);color:#fff;padding:18px 10px;border-radius:0 8px 8px 0;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;z-index:90;box-shadow:-4px 0 14px rgba(114,47,55,.32);transition:all 280ms var(--ease-fiori);user-select:none}
+.history-tab:hover{padding-right:14px;box-shadow:-6px 0 22px rgba(114,47,55,.45)}
+.history-tab .v{display:block;font-size:9px;opacity:.65;margin-top:6px;letter-spacing:.04em;text-transform:none;font-weight:500}
+.history-bg{position:fixed;inset:0;background:rgba(29,45,62,.55);backdrop-filter:blur(4px);z-index:150;display:none;align-items:center;justify-content:center;padding:24px}
+.history-bg.is-open{display:flex}
+.history-modal{background:#fff;border-radius:18px;max-width:780px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.4);animation:slide-up 400ms var(--ease-fiori)}
+@keyframes slide-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.history-head{padding:24px 28px 18px;border-bottom:1px solid var(--sap-line);background:linear-gradient(135deg,var(--smc-burdeo) 0%,var(--smc-burdeo-dark) 100%);color:#fff;position:relative}
+.history-head h2{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.history-head p{font-size:13px;opacity:.8;margin-top:4px}
+.history-close{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:99px;background:rgba(255,255,255,.18);color:#fff;font-size:20px;display:grid;place-items:center;cursor:pointer;border:none;transition:all 200ms var(--ease-fiori)}
+.history-close:hover{background:rgba(255,255,255,.32);transform:rotate(90deg)}
+.history-tabs{display:flex;gap:6px;padding:14px 28px;border-bottom:1px solid var(--sap-line);background:var(--sap-surface)}
+.history-tab-btn{padding:7px 14px;font-size:12px;font-weight:600;color:var(--sap-text-muted);background:#fff;border:1px solid var(--sap-line);border-radius:99px;cursor:pointer;transition:all 200ms var(--ease-fiori);display:flex;align-items:center;gap:6px}
+.history-tab-btn.is-active{background:var(--smc-burdeo);color:#fff;border-color:var(--smc-burdeo)}
+.history-tab-btn .avatar{width:18px;height:18px;border-radius:99px;background:var(--sap-blue-soft);color:var(--sap-blue);font-size:10px;font-weight:700;display:grid;place-items:center}
+.history-tab-btn.is-active .avatar{background:rgba(255,255,255,.25);color:#fff}
+.history-list{overflow-y:auto;padding:14px 22px 22px;flex:1}
+.version-row{display:flex;gap:12px;padding:14px 18px;border-radius:12px;border:1px solid var(--sap-line);background:#fff;margin-bottom:10px;transition:all 200ms var(--ease-fiori);position:relative}
+.version-row:hover{border-color:var(--smc-burdeo);box-shadow:0 4px 14px rgba(114,47,55,.12);transform:translateY(-1px)}
+.version-row.is-current{border-color:var(--sap-success);background:linear-gradient(135deg,#fff 0%,#F0FAF1 100%)}
+.version-row.is-current::before{content:"ACTUAL";position:absolute;top:10px;right:14px;font-size:9px;font-weight:700;color:var(--sap-success);background:rgba(54,164,29,.13);padding:2px 8px;border-radius:99px;letter-spacing:.06em}
+.v-tag{font-family:var(--font-mono);font-size:14px;font-weight:800;color:var(--smc-burdeo);min-width:54px;letter-spacing:-.02em}
+.v-body{flex:1;min-width:0}
+.v-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px}
+.v-author{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--sap-text);background:var(--sap-blue-soft);padding:2px 8px;border-radius:99px}
+.v-author .avatar{width:16px;height:16px;border-radius:99px;background:var(--sap-blue);color:#fff;font-size:9px;font-weight:700;display:grid;place-items:center}
+.v-author.sergio .avatar{background:#8E44AD}
+.v-author.sergio{background:rgba(142,68,173,.13);color:#5E2D78}
+.v-time{font-size:11px;color:var(--sap-text-muted)}
+.v-msg{font-size:13.5px;color:var(--sap-text);line-height:1.45;font-weight:500}
+.v-diff{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
+.diff-chip{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:var(--sap-surface-2);color:var(--sap-text)}
+.diff-chip.add{background:rgba(54,164,29,.13);color:#1F6610}
+.diff-chip.fix{background:rgba(240,171,0,.15);color:#9C7000}
+.diff-chip.up{background:rgba(0,112,242,.12);color:#0064D9}
+</style>
+<button class="history-tab" id="historyBtn">Historial · Versiones<span class="v">v3.5</span></button>
+<div class="history-bg" id="historyBg">
+  <div class="history-modal">
+    <div class="history-head">
+      <h2>Historial de versiones · RADAR Clientes</h2>
+      <p>Commits reales del repo · cada cambio narrativizado</p>
+      <button class="history-close" id="historyClose" aria-label="Cerrar">×</button>
+    </div>
+    <div class="history-tabs">
+      <button class="history-tab-btn is-active" data-filter="all">Todos</button>
+      <button class="history-tab-btn" data-filter="guillermo"><span class="avatar">G</span>Guillermo</button>
+      <button class="history-tab-btn" data-filter="sergio"><span class="avatar" style="background:#8E44AD">S</span>Sergio</button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var VERSIONS = [
+    {v:"v3.5",hash:"f56cbcb",time:"2026-05-15 12:19",author:"guillermo",msg:"PIN gate estilo SMC Intranet · 3 cajas OTP · FER",diff:[["add","PIN gate dark"],["add","Brand cloud cyan"],["add","Shake error"],["up","Cache versionado v4"]],current:true},
+    {v:"v3.4",hash:"bcd79e1",time:"2026-05-15 12:17",author:"guillermo",msg:"PIN gate FER + GitHub Pages live",diff:[["add","PIN overlay"],["add","sessionStorage"],["up","Banco live"]]},
+    {v:"v3.3",hash:"9f04082",time:"2026-05-15 12:13",author:"guillermo",msg:"Todos = gradient brand SAP + burdeo SMC",diff:[["up","Header brand-aware"],["up","Brand-mark sync"],["fix","Color identidad"]]},
+    {v:"v3.2",hash:"15ecfef",time:"2026-05-15 12:07",author:"guillermo",msg:"Fix LinkedIn por rol + empty states + paleta SMC",diff:[["fix","LinkedIn → rol+empresa"],["add","Empty state inteligente"],["up","Paleta sin rojo"]]},
+    {v:"v3.1",hash:"27fe60c",time:"2026-05-15 12:00",author:"guillermo",msg:"BTP completo + análisis contextual + paleta sin rojo",diff:[["add","BTP 16 módulos"],["add","SuccessFactors variants"],["add","Análisis cliente drilldown"],["fix","Pipeline colors"]]},
+    {v:"v3.0",hash:"4667b75",time:"2026-05-15 11:50",author:"guillermo",msg:"Sidebar + módulos SAP + abanico gráficos + drawer in-card",diff:[["add","Sidebar collapsable"],["add","5 estilos gráficos"],["add","Drawer in-card"],["add","Mi Pipeline chip"]]},
+    {v:"v2.2",hash:"f74f1f6",time:"2026-05-15 11:39",author:"guillermo",msg:"Header color-slide morph por track",diff:[["add","Wipe horizontal"],["add","Sweep luz"],["up","Brand transitions"]]},
+    {v:"v2.1",hash:"8ec3c90",time:"2026-05-15 11:36",author:"guillermo",msg:"Rediseño SAP Discovery Center grade",diff:[["add","Inter font"],["add","Paleta SAP"],["add","Hero gradient"],["up","Motion Fiori"]]},
+    {v:"v2.0",hash:"b8c3188",time:"2026-05-15 11:28",author:"guillermo",msg:"Contactos LinkedIn/email/web en cards y modal",diff:[["add","3 icons clickeables"],["add","Hover brand colors"],["add","Contact pills modal"]]},
+    {v:"v1.0",hash:"97fa78b",time:"2026-05-15 11:25",author:"guillermo",msg:"Banco prospectos doble track SAP + No-SAP/IA",diff:[["add","69 prospectos"],["add","14 industrias"],["add","Pipeline P1-P3"],["add","Excel CRM 5 hojas"]]},
+  ];
+  var hBtn = document.getElementById("historyBtn"),
+      hBg  = document.getElementById("historyBg"),
+      hCls = document.getElementById("historyClose"),
+      hLst = document.getElementById("historyList");
+  function render(filter){
+    var rows = VERSIONS.filter(function(v){ return filter === "all" || v.author === filter; });
+    hLst.innerHTML = rows.map(function(v){
+      var aName = v.author === "guillermo" ? "Guillermo" : "Sergio";
+      var aInitial = v.author === "guillermo" ? "G" : "S";
+      return '<div class="version-row '+(v.current?"is-current":"")+'">'
+        + '<div class="v-tag">'+v.v+'</div>'
+        + '<div class="v-body">'
+          + '<div class="v-head">'
+            + '<div class="v-author '+v.author+'"><span class="avatar">'+aInitial+'</span>'+aName+'</div>'
+            + '<div class="v-time">'+v.time+' · <code style="font-size:10px;color:var(--sap-text-muted)">'+v.hash+'</code></div>'
+          + '</div>'
+          + '<div class="v-msg">'+v.msg+'</div>'
+          + '<div class="v-diff">'+v.diff.map(function(d){ return '<span class="diff-chip '+d[0]+'">'+d[0].toUpperCase()+' · '+d[1]+'</span>'; }).join("")+'</div>'
+        + '</div>'
+      + '</div>';
+    }).join("");
+  }
+  hBtn.addEventListener("click", function(){ hBg.classList.add("is-open"); render("all"); });
+  hCls.addEventListener("click", function(){ hBg.classList.remove("is-open"); });
+  hBg.addEventListener("click", function(e){ if (e.target === hBg) hBg.classList.remove("is-open"); });
+  document.querySelectorAll(".history-tab-btn").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll(".history-tab-btn").forEach(function(x){ x.classList.remove("is-active"); });
+      b.classList.add("is-active");
+      render(b.dataset.filter);
+    });
+  });
+})();
+</script>
+
+<footer class="foot">
       <div>📡 RADAR · Banco vivo · refresco 6 meses · Fuente: CMF + casos públicos + inferencia SMC</div>
       <a class="dl" href="Prospectos_SAP_Chile_2026.xlsx" download>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
