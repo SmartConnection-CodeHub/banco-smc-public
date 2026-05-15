@@ -15,7 +15,11 @@
   --sap-text:#1D2D3E; --sap-text-muted:#556B82;
   --smc-burdeo:#722F37; --smc-burdeo-dark:#5A252C; --smc-cream:#FBF6EF;
   --ia-green:#00897B; --ia-green-soft:#D4EAE6;
-  --p1:#BB0000; --p2:#E67E22; --p3:#F0AB00;
+  /* Pipeline · paleta SAP sin rojo · gold high · blue medium · gray low */
+  --p1:#F0AB00; --p1-bg:#FFF4D6; --p1-text:#7A5500;
+  --p2:#0070F2; --p2-bg:#D1EFFF; --p2-text:#003D87;
+  --p3:#5B738B; --p3-bg:#E4EAF0; --p3-text:#354A5F;
+  --smc-pip:#722F37; --smc-pip-bg:#F0DDE0;
   --shadow-sm:0 1px 2px rgba(29,45,62,.06);
   --shadow-md:0 4px 12px rgba(29,45,62,.08);
   --shadow-lg:0 12px 32px rgba(29,45,62,.14);
@@ -78,10 +82,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .hero-sub{font-size:14px;color:var(--sap-text-muted);margin-top:6px;max-width:780px}
 
 /* LAYOUT · sidebar + main */
-.layout{display:grid;grid-template-columns:var(--sidebar-w) 1fr;gap:0;align-items:flex-start;max-width:1600px;margin:0 auto;padding:0}
-.layout.is-collapsed{grid-template-columns:0 1fr}
-.layout.is-collapsed .sidebar{margin-left:calc(-1 * var(--sidebar-w));visibility:hidden}
-.sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;padding:18px 18px 40px;border-right:1px solid var(--sap-line);background:#FFFFFF;transition:margin var(--dur-emph) var(--ease-fiori),visibility 0s var(--dur-emph);scrollbar-width:thin}
+.layout{display:grid;grid-template-columns:var(--sidebar-w) 1fr;gap:0;align-items:flex-start;max-width:1600px;margin:0 auto;padding:0;transition:grid-template-columns var(--dur-emph) var(--ease-fiori)}
+.layout.is-collapsed{grid-template-columns:1fr}
+.layout.is-collapsed .sidebar{display:none}
+.sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;padding:18px 18px 40px;border-right:1px solid var(--sap-line);background:#FFFFFF;transition:transform var(--dur-emph) var(--ease-fiori),visibility 0s var(--dur-emph);scrollbar-width:thin;transform:translateX(0)}
 .sidebar::-webkit-scrollbar{width:6px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--sap-line);border-radius:99px}
 
@@ -120,7 +124,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .kpi-bar{height:3px;border-radius:99px;margin-top:10px;background:var(--sap-surface-2);overflow:hidden}
 .kpi-bar::after{content:"";display:block;height:100%;background:var(--sap-blue);width:65%;border-radius:99px}
 .kpi.is-money .kpi-value{color:var(--sap-blue)}
-.kpi.is-pipeline .kpi-bar::after{background:linear-gradient(90deg,var(--p1),var(--p2),var(--p3));width:80%}
+.kpi.is-pipeline .kpi-bar::after{background:linear-gradient(90deg,var(--p3),var(--p2),var(--p1));width:80%}
 
 /* CHARTS section · con selector */
 .charts-head{display:flex;justify-content:space-between;align-items:center;margin-top:18px;margin-bottom:10px;flex-wrap:wrap;gap:8px}
@@ -205,11 +209,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 .card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding-top:8px;border-top:1px solid var(--sap-surface-2)}
 .card-notes{font-size:10.5px;color:var(--sap-text-muted);font-style:italic;flex:1;line-height:1.35}
-.pipeline-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:99px;letter-spacing:.05em;font-family:var(--font-mono)}
-.pipeline-tag.p1{background:rgba(187,0,0,.1);color:var(--p1)}
-.pipeline-tag.p2{background:rgba(230,126,34,.13);color:var(--p2)}
-.pipeline-tag.p3{background:rgba(240,171,0,.13);color:#9C7000}
-.pipeline-tag.smc{background:rgba(114,47,55,.13);color:var(--smc-burdeo)}
+.pipeline-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:99px;letter-spacing:.05em;font-family:var(--font-mono);display:inline-flex;align-items:center;gap:4px}
+.pipeline-tag::before{content:"";width:6px;height:6px;border-radius:99px;background:currentColor;opacity:.65}
+.pipeline-tag.p1{background:var(--p1-bg);color:var(--p1-text)}
+.pipeline-tag.p2{background:var(--p2-bg);color:var(--p2-text)}
+.pipeline-tag.p3{background:var(--p3-bg);color:var(--p3-text)}
+.pipeline-tag.smc{background:var(--smc-pip-bg);color:var(--smc-pip)}
 
 /* DRAWER in-card */
 .card-drawer{max-height:0;opacity:0;overflow:hidden;transition:max-height 500ms var(--ease-fiori),opacity 300ms ease,margin 300ms ease;background:var(--sap-surface);border-radius:var(--radius-sm);padding:0}
@@ -348,13 +353,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <section class="kpis" id="kpis"></section>
 
     <div class="charts-head">
-      <h3>Análisis del banco</h3>
+      <h3 id="chartsTitle">📊 Análisis del banco</h3>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-ghost" id="chartsBackBtn" style="display:none;font-size:11px;padding:6px 12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Volver al general</button>
       <div class="chart-fan" id="chartFan">
         <button class="chart-fan-btn is-active" data-style="bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Bar</button>
         <button class="chart-fan-btn" data-style="donut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>Donut</button>
         <button class="chart-fan-btn" data-style="treemap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="9" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="10" width="7" height="11"/><rect x="3" y="14" width="9" height="7"/></svg>Tree</button>
         <button class="chart-fan-btn" data-style="radar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 18 20 6 20 2 8.5"/><line x1="12" y1="2" x2="12" y2="20"/></svg>Radar</button>
         <button class="chart-fan-btn" data-style="scatter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="1.5"/><circle cx="10" cy="12" r="1.5"/><circle cx="14" cy="14" r="1.5"/><circle cx="18" cy="6" r="1.5"/></svg>Scatter</button>
+      </div>
       </div>
     </div>
     <section class="charts" id="charts"></section>
@@ -375,29 +383,66 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 <script>
 // ====================== MODULES SAP DICTIONARY ======================
+// Agrupados: ERP Core · HR · Logistics · Industry · BTP · Cloud Apps
 const MOD = {
-  FI:{n:"FI",desc:"Finanzas · contabilidad general · cuentas",role:"CFO · Gerente Finanzas · Contralor"},
-  CO:{n:"CO",desc:"Controlling · costos · presupuesto",role:"Controller · Gerente Planificación"},
-  MM:{n:"MM",desc:"Materials Management · compras · inventario",role:"Gerente Abastecimiento · Compras"},
-  SD:{n:"SD",desc:"Sales & Distribution · ventas · facturación",role:"Gerente Comercial · VP Ventas"},
-  HCM:{n:"HCM",desc:"Human Capital Mgmt · nómina · talento",role:"CHRO · Gerente RRHH"},
-  HR:{n:"HR",desc:"Recursos Humanos · payroll · personal",role:"Gerente RRHH · Payroll Manager"},
-  PP:{n:"PP",desc:"Production Planning · planificación producción",role:"Gerente Producción · Planta"},
-  PM:{n:"PM",desc:"Plant Maintenance · mantenimiento activos",role:"Gerente Mantenimiento · Confiabilidad"},
-  QM:{n:"QM",desc:"Quality Management · control calidad",role:"Gerente Calidad · QA Lead"},
-  WM:{n:"WM",desc:"Warehouse Management · bodega · logística interna",role:"Gerente Bodega · Logística"},
-  "RE-FX":{n:"RE-FX",desc:"Real Estate · contratos arriendo",role:"Gerente Real Estate · Property Mgr"},
-  "IS-U":{n:"IS-U",desc:"Industry Solution Utilities · servicios públicos",role:"Gerente Comercial Utilities"},
-  "IS-H":{n:"IS-H",desc:"Industry Solution Hospital · salud",role:"Director Médico · Gerente TI Salud"},
-  BW:{n:"BW",desc:"Business Warehouse · BI · analytics",role:"Gerente BI · Data Lead"},
-  PI:{n:"PI",desc:"Process Integration · middleware on-prem",role:"Integration Architect · TI"},
-  CPI:{n:"CPI",desc:"Cloud Platform Integration · iFlows cloud",role:"Cloud Integration Lead · TI"},
-  SF:{n:"SF",desc:"SuccessFactors · HXM cloud",role:"CHRO · HRIS Manager"},
-  PS:{n:"PS",desc:"Project System · gestión proyectos",role:"PMO · Gerente Proyectos"},
-  TM:{n:"TM",desc:"Transport Management · gestión transporte",role:"Gerente Logística · Supply Chain"},
-  EWM:{n:"EWM",desc:"Extended Warehouse · WM avanzado",role:"Gerente Bodega · Logística"},
-  Ariba:{n:"Ariba",desc:"Procurement cloud · proveedores",role:"Gerente Compras Estratégicas"},
-  IS_A:{n:"IS-A",desc:"Industry Solution Airlines · aerolíneas",role:"Gerente Operaciones Aéreas"},
+  // ERP Core
+  FI:{n:"FI",g:"Core",desc:"Finanzas · contabilidad general · cuentas",role:"CFO · Gerente Finanzas · Contralor"},
+  CO:{n:"CO",g:"Core",desc:"Controlling · costos · presupuesto",role:"Controller · Gerente Planificación"},
+  MM:{n:"MM",g:"Core",desc:"Materials Management · compras · inventario",role:"Gerente Abastecimiento · Compras"},
+  SD:{n:"SD",g:"Core",desc:"Sales & Distribution · ventas · facturación",role:"Gerente Comercial · VP Ventas"},
+  PP:{n:"PP",g:"Core",desc:"Production Planning · planificación producción",role:"Gerente Producción · Planta"},
+  PM:{n:"PM",g:"Core",desc:"Plant Maintenance · mantenimiento activos",role:"Gerente Mantenimiento · Confiabilidad"},
+  QM:{n:"QM",g:"Core",desc:"Quality Management · control calidad",role:"Gerente Calidad · QA Lead"},
+  WM:{n:"WM",g:"Core",desc:"Warehouse Management · bodega",role:"Gerente Bodega · Logística"},
+  PS:{n:"PS",g:"Core",desc:"Project System · gestión proyectos",role:"PMO · Gerente Proyectos"},
+  TM:{n:"TM",g:"Core",desc:"Transport Management · transporte",role:"Gerente Logística · Supply Chain"},
+  EWM:{n:"EWM",g:"Core",desc:"Extended Warehouse · WM avanzado",role:"Gerente Bodega · Supply Chain"},
+  // Real Estate
+  "RE-FX":{n:"RE-FX",g:"Real Estate",desc:"Real Estate · contratos arriendo · gestión inmuebles",role:"Gerente Real Estate · Property Manager"},
+  REM:{n:"REM",g:"Real Estate",desc:"Real Estate Mgmt · portfolio inmobiliario",role:"Director RE · Asset Manager"},
+  IMP:{n:"IMP",g:"Real Estate",desc:"Investment Mgmt · inversiones capital",role:"Gerente Inversiones"},
+  // HR / SuccessFactors
+  HCM:{n:"HCM",g:"HR",desc:"Human Capital Mgmt · nómina · talento on-prem",role:"CHRO · Gerente RRHH"},
+  HR:{n:"HR",g:"HR",desc:"Recursos Humanos · payroll · personal",role:"Gerente RRHH · Payroll Manager"},
+  SF:{n:"SF",g:"SuccessFactors",desc:"SuccessFactors · HXM cloud suite",role:"CHRO · HRIS Manager"},
+  "SF-EC":{n:"SF-EC",g:"SuccessFactors",desc:"Employee Central · core HR cloud",role:"HRIS Manager · CHRO"},
+  "SF-Rec":{n:"SF-Rec",g:"SuccessFactors",desc:"Recruiting · ATS · candidate experience",role:"Talent Acquisition · TA Lead"},
+  "SF-Perf":{n:"SF-Perf",g:"SuccessFactors",desc:"Performance & Goals · evaluación talento",role:"Talent Manager · L&D Lead"},
+  "SF-Comp":{n:"SF-Comp",g:"SuccessFactors",desc:"Compensation · planes remuneración",role:"Total Rewards · C&B Manager"},
+  "SF-LMS":{n:"SF-LMS",g:"SuccessFactors",desc:"Learning Management · capacitación",role:"L&D Manager · Training Lead"},
+  "SF-Onb":{n:"SF-Onb",g:"SuccessFactors",desc:"Onboarding · incorporación nuevos",role:"HR Ops · HRBP"},
+  // BTP · 2026 stack
+  BTP:{n:"BTP",g:"BTP",desc:"Business Technology Platform · plataforma extensión",role:"BTP Architect · Platform Lead"},
+  CPI:{n:"CPI",g:"BTP",desc:"Cloud Integration · iFlows cloud · adapters",role:"Cloud Integration Lead · iPaaS"},
+  PI:{n:"PI",g:"BTP",desc:"Process Integration · middleware on-prem (legacy)",role:"Integration Architect · TI"},
+  IS:{n:"IS",g:"BTP",desc:"Integration Suite · cloud-native iPaaS",role:"Integration Architect · iPaaS Lead"},
+  APIM:{n:"APIM",g:"BTP",desc:"API Management · API governance",role:"API Lead · Platform Engineer"},
+  EM:{n:"EM",g:"BTP",desc:"Event Mesh · arquitectura event-driven",role:"Solution Architect · Cloud"},
+  Build:{n:"Build",g:"BTP",desc:"Build Apps · low-code · ciudadano developer",role:"Lead Citizen Dev · CTO"},
+  BPA:{n:"BPA",g:"BTP",desc:"Build Process Automation · workflow + RPA",role:"Process Automation Lead"},
+  BC:{n:"BC",g:"BTP",desc:"Build Code · pro-code dev en BTP",role:"Tech Lead · Senior Dev"},
+  Ds:{n:"Datasphere",g:"BTP",desc:"Datasphere · data warehouse cloud unificado",role:"Data Architect · CDO"},
+  SAC:{n:"SAC",g:"BTP",desc:"Analytics Cloud · BI + planning + predictive",role:"Gerente BI · Analytics Lead"},
+  AIC:{n:"AI Core",g:"BTP",desc:"AI Core + Launchpad · ML/LLM runtime",role:"Head of AI · ML Engineer"},
+  Joule:{n:"Joule",g:"BTP",desc:"Joule · AI copilot embebido en SAP",role:"CIO · Innovation Lead"},
+  HANA:{n:"HANA",g:"BTP",desc:"HANA Cloud · DB in-memory cloud",role:"DBA Lead · Cloud Architect"},
+  IAS:{n:"IAS",g:"BTP",desc:"Identity Authentication · SSO cloud",role:"Security Architect · IAM Lead"},
+  IPS:{n:"IPS",g:"BTP",desc:"Identity Provisioning · user lifecycle",role:"IAM Lead · Security"},
+  // Cloud Apps independientes
+  Ariba:{n:"Ariba",g:"Cloud Apps",desc:"Procurement cloud · proveedores · sourcing",role:"Gerente Compras Estratégicas"},
+  Concur:{n:"Concur",g:"Cloud Apps",desc:"Travel & Expense · gastos · viajes",role:"Gerente Finanzas · Travel Mgr"},
+  Fieldglass:{n:"Fieldglass",g:"Cloud Apps",desc:"Contingent Workforce · contratistas",role:"Procurement · External WF Mgr"},
+  Signavio:{n:"Signavio",g:"Cloud Apps",desc:"Process Mining · BPM cloud",role:"Process Owner · Continuous Improvement"},
+  LeanIX:{n:"LeanIX",g:"Cloud Apps",desc:"Enterprise Architecture Mgmt",role:"Enterprise Architect · EA Lead"},
+  C4HANA:{n:"C/4HANA",g:"Cloud Apps",desc:"Customer Experience suite · CRM cloud",role:"VP Customer Experience · CMO"},
+  // Industry Solutions
+  "IS-U":{n:"IS-U",g:"Industry",desc:"Industry Utilities · agua/energía/gas",role:"Gerente Comercial Utilities"},
+  "IS-H":{n:"IS-H",g:"Industry",desc:"Industry Hospital · salud",role:"Director Médico · Gerente TI Salud"},
+  "IS-A":{n:"IS-A",g:"Industry",desc:"Industry Airlines · aerolíneas",role:"Gerente Operaciones Aéreas"},
+  "IS-Retail":{n:"IS-Retail",g:"Industry",desc:"Industry Retail · POS · merchandising",role:"VP Retail · COO"},
+  "IS-Banking":{n:"IS-Banking",g:"Industry",desc:"Industry Banking · core bancario",role:"CIO Banca · Core Banking Lead"},
+  // Analytics legacy
+  BW:{n:"BW",g:"Analytics",desc:"Business Warehouse · BI on-prem (legacy)",role:"Gerente BI · Data Lead"},
 };
 
 // ====================== IA CATEGORIES ======================
@@ -415,30 +460,30 @@ const CAT = {
 // ====================== DATA ======================
 const DATA = [
   // SAP TRACK
-  {t:"sap",ind:"Retail",e:"Cencosud",rev:16000,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"],m:["FI","CO","MM","SD","WM","HCM"],pip:"P2",c:{web:"https://www.cencosud.com",ln:"https://www.linkedin.com/company/cencosud/",mail:"contacto@cencosud.com",tel:"+56 2 2959 0000"}},
+  {t:"sap",ind:"Retail",e:"Cencosud",rev:16000,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"],m:["FI","CO","MM","SD","WM","SF-EC","SAC","IS-Retail","BTP"],pip:"P2",c:{web:"https://www.cencosud.com",ln:"https://www.linkedin.com/company/cencosud/",mail:"contacto@cencosud.com",tel:"+56 2 2959 0000"}},
   {t:"sap",ind:"Retail",e:"Falabella",rev:11500,note:"Grupo regional",sw:["SAP ECC","Oracle Fusion","Workday"],m:["FI","CO","MM","SD","HCM"],c:{web:"https://www.falabella.com",ln:"https://www.linkedin.com/company/falabella/",mail:"contacto@falabella.com",tel:"+56 2 2380 2000"}},
   {t:"sap",ind:"Retail",e:"Walmart Chile (Líder)",rev:6500,note:"Solo Chile",sw:["SAP S/4HANA","Workday"],m:["FI","CO","MM","SD","WM","EWM","HCM"]},
   {t:"sap",ind:"Retail",e:"SMU (Unimarc)",rev:3200,note:"Solo Chile",sw:["SAP ECC","Talana"],m:["FI","CO","MM","SD","WM"]},
   {t:"sap",ind:"Retail",e:"Ripley",rev:1900,note:"Chile + Perú",sw:["SAP ECC","Salesforce"],m:["FI","CO","MM","SD","HCM"]},
   {t:"sap",ind:"Retail",e:"Hites",rev:600,note:"Multitienda",sw:["SAP ECC","Talana"],m:["FI","CO","MM","SD"]},
   {t:"sap",ind:"Retail",e:"La Polar",rev:550,note:"Tras restructuración",sw:["SAP B1","Buk"],m:["FI","CO","MM","SD"]},
-  {t:"sap",ind:"Minería",e:"Codelco",rev:16700,note:"Estatal · cobre",sw:["SAP S/4HANA","SuccessFactors"],m:["FI","CO","PM","MM","HCM","PP","PS"],pip:"P3",c:{web:"https://www.codelco.com",ln:"https://www.linkedin.com/company/codelco/",mail:"contacto@codelco.cl",tel:"+56 2 2690 3000"}},
+  {t:"sap",ind:"Minería",e:"Codelco",rev:16700,note:"Estatal · cobre",sw:["SAP S/4HANA","SuccessFactors","BTP"],m:["FI","CO","PM","MM","SF-EC","PP","PS","SAC","Joule","Datasphere","BTP"],pip:"P3",c:{web:"https://www.codelco.com",ln:"https://www.linkedin.com/company/codelco/",mail:"contacto@codelco.cl",tel:"+56 2 2690 3000"}},
   {t:"sap",ind:"Minería",e:"BHP Escondida",rev:13000,note:"Mina única más grande",sw:["SAP S/4HANA","Workday"],m:["FI","CO","PM","MM","PP","HCM"]},
-  {t:"sap",ind:"Minería",e:"SQM",rev:7500,note:"Litio + yodo",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","MM","SD","PP","PM"],pip:"P1",c:{web:"https://www.sqm.com",ln:"https://www.linkedin.com/company/sqm/",mail:"contacto@sqm.com",tel:"+56 2 2425 2000"}},
+  {t:"sap",ind:"Minería",e:"SQM",rev:7500,note:"Litio + yodo",sw:["SAP S/4HANA","Salesforce","Ariba"],m:["FI","CO","MM","SD","PP","PM","Ariba","SAC","BTP"],pip:"P1",c:{web:"https://www.sqm.com",ln:"https://www.linkedin.com/company/sqm/",mail:"contacto@sqm.com",tel:"+56 2 2425 2000"}},
   {t:"sap",ind:"Minería",e:"Antofagasta Minerals",rev:5800,note:"Grupo Luksic",sw:["SAP ECC","Talana"],m:["FI","CO","PM","MM","HCM","PP"],pip:"P1"},
   {t:"sap",ind:"Minería",e:"Collahuasi",rev:5200,note:"Anglo+Glencore",sw:["SAP S/4HANA"],m:["FI","CO","PM","MM","PP"],pip:"P1"},
   {t:"sap",ind:"Minería",e:"Anglo American Chile",rev:4800,note:"Los Bronces",sw:["SAP S/4HANA","Workday"],m:["FI","CO","PM","MM","HCM","PP"],pip:"P2"},
   {t:"sap",ind:"Minería",e:"Komatsu Cummins",rev:1200,note:"Servicios mineros",sw:["SAP S/4HANA","Workday"],m:["FI","CO","MM","SD","PM"]},
   {t:"sap",ind:"Minería",e:"Finning Sudamérica",rev:2200,note:"Distribución Caterpillar",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","MM","SD","PM"]},
   {t:"sap",ind:"Energía",e:"ENAP",rev:7500,note:"Petróleo estatal",sw:["SAP S/4HANA","SuccessFactors"],m:["FI","CO","PM","MM","HCM","PP"]},
-  {t:"sap",ind:"Energía",e:"Enel Chile",rev:4500,note:"Generación + distribución",sw:["SAP S/4HANA","Workday"],m:["FI","CO","IS-U","MM","PM","HCM"]},
+  {t:"sap",ind:"Energía",e:"Enel Chile",rev:4500,note:"Generación + distribución",sw:["SAP S/4HANA","Workday","BTP"],m:["FI","CO","IS-U","MM","PM","SF-EC","SAC","Joule","BTP"]},
   {t:"sap",ind:"Energía",e:"Colbún",rev:2500,note:"Generación",sw:["SAP ECC","Salesforce"],m:["FI","CO","PM","MM"]},
   {t:"sap",ind:"Energía",e:"AES Andes",rev:2200,note:"Generación",sw:["SAP S/4HANA"],m:["FI","CO","PM","MM"]},
   {t:"sap",ind:"Energía",e:"Engie Chile",rev:1500,note:"Generación",sw:["SAP S/4HANA"],m:["FI","CO","PM","MM"]},
-  {t:"sap",ind:"Utilities · Agua",e:"Aguas Andinas",rev:780,note:"Sanitaria RM",sw:["SAP S/4HANA","IS-U"],m:["FI","CO","IS-U","PM","HCM"],pip:"P1"},
+  {t:"sap",ind:"Utilities · Agua",e:"Aguas Andinas",rev:780,note:"Sanitaria RM",sw:["SAP S/4HANA","IS-U","BTP"],m:["FI","CO","IS-U","PM","SF-EC","BTP","SAC"],pip:"P1"},
   {t:"sap",ind:"Utilities · Agua",e:"Esval",rev:280,note:"Sanitaria V Región",sw:["SAP ECC","IS-U"],m:["FI","CO","IS-U","PM"]},
   {t:"sap",ind:"Utilities · Agua",e:"ESSAL",rev:120,note:"Sanitaria X Región",sw:["SAP ECC"],m:["FI","CO","IS-U","PM"]},
-  {t:"sap",ind:"Forestal",e:"CMPC",rev:7500,note:"Grupo Matte",sw:["SAP S/4HANA","Workday"],m:["FI","CO","MM","SD","PP","PM","HCM"]},
+  {t:"sap",ind:"Forestal",e:"CMPC",rev:7500,note:"Grupo Matte",sw:["SAP S/4HANA","Workday"],m:["FI","CO","MM","SD","PP","PM","SF-EC","SAC","Joule"]},
   {t:"sap",ind:"Forestal",e:"Arauco",rev:6500,note:"Grupo Angelini",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","MM","SD","PP","PM"]},
   {t:"sap",ind:"Forestal",e:"Masisa",rev:350,note:"Tableros",sw:["SAP ECC","Talana"],m:["FI","CO","MM","SD","PP"]},
   {t:"sap",ind:"Alimentos",e:"Agrosuper",rev:4200,note:"Grupo Vial",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","MM","SD","PP","QM"]},
@@ -450,13 +495,13 @@ const DATA = [
   {t:"sap",ind:"Alimentos",e:"Soprole",rev:680,note:"Lácteos",sw:["SAP ECC","Workday"],m:["FI","CO","MM","SD","PP","QM"]},
   {t:"sap",ind:"Alimentos",e:"Multiexport Foods",rev:520,note:"Salmonero",sw:["SAP S/4HANA"],m:["FI","CO","MM","SD","PP","QM"]},
   {t:"sap",ind:"Alimentos",e:"Camanchaca",rev:480,note:"Salmonero + pesquero",sw:["SAP S/4HANA"],m:["FI","CO","MM","SD","PP","QM"]},
-  {t:"sap",ind:"Vitivinícola",e:"Concha y Toro",rev:1700,note:"Líder exportador",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","MM","SD","PP"],pip:"P2",c:{web:"https://www.conchaytoro.com",ln:"https://www.linkedin.com/company/vina-concha-y-toro/",mail:"contacto@conchaytoro.com",tel:"+56 2 2476 5000"}},
+  {t:"sap",ind:"Vitivinícola",e:"Concha y Toro",rev:1700,note:"Líder exportador",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","MM","SD","PP","SAC","Datasphere"],pip:"P2",c:{web:"https://www.conchaytoro.com",ln:"https://www.linkedin.com/company/vina-concha-y-toro/",mail:"contacto@conchaytoro.com",tel:"+56 2 2476 5000"}},
   {t:"sap",ind:"Vitivinícola",e:"VSPT",rev:350,note:"Grupo CCU",sw:["SAP S/4HANA"],m:["FI","CO","MM","SD"]},
   {t:"sap",ind:"Vitivinícola",e:"Santa Rita",rev:300,note:"Grupo Claro",sw:["SAP ECC"],m:["FI","CO","MM","SD","PP"],pip:"P2"},
   {t:"sap",ind:"Vitivinícola",e:"Errázuriz",rev:150,note:"Familia Chadwick",sw:["SAP B1"],m:["FI","CO","MM","SD"]},
   {t:"sap",ind:"Vitivinícola",e:"Undurraga",rev:130,note:"Familiar",sw:["SAP B1"],m:["FI","CO","MM","SD"]},
-  {t:"sap",ind:"Banca",e:"Santander Chile",rev:2800,note:"Ingreso operacional",sw:["SAP S/4HANA","Workday"],m:["FI","CO","HCM"]},
-  {t:"sap",ind:"Banca",e:"BCI",rev:2700,note:"Ingreso operacional",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","HCM"]},
+  {t:"sap",ind:"Banca",e:"Santander Chile",rev:2800,note:"Ingreso operacional",sw:["SAP S/4HANA","Workday"],m:["FI","CO","SF-EC","IS-Banking","IAS","Joule"]},
+  {t:"sap",ind:"Banca",e:"BCI",rev:2700,note:"Ingreso operacional",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","SF-EC","IS-Banking","IAS","SAC"]},
   {t:"sap",ind:"Banca",e:"Banco de Chile",rev:2500,note:"Ingreso operacional",sw:["SAP ECC","Workday"],m:["FI","CO","HCM"]},
   {t:"sap",ind:"Banca",e:"BancoEstado",rev:2000,note:"Estatal",sw:["SAP ECC"],m:["FI","CO","HCM"]},
   {t:"sap",ind:"Banca",e:"Scotiabank Chile",rev:1400,note:"Ingreso operacional",sw:["SAP S/4HANA","Workday"],m:["FI","CO","HCM"],pip:"P1"},
@@ -481,21 +526,21 @@ const DATA = [
   {t:"sap",ind:"Logística",e:"SAAM",rev:700,note:"Logística portuaria",sw:["SAP S/4HANA"],m:["FI","CO","MM","SD","TM"]},
   {t:"sap",ind:"Logística",e:"Sitrans",rev:300,note:"Logística",sw:["SAP B1","Buk"],m:["FI","CO","SD","TM"]},
   {t:"sap",ind:"Logística",e:"DHL Chile",rev:250,note:"Courier",sw:["SAP S/4HANA","Workday"],m:["FI","CO","SD","TM"]},
-  {t:"sap",ind:"Salud",e:"Banmédica",rev:1500,note:"Isapre + clínicas",sw:["SAP S/4HANA","Workday"],m:["FI","CO","IS-H","HCM"]},
+  {t:"sap",ind:"Salud",e:"Banmédica",rev:1500,note:"Isapre + clínicas",sw:["SAP S/4HANA","Workday"],m:["FI","CO","IS-H","SF-EC","SF-LMS"]},
   {t:"sap",ind:"Salud",e:"Cruz Blanca",rev:900,note:"Isapre + Integramédica",sw:["SAP ECC","Salesforce"],m:["FI","CO","IS-H"]},
   {t:"sap",ind:"Salud",e:"RedSalud",rev:600,note:"Red CChC",sw:["SAP ECC","Buk"],m:["FI","CO","IS-H","HCM"]},
   {t:"sap",ind:"Salud",e:"Clínica Alemana",rev:450,note:"Santiago",sw:["SAP S/4HANA","Talana"],m:["FI","CO","IS-H","HCM"]},
   {t:"sap",ind:"Salud",e:"Clínica Las Condes",rev:400,note:"Santiago",sw:["SAP ECC","Salesforce"],m:["FI","CO","IS-H"]},
   {t:"sap",ind:"Educación superior",e:"UNAB",rev:600,note:"Ex Laureate",sw:["SAP S/4HANA","Workday"],m:["FI","CO","HCM","SD"]},
   {t:"sap",ind:"Educación superior",e:"INACAP",rev:400,note:"CFT + IP",sw:["SAP ECC","Buk"],m:["FI","CO","HCM","SD"]},
-  {t:"sap",ind:"Educación superior",e:"DUOC UC",rev:380,note:"IP · cliente SMC PI 7.5",sw:["SAP PI 7.5","SAP ECC"],m:["FI","CO","HCM","SD","PI"],pip:"SMC",c:{web:"https://www.duoc.cl",ln:"https://www.linkedin.com/school/duoc-uc/",mail:"contacto@duoc.cl",tel:"+56 2 2354 0000"}},
+  {t:"sap",ind:"Educación superior",e:"DUOC UC",rev:380,note:"IP · cliente SMC PI 7.5",sw:["SAP PI 7.5","SAP ECC"],m:["FI","CO","HCM","SD","PI","SF-EC","SF-LMS","BTP"],pip:"SMC",c:{web:"https://www.duoc.cl",ln:"https://www.linkedin.com/school/duoc-uc/",mail:"contacto@duoc.cl",tel:"+56 2 2354 0000"}},
   {t:"sap",ind:"Educación superior",e:"U. San Sebastián",rev:280,note:"Universidad",sw:["SAP ECC"],m:["FI","CO","HCM"]},
   {t:"sap",ind:"Educación superior",e:"U. de los Andes",rev:220,note:"Universidad",sw:["SAP ECC","Buk"],m:["FI","CO","HCM"]},
-  {t:"sap",ind:"Real Estate",e:"Mall Plaza",rev:400,note:"Solo Chile",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","RE-FX","MM"],pip:"P3"},
-  {t:"sap",ind:"Real Estate",e:"Parque Arauco",rev:290,note:"Cliente SMC · CPI",sw:["SAP S/4HANA","SAP CPI"],m:["FI","CO","RE-FX","CPI"],pip:"SMC",c:{web:"https://www.parquearauco.cl",ln:"https://www.linkedin.com/company/parque-arauco-s.a./",mail:"contacto@parquearauco.cl",tel:"+56 2 2299 0500"}},
+  {t:"sap",ind:"Real Estate",e:"Mall Plaza",rev:400,note:"Solo Chile",sw:["SAP S/4HANA","Salesforce"],m:["FI","CO","RE-FX","REM","MM","BTP"],pip:"P3"},
+  {t:"sap",ind:"Real Estate",e:"Parque Arauco",rev:290,note:"Cliente SMC · CPI",sw:["SAP S/4HANA","SAP CPI","BTP"],m:["FI","CO","RE-FX","REM","CPI","BTP","IS","SAC"],pip:"SMC",c:{web:"https://www.parquearauco.cl",ln:"https://www.linkedin.com/company/parque-arauco-s.a./",mail:"contacto@parquearauco.cl",tel:"+56 2 2299 0500"}},
   {t:"sap",ind:"Real Estate",e:"Cencosud Shopping",rev:250,note:"Solo Chile",sw:["SAP S/4HANA"],m:["FI","CO","RE-FX"]},
   {t:"sap",ind:"Real Estate",e:"Multiplaza Chile",rev:140,note:"Operador centros",sw:["SAP ECC"],m:["FI","CO","RE-FX"]},
-  {t:"sap",ind:"Transporte aéreo",e:"LATAM Airlines",rev:12500,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"],m:["FI","CO","MM","SD","PM","IS-A","HCM"],c:{web:"https://www.latamairlines.com",ln:"https://www.linkedin.com/company/latam-airlines/",mail:"contacto@latam.com",tel:"+56 2 2565 1234"}},
+  {t:"sap",ind:"Transporte aéreo",e:"LATAM Airlines",rev:12500,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce","BTP"],m:["FI","CO","MM","SD","PM","IS-A","SF-EC","Joule","SAC","BTP"],c:{web:"https://www.latamairlines.com",ln:"https://www.linkedin.com/company/latam-airlines/",mail:"contacto@latam.com",tel:"+56 2 2565 1234"}},
   {t:"sap",ind:"Transporte aéreo",e:"SKY Airline",rev:800,note:"Solo Chile",sw:["SAP ECC","Talana"],m:["FI","CO","MM","SD","PM"]},
   // PYME / IA TRACK
   {t:"pyme",ind:"Retail PyME",e:"Casaideas",rev:180,note:"Decoración hogar",sw:["Defontana","Shopify","Buk","HubSpot"],ca:["ERP-Cloud","E-com","HR","CRM"]},
@@ -699,8 +744,29 @@ function renderKPIs(){
     </div>`).join("");
 }
 
-// ====================== CHARTS · 5 styles ======================
+// ====================== CHARTS · context-aware ======================
 function renderCharts(){
+  const title = document.getElementById("chartsTitle");
+  const back = document.getElementById("chartsBackBtn");
+  if (state.openCard !== null){
+    const d = DATA[state.openCard];
+    title.textContent = "🔬 Análisis · " + d.e;
+    back.style.display = "inline-flex";
+    renderChartsClient(d);
+    return;
+  }
+  // contextual title general
+  back.style.display = "none";
+  let label = "📊 Análisis del banco";
+  if (state.industries.size === 1) label = "📊 Análisis · " + [...state.industries][0];
+  else if (state.modules.size === 1) label = "📊 Análisis · módulo " + [...state.modules][0];
+  else if (state.categories.size === 1) label = "📊 Análisis · " + [...state.categories][0];
+  else if (state.myPipeline) label = "📊 Análisis · Mi Pipeline";
+  title.textContent = label;
+  renderChartsGeneral();
+}
+
+function renderChartsGeneral(){
   const rows = filtered();
   const style = state.chartStyle;
   const c = document.getElementById("charts");
@@ -816,6 +882,80 @@ function renderCharts(){
   c.innerHTML = html + funnel + swChart;
 }
 
+// CHARTS · CLIENTE seleccionado · drilldown
+function renderChartsClient(d){
+  const c = document.getElementById("charts");
+  const isSAP = d.t === "sap";
+  const modules = isSAP ? (d.m||[]) : (d.ca||[]);
+  const ticket = ticketUSD(d), p = prob(d);
+
+  // 1. Módulos agrupados (donut por grupo MOD.g)
+  let groupCount = {};
+  if (isSAP){
+    modules.forEach(m => { const g = MOD[m]?.g || "Otros"; groupCount[g] = (groupCount[g]||0) + 1; });
+  } else {
+    modules.forEach(m => { groupCount[m] = (groupCount[m]||0) + 1; });
+  }
+  const colors = {"Core":"#0070F2","Real Estate":"#722F37","HR":"#36A41D","SuccessFactors":"#36A41D","BTP":"#F0AB00","Cloud Apps":"#5B738B","Industry":"#8E44AD","Analytics":"#00897B","Otros":"#94a3b8","ERP-Cloud":"#0070F2","POS":"#F0AB00","CRM":"#722F37","E-com":"#36A41D","Contable":"#5B738B","BI":"#8E44AD","Productividad":"#00897B"};
+  const entries = Object.entries(groupCount);
+  const total = entries.reduce((a,b)=>a+b[1],0)||1;
+  let cum = 0;
+  let donut = `<div class="chart-card"><div class="chart-title">${isSAP?"Módulos SAP agrupados":"Categorías stack"}<span class="hint">${modules.length} activos</span></div><div class="chart-sub">Distribución por grupo · click LinkedIn por módulo en drawer</div><svg class="chart-svg" viewBox="0 0 480 280">`;
+  const cx=240,cy=140,r=95,inner=55;
+  entries.forEach(([g,n],i)=>{const ang=n/total*Math.PI*2,a1=cum-Math.PI/2,a2=cum+ang-Math.PI/2;cum+=ang;
+    const x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+    const xi1=cx+inner*Math.cos(a2),yi1=cy+inner*Math.sin(a2),xi2=cx+inner*Math.cos(a1),yi2=cy+inner*Math.sin(a1);
+    const large=ang>Math.PI?1:0;
+    donut+=`<path d="M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${xi1} ${yi1} A ${inner} ${inner} 0 ${large} 0 ${xi2} ${yi2} Z" fill="${colors[g]||"#94a3b8"}" opacity=".88"><title>${g}: ${n} módulo${n===1?"":"s"}</title></path>`;
+    const mid=(a1+a2)/2,lx=cx+(r+22)*Math.cos(mid),ly=cy+(r+22)*Math.sin(mid);
+    if(ang>0.18) donut+=`<text x="${lx}" y="${ly}" text-anchor="${lx<cx?'end':'start'}" font-size="10.5" font-weight="600" fill="var(--sap-text)">${g} (${n})</text>`;
+  });
+  donut+=`<text x="${cx}" y="${cy-2}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--sap-brand)">${modules.length}</text><text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="10" fill="var(--sap-text-muted)">${isSAP?"módulos":"categorías"}</text></svg></div>`;
+
+  // 2. Comparativa vs industria
+  const peers = DATA.filter(x => x.ind === d.ind && x !== d);
+  const peerAvgRev = peers.reduce((a,b)=>a+(b.rev||0),0)/(peers.length||1);
+  const peerAvgTicket = peers.reduce((a,b)=>a+ticketUSD(b),0)/(peers.length||1);
+  const peerAvgMod = peers.reduce((a,b)=>a+((b.m||b.ca||[]).length),0)/(peers.length||1);
+  const compData = [
+    {label:"Ventas USD M", v1:d.rev||0, v2:peerAvgRev, fmt:v=>v.toLocaleString("es-CL")},
+    {label:"Ticket SMC USD", v1:ticket, v2:peerAvgTicket, fmt:fmtMoney},
+    {label:isSAP?"# Módulos":"# Categorías", v1:modules.length, v2:Math.round(peerAvgMod*10)/10, fmt:v=>v.toFixed(1)},
+  ];
+  let comp = `<div class="chart-card"><div class="chart-title">${d.e} vs ${d.ind}<span class="hint">${peers.length} peers</span></div><div class="chart-sub">Comparativa con promedio industria</div><svg class="chart-svg" viewBox="0 0 480 220">`;
+  compData.forEach((cd,i)=>{
+    const y=22+i*65;
+    const max=Math.max(cd.v1,cd.v2)||1;
+    const w1=(cd.v1/max)*260,w2=(cd.v2/max)*260;
+    comp+=`<text x="0" y="${y-6}" class="lbl-y" font-size="11.5">${cd.label}</text>`;
+    comp+=`<rect x="160" y="${y}" width="${w1}" height="16" rx="3" fill="var(--sap-blue)"><title>${d.e}: ${cd.fmt(cd.v1)}</title></rect><text x="${160+w1+6}" y="${y+12}" class="lbl-val">${cd.fmt(cd.v1)}</text><text x="155" y="${y+12}" text-anchor="end" font-size="9.5" fill="var(--sap-blue)" font-weight="700">${d.e.slice(0,8)}</text>`;
+    comp+=`<rect x="160" y="${y+22}" width="${w2}" height="12" rx="3" fill="var(--sap-text-muted)" opacity=".55"><title>Promedio: ${cd.fmt(cd.v2)}</title></rect><text x="${160+w2+6}" y="${y+32}" class="lbl-val" opacity=".7">${cd.fmt(cd.v2)}</text><text x="155" y="${y+32}" text-anchor="end" font-size="9.5" fill="var(--sap-text-muted)">prom.</text>`;
+  });
+  comp+=`</svg></div>`;
+
+  // 3. Ticket scenarios
+  const scenarios = [
+    {n:"Cold (5%)", pct:.05, c:"#94a3b8"},
+    {n:"P3 (15%)", pct:.15, c:"#5B738B"},
+    {n:"P2 (25%)", pct:.25, c:"#0070F2"},
+    {n:"P1 (40%)", pct:.40, c:"#F0AB00"},
+    {n:"SMC (95%)", pct:.95, c:"#722F37"},
+  ];
+  const maxScn = ticket*.95;
+  let scnChart = `<div class="chart-card"><div class="chart-title">Ticket ponderado · ${d.e}<span class="hint">${fmtMoney(ticket)} base</span></div><div class="chart-sub">Ingreso esperado según probabilidad pipeline · pip actual: ${pipelineLabel(d.pip)}</div><svg class="chart-svg" viewBox="0 0 480 280">`;
+  scenarios.forEach((s,i)=>{
+    const y=22+i*48,w=(ticket*s.pct/maxScn)*320;
+    const current = (d.pip==="SMC"&&s.n.startsWith("SMC")) || (d.pip&&s.n.startsWith(d.pip)) || (!d.pip&&s.n.startsWith("Cold"));
+    scnChart+=`<text x="0" y="${y+25}" class="lbl-y" font-size="11" ${current?'font-weight="800" fill="'+s.c+'"':""}>${s.n}</text>`;
+    scnChart+=`<rect x="110" y="${y}" width="${w}" height="36" rx="6" fill="${s.c}" opacity="${current?1:0.55}" ${current?'stroke="var(--sap-brand)" stroke-width="2"':""}><title>${s.n}: ${fmtMoney(ticket*s.pct)}</title></rect>`;
+    scnChart+=`<text x="${110+w/2}" y="${y+22}" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">${fmtMoney(ticket*s.pct)}</text>`;
+    if(current) scnChart+=`<text x="${110+w+10}" y="${y+22}" font-size="10" font-weight="700" fill="${s.c}">← ACTUAL</text>`;
+  });
+  scnChart+=`</svg></div>`;
+
+  c.innerHTML = donut + comp + scnChart;
+}
+
 // ====================== CARD HTML ======================
 function cardHTML(d){
   const r = fmtUSD(d.rev), isOpen = state.openCard === DATA.indexOf(d);
@@ -923,7 +1063,10 @@ function renderGrid(){
     const i = parseInt(c.dataset.i);
     state.openCard = state.openCard === i ? null : i;
     renderGrid();
-    if (state.openCard !== null) c.scrollIntoView({behavior:"smooth", block:"nearest"});
+    renderCharts();
+    if (state.openCard !== null) {
+      document.getElementById("chartsTitle").scrollIntoView({behavior:"smooth", block:"start"});
+    }
   }));
   grid.querySelectorAll("[data-toggle]").forEach(h => h.addEventListener("click", e => {
     const ind = h.dataset.toggle;
@@ -1001,6 +1144,11 @@ document.querySelectorAll(".chart-fan-btn").forEach(b => b.addEventListener("cli
   state.chartStyle = b.dataset.style;
   renderCharts();
 }));
+document.getElementById("chartsBackBtn").addEventListener("click", () => {
+  state.openCard = null;
+  renderCharts();
+  renderGrid();
+});
 document.addEventListener("click", e => {
   const m = e.target.closest("[data-mod]"); if (m){const k=m.dataset.mod;state.modules.has(k)?state.modules.delete(k):state.modules.add(k);renderAll();return;}
   const c = e.target.closest("[data-cat]"); if (c){const k=c.dataset.cat;state.categories.has(k)?state.categories.delete(k):state.categories.add(k);renderAll();return;}
@@ -1011,7 +1159,7 @@ document.addEventListener("click", e => {
 });
 document.addEventListener("keydown", e => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k"){ e.preventDefault(); document.getElementById("q").focus(); }
-  if (e.key === "Escape"){ state.openCard = null; renderGrid(); }
+  if (e.key === "Escape"){ state.openCard = null; renderGrid(); renderCharts(); }
 });
 
 function renderAll(){
