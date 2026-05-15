@@ -50,11 +50,22 @@ body{line-height:1.45;font-size:14px;letter-spacing:-0.005em}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none}
 
-/* TOPBAR · SMC brand identity */
-.topbar{position:sticky;top:0;z-index:50;background:var(--smc-burdeo);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-md)}
-.topbar-inner{max-width:1440px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+/* TOPBAR · SMC brand identity · color slide morph por track */
+.topbar{position:sticky;top:0;z-index:50;color:#fff;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-md);position:relative;overflow:hidden;isolation:isolate}
+.topbar-bg{position:absolute;inset:0;z-index:-1;transition:clip-path 800ms cubic-bezier(0.65,0.05,0.36,1),opacity 400ms ease}
+.topbar-bg.all{background:linear-gradient(120deg,var(--smc-burdeo) 0%,var(--smc-burdeo-dark) 100%);clip-path:inset(0 0 0 0)}
+.topbar-bg.sap{background:linear-gradient(120deg,var(--sap-blue) 0%,var(--sap-brand) 100%);clip-path:inset(0 100% 0 0)}
+.topbar-bg.pyme{background:linear-gradient(120deg,var(--ia-green) 0%,#005F55 100%);clip-path:inset(0 100% 0 0)}
+.topbar[data-current="sap"] .topbar-bg.sap{clip-path:inset(0 0 0 0)}
+.topbar[data-current="pyme"] .topbar-bg.pyme{clip-path:inset(0 0 0 0);transition-delay:80ms}
+.topbar[data-current="pyme"] .topbar-bg.sap{clip-path:inset(0 0 0 0)}
+.topbar::after{content:"";position:absolute;top:0;bottom:0;width:30%;background:radial-gradient(ellipse at center,rgba(255,255,255,.18) 0%,transparent 65%);filter:blur(20px);pointer-events:none;z-index:0;opacity:0;transform:translateX(-100%);transition:transform 900ms cubic-bezier(0.65,0.05,0.36,1),opacity 300ms ease}
+.topbar.is-sweep::after{opacity:1;transform:translateX(400%);transition:transform 900ms cubic-bezier(0.65,0.05,0.36,1),opacity 900ms ease}
+.topbar-inner{max-width:1440px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:relative;z-index:2}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.01em}
-.brand-mark{width:34px;height:34px;border-radius:8px;background:var(--smc-cream);color:var(--smc-burdeo);display:grid;place-items:center;font-weight:800;font-size:15px}
+.brand-mark{width:34px;height:34px;border-radius:8px;background:var(--smc-cream);color:var(--smc-burdeo);display:grid;place-items:center;font-weight:800;font-size:15px;transition:color 600ms cubic-bezier(0.65,0.05,0.36,1),background 600ms cubic-bezier(0.65,0.05,0.36,1)}
+.topbar[data-current="sap"] .brand-mark{background:#fff;color:var(--sap-blue)}
+.topbar[data-current="pyme"] .brand-mark{background:#fff;color:var(--ia-green)}
 .brand-title{font-size:15px;font-weight:700}
 .brand-sub{font-size:11px;font-weight:500;opacity:.75;display:block;margin-top:-2px;letter-spacing:.02em;text-transform:uppercase}
 .spacer{flex:1}
@@ -275,7 +286,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 </head>
 <body>
 
-<header class="topbar">
+<header class="topbar" id="topbar" data-current="all">
+  <div class="topbar-bg all"></div>
+  <div class="topbar-bg sap"></div>
+  <div class="topbar-bg pyme"></div>
   <div class="topbar-inner">
     <div class="brand">
       <div class="brand-mark">S</div>
@@ -814,6 +828,10 @@ document.querySelectorAll(".track-btn").forEach(b => b.addEventListener("click",
   b.classList.add("is-active");
   state.track = b.dataset.track;
   state.industries.clear(); state.software.clear();
+  const tb = document.getElementById("topbar");
+  tb.setAttribute("data-current", state.track);
+  tb.classList.remove("is-sweep"); void tb.offsetWidth; tb.classList.add("is-sweep");
+  setTimeout(() => tb.classList.remove("is-sweep"), 1000);
   renderAll();
 }));
 document.querySelectorAll(".view-btn").forEach(b => b.addEventListener("click", () => {
