@@ -126,6 +126,24 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .pipeline-tag.p3{background:#fdf5cd;color:#b7960c}
 .pipeline-tag.smc{background:#e8d9dc;color:var(--smc-burdeo)}
 
+/* CARD CONTACTS */
+.card-contacts{display:flex;gap:6px;margin-top:8px}
+.contact-icon{width:30px;height:30px;border-radius:8px;background:var(--smc-gray-100);color:var(--smc-gray-700);display:grid;place-items:center;transition:all .15s;text-decoration:none;flex-shrink:0}
+.contact-icon:hover{background:var(--smc-burdeo);color:#fff;transform:translateY(-1px)}
+.contact-icon svg{width:14px;height:14px}
+.contact-icon.ln:hover{background:#0A66C2}
+.contact-icon.mail:hover{background:#EA4335}
+.contact-icon.web:hover{background:var(--smc-burdeo)}
+.contact-icon.tel:hover{background:var(--ia-green)}
+
+/* MODAL CONTACT BAR */
+.contact-bar{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.contact-pill{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;background:var(--smc-gray-100);color:var(--smc-gray-700);font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s}
+.contact-pill:hover{background:var(--smc-burdeo);color:#fff}
+.contact-pill svg{width:14px;height:14px}
+.contact-pill.ln:hover{background:#0A66C2}
+.contact-pill.mail:hover{background:#EA4335}
+
 /* TABLE VIEW */
 .tbl-wrap{max-width:1400px;margin:0 auto;padding:8px 20px 60px;display:none}
 .tbl-wrap.is-active{display:block}
@@ -265,14 +283,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 // ====================== DATA ======================
 const DATA = [
   // SAP TRACK
-  {t:"sap",ind:"Retail",e:"Cencosud",rev:16000,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"],pip:"P2"},
-  {t:"sap",ind:"Retail",e:"Falabella",rev:11500,note:"Grupo regional · áreas migradas a Oracle",sw:["SAP ECC","Oracle Fusion","Workday"]},
+  {t:"sap",ind:"Retail",e:"Cencosud",rev:16000,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"],pip:"P2",c:{web:"https://www.cencosud.com",ln:"https://www.linkedin.com/company/cencosud/",mail:"contacto@cencosud.com",tel:"+56 2 2959 0000"}},
+  {t:"sap",ind:"Retail",e:"Falabella",rev:11500,note:"Grupo regional · áreas migradas a Oracle",sw:["SAP ECC","Oracle Fusion","Workday"],c:{web:"https://www.falabella.com",ln:"https://www.linkedin.com/company/falabella/",mail:"contacto@falabella.com",tel:"+56 2 2380 2000"}},
   {t:"sap",ind:"Retail",e:"Walmart Chile (Líder)",rev:6500,note:"Solo Chile",sw:["SAP S/4HANA","Workday"]},
   {t:"sap",ind:"Retail",e:"SMU (Unimarc)",rev:3200,note:"Solo Chile",sw:["SAP ECC","Talana"]},
   {t:"sap",ind:"Retail",e:"Ripley",rev:1900,note:"Chile + Perú",sw:["SAP ECC","Salesforce"]},
-  {t:"sap",ind:"Minería",e:"Codelco",rev:16700,note:"Estatal · cobre",sw:["SAP S/4HANA","SuccessFactors"],pip:"P3"},
+  {t:"sap",ind:"Minería",e:"Codelco",rev:16700,note:"Estatal · cobre",sw:["SAP S/4HANA","SuccessFactors"],pip:"P3",c:{web:"https://www.codelco.com",ln:"https://www.linkedin.com/company/codelco/",mail:"contacto@codelco.cl",tel:"+56 2 2690 3000"}},
   {t:"sap",ind:"Minería",e:"BHP Escondida",rev:13000,note:"Mina única más grande",sw:["SAP S/4HANA","Workday"]},
-  {t:"sap",ind:"Minería",e:"SQM",rev:7500,note:"Litio + yodo",sw:["SAP S/4HANA","Salesforce"],pip:"P1"},
+  {t:"sap",ind:"Minería",e:"SQM",rev:7500,note:"Litio + yodo",sw:["SAP S/4HANA","Salesforce"],pip:"P1",c:{web:"https://www.sqm.com",ln:"https://www.linkedin.com/company/sqm/",mail:"contacto@sqm.com",tel:"+56 2 2425 2000"}},
   {t:"sap",ind:"Minería",e:"Antofagasta Minerals",rev:5800,note:"Grupo Luksic",sw:["SAP ECC","Talana"],pip:"P1"},
   {t:"sap",ind:"Minería",e:"Collahuasi",rev:5200,note:"Anglo+Glencore",sw:["SAP S/4HANA"],pip:"P1"},
   {t:"sap",ind:"Energía",e:"ENAP",rev:7500,note:"Petróleo estatal",sw:["SAP S/4HANA","SuccessFactors"]},
@@ -288,7 +306,7 @@ const DATA = [
   {t:"sap",ind:"Alimentos",e:"CCU",rev:2700,note:"Bebidas",sw:["SAP S/4HANA","SuccessFactors","Salesforce"]},
   {t:"sap",ind:"Alimentos",e:"Carozzi",rev:1800,note:"Alimentos",sw:["SAP S/4HANA"]},
   {t:"sap",ind:"Alimentos",e:"Nestlé Chile",rev:1500,note:"Multinacional",sw:["SAP S/4HANA","Workday"]},
-  {t:"sap",ind:"Vitivinícola",e:"Concha y Toro",rev:1700,note:"Líder exportador",sw:["SAP S/4HANA","Salesforce"],pip:"P2"},
+  {t:"sap",ind:"Vitivinícola",e:"Concha y Toro",rev:1700,note:"Líder exportador",sw:["SAP S/4HANA","Salesforce"],pip:"P2",c:{web:"https://www.conchaytoro.com",ln:"https://www.linkedin.com/company/vina-concha-y-toro/",mail:"contacto@conchaytoro.com",tel:"+56 2 2476 5000"}},
   {t:"sap",ind:"Vitivinícola",e:"VSPT",rev:350,note:"Grupo CCU",sw:["SAP S/4HANA"]},
   {t:"sap",ind:"Vitivinícola",e:"Santa Rita",rev:300,note:"Grupo Claro",sw:["SAP ECC"],pip:"P2"},
   {t:"sap",ind:"Vitivinícola",e:"Errázuriz",rev:150,note:"Familia Chadwick",sw:["SAP B1"]},
@@ -320,13 +338,13 @@ const DATA = [
   {t:"sap",ind:"Salud",e:"Clínica Las Condes",rev:400,note:"Santiago",sw:["SAP ECC","Salesforce"]},
   {t:"sap",ind:"Educación superior",e:"UNAB",rev:600,note:"Ex Laureate",sw:["SAP S/4HANA","Workday"]},
   {t:"sap",ind:"Educación superior",e:"INACAP",rev:400,note:"CFT + IP",sw:["SAP ECC","Buk"]},
-  {t:"sap",ind:"Educación superior",e:"DUOC UC",rev:380,note:"IP · cliente SMC PI 7.5",sw:["SAP PI 7.5","SAP ECC"],pip:"SMC"},
+  {t:"sap",ind:"Educación superior",e:"DUOC UC",rev:380,note:"IP · cliente SMC PI 7.5",sw:["SAP PI 7.5","SAP ECC"],pip:"SMC",c:{web:"https://www.duoc.cl",ln:"https://www.linkedin.com/school/duoc-uc/",mail:"contacto@duoc.cl",tel:"+56 2 2354 0000"}},
   {t:"sap",ind:"Educación superior",e:"U. San Sebastián",rev:280,note:"Universidad",sw:["SAP ECC"]},
   {t:"sap",ind:"Educación superior",e:"U. de los Andes",rev:220,note:"Universidad",sw:["SAP ECC","Buk"]},
   {t:"sap",ind:"Real Estate",e:"Mall Plaza",rev:400,note:"Solo Chile",sw:["SAP S/4HANA","Salesforce"],pip:"P3"},
-  {t:"sap",ind:"Real Estate",e:"Parque Arauco",rev:290,note:"Cliente SMC · CPI",sw:["SAP S/4HANA","SAP CPI"],pip:"SMC"},
+  {t:"sap",ind:"Real Estate",e:"Parque Arauco",rev:290,note:"Cliente SMC · CPI",sw:["SAP S/4HANA","SAP CPI"],pip:"SMC",c:{web:"https://www.parquearauco.cl",ln:"https://www.linkedin.com/company/parque-arauco-s.a./",mail:"contacto@parquearauco.cl",tel:"+56 2 2299 0500"}},
   {t:"sap",ind:"Real Estate",e:"Cencosud Shopping",rev:250,note:"Solo Chile",sw:["SAP S/4HANA"]},
-  {t:"sap",ind:"Transporte aéreo",e:"LATAM Airlines",rev:12500,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"]},
+  {t:"sap",ind:"Transporte aéreo",e:"LATAM Airlines",rev:12500,note:"Grupo regional",sw:["SAP S/4HANA","Workday","Salesforce"],c:{web:"https://www.latamairlines.com",ln:"https://www.linkedin.com/company/latam-airlines/",mail:"contacto@latam.com",tel:"+56 2 2565 1234"}},
   {t:"sap",ind:"Transporte aéreo",e:"SKY Airline",rev:800,note:"Solo Chile",sw:["SAP ECC","Talana"]},
   // PYME / NO-SAP TRACK
   {t:"pyme",ind:"Retail PyME",e:"Casaideas",rev:180,note:"Decoración hogar",sw:["Defontana","Shopify","Buk"]},
@@ -420,6 +438,37 @@ const fmtUSD = v => {
 };
 const fmtMoney = v => v >= 1e6 ? "$" + (v/1e6).toFixed(1) + "M" : "$" + Math.round(v/1000) + "K";
 const swClass = sw => /^SAP/i.test(sw) ? "is-sap" : (/Hubspot|Salesforce|Notion|Rankmi|Talana|Buk|OpenAI|Groq/i.test(sw) ? "is-ia" : "");
+
+// Contacto: deriva desde nombre si no está hardcodeado
+function contactInfo(d){
+  if (d.c) return d.c;
+  const slug = d.e.toLowerCase().replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/ñ/g,'n').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const domain = (d.web || (slug + ".cl")).replace(/^https?:\/\//,'').replace(/^www\./,'');
+  return {
+    web: "https://" + domain,
+    ln:  "https://linkedin.com/company/" + slug,
+    mail:"contacto@" + domain
+  };
+}
+const ICON_LN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>';
+const ICON_MAIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>';
+const ICON_WEB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>';
+const ICON_PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>';
+
+function contactIcons(d, big){
+  const c = contactInfo(d);
+  const stop = `onclick="event.stopPropagation()"`;
+  const cls = big ? "contact-pill" : "contact-icon";
+  if (big){
+    return `<a class="${cls} ln" href="${c.ln}" target="_blank" ${stop}>${ICON_LN} LinkedIn</a>
+            <a class="${cls} mail" href="mailto:${c.mail}" ${stop}>${ICON_MAIL} ${c.mail}</a>
+            <a class="${cls} web" href="${c.web}" target="_blank" ${stop}>${ICON_WEB} Sitio web</a>
+            ${c.tel ? `<a class="${cls} tel" href="tel:${c.tel}" ${stop}>${ICON_PHONE} ${c.tel}</a>` : ""}`;
+  }
+  return `<a class="${cls} ln" href="${c.ln}" target="_blank" title="LinkedIn" ${stop}>${ICON_LN}</a>
+          <a class="${cls} mail" href="mailto:${c.mail}" title="${c.mail}" ${stop}>${ICON_MAIL}</a>
+          <a class="${cls} web" href="${c.web}" target="_blank" title="Sitio web" ${stop}>${ICON_WEB}</a>`;
+}
 
 // ====================== FILTERING ======================
 function filtered(){
@@ -604,6 +653,7 @@ function renderGrid(){
       <div class="card-software">
         ${d.sw.map(s => `<span class="sw-pill ${swClass(s)}">${s}</span>`).join("")}
       </div>
+      <div class="card-contacts">${contactIcons(d, false)}</div>
       <div class="card-foot">
         <span class="card-notes">${d.note||""}</span>
         ${d.pip ? `<span class="pipeline-tag ${d.pip === "SMC" ? "smc" : d.pip.toLowerCase()}">${pipelineLabel(d.pip)}</span>` : ""}
@@ -647,6 +697,7 @@ function renderTable(){
       <th data-sort="tkt" class="col-tkt ${sortClass('tkt')}">Ticket SMC<span class="sort">${arrow('tkt')}</span></th>
       <th class="col-sw">Software</th>
       <th data-sort="pip" class="col-pip ${sortClass('pip')}">Pipeline<span class="sort">${arrow('pip')}</span></th>
+      <th>Contacto</th>
     </tr></thead>
     <tbody>
     ${rows.map(d => `
@@ -658,6 +709,7 @@ function renderTable(){
         <td class="col-tkt">${fmtMoney(ticketUSD(d))}</td>
         <td class="col-sw">${d.sw.join(" · ")}</td>
         <td class="col-pip">${d.pip ? `<span class="pipeline-tag ${d.pip === 'SMC' ? 'smc' : d.pip.toLowerCase()}">${pipelineLabel(d.pip)}</span>` : '<span style="color:var(--smc-gray-500);font-size:11px">Cold</span>'}</td>
+        <td><div class="card-contacts">${contactIcons(d, false)}</div></td>
       </tr>`).join("")}
     </tbody>
   </table>`;
@@ -694,6 +746,8 @@ function openModal(i){
     <div class="card-software" style="margin-top:0">
       ${d.sw.map(s => `<span class="sw-pill ${swClass(s)}">${s}</span>`).join("")}
     </div>
+    <div class="modal-section-title">Contacto</div>
+    <div class="contact-bar">${contactIcons(d, true)}</div>
     <div class="modal-section-title">Pitch comercial SMC</div>
     <div class="modal-prompt">${pitch}</div>
     <div class="modal-cta">
