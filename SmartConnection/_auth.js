@@ -45,6 +45,15 @@
       canClickProjects: true,
       canSeeOS: true,
       welcome: 'Welcome owner · acceso total · Design System + Banco SO'
+    },
+    'hoku': {  // alias de smc.os · PIN canónico SMC
+      user: 'Guillermo',
+      emoji: '🐾',
+      project: 'all',
+      seeProjects: 'all',
+      canClickProjects: true,
+      canSeeOS: true,
+      welcome: 'Welcome owner · acceso total · Design System + Banco SO'
     }
   };
 
@@ -157,7 +166,7 @@
   function showGate() {
     const gate = document.createElement('div');
     gate.id = '_authGate';
-    gate.style.cssText = `position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;font-family:${FONT};overflow:hidden;background:#000`;
+    gate.style.cssText = `position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;font-family:${FONT};overflow:hidden;background:radial-gradient(120% 80% at 50% 0%, #faf7f2 0%, #f0ebe0 100%)`;
     gate.innerHTML = `
       <style id="_gateStyles">
         @keyframes _gateFadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
@@ -176,12 +185,12 @@
 
         #_authGate * { font-family:${FONT}; }
         #_authGate .gate-orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
-        #_authGate .gate-scanline { position:absolute; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation:_gateScanline 6s linear infinite; pointer-events:none; opacity:0.5; }
+        #_authGate .gate-scanline { position:absolute; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(0,0,0,0.18), transparent); animation:_gateScanline 6s linear infinite; pointer-events:none; opacity:0.4; }
         #_authGate .gate-grid {
           position:absolute; bottom:-40%; left:-20%; right:-20%; height:80%;
           background-image:
-            linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+            linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
           background-size:60px 60px;
           mask-image:linear-gradient(0deg, black 0%, transparent 80%);
           -webkit-mask-image:linear-gradient(0deg, black 0%, transparent 80%);
@@ -190,35 +199,35 @@
         }
         #_authGate .gate-noise {
           position:absolute; inset:0;
-          background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22240%22 height=%22240%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence baseFrequency=%220.85%22 numOctaves=%222%22/%3E%3C/filter%3E%3Crect width=%22240%22 height=%22240%22 filter=%22url(%23n)%22 opacity=%220.45%22/%3E%3C/svg%3E');
-          mix-blend-mode:overlay; opacity:0.35; pointer-events:none;
+          background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22240%22 height=%22240%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence baseFrequency=%220.85%22 numOctaves=%222%22/%3E%3C/filter%3E%3Crect width=%22240%22 height=%22240%22 filter=%22url(%23n)%22 opacity=%220.18%22/%3E%3C/svg%3E');
+          mix-blend-mode:multiply; opacity:0.15; pointer-events:none;
         }
         #_authGate .gate-card {
           position:relative; z-index:5;
           width:min(400px, 88vw);
           padding:48px 40px 32px;
-          background:rgba(20,20,22,0.66);
+          background:rgba(255,255,255,0.78);
           backdrop-filter:saturate(180%) blur(40px);
           -webkit-backdrop-filter:saturate(180%) blur(40px);
-          border:0.5px solid rgba(255,255,255,0.14);
+          border:0.5px solid rgba(0,0,0,0.08);
           border-radius:22px;
           box-shadow:
-            0 0 0 0.5px rgba(255,255,255,0.08) inset,
-            0 0 64px rgba(255,255,255,0.04),
-            0 32px 64px -8px rgba(0,0,0,0.7),
-            0 8px 16px -4px rgba(0,0,0,0.4);
-          color:#F5F5F7;
+            0 0 0 0.5px rgba(255,255,255,0.5) inset,
+            0 1px 0 rgba(255,255,255,0.7) inset,
+            0 32px 64px -8px rgba(0,0,0,0.12),
+            0 8px 16px -4px rgba(0,0,0,0.06);
+          color:#1d1d1f;
           animation:_gateFadeUp 800ms cubic-bezier(0.16,1,0.3,1) both;
           overflow:hidden;
         }
         #_authGate .gate-card::before {
           content:''; position:absolute; inset:0; pointer-events:none;
-          background:linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%);
+          background:linear-gradient(135deg, rgba(255,255,255,0.5) 0%, transparent 50%);
           border-radius:22px;
         }
         #_authGate .gate-card::after {
           content:''; position:absolute; top:-100%; left:0; width:30%; height:300%;
-          background:linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
+          background:linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
           animation:_gateShine 8s ease-in-out infinite;
           animation-delay:1.5s;
           pointer-events:none;
@@ -226,68 +235,69 @@
 
         #_authGate .gate-logo {
           width:56px; height:56px; border-radius:14px;
-          background:linear-gradient(180deg, #3A3A3C 0%, #1C1C1E 100%);
-          border:0.5px solid rgba(255,255,255,0.18);
+          background:linear-gradient(180deg, #ffffff 0%, #ececec 100%);
+          border:0.5px solid rgba(0,0,0,0.12);
           display:flex; align-items:center; justify-content:center;
           margin:0 auto 28px;
           position:relative;
           animation:_gateLogoBreathe 4s ease-in-out infinite;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(255,255,255,0.6) inset;
         }
         #_authGate .gate-logo::before {
           content:''; position:absolute; inset:0; border-radius:14px;
-          background:linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 50%);
+          background:linear-gradient(135deg, rgba(255,255,255,0.6) 0%, transparent 50%);
           pointer-events:none;
         }
         #_authGate .gate-logo span {
           font:600 22px ${FONT}; letter-spacing:-0.022em;
-          background:linear-gradient(180deg, #FFFFFF 0%, #999 100%);
+          background:linear-gradient(180deg, #1d1d1f 0%, #6e6e73 100%);
           -webkit-background-clip:text; background-clip:text;
           -webkit-text-fill-color:transparent;
           position:relative; z-index:1;
         }
         #_authGate .gate-orbit {
           position:absolute; inset:-8px; border-radius:50%;
-          border:1px dashed rgba(255,255,255,0.15);
+          border:1px dashed rgba(0,0,0,0.18);
           animation:_gateRotate 16s linear infinite;
           pointer-events:none;
         }
         #_authGate .gate-orbit::before, #_authGate .gate-orbit::after {
           content:''; position:absolute; width:5px; height:5px; border-radius:50%;
         }
-        #_authGate .gate-orbit::before { top:-3px; left:50%; transform:translateX(-50%); background:#00E5B0; box-shadow:0 0 10px #00E5B0; }
-        #_authGate .gate-orbit::after { bottom:-3px; left:50%; transform:translateX(-50%); background:#0A84FF; box-shadow:0 0 10px #0A84FF; }
+        #_authGate .gate-orbit::before { top:-3px; left:50%; transform:translateX(-50%); background:#00C1C1; box-shadow:0 0 10px rgba(0,193,193,0.6); }
+        #_authGate .gate-orbit::after { bottom:-3px; left:50%; transform:translateX(-50%); background:#0066CC; box-shadow:0 0 10px rgba(0,102,204,0.6); }
 
         #_authGate h1 {
           font:600 24px ${FONT}; letter-spacing:-0.022em; line-height:1.2;
-          margin:0 0 6px; color:#F5F5F7 !important; text-align:center;
+          margin:0 0 6px; color:#1d1d1f !important; text-align:center;
           position:relative; z-index:2;
         }
         #_authGate .gate-sub {
-          font:13px ${FONT}; color:rgba(235,235,245,0.55); letter-spacing:-0.012em;
+          font:13px ${FONT}; color:#6e6e73; letter-spacing:-0.012em;
           line-height:1.4; margin:0 0 30px; text-align:center;
           position:relative; z-index:2;
         }
-        #_authGate .gate-sub .dot { display:inline-block; width:3px; height:3px; border-radius:50%; background:rgba(235,235,245,0.4); vertical-align:middle; margin:0 6px; }
+        #_authGate .gate-sub .dot { display:inline-block; width:3px; height:3px; border-radius:50%; background:rgba(29,29,31,0.3); vertical-align:middle; margin:0 6px; }
 
         #_authGate .gate-label {
-          display:block; font:500 11px ${FONT}; color:rgba(235,235,245,0.55);
+          display:block; font:500 11px ${FONT}; color:#6e6e73;
           letter-spacing:0.04em; margin-bottom:8px; text-transform:uppercase;
           position:relative; z-index:2;
         }
         #_authGate input {
-          width:100%; padding:13px 16px; border:0.5px solid rgba(255,255,255,0.18); border-radius:11px;
+          width:100%; padding:13px 16px; border:0.5px solid rgba(0,0,0,0.14); border-radius:11px;
           font:15px ${FONT}; letter-spacing:0.04em;
-          background:rgba(0,0,0,0.4); outline:none; color:#F5F5F7;
+          background:rgba(255,255,255,0.85); outline:none; color:#1d1d1f;
           margin-bottom:8px;
           transition:200ms cubic-bezier(0.4,0,0.2,1);
           box-sizing:border-box;
           position:relative; z-index:2;
         }
         #_authGate input:focus {
-          border-color:rgba(0,229,176,0.6); background:rgba(0,229,176,0.04);
-          box-shadow:0 0 0 4px rgba(0,229,176,0.12), 0 0 24px rgba(0,229,176,0.18);
+          border-color:rgba(0,193,193,0.6); background:#ffffff;
+          box-shadow:0 0 0 4px rgba(0,193,193,0.14), 0 0 24px rgba(0,193,193,0.10);
         }
-        #_authGate input::placeholder { color:rgba(235,235,245,0.22); letter-spacing:0.2em; }
+        #_authGate input::placeholder { color:rgba(29,29,31,0.25); letter-spacing:0.2em; }
 
         #_authGate .gate-err {
           font:12px ${FONT}; color:#FF453A; letter-spacing:-0.012em;
@@ -302,18 +312,18 @@
           font:600 14px ${FONT}; letter-spacing:-0.012em; cursor:pointer;
           transition:280ms cubic-bezier(0.4,0,0.2,1);
           margin-top:8px;
-          color:#0A0A0B;
-          background:linear-gradient(180deg, #FFFFFF 0%, #E8E8E8 100%);
+          color:#ffffff;
+          background:linear-gradient(180deg, #1d1d1f 0%, #000000 100%);
           position:relative; overflow:hidden; z-index:2;
-          box-shadow:0 1px 0 rgba(255,255,255,0.4) inset, 0 4px 12px rgba(0,0,0,0.3);
+          box-shadow:0 1px 0 rgba(255,255,255,0.15) inset, 0 4px 12px rgba(0,0,0,0.18);
         }
         #_authGate button::before {
           content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
-          background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+          background:linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
           transform:skewX(-20deg);
           transition:left 700ms cubic-bezier(0.4,0,0.2,1);
         }
-        #_authGate button:hover { transform:translateY(-1px); box-shadow:0 1px 0 rgba(255,255,255,0.4) inset, 0 8px 20px rgba(0,0,0,0.4), 0 0 0 4px rgba(255,255,255,0.06); }
+        #_authGate button:hover { transform:translateY(-1px); box-shadow:0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 20px rgba(0,0,0,0.24), 0 0 0 4px rgba(0,193,193,0.10); }
         #_authGate button:hover::before { left:120%; }
         #_authGate button:active { transform:translateY(0); }
         #_authGate button span.arrow { display:inline-block; transition:transform 240ms; margin-left:6px; }
@@ -321,25 +331,25 @@
 
         #_authGate .gate-footer {
           margin-top:26px; padding-top:18px;
-          border-top:0.5px solid rgba(255,255,255,0.06);
+          border-top:0.5px solid rgba(0,0,0,0.08);
           display:flex; align-items:center; justify-content:space-between;
           font:10px 'JetBrains Mono','SF Mono', monospace;
-          color:rgba(235,235,245,0.38); letter-spacing:0.12em;
+          color:rgba(29,29,31,0.45); letter-spacing:0.12em;
           text-transform:uppercase;
           position:relative; z-index:2;
         }
         #_authGate .gate-status { display:flex; align-items:center; gap:6px; }
         #_authGate .gate-status::before {
           content:''; width:6px; height:6px; border-radius:50%;
-          background:#00E5B0; box-shadow:0 0 8px #00E5B0;
+          background:#00C1C1; box-shadow:0 0 8px rgba(0,193,193,0.6);
           animation:_gateDot 2s ease-in-out infinite;
         }
       </style>
 
       <!-- Ambient orbs · cambian de color según theme activo via CSS vars -->
-      <div class="gate-orb" id="_gateOrb1" style="width:480px;height:480px;top:-100px;left:-80px;background:radial-gradient(circle,var(--gate-orb-1, rgba(10,132,255,0.18)) 0%,transparent 70%);animation:_gateOrb1 18s ease-in-out infinite"></div>
-      <div class="gate-orb" id="_gateOrb2" style="width:520px;height:520px;bottom:-120px;right:-100px;background:radial-gradient(circle,var(--gate-orb-2, rgba(0,229,176,0.14)) 0%,transparent 70%);animation:_gateOrb2 22s ease-in-out infinite"></div>
-      <div class="gate-orb" id="_gateOrb3" style="width:380px;height:380px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,var(--gate-orb-3, rgba(124,58,237,0.10)) 0%,transparent 70%);animation:_gateOrb3 26s ease-in-out infinite"></div>
+      <div class="gate-orb" id="_gateOrb1" style="width:480px;height:480px;top:-100px;left:-80px;background:radial-gradient(circle,var(--gate-orb-1, rgba(0,102,204,0.12)) 0%,transparent 70%);animation:_gateOrb1 18s ease-in-out infinite"></div>
+      <div class="gate-orb" id="_gateOrb2" style="width:520px;height:520px;bottom:-120px;right:-100px;background:radial-gradient(circle,var(--gate-orb-2, rgba(0,193,193,0.10)) 0%,transparent 70%);animation:_gateOrb2 22s ease-in-out infinite"></div>
+      <div class="gate-orb" id="_gateOrb3" style="width:380px;height:380px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,var(--gate-orb-3, rgba(191,90,0,0.08)) 0%,transparent 70%);animation:_gateOrb3 26s ease-in-out infinite"></div>
 
       <!-- Perspective grid floor -->
       <div class="gate-grid"></div>
