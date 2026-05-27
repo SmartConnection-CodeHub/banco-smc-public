@@ -1,466 +1,203 @@
-// SMC Design System · auth gate · 5 roles
+/* ===========================================================
+   Banco SMC v8 · Auth Gate (light barrier)
+   Visual estilo Antonella · paleta SMC Apple-grade
+   ⚠️ Barrera UI · cualquiera con devtools puede bypass.
+   =========================================================== */
 (function(){
-  const ROLES = {
-    'kanki': {
-      user: 'Martín',
-      emoji: '🏄',
-      project: 'kanki',
-      seeProjects: ['kanki'],
-      canClickProjects: false,
-      canSeeOS: false,
-      welcome: 'Welcome Martín · Kanki Street · ve los efectos del DS · proyectos otros bloqueados'
-    },
-    'infopet': {
-      user: 'Javier',
-      emoji: '🐾',
-      project: 'infopet',
-      seeProjects: ['infopet'],
-      canClickProjects: false,
-      canSeeOS: false,
-      welcome: 'Welcome Javier · InfoPet · ve los efectos del DS · proyectos otros bloqueados'
-    },
-    'joey': {
-      user: 'Joey',
-      emoji: '👤',
-      project: 'design',
-      seeProjects: [],
-      canClickProjects: false,
-      canSeeOS: false,
-      welcome: 'Welcome Joey · solo Design System · proyectos y SO bloqueados'
-    },
-    'smc.ui': {
-      user: 'Sebastián',
-      emoji: '🎨',
-      project: 'design',
-      seeProjects: 'all',
-      canClickProjects: true,
-      canSeeOS: false,
-      welcome: 'Welcome Sebastián · Design System full + proyectos · SO restringido'
-    },
-    'smc.os': {
-      user: 'Guillermo',
-      emoji: '🧠',
-      project: 'all',
-      seeProjects: 'all',
-      canClickProjects: true,
-      canSeeOS: true,
-      welcome: 'Welcome owner · acceso total · Design System + Banco SO'
-    },
-    'hoku': {  // alias de smc.os · PIN canónico SMC
-      user: 'Guillermo',
-      emoji: '🐾',
-      project: 'all',
-      seeProjects: 'all',
-      canClickProjects: true,
-      canSeeOS: true,
-      welcome: 'Welcome owner · acceso total · Design System + Banco SO'
-    }
-  };
+  // SHA-256 del PIN "hoku" (4 caracteres · PIN canónico SMC)
+  const PIN_HASH = '2b14ee3fcd60f65d2e248beaeb53f6e2070fe6ceaef2a21a1010dc3b10d18c69';
+  const PIN_LEN  = 4;
+  const STORAGE_KEY = 'smc-banco-v15-auth';
 
-  const LS_KEY = 'smc-auth-v15';
-  const FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
-
-  function getRole() {
-    const k = localStorage.getItem(LS_KEY);
-    if (!k) return null;
-    const kLower = k.toLowerCase();
-    return ROLES[kLower] ? { key: kLower, ...ROLES[kLower] } : null;
+  async function sha256(text){
+    const buf = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
+  function setAuthed(){ sessionStorage.setItem(STORAGE_KEY, 'ok'); }
+  function isAuthed(){ return sessionStorage.getItem(STORAGE_KEY) === 'ok'; }
 
-  function logout() {
-    localStorage.removeItem(LS_KEY);
-    location.reload();
-  }
-  window._logout = logout;
-  window._getSMCRole = getRole;
+  window._logout = function(){ sessionStorage.removeItem(STORAGE_KEY); location.reload(); };
 
-  function applyFilter(role) {
-    document.body.dataset.role = role.key;
-    document.body.dataset.user = role.user;
-    document.body.dataset.canSeeOs = role.canSeeOS ? 'yes' : 'no';
+  if (isAuthed()) return;
 
-    // SO tile lock if user can't see SO
-    if (!role.canSeeOS) {
-      document.querySelectorAll('[data-needs-os]').forEach(el => {
-        el.style.pointerEvents = 'none';
-        el.style.opacity = '0.4';
-        el.style.cursor = 'not-allowed';
-        el.style.filter = 'grayscale(70%)';
-        if (!el.querySelector('.locked-badge-os')) {
-          const lock = document.createElement('div');
-          lock.className = 'locked-badge-os';
-          lock.innerHTML = '🔒 solo Guillermo';
-          lock.style.cssText = 'position:absolute;top:14px;right:14px;z-index:5;background:rgba(0,0,0,0.7);color:white;padding:6px 12px;border-radius:980px;font:600 11px '+FONT+';letter-spacing:-0.012em;backdrop-filter:blur(8px)';
-          if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
-          el.appendChild(lock);
-        }
-      });
-    }
+  document.documentElement.style.visibility = 'hidden';
 
-    if (role.seeProjects === 'all') return;
-
-    const projectKeywords = {
-      kanki: ['kanki', 'kanki-street', 'kanki street', 'streetwear'],
-      infopet: ['infopet', 'bsale', 'jumpseller', 'tsukai'],
-      voy: ['voy', 'cotizador'],
-      intranet: ['intranet', 'smc os'],
-      marketing: ['marketing', 'smconnection.cl'],
-      marketplace: ['marketplace', 'meli'],
-      alpaso: ['alpaso', 'dance'],
-      cencosud: ['cencosud', 'cem'],
-      valmer: ['valmer', 'murex'],
-      sap: ['sap cpi', 'parque arauco'],
-      duoc: ['duoc'],
-      discovery: ['discovery'],
-      cerebro: ['cerebro']
-    };
-    const allowed = role.seeProjects;
-    if (!Array.isArray(allowed)) return;
-
-    document.querySelectorAll('.tile, .proj-card, .pg-card, .pg-tile, .pg-feature, a').forEach(el => {
-      if (el.dataset.needsOs) return; // ya manejado arriba
-      const txt = el.innerText.toLowerCase();
-      if (!txt) return;
-      let foundProject = null;
-      for (const [proj, kws] of Object.entries(projectKeywords)) {
-        if (kws.some(kw => txt.includes(kw))) {
-          foundProject = proj;
-          break;
-        }
+  function init(){
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes smc-fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes smc-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+      #smc-gate * { box-sizing: border-box; font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+      #smc-gate {
+        position: fixed; inset: 0; z-index: 99999;
+        background: linear-gradient(135deg, #FAF7F2 0%, #F5F1E8 50%, #EBE6D9 100%);
+        background-image: radial-gradient(ellipse at top left, rgba(0,102,204,0.18) 0%, transparent 50%),
+                          radial-gradient(ellipse at bottom right, rgba(0,193,193,0.16) 0%, transparent 50%);
+        display: flex; align-items: center; justify-content: center;
+        animation: smc-fadein .5s ease;
       }
-      if (!foundProject) return;
-      if (!allowed.includes(foundProject)) {
-        if (el.tagName === 'A') {
-          el.style.pointerEvents = 'none';
-          el.style.opacity = '0.32';
-          el.style.cursor = 'not-allowed';
-          el.style.filter = 'grayscale(80%)';
-          if (!el.querySelector('.locked-badge')) {
-            const lock = document.createElement('div');
-            lock.className = 'locked-badge';
-            lock.innerHTML = '🔒';
-            lock.style.cssText = 'position:absolute;top:14px;right:14px;font-size:18px;z-index:5;background:rgba(0,0,0,0.6);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)';
-            if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
-            el.appendChild(lock);
-          }
-        }
+      .smc-card {
+        background: rgba(255, 255, 255, 0.70);
+        border: 1px solid rgba(0, 102, 204, 0.10);
+        border-radius: 24px;
+        padding: 64px 80px;
+        max-width: 560px; width: 90%;
+        text-align: center;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 32px 64px -8px rgba(0,0,0,0.08), 0 8px 16px -4px rgba(0,0,0,0.04);
       }
-    });
-  }
-
-  function renderWelcome(role) {
-    const banner = document.createElement('div');
-    banner.id = '_authBanner';
-    banner.style.cssText = `position:fixed;top:0;left:0;right:0;z-index:200;background:#1D1D1F;color:white;padding:8px 22px;display:flex;align-items:center;gap:12px;font:500 13px ${FONT};letter-spacing:-0.012em`;
-    banner.innerHTML = `
-      <span style="font-size:18px">${role.emoji}</span>
-      <span><strong>${role.user}</strong> · ${role.welcome}</span>
-      <button onclick="_logout()" style="margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,0.2);color:white;padding:4px 12px;border-radius:980px;font:500 11px ${FONT};cursor:pointer;letter-spacing:-0.012em">Cerrar sesión</button>
+      .smc-logo {
+        display: flex; align-items: center; justify-content: center;
+        gap: 16px; margin-bottom: 56px;
+      }
+      .smc-logo svg { filter: drop-shadow(0 0 16px rgba(0,193,193,0.35)); }
+      .smc-brand {
+        font-size: 32px; font-weight: 800; letter-spacing: 4px;
+        color: #0F172A;
+      }
+      .smc-brand span {
+        background: linear-gradient(135deg, #0066CC 0%, #00C1C1 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .smc-title {
+        font-size: 28px; font-weight: 800; color: #0F172A;
+        margin: 0 0 8px;
+      }
+      .smc-sub {
+        font-size: 14px; color: rgba(15, 23, 42, 0.55);
+        margin: 0 0 40px; font-weight: 400;
+      }
+      .smc-boxes {
+        display: flex; justify-content: center; gap: 14px;
+        margin-bottom: 24px;
+      }
+      .smc-box {
+        width: 72px; height: 80px;
+        background: rgba(255, 255, 255, 0.85);
+        border: 2px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        font-size: 32px; font-weight: 700;
+        color: #0F172A; text-align: center;
+        outline: none; transition: all .15s ease;
+        font-family: 'SF Mono', 'JetBrains Mono', Monaco, monospace;
+      }
+      .smc-box:focus, .smc-box.active {
+        border-color: #00C1C1;
+        background: rgba(0, 193, 193, 0.04);
+        box-shadow: 0 0 24px rgba(0, 193, 193, 0.28), inset 0 0 16px rgba(0, 193, 193, 0.05);
+      }
+      .smc-box.filled { border-color: rgba(0, 193, 193, 0.45); }
+      .smc-err {
+        height: 20px; color: #F87171; font-size: 12px;
+        font-weight: 500; letter-spacing: 0.5px;
+      }
+      .smc-boxes.error { animation: smc-shake .4s ease; }
+      .smc-boxes.error .smc-box { border-color: rgba(239, 68, 68, 0.5); }
+      .smc-hint {
+        margin-top: 32px; font-size: 11px;
+        color: rgba(0, 102, 204, 0.5);
+        letter-spacing: 2px; text-transform: uppercase;
+      }
     `;
-    document.body.appendChild(banner);
-    document.body.style.paddingTop = '40px';
-    const nav = document.querySelector('.nav');
-    if (nav) nav.style.top = '40px';
-  }
+    document.head.appendChild(style);
 
-  function showGate() {
-    const gate = document.createElement('div');
-    gate.id = '_authGate';
-    gate.style.cssText = `position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;font-family:${FONT};overflow:hidden;background:radial-gradient(120% 80% at 50% 0%, #faf7f2 0%, #f0ebe0 100%)`;
-    gate.innerHTML = `
-      <style id="_gateStyles">
-        @keyframes _gateFadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes _gateLogoBreathe { 0%,100% { transform:scale(1); box-shadow:0 0 0 0 rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.5); } 50% { transform:scale(1.04); box-shadow:0 0 0 8px rgba(255,255,255,0.04), 0 8px 24px rgba(0,0,0,0.5); } }
-        @keyframes _gateOrb1 { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(60px,-40px) scale(1.15); } }
-        @keyframes _gateOrb2 { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(-50px,30px) scale(0.9); } }
-        @keyframes _gateOrb3 { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(30px,-50px) scale(1.1); } }
-        @keyframes _gateScanline { from { transform:translateY(-100%); } to { transform:translateY(100vh); } }
-        @keyframes _gateShine { 0% { transform:translateX(-100%) skewX(-12deg); } 100% { transform:translateX(200%) skewX(-12deg); } }
-        @keyframes _gateBtnShimmer { from { background-position:-200% 0; } to { background-position:200% 0; } }
-        @keyframes _gateBorderGlow { 0%,100% { opacity:0.6; } 50% { opacity:1; } }
-        @keyframes _gateGridFloat { 0% { transform:perspective(800px) rotateX(60deg) translateY(0); } 100% { transform:perspective(800px) rotateX(60deg) translateY(40px); } }
-        @keyframes _gateDot { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
-        @keyframes _gateRotate { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-        @keyframes _gateShake { 0%,100% { transform:translateX(0); } 25% { transform:translateX(-5px); } 75% { transform:translateX(5px); } }
-
-        #_authGate * { font-family:${FONT}; }
-        #_authGate .gate-orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
-        #_authGate .gate-scanline { position:absolute; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(0,0,0,0.18), transparent); animation:_gateScanline 6s linear infinite; pointer-events:none; opacity:0.4; }
-        #_authGate .gate-grid {
-          position:absolute; bottom:-40%; left:-20%; right:-20%; height:80%;
-          background-image:
-            linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
-          background-size:60px 60px;
-          mask-image:linear-gradient(0deg, black 0%, transparent 80%);
-          -webkit-mask-image:linear-gradient(0deg, black 0%, transparent 80%);
-          animation:_gateGridFloat 8s linear infinite alternate;
-          pointer-events:none;
-        }
-        #_authGate .gate-noise {
-          position:absolute; inset:0;
-          background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22240%22 height=%22240%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence baseFrequency=%220.85%22 numOctaves=%222%22/%3E%3C/filter%3E%3Crect width=%22240%22 height=%22240%22 filter=%22url(%23n)%22 opacity=%220.18%22/%3E%3C/svg%3E');
-          mix-blend-mode:multiply; opacity:0.15; pointer-events:none;
-        }
-        #_authGate .gate-card {
-          position:relative; z-index:5;
-          width:min(400px, 88vw);
-          padding:48px 40px 32px;
-          background:rgba(255,255,255,0.78);
-          backdrop-filter:saturate(180%) blur(40px);
-          -webkit-backdrop-filter:saturate(180%) blur(40px);
-          border:0.5px solid rgba(0,0,0,0.08);
-          border-radius:22px;
-          box-shadow:
-            0 0 0 0.5px rgba(255,255,255,0.5) inset,
-            0 1px 0 rgba(255,255,255,0.7) inset,
-            0 32px 64px -8px rgba(0,0,0,0.12),
-            0 8px 16px -4px rgba(0,0,0,0.06);
-          color:#1d1d1f;
-          animation:_gateFadeUp 800ms cubic-bezier(0.16,1,0.3,1) both;
-          overflow:hidden;
-        }
-        #_authGate .gate-card::before {
-          content:''; position:absolute; inset:0; pointer-events:none;
-          background:linear-gradient(135deg, rgba(255,255,255,0.5) 0%, transparent 50%);
-          border-radius:22px;
-        }
-        #_authGate .gate-card::after {
-          content:''; position:absolute; top:-100%; left:0; width:30%; height:300%;
-          background:linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
-          animation:_gateShine 8s ease-in-out infinite;
-          animation-delay:1.5s;
-          pointer-events:none;
-        }
-
-        #_authGate .gate-logo {
-          width:56px; height:56px; border-radius:14px;
-          background:linear-gradient(180deg, #ffffff 0%, #ececec 100%);
-          border:0.5px solid rgba(0,0,0,0.12);
-          display:flex; align-items:center; justify-content:center;
-          margin:0 auto 28px;
-          position:relative;
-          animation:_gateLogoBreathe 4s ease-in-out infinite;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(255,255,255,0.6) inset;
-        }
-        #_authGate .gate-logo::before {
-          content:''; position:absolute; inset:0; border-radius:14px;
-          background:linear-gradient(135deg, rgba(255,255,255,0.6) 0%, transparent 50%);
-          pointer-events:none;
-        }
-        #_authGate .gate-logo span {
-          font:600 22px ${FONT}; letter-spacing:-0.022em;
-          background:linear-gradient(180deg, #1d1d1f 0%, #6e6e73 100%);
-          -webkit-background-clip:text; background-clip:text;
-          -webkit-text-fill-color:transparent;
-          position:relative; z-index:1;
-        }
-        #_authGate .gate-orbit {
-          position:absolute; inset:-8px; border-radius:50%;
-          border:1px dashed rgba(0,0,0,0.18);
-          animation:_gateRotate 16s linear infinite;
-          pointer-events:none;
-        }
-        #_authGate .gate-orbit::before, #_authGate .gate-orbit::after {
-          content:''; position:absolute; width:5px; height:5px; border-radius:50%;
-        }
-        #_authGate .gate-orbit::before { top:-3px; left:50%; transform:translateX(-50%); background:#00C1C1; box-shadow:0 0 10px rgba(0,193,193,0.6); }
-        #_authGate .gate-orbit::after { bottom:-3px; left:50%; transform:translateX(-50%); background:#0066CC; box-shadow:0 0 10px rgba(0,102,204,0.6); }
-
-        #_authGate h1 {
-          font:600 24px ${FONT}; letter-spacing:-0.022em; line-height:1.2;
-          margin:0 0 6px; color:#1d1d1f !important; text-align:center;
-          position:relative; z-index:2;
-        }
-        #_authGate .gate-sub {
-          font:13px ${FONT}; color:#6e6e73; letter-spacing:-0.012em;
-          line-height:1.4; margin:0 0 30px; text-align:center;
-          position:relative; z-index:2;
-        }
-        #_authGate .gate-sub .dot { display:inline-block; width:3px; height:3px; border-radius:50%; background:rgba(29,29,31,0.3); vertical-align:middle; margin:0 6px; }
-
-        #_authGate .gate-label {
-          display:block; font:500 11px ${FONT}; color:#6e6e73;
-          letter-spacing:0.04em; margin-bottom:8px; text-transform:uppercase;
-          position:relative; z-index:2;
-        }
-        #_authGate input {
-          width:100%; padding:13px 16px; border:0.5px solid rgba(0,0,0,0.14); border-radius:11px;
-          font:15px ${FONT}; letter-spacing:0.04em;
-          background:rgba(255,255,255,0.85); outline:none; color:#1d1d1f;
-          margin-bottom:8px;
-          transition:200ms cubic-bezier(0.4,0,0.2,1);
-          box-sizing:border-box;
-          position:relative; z-index:2;
-        }
-        #_authGate input:focus {
-          border-color:rgba(0,193,193,0.6); background:#ffffff;
-          box-shadow:0 0 0 4px rgba(0,193,193,0.14), 0 0 24px rgba(0,193,193,0.10);
-        }
-        #_authGate input::placeholder { color:rgba(29,29,31,0.25); letter-spacing:0.2em; }
-
-        #_authGate .gate-err {
-          font:12px ${FONT}; color:#FF453A; letter-spacing:-0.012em;
-          min-height:14px; opacity:0; transition:opacity 200ms; margin-bottom:6px;
-          text-align:center; position:relative; z-index:2;
-        }
-        #_authGate.err .gate-err { opacity:1; }
-        #_authGate.err input { border-color:#FF453A; box-shadow:0 0 0 3px rgba(255,69,58,0.2); animation:_gateShake 320ms cubic-bezier(0.36,0.07,0.19,0.97); }
-
-        #_authGate button {
-          width:100%; padding:13px; border:none; border-radius:11px;
-          font:600 14px ${FONT}; letter-spacing:-0.012em; cursor:pointer;
-          transition:280ms cubic-bezier(0.4,0,0.2,1);
-          margin-top:8px;
-          color:#ffffff;
-          background:linear-gradient(180deg, #1d1d1f 0%, #000000 100%);
-          position:relative; overflow:hidden; z-index:2;
-          box-shadow:0 1px 0 rgba(255,255,255,0.15) inset, 0 4px 12px rgba(0,0,0,0.18);
-        }
-        #_authGate button::before {
-          content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
-          background:linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-          transform:skewX(-20deg);
-          transition:left 700ms cubic-bezier(0.4,0,0.2,1);
-        }
-        #_authGate button:hover { transform:translateY(-1px); box-shadow:0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 20px rgba(0,0,0,0.24), 0 0 0 4px rgba(0,193,193,0.10); }
-        #_authGate button:hover::before { left:120%; }
-        #_authGate button:active { transform:translateY(0); }
-        #_authGate button span.arrow { display:inline-block; transition:transform 240ms; margin-left:6px; }
-        #_authGate button:hover span.arrow { transform:translateX(3px); }
-
-        #_authGate .gate-footer {
-          margin-top:26px; padding-top:18px;
-          border-top:0.5px solid rgba(0,0,0,0.08);
-          display:flex; align-items:center; justify-content:space-between;
-          font:10px 'JetBrains Mono','SF Mono', monospace;
-          color:rgba(29,29,31,0.45); letter-spacing:0.12em;
-          text-transform:uppercase;
-          position:relative; z-index:2;
-        }
-        #_authGate .gate-status { display:flex; align-items:center; gap:6px; }
-        #_authGate .gate-status::before {
-          content:''; width:6px; height:6px; border-radius:50%;
-          background:#00C1C1; box-shadow:0 0 8px rgba(0,193,193,0.6);
-          animation:_gateDot 2s ease-in-out infinite;
-        }
-      </style>
-
-      <!-- Ambient orbs · cambian de color según theme activo via CSS vars -->
-      <div class="gate-orb" id="_gateOrb1" style="width:480px;height:480px;top:-100px;left:-80px;background:radial-gradient(circle,var(--gate-orb-1, rgba(0,102,204,0.12)) 0%,transparent 70%);animation:_gateOrb1 18s ease-in-out infinite"></div>
-      <div class="gate-orb" id="_gateOrb2" style="width:520px;height:520px;bottom:-120px;right:-100px;background:radial-gradient(circle,var(--gate-orb-2, rgba(0,193,193,0.10)) 0%,transparent 70%);animation:_gateOrb2 22s ease-in-out infinite"></div>
-      <div class="gate-orb" id="_gateOrb3" style="width:380px;height:380px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,var(--gate-orb-3, rgba(191,90,0,0.08)) 0%,transparent 70%);animation:_gateOrb3 26s ease-in-out infinite"></div>
-
-      <!-- Perspective grid floor -->
-      <div class="gate-grid"></div>
-
-      <!-- Scanlines barriendo · 2 sutiles -->
-      <div class="gate-scanline" style="animation-delay:0s"></div>
-      <div class="gate-scanline" style="animation-delay:3s;opacity:0.3"></div>
-
-      <!-- Noise grain -->
-      <div class="gate-noise"></div>
-
-      <!-- Card glass -->
-      <div class="gate-card">
-        <!-- Logo SMC con orbit ring + breathing -->
-        <div class="gate-logo">
-          <div class="gate-orbit"></div>
-          <span>S</span>
-        </div>
-
-        <h1>Iniciar sesión</h1>
-        <p class="gate-sub">SMC Design System<span class="dot"></span>v15.3</p>
-
-        <label class="gate-label" for="_authInput">Clave</label>
-        <input type="password" id="_authInput" placeholder="••••••" autofocus autocomplete="off" autocapitalize="off" spellcheck="false">
-
-        <div class="gate-err" id="_authErr"></div>
-
-        <button id="_authBtn">Continuar<span class="arrow">→</span></button>
-
-        <div class="gate-footer">
-          <span>SMC OS · 2026</span>
-          <span class="gate-status">LIVE</span>
+    document.body.innerHTML = `
+      <div id="smc-gate">
+        <div class="smc-card">
+          <div class="smc-logo">
+            <svg width="42" height="42" viewBox="0 0 64 64" fill="none">
+              <path d="M48 36c0-7.732-6.268-14-14-14-6.83 0-12.515 4.886-13.764 11.353C16.18 34.078 13 37.668 13 42c0 4.97 4.03 9 9 9h24c4.418 0 8-3.582 8-8 0-3.473-2.213-6.43-5.305-7.534" stroke="url(#smc-logo-grad)" stroke-width="3" stroke-linecap="round"/>
+              <path d="M26 42l5 5 9-11" stroke="url(#smc-logo-grad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="smc-logo-grad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#0066CC"/>
+                  <stop offset="1" stop-color="#00C1C1"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="smc-brand">SMART<span>CONNECTION</span></div>
+          </div>
+          <h1 class="smc-title">Banco SMC v8</h1>
+          <p class="smc-sub">Ingresa tu PIN de acceso</p>
+          <div class="smc-boxes" id="smc-boxes">
+            ${Array.from({length: PIN_LEN}).map((_, i) =>
+              `<input class="smc-box" maxlength="1" data-idx="${i}" autocapitalize="off" autocomplete="off" spellcheck="false"/>`
+            ).join('')}
+          </div>
+          <div class="smc-err" id="smc-err"></div>
+          <div class="smc-hint">Confidencial · uso interno SMC</div>
         </div>
       </div>
     `;
-    document.body.appendChild(gate);
+    document.documentElement.style.visibility = 'visible';
 
-    const input = document.getElementById('_authInput');
-    const btn = document.getElementById('_authBtn');
-    const err = document.getElementById('_authErr');
+    const boxes  = Array.from(document.querySelectorAll('.smc-box'));
+    const wrap   = document.getElementById('smc-boxes');
+    const errEl  = document.getElementById('smc-err');
 
-    function tryLogin() {
-      const v = input.value.trim().toLowerCase();
-      if (ROLES[v]) {
-        localStorage.setItem(LS_KEY, v);
-        gate.style.opacity = '0';
-        gate.style.transition = 'opacity 360ms';
-        setTimeout(() => { gate.remove(); init(); }, 360);
+    setTimeout(() => boxes[0].focus(), 200);
+
+    async function tryAuth(){
+      const pin = boxes.map(b => b.value).join('').toLowerCase();
+      if (pin.length !== PIN_LEN) return;
+      const h = await sha256(pin);
+      if (h === PIN_HASH){
+        setAuthed();
+        wrap.style.transition = 'opacity .3s'; wrap.style.opacity = '0.4';
+        errEl.textContent = '';
+        boxes.forEach(b => b.style.borderColor = '#22C55E');
+        setTimeout(() => location.reload(), 350);
       } else {
-        err.textContent = '✗ Clave inválida · intentá de nuevo';
-        gate.classList.add('err');
-        input.value = '';
+        wrap.classList.add('error');
+        errEl.textContent = 'PIN incorrecto · intenta de nuevo';
         setTimeout(() => {
-          gate.classList.remove('err');
-          err.textContent = '';
-        }, 2400);
+          wrap.classList.remove('error');
+          boxes.forEach(b => { b.value = ''; b.classList.remove('filled'); });
+          boxes[0].focus();
+          errEl.textContent = '';
+        }, 800);
       }
     }
-    btn.onclick = tryLogin;
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+    boxes.forEach((box, idx) => {
+      box.addEventListener('input', e => {
+        const v = e.target.value;
+        if (v.length > 0){
+          box.classList.add('filled');
+          if (idx < PIN_LEN - 1) boxes[idx + 1].focus();
+          else tryAuth();
+        } else {
+          box.classList.remove('filled');
+        }
+      });
+      box.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !box.value && idx > 0){
+          boxes[idx - 1].focus();
+          boxes[idx - 1].value = '';
+          boxes[idx - 1].classList.remove('filled');
+        }
+        if (e.key === 'ArrowLeft' && idx > 0) boxes[idx - 1].focus();
+        if (e.key === 'ArrowRight' && idx < PIN_LEN - 1) boxes[idx + 1].focus();
+      });
+      box.addEventListener('paste', e => {
+        e.preventDefault();
+        const data = (e.clipboardData.getData('text') || '').toLowerCase().slice(0, PIN_LEN);
+        data.split('').forEach((ch, i) => {
+          if (boxes[i]){ boxes[i].value = ch; boxes[i].classList.add('filled'); }
+        });
+        if (data.length === PIN_LEN) tryAuth();
+        else boxes[Math.min(data.length, PIN_LEN - 1)].focus();
+      });
+    });
   }
 
-  function applyThemeToGate(themeId) {
-    const colorMap = {
-      'apple-premium':    ['rgba(10,132,255,0.18)', 'rgba(0,229,176,0.14)',  'rgba(124,58,237,0.10)'],
-      'kanki-surf':       ['rgba(196,154,58,0.22)', 'rgba(27,47,78,0.30)',   'rgba(232,199,110,0.14)'],
-      'infopet':          ['rgba(0,180,216,0.20)',  'rgba(0,229,176,0.18)',  'rgba(0,102,204,0.14)'],
-      'smc-marketing':    ['rgba(0,229,176,0.22)',  'rgba(27,47,78,0.20)',   'rgba(0,180,216,0.14)'],
-      'marketplace':      ['rgba(255,230,0,0.20)',  'rgba(0,102,204,0.20)',  'rgba(27,47,78,0.16)'],
-      'discovery':        ['rgba(147,51,234,0.22)', 'rgba(0,229,176,0.14)',  'rgba(255,210,63,0.12)'],
-      'intranet-dark':    ['rgba(0,229,176,0.22)',  'rgba(27,47,78,0.50)',   'rgba(147,51,234,0.14)'],
-      'cerebro-ai':       ['rgba(147,51,234,0.22)', 'rgba(167,139,250,0.18)','rgba(45,27,78,0.30)']
-    };
-    const c = colorMap[themeId] || colorMap['apple-premium'];
-    document.documentElement.style.setProperty('--gate-orb-1', c[0]);
-    document.documentElement.style.setProperty('--gate-orb-2', c[1]);
-    document.documentElement.style.setProperty('--gate-orb-3', c[2]);
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
-
-  // Listen for theme changes
-  window.addEventListener('smc-theme-change', e => applyThemeToGate(e.detail.id));
-
-  function init() {
-    // Apply current theme to gate orbs
-    const savedTheme = localStorage.getItem('smc-theme-v15') || 'apple-premium';
-    applyThemeToGate(savedTheme);
-
-    const role = getRole();
-    if (!role) {
-      showGate();
-      return;
-    }
-    renderWelcome(role);
-    applyFilter(role);
-
-    // Block SO standalone page if user doesn't have OS access
-    const isOSPage = document.body.dataset.requiresOs === 'true';
-    if (isOSPage && !role.canSeeOS) {
-      const block = document.createElement('div');
-      block.style.cssText = `position:fixed;inset:0;background:rgba(10,10,11,0.96);z-index:99998;display:flex;align-items:center;justify-content:center;font-family:${FONT};color:white;text-align:center;padding:32px`;
-      block.innerHTML = `
-        <div>
-          <div style="font-size:72px;margin-bottom:18px">🔒</div>
-          <h1 style="font-family:'Instrument Serif',Georgia,serif;font-size:48px;font-weight:400;margin:0 0 12px">Acceso restringido</h1>
-          <p style="font-size:17px;color:#86868B;max-width:480px;margin:0 auto 24px;line-height:1.5">El Banco de Sistema Operativo está reservado para owner únicamente.<br>Tu rol actual: <strong>${role.user}</strong></p>
-          <a href="javascript:history.back()" style="display:inline-block;padding:12px 24px;background:white;color:#0A0A0B;border-radius:980px;font-weight:600;text-decoration:none">← Volver</a>
-        </div>
-      `;
-      document.body.appendChild(block);
-    }
-  }
-
-  init();
 })();
