@@ -407,6 +407,18 @@ details.card[open] summary::before{content:"▾ "}
     </div>
     <div class="tbl-wrap" style="margin-bottom:8px" id="tablaPuestos"></div>
 
+    <section class="card" style="margin:0 0 18px">
+      <h3 style="margin:0 0 6px;font-size:14px">🔗 Capturar desde LinkedIn</h3>
+      <p class="nota-sm" style="margin:0 0 12px">
+        LinkedIn no deja que una página externa lea sus avisos, pero el que vos ya tenés abierto en tu
+        sesión sí lo podés traer. Arrastrá este botón a la barra de marcadores; después, parado en
+        cualquier aviso de LinkedIn, hacés clic y el puesto aparece acá abajo en tu pipeline.
+      </p>
+      <a style="display:inline-block;background:var(--smc-burdeo);color:#fff;padding:9px 16px;border-radius:99px;text-decoration:none;font-weight:600;font-size:13px;cursor:grab"
+         href="javascript:(function(){var q=function(s){var e=document.querySelector(s);return e?e.innerText.trim():'';};var t=q('.job-details-jobs-unified-top-card__job-title')||q('.jobs-unified-top-card__job-title')||q('h1');var c=q('.job-details-jobs-unified-top-card__company-name')||q('.jobs-unified-top-card__company-name');if(!c){var a=document.querySelector('a[href*=&quot;/company/&quot;]');c=a?a.innerText.trim():'';}var l=q('.job-details-jobs-unified-top-card__tertiary-description-container')||q('.jobs-unified-top-card__bullet');l=l.split('\n')[0].split('&#183;')[0].trim();var id=(location.href.match(/currentJobId=(\d+)/)||location.href.match(/jobs\/view\/(\d+)/)||[])[1];var u=id?'https://www.linkedin.com/jobs/view/'+id:location.href;if(!t){alert('No encontre el aviso. Abri primero un puesto en LinkedIn.');return;}var d=btoa(unescape(encodeURIComponent(JSON.stringify({cargo:t,empresa:c,ubicacion:l,link:u}))));window.open('https://banco.smconnection.cl/radar-empleos/#add='+d,'_blank');})();"
+         onclick="alert('Arrastrá este botón a tu barra de marcadores y usalo cuando estés en LinkedIn.');return false;">＋ Guardar en mi RADAR</a>
+    </section>
+
     <h2 class="section-title">📋 Mi pipeline</h2>
     <div class="toolbar">
       <div class="kpis" style="display:flex;gap:8px;font-size:12px;color:var(--sap-text-muted)" id="pipeKpis"></div>
@@ -872,6 +884,45 @@ function renderTablaPipeline(){
   });
 }
 
+// ── Captura desde LinkedIn (bookmarklet) ─────────────────────────────────────
+// LinkedIn no tiene API de empleos para terceros y su scraping viola los términos, pero el
+// aviso que Guillermo YA está viendo en su sesión es suyo: el bookmarklet lee el DOM de esa
+// pestaña y abre esta página con los datos en el hash. Nadie raspa nada: es un traspaso
+// manual, disparado por él, del dato que tiene delante.
+window.capturarDesdeHash = function(){
+  const m = (location.hash || '').match(/^#add=(.+)$/);
+  if (!m) return 'sin hash';
+  let d;
+  try {
+    d = JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+  } catch (err) {
+    console.error('[radar] captura ilegible:', err);   // nunca en silencio: P8
+    avisoFlash('No pude leer el puesto capturado');
+    return 'ilegible';
+  }
+  history.replaceState(null, '', location.pathname);    // recién acá: si falla el parseo, el dato no se pierde
+  if (!d || !d.cargo) return 'sin cargo';
+  const apps = leer(LS.apps, []);
+  if (d.link && apps.some(a => a.link === d.link)) { avisoFlash('Ese puesto ya estaba en tu pipeline'); return 'duplicado'; }
+  const txt = String(d.ubicacion || '').toLowerCase();
+  const ciudad = (CIUDADES.find(c => txt.includes(c.nombre.toLowerCase())) || {}).id || CIUDADES[0].id;
+  apps.unshift({ id:String(Date.now()), cargo:d.cargo, empresa:d.empresa || '', ciudad,
+                 salario:'', estado:'guardado', link:d.link || '', nota:'capturado de LinkedIn',
+                 fecha:new Date().toISOString().slice(0,10) });
+  grabar(LS.apps, apps);
+  avisoFlash('✓ "' + d.cargo + '" guardado en tu pipeline');
+  return 'guardado';
+};
+window.avisoFlash = function(txt){
+  const el = document.createElement('div');
+  el.textContent = txt;
+  el.style.cssText = 'position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:9999;' +
+    'background:#0A0E14;color:#00E5B0;padding:12px 20px;border-radius:99px;font-size:13px;font-weight:600;' +
+    'box-shadow:0 10px 30px rgba(0,0,0,.35);max-width:90vw';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+};
+
 // ====================== RENDER ALL ======================
 function renderAll(){
   renderSidebar();
@@ -951,6 +1002,7 @@ document.getElementById("backdrop").addEventListener("click", () => {
   if (window.innerWidth < 980){ state.sidebar = false; document.getElementById("layout").classList.add("is-collapsed"); }
 
   buildData();
+  capturarDesdeHash();   // si llegó un puesto desde el bookmarklet, entra al pipeline antes de pintar
   renderAll();
 })();
 </script>
