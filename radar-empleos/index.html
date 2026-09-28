@@ -562,6 +562,21 @@ const leer = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? d
 const grabar = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const fmt = (n, m) => new Intl.NumberFormat('es-CL',{style:'currency',currency:m||'USD',maximumFractionDigits:0}).format(n);
 const clp = n => '$' + new Intl.NumberFormat('es-CL',{maximumFractionDigits:0}).format(Math.round(n));
+// ── Saneo de datos de terceros (gate ATLAS · 28-09-2026) ─────────────────────
+// Los avisos vienen de APIs externas (arbeitnow, jobicy, Adzuna) que a su vez copian texto
+// escrito por empleadores: contenido NO confiable. Sin escapar, un título con
+// <img src=x onerror=...> ejecuta código en esta página — XSS almacenado de segundo orden.
+// Es la clase P3 del catálogo (innerHTML con texto ajeno) aplicada a HTML plano.
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+// La URL del aviso va dentro de un href: solo http(s), para cerrar el vector javascript:
+const escUrl = u => {
+  try {
+    const x = new URL(String(u), location.href);
+    return (x.protocol === 'http:' || x.protocol === 'https:') ? esc(x.href) : '#';
+  } catch { return '#'; }
+};
+
 function tasa(moneda){ const usd = Number($('#usdclp').value)||0, eur = Number($('#eurclp').value)||0; return moneda === 'EUR' ? eur : usd; }
 function ajustar(monto, ciudad){ return $('#neto').value === 'bruto' ? monto : monto * ciudad.neto; }
 function ciudadDe(id){ return CIUDADES.find(c => c.id === id) || CIUDADES[0]; }
@@ -777,14 +792,14 @@ function renderTablaPuestos(){
       const enClp = e.salario_min ? `<div class="nota-sm">${clp(e.salario_min * tasa(e.moneda||'USD'))}/año</div>` : '';
       const yaGuardado = savedUrls.has(e.url);
       return `<tr>
-        <td><span class="match-badge" style="color:${color}">${e.score}</span></td>
-        <td><a href="${e.url}" target="_blank" rel="noopener" style="color:var(--sap-blue)">${e.titulo}</a>
-            ${e.resumen ? `<div class="nota-sm">${e.resumen.slice(0,100)}…</div>` : ''}</td>
-        <td>${e.empresa||'—'}</td>
-        <td>${e.ubicacion||'—'}${e.remoto?' <span class="pill">remoto</span>':''}</td>
+        <td><span class="match-badge" style="color:${color}">${Number(e.score)||0}</span></td>
+        <td><a href="${escUrl(e.url)}" target="_blank" rel="noopener" style="color:var(--sap-blue)">${esc(e.titulo)}</a>
+            ${e.resumen ? `<div class="nota-sm">${esc(e.resumen.slice(0,100))}…</div>` : ''}</td>
+        <td>${esc(e.empresa)||'—'}</td>
+        <td>${esc(e.ubicacion)||'—'}${e.remoto?' <span class="pill">remoto</span>':''}</td>
         <td style="white-space:nowrap">${sal}${enClp}</td>
-        <td class="nota-sm">${e.fuente}</td>
-        <td style="text-align:right"><button class="btn btn-ghost" data-add="${e.id}" ${yaGuardado?'disabled':''} title="Mandar al pipeline">${yaGuardado?'✓':'＋'}</button></td>
+        <td class="nota-sm">${esc(e.fuente)}</td>
+        <td style="text-align:right"><button class="btn btn-ghost" data-add="${esc(e.id)}" ${yaGuardado?'disabled':''} title="Mandar al pipeline">${yaGuardado?'✓':'＋'}</button></td>
       </tr>`;
     }).join('')}</tbody></table>`;
 
@@ -828,14 +843,14 @@ function renderTablaPipeline(){
     const anual = ajustar(bruto, c), mes = anual / 12, t = tasa(c.moneda);
     const dosLineas = (v1, v2) => `<div>${v1}</div><div class="nota-sm">${v2}</div>`;
     return `<tr>
-      <td>${a.link ? `<a href="${a.link}" target="_blank" rel="noopener" style="color:var(--sap-blue)">${a.cargo}</a>` : a.cargo}
-          ${a.nota ? `<div class="nota-sm">${a.nota}</div>` : ''}</td>
-      <td>${a.empresa || '—'}</td>
+      <td>${a.link ? `<a href="${escUrl(a.link)}" target="_blank" rel="noopener" style="color:var(--sap-blue)">${esc(a.cargo)}</a>` : esc(a.cargo)}
+          ${a.nota ? `<div class="nota-sm">${esc(a.nota)}</div>` : ''}</td>
+      <td>${esc(a.empresa) || '—'}</td>
       <td>${c.nombre}</td>
       <td style="white-space:nowrap">${bruto ? dosLineas(fmt(anual, c.moneda) + ' <span style="color:var(--sap-text-muted);font-size:11px">/año</span>', fmt(mes, c.moneda) + ' /mes') : '—'}</td>
       <td style="white-space:nowrap;color:var(--smc-burdeo);font-weight:700">${bruto ? dosLineas(clp(anual * t) + ' <span style="color:var(--sap-text-muted);font-size:11px;font-weight:400">/año</span>', clp(mes * t) + ' /mes') : '—'}</td>
-      <td><span class="estado e-${a.estado}">${a.estado}</span></td>
-      <td style="text-align:right"><button class="btn btn-ghost" data-del="${a.id}" title="Eliminar">✕</button></td>
+      <td><span class="estado e-${esc(a.estado)}">${esc(a.estado)}</span></td>
+      <td style="text-align:right"><button class="btn btn-ghost" data-del="${esc(a.id)}" title="Eliminar">✕</button></td>
     </tr>`;
   }).join('')}</tbody></table>`;
 
