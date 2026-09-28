@@ -1,0 +1,66 @@
+/* ===========================================================
+   Banco SMC · Design Tokens · Apple-grade
+   Variables CSS centralizadas usadas por index.html
+   =========================================================== */
+
+:root {
+  /* Texto · Apple system colors */
+  --text:        #1d1d1f;
+  --text-muted:  #6e6e73;
+
+  /* Fondos */
+  --bg:          #ffffff;
+  --bg-soft:     #fbfbfd;
+  --bg-warm:     #faf7f2;
+
+  /* Bordes */
+  --border-soft: rgba(0, 0, 0, 0.10);
+
+  /* Acentos */
+  --accent:      #0066CC;   /* azul Apple */
+  --smc-accent:  #00E5B0;   /* verde teal SMC */
+
+  /* Tipografía · Apple system font stack + fallbacks */
+  --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+  --font-text:    'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+  --font-mono:    'SF Mono', 'JetBrains Mono', Monaco, 'Cascadia Code', Consolas, monospace;
+
+  /* Easing curves · Apple-style spring */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Sombras */
+  --shadow-sm:   0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:   0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg:   0 12px 32px rgba(0,0,0,0.10);
+}
+
+/* Dark mode opcional · activable con clase .theme-dark en <html> */
+html.theme-dark {
+  --text:        #f5f5f7;
+  --text-muted:  #a1a1a6;
+  --bg:          #000000;
+  --bg-soft:     #1c1c1e;
+  --bg-warm:     #1a1a1c;
+  --border-soft: rgba(255, 255, 255, 0.10);
+}
+
+/* Reset mínimo + tipografía base */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-text);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a { color: inherit; }
+img, svg { max-width: 100%; display: block; }
+
+/* Print friendly */
+@media print {
+  .nav, .ds-link, .search { display: none !important; }
+  body { background: white !important; color: black !important; }
+}
