@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RADAR Empleos · SMC Connection · SAP Senior Integration</title>
+<script>window.addEventListener('error', function(e){ document.documentElement.setAttribute('data-js-error', (document.documentElement.getAttribute('data-js-error')||'') + '|' + e.message); });</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sap-blue:#0070F2; --sap-blue-dark:#0064D9; --sap-blue-soft:#E8F4FF; --sap-blue-mid:#5B9BD5;
+  --sap-brand:#354A5F; --sap-gold:#F0AB00; --sap-success:#36A41D; --sap-error:#BB0000;
+  --sap-surface:#F7F8FA; --sap-surface-2:#EAECEE; --sap-line:#D9DCDF;
+  --sap-text:#1D2D3E; --sap-text-muted:#556B82;
+  --smc-burdeo:#722F37; --smc-burdeo-dark:#5A252C; --smc-cream:#FBF6EF;
+  --ia-green:#00897B; --ia-green-soft:#D4EAE6;
+  /* Pipeline · paleta SAP sin rojo · gold high · blue medium · gray low */
+  --p1:#F0AB00; --p1-bg:#FFF4D6; --p1-text:#7A5500;
+  --p2:#0070F2; --p2-bg:#D1EFFF; --p2-text:#003D87;
+  --p3:#5B738B; --p3-bg:#E4EAF0; --p3-text:#354A5F;
+  --smc-pip:#722F37; --smc-pip-bg:#F0DDE0;
+  --shadow-sm:0 1px 2px rgba(29,45,62,.06);
+  --shadow-md:0 4px 12px rgba(29,45,62,.08);
+  --shadow-lg:0 12px 32px rgba(29,45,62,.14);
+  --shadow-xl:0 24px 48px rgba(29,45,62,.18);
+  --radius:14px; --radius-sm:8px;
+  --font:"Inter","72","Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --ease-fiori:cubic-bezier(0.65,0.05,0.36,1);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+  --dur:220ms; --dur-emph:360ms;
+  --sidebar-w:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:var(--font);color:var(--sap-text);background:var(--sap-surface);-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss01"}
+body{line-height:1.45;font-size:14px;letter-spacing:-0.005em}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:60;color:#fff;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-md);position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(120deg,var(--sap-brand) 0%,var(--smc-burdeo) 100%)}
+.topbar-inner{max-width:1600px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:relative;z-index:2}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:34px;height:34px;border-radius:8px;background:#fff;color:var(--sap-brand);display:grid;place-items:center;font-weight:800;font-size:15px}
+.brand-title{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.brand-sub{font-size:11px;font-weight:500;opacity:.75;display:block;margin-top:-2px;letter-spacing:.04em;text-transform:uppercase}
+.spacer{flex:1}
+.btn-sidebar{padding:7px 12px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.25);border-radius:99px;transition:all var(--dur) var(--ease-fiori);display:flex;align-items:center;gap:6px}
+.btn-sidebar:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.5)}
+.btn-sidebar svg{width:13px;height:13px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#FFFFFF 0%,#EAF6FF 100%);border-bottom:1px solid var(--sap-line);overflow:hidden;position:relative}
+.hero::before{content:"";position:absolute;right:-100px;top:-50px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,112,242,.08) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:1600px;margin:0 auto;padding:28px 24px 22px;position:relative;z-index:1}
+.hero-eyebrow{font-size:11px;font-weight:700;color:var(--sap-blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:"";width:24px;height:2px;background:var(--sap-blue);border-radius:2px}
+.hero-title{font-size:30px;font-weight:700;letter-spacing:-.025em;color:var(--sap-brand);line-height:1.1;max-width:880px}
+.hero-title em{font-style:normal;background:linear-gradient(135deg,var(--sap-blue) 0%,var(--smc-burdeo) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:14px;color:var(--sap-text-muted);margin-top:6px;max-width:780px}
+
+/* LAYOUT · sidebar + main */
+.layout{display:grid;grid-template-columns:var(--sidebar-w) 1fr;gap:0;align-items:flex-start;max-width:1600px;margin:0 auto;padding:0;transition:grid-template-columns var(--dur-emph) var(--ease-fiori)}
+.layout.is-collapsed{grid-template-columns:1fr}
+.layout.is-collapsed .sidebar{display:none}
+.sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;padding:18px 18px 40px;border-right:1px solid var(--sap-line);background:#FFFFFF;transition:transform var(--dur-emph) var(--ease-fiori),visibility 0s var(--dur-emph);scrollbar-width:thin;transform:translateX(0)}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--sap-line);border-radius:99px}
+
+.sb-group{margin-bottom:18px}
+.sb-group-title{font-size:10px;font-weight:700;color:var(--sap-text);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.sb-group-title .count{background:var(--sap-blue-soft);color:var(--sap-blue);padding:2px 8px;border-radius:99px;font-size:10px}
+.sb-quick{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sb-quick-btn{padding:10px 8px;font-size:11.5px;font-weight:600;color:var(--sap-text);background:var(--sap-surface);border-radius:var(--radius-sm);transition:all var(--dur) var(--ease-fiori);display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid transparent}
+.sb-quick-btn:hover{border-color:var(--sap-blue);color:var(--sap-blue)}
+.sb-quick-btn.is-active{background:var(--smc-burdeo);color:#fff}
+.sb-quick-btn b{font-size:14px;font-weight:700}
+.sb-quick-btn em{font-style:normal;font-size:9.5px;opacity:.8;text-transform:uppercase;letter-spacing:.06em}
+.sb-chips{display:flex;flex-wrap:wrap;gap:5px}
+.sb-chip{padding:5px 10px;font-size:11.5px;font-weight:500;background:var(--sap-surface);color:var(--sap-text);border:1px solid var(--sap-line);border-radius:99px;transition:all var(--dur) var(--ease-fiori)}
+.sb-chip:hover{border-color:var(--smc-burdeo);color:var(--smc-burdeo)}
+.sb-chip.is-active{background:var(--smc-burdeo);color:#fff;border-color:var(--smc-burdeo);font-weight:600}
+.sb-chip .n{opacity:.65;font-weight:400;margin-left:3px;font-size:10.5px}
+.sb-chip.is-mod{background:rgba(240,171,0,.08);border-color:rgba(240,171,0,.4);color:#9C7000;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.04em}
+.sb-chip.is-mod:hover{background:var(--sap-gold);color:#fff;border-color:var(--sap-gold)}
+.sb-chip.is-mod.is-active{background:var(--sap-gold);color:#fff;border-color:var(--sap-gold)}
+
+/* MAIN */
+.main{padding:18px 24px 60px;min-width:0}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-sm);border:1px solid var(--sap-line);position:relative;overflow:hidden;transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-fiori)}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.kpi-label{font-size:10px;color:var(--sap-text-muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.kpi-value{font-size:24px;font-weight:700;margin-top:3px;line-height:1.05;color:var(--sap-brand);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi-sub{font-size:11px;color:var(--sap-text-muted);margin-top:3px}
+.kpi-bar{height:3px;border-radius:99px;margin-top:10px;background:var(--sap-surface-2);overflow:hidden}
+.kpi-bar::after{content:"";display:block;height:100%;background:linear-gradient(90deg,var(--sap-blue-mid),var(--sap-blue));width:65%;border-radius:99px}
+.kpi.is-money .kpi-value{color:var(--smc-burdeo)}
+.kpi.is-money .kpi-bar::after{background:linear-gradient(90deg,var(--smc-burdeo),var(--sap-brand))}
+
+h2.section-title{font-size:11px;font-weight:700;color:var(--sap-text);text-transform:uppercase;letter-spacing:.12em;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+
+/* CARD generic */
+.card{background:#fff;border-radius:var(--radius);padding:16px 18px;border:1px solid var(--sap-line);box-shadow:var(--shadow-sm)}
+
+/* FILTERS BAR · main top */
+.filters-top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.search-main{flex:1;min-width:220px;display:flex;align-items:center;background:#fff;border:1px solid var(--sap-line);border-radius:99px;padding:0 14px;box-shadow:var(--shadow-sm);transition:all var(--dur) var(--ease-fiori)}
+.search-main:focus-within{border-color:var(--sap-blue);box-shadow:0 0 0 3px rgba(0,112,242,.12)}
+.search-main input{flex:1;padding:9px 0;border:none;background:none;outline:none;font:13.5px var(--font);color:var(--sap-text)}
+.search-main input::placeholder{color:var(--sap-text-muted)}
+.icon{width:15px;height:15px;color:var(--sap-text-muted);margin-right:8px}
+
+/* FORMS · linkedin buscador + agregar puesto */
+label.f-label{display:block;font-size:10px;font-weight:700;color:var(--sap-text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+input.f-input,select.f-input,textarea.f-input{width:100%;padding:9px 11px;border:1px solid var(--sap-line);border-radius:8px;background:var(--sap-surface);color:var(--sap-text);font:13.5px var(--font)}
+input.f-input:focus,select.f-input:focus,textarea.f-input:focus{outline:none;border-color:var(--sap-blue);box-shadow:0 0 0 3px rgba(0,112,242,.12);background:#fff}
+.btn{padding:9px 16px;font-size:12px;font-weight:600;border-radius:99px;transition:all var(--dur) var(--ease-fiori);letter-spacing:-.005em;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--sap-line);background:#fff;color:var(--sap-text)}
+.btn-primary{background:var(--sap-blue);color:#fff;border-color:var(--sap-blue)}
+.btn-primary:hover{background:var(--sap-blue-dark);transform:translateY(-1px)}
+.btn-ghost{background:#fff;color:var(--sap-text-muted);border:1px solid var(--sap-line)}
+.btn-ghost:hover{border-color:var(--sap-blue);color:var(--sap-blue)}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.links a{font-size:12px;text-decoration:none;padding:5px 10px;border:1px solid var(--sap-line);border-radius:20px;color:var(--sap-blue);background:#fff;transition:all var(--dur) var(--ease-fiori)}
+.links a:hover{background:var(--sap-blue-soft)}
+.pill{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--sap-blue-soft);color:var(--sap-blue);margin-left:6px}
+
+/* CIUDADES · rangos de mercado */
+.cities{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
+.city-card h3{margin:0 0 2px;font-size:15.5px;font-weight:700;color:var(--sap-brand)}
+.city-card .sub{font-size:11.5px;color:var(--sap-text-muted);margin-bottom:12px}
+.row2{padding:8px 0;border-top:1px dashed var(--sap-line)}
+.row2:first-of-type{border-top:0}
+.row2.destacada{background:var(--sap-blue-soft);margin:0 -18px;padding:8px 18px;border-radius:8px;border-top:0}
+.row2 .et{font-size:11.5px;color:var(--sap-text-muted);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.row2 .par{display:flex;align-items:baseline;gap:7px;font-size:13px}
+.row2 .per{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--sap-text-muted);width:26px;flex:none}
+.row2 b{font-variant-numeric:tabular-nums;min-width:86px;color:var(--sap-text)}
+.row2 .clp{font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--smc-burdeo);font-weight:700}
+.city-card .nota{font-size:11.5px;color:var(--sap-text-muted);line-height:1.5;margin-top:10px}
+
+/* TABLE VIEW */
+.tbl-wrap{margin-top:0}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);font-size:13px;border:1px solid var(--sap-line)}
+.tbl thead{background:var(--sap-surface)}
+.tbl th{padding:11px 12px;text-align:left;font-size:10.5px;font-weight:700;color:var(--sap-text);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;border-bottom:1px solid var(--sap-line)}
+.tbl td{padding:10px 12px;border-top:1px solid var(--sap-surface-2);vertical-align:middle}
+.tbl tr:hover{background:#FAFBFC}
+.tbl .col-name{font-weight:600;color:var(--sap-brand)}
+.tbl .col-r{text-align:right;font-variant-numeric:tabular-nums}
+.match-badge{font-weight:700;font-variant-numeric:tabular-nums}
+.nota-sm{font-size:11px;color:var(--sap-text-muted);margin-top:2px}
+
+/* ESTADO pills · sin rojo, paleta SMC */
+.estado{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;font-family:var(--font-mono);letter-spacing:.03em}
+.e-guardado{background:var(--sap-surface-2);color:var(--sap-text)}
+.e-postulado{background:var(--sap-blue-soft);color:var(--sap-blue)}
+.e-entrevista{background:var(--p1-bg);color:var(--p1-text)}
+.e-oferta{background:rgba(54,164,29,.13);color:#1F6610}
+.e-descartado{background:var(--sap-surface-2);color:var(--sap-text-muted)}
+
+/* EMPTY */
+.empty{text-align:center;padding:34px 20px;color:var(--sap-text-muted)}
+.empty-icon{font-size:36px;margin-bottom:8px;opacity:.5}
+.warn-box{background:var(--p1-bg);border-left:3px solid var(--sap-gold);padding:12px 14px;border-radius:6px;font-size:12.5px;color:#7A5500;line-height:1.55;margin-top:10px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.toolbar .sp{flex:1}
+details.card summary{cursor:pointer;font-weight:700;font-size:12.5px;color:var(--sap-brand);list-style:none}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary::before{content:"▸ ";color:var(--sap-blue)}
+details.card[open] summary::before{content:"▾ "}
+
+/* FOOTER */
+.foot{padding:30px 24px 60px;font-size:11px;color:var(--sap-text-muted);border-top:1px solid var(--sap-line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center;margin-top:24px}
+
+/* MOBILE */
+@media(max-width:980px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:64px;left:0;width:85vw;max-width:340px;height:calc(100vh - 64px);z-index:55;transform:translateX(-100%);transition:transform var(--dur-emph) var(--ease-fiori);box-shadow:var(--shadow-xl);margin-left:0}
+  .layout:not(.is-collapsed) .sidebar{transform:translateX(0);visibility:visible}
+  .layout.is-collapsed{grid-template-columns:1fr}
+  .main{padding:14px 16px 40px}
+  .hero-title{font-size:22px}
+  .hero-inner{padding:20px 16px 16px}
+  .tbl-wrap{overflow-x:auto}
+  .tbl{min-width:760px}
+}
+.backdrop{display:none;position:fixed;inset:0;background:rgba(29,45,62,.4);z-index:54;backdrop-filter:blur(2px)}
+@media(max-width:980px){
+  .layout:not(.is-collapsed) ~ .backdrop{display:block}
+}
+</style>
+</head>
+<body>
+<!-- SMC PIN GATE · v6 · PIN: fer ·-->
+<style>
+#smcPinGate{position:fixed;inset:0;z-index:99999;background:#0A0E14;display:flex;align-items:center;justify-content:center;font-family:'Inter','72',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#fff;padding:24px}
+#smcPinGate::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(0,229,176,.08) 0%,transparent 50%),radial-gradient(circle at 70% 60%,rgba(0,112,242,.06) 0%,transparent 50%);pointer-events:none}
+#smcPinGate .pc{position:relative;background:rgba(20,28,38,.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(0,229,176,.18);border-radius:20px;padding:40px 44px 36px;max-width:640px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
+#smcPinGate .pb{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:22px}
+#smcPinGate .pc-cloud{width:42px;height:42px;flex-shrink:0;color:#00E5B0;filter:drop-shadow(0 0 8px rgba(0,229,176,.5))}
+#smcPinGate .pn{font-size:28px;font-weight:700;letter-spacing:.14em;line-height:1}
+#smcPinGate .pn .s{color:#fff}#smcPinGate .pn .c{color:#00E5B0}
+#smcPinGate h2{font-size:24px;font-weight:700;color:#fff;letter-spacing:-.02em;margin:0 0 6px}
+#smcPinGate p.sub{font-size:13.5px;color:rgba(255,255,255,.5);margin:0 0 22px;letter-spacing:.01em}
+#smcPinGate .bxs{display:flex;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+#smcPinGate .bx{width:56px;height:64px;background:rgba(10,18,26,.7);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;font-size:26px;font-weight:700;color:#fff;text-align:center;outline:none;text-transform:uppercase;font-family:inherit;caret-color:transparent;transition:all 220ms cubic-bezier(0.65,0.05,0.36,1)}
+#smcPinGate .bx:focus{border-color:#00E5B0;box-shadow:0 0 0 4px rgba(0,229,176,.15),0 0 20px rgba(0,229,176,.25)}
+#smcPinGate .bx.f{border-color:rgba(0,229,176,.5);background:rgba(0,229,176,.05)}
+#smcPinGate .ht{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:.04em;margin-bottom:6px}
+#smcPinGate .er{font-size:12.5px;color:#FF8484;height:18px;font-weight:500;opacity:0;transition:opacity 220ms ease}
+#smcPinGate .er.s{opacity:1}
+#smcPinGate .ft{font-size:10.5px;color:rgba(255,255,255,.3);margin-top:18px;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+@keyframes smcShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#smcPinGate .bxs.sh{animation:smcShake 350ms cubic-bezier(0.36,0.07,0.19,0.97)}
+</style>
+<div id="smcPinGate">
+  <div class="pc">
+    <div class="pb">
+      <svg class="pc-cloud" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M48 44H18a10 10 0 0 1 0-20 14 14 0 0 1 27.4 4A8 8 0 1 1 48 44z"/><path d="M28 32l4 4 8-8" stroke-width="2.5"/></svg>
+      <div class="pn"><span class="s">SMART</span><span class="c">CO2ECTION</span></div>
+    </div>
+    <h2>RADAR · Empleos</h2>
+    <p class="sub">Ingresa tu PIN de acceso</p>
+    <div class="bxs" id="smcPinBxs">
+      <input class="bx" type="text" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text">
+      <input class="bx" type="text" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text">
+      <input class="bx" type="text" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text">
+    </div>
+    <div class="ht">3 caracteres</div>
+    <div class="er" id="smcPinErr"></div>
+    <div class="ft">SMC Connection SpA · acceso autorizado</div>
+  </div>
+</div>
+<script>
+(function(){
+  var PIN = "FER";
+  var KEY = "radar-empleos";
+  var V = "v6";
+  var g = document.getElementById("smcPinGate");
+  var w = document.getElementById("smcPinBxs");
+  var bx = w.querySelectorAll(".bx");
+  var er = document.getElementById("smcPinErr");
+  var skey = "smc_pin_" + KEY + "_" + V;
+  var vkey = "smc_pin_v_" + KEY;
+  if (localStorage.getItem(vkey) !== V){
+    Object.keys(sessionStorage).forEach(function(k){ if (k.indexOf("smc_pin_" + KEY) === 0) sessionStorage.removeItem(k); });
+    localStorage.setItem(vkey, V);
+  }
+  if (sessionStorage.getItem(skey) === "1"){ g.style.display = "none"; }
+  else { setTimeout(function(){ bx[0].focus(); }, 200); }
+  function code(){ return Array.from(bx).map(function(b){ return (b.value||"").toUpperCase(); }).join(""); }
+  function val(){
+    var c = code();
+    if (c.length < 3) return;
+    if (c === PIN){
+      sessionStorage.setItem(skey, "1");
+      bx.forEach(function(b){ b.classList.add("f"); });
+      g.style.transition = "opacity 400ms ease, transform 400ms ease";
+      setTimeout(function(){ g.style.opacity = "0"; g.style.transform = "scale(1.04)"; }, 200);
+      setTimeout(function(){ g.style.display = "none"; }, 600);
+    } else {
+      er.textContent = "PIN incorrecto · intenta de nuevo";
+      er.classList.add("s");
+      w.classList.add("sh");
+      setTimeout(function(){
+        w.classList.remove("sh");
+        bx.forEach(function(b){ b.value = ""; b.classList.remove("f"); });
+        bx[0].focus();
+        setTimeout(function(){ er.classList.remove("s"); }, 1200);
+      }, 380);
+    }
+  }
+  bx.forEach(function(b, i){
+    b.addEventListener("input", function(e){
+      var v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+      e.target.value = v;
+      if (v) e.target.classList.add("f"); else e.target.classList.remove("f");
+      if (v && i < bx.length - 1) bx[i+1].focus();
+      if (i === bx.length - 1 && v) setTimeout(val, 80);
+    });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "Backspace" && !b.value && i > 0) bx[i-1].focus();
+      if (e.key === "Enter") val();
+    });
+    b.addEventListener("paste", function(e){
+      e.preventDefault();
+      var t = (e.clipboardData||window.clipboardData).getData("text").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,3);
+      bx.forEach(function(box, idx){ box.value = t[idx] || ""; if (t[idx]) box.classList.add("f"); });
+      if (t.length === 3) setTimeout(val, 80);
+      else bx[Math.min(t.length, 2)].focus();
+    });
+  });
+})();
+</script>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div>
+        <div class="brand-title">RADAR · Empleos</div>
+        <span class="brand-sub">SMC Connection · SAP Senior Integration · v1</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn-sidebar" id="toggleSidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      Filtros
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Job Search personal · Guillermo González León</div>
+    <h1 class="hero-title">Radar de empleos <em>SAP Senior Integration</em> — PI 7.5 · CPI · BTP Integration Suite.</h1>
+    <p class="hero-sub">Madrid · Barcelona · Miami · San Diego · San Francisco — rangos de mercado, conversión a pesos, búsquedas de LinkedIn ya filtradas y un pipeline propio de postulaciones. LinkedIn no permite traer los avisos a una página propia, así que cada botón abre la búsqueda directamente allá — esto NO raspa LinkedIn.</p>
+  </div>
+</section>
+
+<div class="layout" id="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="main">
+    <section class="kpis" id="kpis"></section>
+
+    <h2 class="section-title">💱 Tipo de cambio <span class="pill" id="fxTag">editable</span></h2>
+    <div class="card">
+      <div class="controls">
+        <div><label class="f-label" for="usdclp">USD → CLP</label><input class="f-input" type="number" id="usdclp" value="957" step="1"></div>
+        <div><label class="f-label" for="eurclp">EUR → CLP</label><input class="f-input" type="number" id="eurclp" value="1120" step="1"></div>
+        <div><label class="f-label" for="neto">Bruto o neto</label>
+          <select class="f-input" id="neto">
+            <option value="bruto" selected>Bruto (lo que se negocia)</option>
+            <option value="neto">Neto estimado (a bolsillo)</option>
+          </select>
+        </div>
+      </div>
+      <p class="nota-sm" style="margin-top:10px">Los valores se guardan en este navegador. El neto descuenta impuesto a la renta y seguridad social con la tasa efectiva típica de cada lugar — es una estimación para comparar ciudades, no un cálculo tributario.</p>
+    </div>
+
+    <h2 class="section-title">🌎 Rangos de mercado · SAP Senior Integration / BTP</h2>
+    <div class="cities" id="ciudades"></div>
+    <p class="nota-sm" style="margin-top:10px">Fuentes: Glassdoor, PayScale, Salary.com, Comparably e Indeed (2026). Madrid y Barcelona son estimaciones de rango para perfil senior de integración; el resto son promedios reportados del rol.</p>
+
+    <h2 class="section-title">🔎 Buscar en LinkedIn</h2>
+    <div class="card">
+      <div class="controls">
+        <div><label class="f-label" for="kw">Qué buscás</label>
+          <select class="f-input" id="kw">
+            <option value="sap btp integration">SAP BTP Integration</option>
+            <option value="sap cpi">SAP CPI</option>
+            <option value="sap pi po">SAP PI / PO</option>
+            <option value="sap integration architect">SAP Integration Architect</option>
+            <option value="integration engineer sap">Integration Engineer (SAP)</option>
+            <option value="sap integration consultant">SAP Integration Consultant</option>
+          </select>
+        </div>
+        <div><label class="f-label" for="ciudad">Dónde</label><select class="f-input" id="ciudad"></select></div>
+        <div><label class="f-label" for="fecha">Publicado</label>
+          <select class="f-input" id="fecha">
+            <option value="">Cualquier fecha</option>
+            <option value="r86400">Últimas 24 horas</option>
+            <option value="r604800" selected>Última semana</option>
+            <option value="r2592000">Último mes</option>
+          </select>
+        </div>
+        <div><label class="f-label" for="modo">Modalidad</label>
+          <select class="f-input" id="modo">
+            <option value="">Todas</option>
+            <option value="1">Presencial</option>
+            <option value="2">Remoto</option>
+            <option value="3">Híbrido</option>
+          </select>
+        </div>
+        <div><label class="f-label" for="nivel">Nivel</label>
+          <select class="f-input" id="nivel">
+            <option value="">Todos</option>
+            <option value="4" selected>Intermedio / Senior</option>
+            <option value="5">Director</option>
+            <option value="3">Junior</option>
+          </select>
+        </div>
+        <div><button class="btn btn-primary" id="buscar" style="width:100%">Abrir en LinkedIn ↗</button></div>
+      </div>
+      <div class="links" id="atajos"></div>
+    </div>
+
+    <h2 class="section-title">📡 Puestos detectados <span class="pill" id="sello">—</span></h2>
+    <div class="card" style="margin-bottom:12px">
+      <div id="fuentesEstado" class="links" style="margin:0"></div>
+      <div class="filters-top" style="margin-top:12px;margin-bottom:0">
+        <label class="search-main">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" placeholder="Buscar cargo · empresa · ubicación…" autocomplete="off">
+        </label>
+      </div>
+      <div id="avisoCobertura"></div>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:8px" id="tablaPuestos"></div>
+
+    <h2 class="section-title">📋 Mi pipeline</h2>
+    <div class="toolbar">
+      <div class="kpis" style="display:flex;gap:8px;font-size:12px;color:var(--sap-text-muted)" id="pipeKpis"></div>
+      <div class="sp"></div>
+      <select class="f-input" id="filtroEstado" style="width:auto">
+        <option value="">Todos los estados</option>
+        <option value="guardado">Guardado</option>
+        <option value="postulado">Postulado</option>
+        <option value="entrevista">Entrevista</option>
+        <option value="oferta">Oferta</option>
+        <option value="descartado">Descartado</option>
+      </select>
+      <button class="btn btn-ghost" id="exportar">Exportar JSON</button>
+    </div>
+
+    <details class="card" style="margin-bottom:12px" id="formDet">
+      <summary>➕ Agregar un puesto manualmente</summary>
+      <div class="controls" style="margin-top:12px">
+        <div><label class="f-label" for="fCargo">Cargo</label><input class="f-input" id="fCargo" placeholder="Integration Engineer"></div>
+        <div><label class="f-label" for="fEmpresa">Empresa</label><input class="f-input" id="fEmpresa" placeholder="Bunge"></div>
+        <div><label class="f-label" for="fCiudad">Ciudad</label><select class="f-input" id="fCiudad"></select></div>
+        <div><label class="f-label" for="fSalario">Salario anual (moneda local)</label><input class="f-input" id="fSalario" type="number" placeholder="70000"></div>
+        <div><label class="f-label" for="fEstado">Estado</label>
+          <select class="f-input" id="fEstado">
+            <option value="guardado">Guardado</option>
+            <option value="postulado">Postulado</option>
+            <option value="entrevista">Entrevista</option>
+            <option value="oferta">Oferta</option>
+            <option value="descartado">Descartado</option>
+          </select>
+        </div>
+        <div><label class="f-label" for="fLink">Link del aviso</label><input class="f-input" id="fLink" placeholder="https://www.linkedin.com/jobs/view/..."></div>
+        <div style="grid-column:1/-1"><label class="f-label" for="fNota">Nota</label><input class="f-input" id="fNota" placeholder="Contacto, recruiter, qué pidieron…"></div>
+        <div><button class="btn btn-primary" id="guardar" style="width:100%">Guardar</button></div>
+      </div>
+    </details>
+
+    <div class="tbl-wrap" id="tablaPipeline"></div>
+
+    <!-- HISTORIAL · VERSIONES · Regla 38 -->
+    <style>
+    .history-tab{position:fixed;right:0;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;background:linear-gradient(180deg,var(--smc-burdeo) 0%,var(--smc-burdeo-dark) 100%);color:#fff;padding:18px 10px;border-radius:0 8px 8px 0;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;z-index:90;box-shadow:-4px 0 14px rgba(114,47,55,.32);transition:all 280ms var(--ease-fiori);user-select:none}
+    .history-tab:hover{padding-right:14px;box-shadow:-6px 0 22px rgba(114,47,55,.45)}
+    .history-tab .v{display:block;font-size:9px;opacity:.65;margin-top:6px;letter-spacing:.04em;text-transform:none;font-weight:500}
+    .history-bg{position:fixed;inset:0;background:rgba(29,45,62,.55);backdrop-filter:blur(4px);z-index:150;display:none;align-items:center;justify-content:center;padding:24px}
+    .history-bg.is-open{display:flex}
+    .history-modal{background:#fff;border-radius:18px;max-width:680px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+    .history-head{padding:24px 28px 18px;border-bottom:1px solid var(--sap-line);background:linear-gradient(135deg,var(--smc-burdeo) 0%,var(--smc-burdeo-dark) 100%);color:#fff;position:relative}
+    .history-head h2{font-size:22px;font-weight:700;letter-spacing:-.02em}
+    .history-head p{font-size:13px;opacity:.8;margin-top:4px}
+    .history-close{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:99px;background:rgba(255,255,255,.18);color:#fff;font-size:20px;display:grid;place-items:center;cursor:pointer;border:none;transition:all 200ms var(--ease-fiori)}
+    .history-close:hover{background:rgba(255,255,255,.32);transform:rotate(90deg)}
+    .history-list{overflow-y:auto;padding:14px 22px 22px;flex:1}
+    .version-row{display:flex;gap:12px;padding:14px 18px;border-radius:12px;border:1px solid var(--sap-line);background:#fff;margin-bottom:10px;position:relative}
+    .version-row.is-current{border-color:var(--sap-success);background:linear-gradient(135deg,#fff 0%,#F0FAF1 100%)}
+    .version-row.is-current::before{content:"ACTUAL";position:absolute;top:10px;right:14px;font-size:9px;font-weight:700;color:var(--sap-success);background:rgba(54,164,29,.13);padding:2px 8px;border-radius:99px;letter-spacing:.06em}
+    .v-tag{font-family:var(--font-mono);font-size:14px;font-weight:800;color:var(--smc-burdeo);min-width:54px;letter-spacing:-.02em}
+    .v-body{flex:1;min-width:0}
+    .v-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px}
+    .v-author{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--sap-text);background:var(--sap-blue-soft);padding:2px 8px;border-radius:99px}
+    .v-author .avatar{width:16px;height:16px;border-radius:99px;background:var(--sap-blue);color:#fff;font-size:9px;font-weight:700;display:grid;place-items:center}
+    .v-time{font-size:11px;color:var(--sap-text-muted)}
+    .v-msg{font-size:13.5px;color:var(--sap-text);line-height:1.45;font-weight:500}
+    .v-diff{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
+    .diff-chip{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:var(--sap-surface-2);color:var(--sap-text)}
+    .diff-chip.add{background:rgba(54,164,29,.13);color:#1F6610}
+    </style>
+    <button class="history-tab" id="historyBtn">Historial · Versiones<span class="v">v1.0</span></button>
+    <div class="history-bg" id="historyBg">
+      <div class="history-modal">
+        <div class="history-head">
+          <h2>Historial de versiones · RADAR Empleos</h2>
+          <p>Commits reales del repo · cada cambio narrativizado</p>
+          <button class="history-close" id="historyClose" aria-label="Cerrar">×</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var VERSIONS = [
+        {v:"v1.0",hash:"inicial",time:new Date().toISOString().slice(0,16).replace('T',' '),author:"guillermo",msg:"RADAR Empleos · mismo patrón visual que RADAR Clientes (PIN gate v6 · sidebar+chips · SAP-grade)",diff:[["add","PIN gate FER"],["add","Sidebar filtros: ciudad·tecnología·match·fuente·modalidad"],["add","Rangos de mercado 5 ciudades"],["add","Buscador LinkedIn"],["add","Tabla de puestos detectados"],["add","Pipeline con localStorage"]],current:true},
+      ];
+      var hBtn = document.getElementById("historyBtn"), hBg = document.getElementById("historyBg"),
+          hCls = document.getElementById("historyClose"), hLst = document.getElementById("historyList");
+      function render(){
+        hLst.innerHTML = VERSIONS.map(function(v){
+          return '<div class="version-row '+(v.current?"is-current":"")+'">'
+            + '<div class="v-tag">'+v.v+'</div>'
+            + '<div class="v-body">'
+              + '<div class="v-head"><div class="v-author"><span class="avatar">G</span>Guillermo</div>'
+              + '<div class="v-time">'+v.time+' · <code style="font-size:10px;color:var(--sap-text-muted)">'+v.hash+'</code></div></div>'
+              + '<div class="v-msg">'+v.msg+'</div>'
+              + '<div class="v-diff">'+v.diff.map(function(d){ return '<span class="diff-chip '+d[0]+'">'+d[0].toUpperCase()+' · '+d[1]+'</span>'; }).join("")+'</div>'
+            + '</div></div>';
+        }).join("");
+      }
+      hBtn.addEventListener("click", function(){ hBg.classList.add("is-open"); render(); });
+      hCls.addEventListener("click", function(){ hBg.classList.remove("is-open"); });
+      hBg.addEventListener("click", function(e){ if (e.target === hBg) hBg.classList.remove("is-open"); });
+    })();
+    </script>
+
+    <footer class="foot">
+      <div>📡 RADAR · Personal · fuentes: arbeitnow, jobicy, adzuna, careerjet · <code id="footGen">—</code></div>
+      <div>Extractor: <code>python3 ~/Downloads/SmartConnection/sap-jobs/fetch-jobs.py</code></div>
+    </footer>
+  </main>
+</div>
+<div class="backdrop" id="backdrop"></div>
+
+<script src="data.js" onerror="window.RADAR_EMPLEOS=null"></script>
+<script>
+// ====================== CIUDADES · rangos de mercado (fuente: prototipo sap-jobs) ======================
+// mid = promedio reportado del rol · low/high = extremos del rango · neto = tasa efectiva post-impuesto
+const CIUDADES = [
+  { id:'miami',  nombre:'Miami',          pais:'Estados Unidos', moneda:'USD', low:83000,  mid:124000, high:140000,
+    neto:0.77, loc:'Miami, Florida, United States',
+    nota:'Florida no cobra impuesto estatal a la renta' },
+  { id:'sandiego', nombre:'San Diego',    pais:'Estados Unidos', moneda:'USD', low:131000, mid:162863, high:204300,
+    neto:0.68, loc:'San Diego, California, United States',
+    nota:'California suma impuesto estatal; vivienda cara' },
+  { id:'sf',     nombre:'San Francisco',  pais:'Estados Unidos', moneda:'USD', low:168064, mid:202675, high:247280,
+    neto:0.65, loc:'San Francisco Bay Area',
+    nota:'El techo del mercado, y también del costo de vida' },
+  { id:'madrid', nombre:'Madrid',         pais:'España',         moneda:'EUR', low:58000,  mid:70000,  high:90000,
+    neto:0.65, loc:'Madrid, Community of Madrid, Spain',
+    nota:'Paga 5–10% más que Barcelona en SAP · IRPF autonómico menor' },
+  { id:'barcelona', nombre:'Barcelona',   pais:'España',         moneda:'EUR', low:55000,  mid:65000,  high:100000,
+    neto:0.62, loc:'Barcelona, Catalonia, Spain',
+    nota:'Techo reportado €129k en roles de arquitecto · IRPF catalán alto' },
+];
+const KEYWORDS = ['sap btp integration','sap cpi','sap pi po','sap integration architect'];
+// palabras clave por ciudad para matchear ubicación cruda del aviso
+const CIUDAD_ALIAS = { madrid:['madrid'], barcelona:['barcelona'], miami:['miami'], sandiego:['san diego'], sf:['san francisco','bay area','sf bay'] };
+// tecnologías a detectar en título + resumen del aviso
+const TECH = [
+  {k:'BTP',   re:/\bBTP\b/i},
+  {k:'CPI',   re:/\bCPI\b/i},
+  {k:'PI/PO', re:/\bSAP\s?PI\b|\bSAP\s?PO\b|\bPI\/PO\b/i},
+  {k:'Integration Suite', re:/Integration\s?Suite/i},
+  {k:'S/4HANA', re:/S\/?4\s?HANA/i},
+  {k:'iFlow', re:/iFlow/i},
+  {k:'Groovy', re:/Groovy/i},
+  {k:'API Management', re:/API\s?Management/i},
+  {k:'IDoc', re:/IDoc/i},
+  {k:'ABAP', re:/\bABAP\b/i},
+];
+const LS = { fx:'radarempleos.fx', apps:'radarempleos.apps' };
+
+// ====================== UTILIDADES ======================
+const $ = s => document.querySelector(s);
+const leer = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } };
+const grabar = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const fmt = (n, m) => new Intl.NumberFormat('es-CL',{style:'currency',currency:m||'USD',maximumFractionDigits:0}).format(n);
+const clp = n => '$' + new Intl.NumberFormat('es-CL',{maximumFractionDigits:0}).format(Math.round(n));
+function tasa(moneda){ const usd = Number($('#usdclp').value)||0, eur = Number($('#eurclp').value)||0; return moneda === 'EUR' ? eur : usd; }
+function ajustar(monto, ciudad){ return $('#neto').value === 'bruto' ? monto : monto * ciudad.neto; }
+function ciudadDe(id){ return CIUDADES.find(c => c.id === id) || CIUDADES[0]; }
+function urlLinkedIn(kw, loc, {fecha='', modo='', nivel=''} = {}){
+  const p = new URLSearchParams({ keywords: kw, location: loc, sortBy: 'DD' });
+  if (fecha) p.set('f_TPR', fecha);
+  if (modo)  p.set('f_WT', modo);
+  if (nivel) p.set('f_E', nivel);
+  return 'https://www.linkedin.com/jobs/search/?' + p.toString();
+}
+
+// ====================== DATA · deriva campos desde window.RADAR_EMPLEOS ======================
+let RAW = null, DATA = [];
+function ciudadDeAviso(e){
+  if (e.ciudad) return e.ciudad;
+  const hay = (e.ubicacion||'').toLowerCase();
+  for (const id in CIUDAD_ALIAS){ if (CIUDAD_ALIAS[id].some(a => hay.includes(a))) return id; }
+  if (e.remoto) return '__remoto';
+  return '__otra';
+}
+function techsDeAviso(e){
+  const hay = `${e.titulo||''} ${e.resumen||''}`;
+  return TECH.filter(t => t.re.test(hay)).map(t => t.k);
+}
+function modalidadDeAviso(e){
+  const hay = `${e.titulo||''} ${e.resumen||''} ${e.ubicacion||''}`.toLowerCase();
+  if (e.remoto) return 'remoto';
+  if (/h[ií]brid|hybrid/.test(hay)) return 'hibrido';
+  return 'presencial';
+}
+function buildData(){
+  RAW = window.RADAR_EMPLEOS || null;
+  DATA = RAW ? (RAW.empleos||[]).map(e => ({...e, _ciudad: ciudadDeAviso(e), _techs: techsDeAviso(e), _modalidad: modalidadDeAviso(e)})) : [];
+}
+
+// ====================== STATE ======================
+const state = { q:'', cities:new Set(), techs:new Set(), sources:new Set(), modality:new Set(), matchMin:0, myPipeline:false, sidebar:true };
+
+function filtered(){
+  const apps = leer(LS.apps, []);
+  const savedUrls = new Set(apps.map(a => a.link));
+  return DATA.filter(e => {
+    if (state.matchMin && e.score < state.matchMin) return false;
+    if (state.cities.size && !state.cities.has(e._ciudad)) return false;
+    if (state.techs.size && !e._techs.some(t => state.techs.has(t))) return false;
+    if (state.sources.size && !state.sources.has(e.fuente)) return false;
+    if (state.modality.size && !state.modality.has(e._modalidad)) return false;
+    if (state.myPipeline && !savedUrls.has(e.url)) return false;
+    if (state.q){
+      const q = state.q.toLowerCase();
+      const hay = `${e.titulo} ${e.empresa||''} ${e.ubicacion||''}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+function activeFiltersCount(){
+  return state.cities.size + state.techs.size + state.sources.size + state.modality.size + (state.matchMin?1:0) + (state.myPipeline?1:0) + (state.q?1:0);
+}
+function clearFilters(){
+  state.cities.clear(); state.techs.clear(); state.sources.clear(); state.modality.clear();
+  state.matchMin = 0; state.myPipeline = false; state.q = ''; $('#q').value = '';
+  renderAll();
+}
+
+// ====================== SIDEBAR ======================
+const CIUDAD_LABEL = { __remoto:'Remoto', __otra:'Otra ubicación' };
+CIUDADES.forEach(c => CIUDAD_LABEL[c.id] = c.nombre);
+
+function renderSidebar(){
+  const cityCount={}, techCount={}, sourceCount={}, modCount={};
+  DATA.forEach(e => {
+    cityCount[e._ciudad] = (cityCount[e._ciudad]||0) + 1;
+    e._techs.forEach(t => techCount[t] = (techCount[t]||0) + 1);
+    sourceCount[e.fuente] = (sourceCount[e.fuente]||0) + 1;
+    modCount[e._modalidad] = (modCount[e._modalidad]||0) + 1;
+  });
+  const cityOrder = [...CIUDADES.map(c=>c.id), '__remoto', '__otra'];
+  const apps = leer(LS.apps, []);
+  const scoreBuckets = [ [60,'60+ muy afín'], [40,'40+ buen match'], [20,'20+'], [0,'Todos'] ];
+  const MOD_LABEL = { presencial:'Presencial', hibrido:'Híbrido', remoto:'Remoto' };
+
+  document.getElementById("sidebar").innerHTML = `
+    <div class="sb-group">
+      <div class="sb-group-title">Acciones rápidas ${activeFiltersCount()?`<span class="count">${activeFiltersCount()} activo${activeFiltersCount()===1?'':'s'}</span>`:''}</div>
+      <div class="sb-quick">
+        <button class="sb-quick-btn ${state.myPipeline?'is-active':''}" id="quickPipeline">
+          <b>⚡ ${apps.length}</b><em>Mi pipeline</em>
+        </button>
+        <button class="sb-quick-btn" id="quickClear">
+          <b>↺</b><em>Limpiar filtros</em>
+        </button>
+      </div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-title">Ciudades <span class="count">${cityOrder.filter(id=>cityCount[id]).length}</span></div>
+      <div class="sb-chips">
+        ${cityOrder.filter(id => cityCount[id]).map(id => `<button class="sb-chip ${state.cities.has(id)?'is-active':''}" data-city="${id}">${CIUDAD_LABEL[id]}<span class="n">${cityCount[id]}</span></button>`).join("")}
+      </div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-title">Tecnología <span class="count">${Object.keys(techCount).length}</span></div>
+      <div class="sb-chips">
+        ${Object.entries(techCount).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<button class="sb-chip is-mod ${state.techs.has(k)?'is-active':''}" data-tech="${k}">${k}<span class="n">${n}</span></button>`).join("") || '<span class="nota-sm">Sin detección aún</span>'}
+      </div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-title">Match</div>
+      <div class="sb-chips">
+        ${scoreBuckets.map(([min,label])=>`<button class="sb-chip ${state.matchMin===min?'is-active':''}" data-match="${min}">${label}<span class="n">${DATA.filter(e=>e.score>=min).length}</span></button>`).join("")}
+      </div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-title">Fuente <span class="count">${Object.keys(sourceCount).length}</span></div>
+      <div class="sb-chips">
+        ${Object.entries(sourceCount).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<button class="sb-chip ${state.sources.has(k)?'is-active':''}" data-source="${k}">${k}<span class="n">${n}</span></button>`).join("") || '<span class="nota-sm">Sin avisos</span>'}
+      </div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-title">Modalidad <span class="count">${Object.keys(modCount).length}</span></div>
+      <div class="sb-chips">
+        ${Object.entries(modCount).map(([k,n])=>`<button class="sb-chip ${state.modality.has(k)?'is-active':''}" data-modality="${k}">${MOD_LABEL[k]||k}<span class="n">${n}</span></button>`).join("") || '<span class="nota-sm">Sin avisos</span>'}
+      </div>
+    </div>
+  `;
+}
+
+// ====================== KPIs ======================
+function renderKPIs(){
+  const rows = filtered();
+  const apps = leer(LS.apps, []);
+  const ciudadesCubiertas = CIUDADES.filter(c => DATA.some(e => e._ciudad === c.id)).length;
+  const avgMatch = rows.length ? Math.round(rows.reduce((a,b)=>a+(b.score||0),0) / rows.length) : 0;
+  const gen = RAW && RAW.generado ? RAW.generado.replace('T',' ').slice(0,16) : 'sin datos';
+  const kpis = [
+    {l:"Avisos detectados", v:rows.length, s:`${DATA.length} totales`},
+    {l:"Ciudades cubiertas", v:`${ciudadesCubiertas} / 5`, s:"Madrid·BCN·Miami·SD·SF"},
+    {l:"Match promedio", v:rows.length?avgMatch:"—", s:"score 0-100"},
+    {l:"Mi pipeline", v:apps.length, s:"postulaciones guardadas", cls:"is-money"},
+    {l:"Última actualización", v:gen==='sin datos'?'—':gen.slice(0,10), s:gen==='sin datos'?'corré el extractor':gen.slice(11)},
+  ];
+  document.getElementById("kpis").innerHTML = kpis.map(k => `
+    <div class="kpi ${k.cls||""}">
+      <div class="kpi-label">${k.l}</div>
+      <div class="kpi-value">${k.v}</div>
+      ${k.s?`<div class="kpi-sub">${k.s}</div>`:""}
+      <div class="kpi-bar"></div>
+    </div>`).join("");
+  document.getElementById("footGen").textContent = gen === 'sin datos' ? 'sin datos' : 'generado ' + gen;
+}
+
+// ====================== CIUDADES · rangos de mercado ======================
+function renderCiudades(){
+  $('#ciudades').innerHTML = CIUDADES.map(c => {
+    const t = tasa(c.moneda);
+    const fila = (etiqueta, monto, destacar) => {
+      const a = ajustar(monto, c), m = a / 12;
+      return `<div class="row2${destacar ? ' destacada' : ''}">
+        <div class="et">${etiqueta}</div>
+        <div class="par"><span class="per">año</span><b>${fmt(a, c.moneda)}</b><span class="clp">${clp(a * t)}</span></div>
+        <div class="par"><span class="per">mes</span><b>${fmt(m, c.moneda)}</b><span class="clp">${clp(m * t)}</span></div>
+      </div>`;
+    };
+    return `<div class="card city-card">
+      <h3>${c.nombre} <span class="pill">${c.moneda}</span></h3>
+      <div class="sub">${c.pais} · ${$('#neto').value === 'bruto' ? 'bruto' : 'neto estimado'}</div>
+      ${fila('Piso del rango', c.low)}
+      ${fila('Promedio del rol', c.mid, true)}
+      ${fila('Techo del rango', c.high)}
+      <p class="nota">${c.nota}</p>
+      <div class="links">
+        ${KEYWORDS.map(k => `<a href="${urlLinkedIn(k, c.loc, {fecha:'r604800'})}" target="_blank" rel="noopener">${k}</a>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ====================== TABLA · puestos detectados ======================
+function emptyRowsHTML(cols, msg){ return `<tr><td colspan="${cols}" class="empty">${msg}</td></tr>`; }
+function renderTablaPuestos(){
+  const wrap = document.getElementById("tablaPuestos");
+  const sello = document.getElementById("sello");
+  const fuentesEl = document.getElementById("fuentesEstado");
+  const avisoEl = document.getElementById("avisoCobertura");
+
+  if (!RAW){
+    sello.textContent = 'sin datos';
+    fuentesEl.innerHTML = '';
+    avisoEl.innerHTML = '';
+    wrap.innerHTML = `<table class="tbl"><tbody>${emptyRowsHTML(7, 'Todavía no se corrió el extractor. En la terminal: <code>python3 ~/Downloads/SmartConnection/sap-jobs/fetch-jobs.py</code>')}</tbody></table>`;
+    return;
+  }
+
+  sello.textContent = `${RAW.total} avisos · ${(RAW.generado||'').replace('T',' ').slice(0,16)}`;
+  fuentesEl.innerHTML = (RAW.fuentes||[]).map(f => f.ok
+    ? `<a style="cursor:default">✅ ${f.fuente} · ${f.items}</a>`
+    : `<a style="cursor:default;border-color:var(--p1);color:var(--p1-text)" title="${f.error||''}">⚠️ ${f.fuente}</a>`
+  ).join('');
+
+  const rows = filtered();
+  if (!rows.length){
+    wrap.innerHTML = `<table class="tbl"><tbody>${emptyRowsHTML(7, activeFiltersCount() ? '📭 Sin resultados con ' + activeFiltersCount() + ' filtro(s) activo(s)' : '📭 Sin avisos')}</tbody></table>`;
+  } else {
+    const apps = leer(LS.apps, []);
+    const savedUrls = new Set(apps.map(a => a.link));
+    wrap.innerHTML = `<table class="tbl"><thead><tr>
+      <th>Match</th><th>Cargo</th><th>Empresa</th><th>Ubicación</th><th>Salario</th><th>Fuente</th><th></th>
+    </tr></thead><tbody>${rows.map(e => {
+      const color = e.score >= 60 ? 'var(--sap-success)' : e.score >= 40 ? 'var(--p1-text)' : e.score >= 20 ? 'var(--sap-blue)' : 'var(--sap-text-muted)';
+      const sal = e.salario_min
+        ? `${fmt(e.salario_min, e.moneda||'USD')}${e.salario_max && e.salario_max !== e.salario_min ? '–'+fmt(e.salario_max, e.moneda||'USD') : ''}`
+        : '<span style="color:var(--sap-text-muted)">no declara</span>';
+      const enClp = e.salario_min ? `<div class="nota-sm">${clp(e.salario_min * tasa(e.moneda||'USD'))}/año</div>` : '';
+      const yaGuardado = savedUrls.has(e.url);
+      return `<tr>
+        <td><span class="match-badge" style="color:${color}">${e.score}</span></td>
+        <td><a href="${e.url}" target="_blank" rel="noopener" style="color:var(--sap-blue)">${e.titulo}</a>
+            ${e.resumen ? `<div class="nota-sm">${e.resumen.slice(0,100)}…</div>` : ''}</td>
+        <td>${e.empresa||'—'}</td>
+        <td>${e.ubicacion||'—'}${e.remoto?' <span class="pill">remoto</span>':''}</td>
+        <td style="white-space:nowrap">${sal}${enClp}</td>
+        <td class="nota-sm">${e.fuente}</td>
+        <td style="text-align:right"><button class="btn btn-ghost" data-add="${e.id}" ${yaGuardado?'disabled':''} title="Mandar al pipeline">${yaGuardado?'✓':'＋'}</button></td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+
+    wrap.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
+      const e = DATA.find(x => x.id === b.dataset.add);
+      if (!e) return;
+      const apps2 = leer(LS.apps, []);
+      apps2.unshift({ id:String(Date.now()), cargo:e.titulo, empresa:e.empresa, ciudad: CIUDADES.some(c=>c.id===e._ciudad) ? e._ciudad : CIUDADES[0].id,
+                     salario:'', estado:'guardado', link:e.url, nota:'desde el radar',
+                     fecha:new Date().toISOString().slice(0,10) });
+      grabar(LS.apps, apps2);
+      renderAll();
+    });
+  }
+
+  const enCiudades = CIUDADES.reduce((n, c) => n + (RAW.por_ciudad?.[c.id] || 0), 0);
+  avisoEl.innerHTML = enCiudades === 0
+    ? `<div class="warn-box">⚠️ <b>Ninguno de los ${RAW.total} avisos está en Madrid, Barcelona, Miami, San Diego o San Francisco.</b> Las fuentes activas hoy (arbeitnow, jobicy) no tienen registro fuerte en esas plazas · ${RAW.remotos||0} son remotos de otra región. Para cubrir las 5 ciudades objetivo hace falta habilitar Adzuna con su clave gratuita en <code>~/.claude/.env</code>.</div>`
+    : `<p class="nota-sm" style="margin-top:8px">${enCiudades} de ${RAW.total} avisos están en las ciudades objetivo · ${RAW.remotos||0} remotos.</p>`;
+}
+
+// ====================== PIPELINE · tracker localStorage ======================
+function renderTablaPipeline(){
+  const apps = leer(LS.apps, []);
+  const filtro = $('#filtroEstado').value;
+  const vis = apps.filter(a => !filtro || a.estado === filtro);
+
+  document.getElementById('pipeKpis').innerHTML = ['guardado','postulado','entrevista','oferta','descartado']
+    .map(e => `<span><b style="color:var(--sap-text)">${apps.filter(a => a.estado === e).length}</b> ${e}</span>`).join('');
+
+  const wrap = document.getElementById('tablaPipeline');
+  if (!vis.length){
+    wrap.innerHTML = `<table class="tbl"><tbody>${emptyRowsHTML(7, 'Todavía no guardaste ningún puesto. Usá el botón ＋ en la tabla de arriba o "Agregar un puesto manualmente".')}</tbody></table>`;
+    return;
+  }
+  wrap.innerHTML = `<table class="tbl"><thead><tr>
+    <th>Cargo</th><th>Empresa</th><th>Ciudad</th><th>Salario</th><th>En CLP</th><th>Estado</th><th></th>
+  </tr></thead><tbody>${vis.map(a => {
+    const c = ciudadDe(a.ciudad);
+    const bruto = Number(a.salario) || 0;
+    const anual = ajustar(bruto, c), mes = anual / 12, t = tasa(c.moneda);
+    const dosLineas = (v1, v2) => `<div>${v1}</div><div class="nota-sm">${v2}</div>`;
+    return `<tr>
+      <td>${a.link ? `<a href="${a.link}" target="_blank" rel="noopener" style="color:var(--sap-blue)">${a.cargo}</a>` : a.cargo}
+          ${a.nota ? `<div class="nota-sm">${a.nota}</div>` : ''}</td>
+      <td>${a.empresa || '—'}</td>
+      <td>${c.nombre}</td>
+      <td style="white-space:nowrap">${bruto ? dosLineas(fmt(anual, c.moneda) + ' <span style="color:var(--sap-text-muted);font-size:11px">/año</span>', fmt(mes, c.moneda) + ' /mes') : '—'}</td>
+      <td style="white-space:nowrap;color:var(--smc-burdeo);font-weight:700">${bruto ? dosLineas(clp(anual * t) + ' <span style="color:var(--sap-text-muted);font-size:11px;font-weight:400">/año</span>', clp(mes * t) + ' /mes') : '—'}</td>
+      <td><span class="estado e-${a.estado}">${a.estado}</span></td>
+      <td style="text-align:right"><button class="btn btn-ghost" data-del="${a.id}" title="Eliminar">✕</button></td>
+    </tr>`;
+  }).join('')}</tbody></table>`;
+
+  wrap.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    grabar(LS.apps, leer(LS.apps, []).filter(x => x.id !== b.dataset.del));
+    renderAll();
+  });
+}
+
+// ====================== RENDER ALL ======================
+function renderAll(){
+  renderSidebar();
+  renderKPIs();
+  renderCiudades();
+  renderTablaPuestos();
+  renderTablaPipeline();
+}
+
+// ====================== EVENTOS ======================
+document.addEventListener("click", e => {
+  const ci = e.target.closest("[data-city]"); if (ci){ const k=ci.dataset.city; state.cities.has(k)?state.cities.delete(k):state.cities.add(k); renderAll(); return; }
+  const te = e.target.closest("[data-tech]"); if (te){ const k=te.dataset.tech; state.techs.has(k)?state.techs.delete(k):state.techs.add(k); renderAll(); return; }
+  const so = e.target.closest("[data-source]"); if (so){ const k=so.dataset.source; state.sources.has(k)?state.sources.delete(k):state.sources.add(k); renderAll(); return; }
+  const mo = e.target.closest("[data-modality]"); if (mo){ const k=mo.dataset.modality; state.modality.has(k)?state.modality.delete(k):state.modality.add(k); renderAll(); return; }
+  const ma = e.target.closest("[data-match]"); if (ma){ const v=Number(ma.dataset.match); state.matchMin = state.matchMin===v?0:v; renderAll(); return; }
+  if (e.target.closest("#quickPipeline")){ state.myPipeline = !state.myPipeline; renderAll(); return; }
+  if (e.target.closest("#quickClear")){ clearFilters(); return; }
+});
+document.getElementById("q").addEventListener("input", e => { state.q = e.target.value; renderAll(); });
+document.getElementById("toggleSidebar").addEventListener("click", () => {
+  state.sidebar = !state.sidebar;
+  document.getElementById("layout").classList.toggle("is-collapsed", !state.sidebar);
+});
+document.getElementById("backdrop").addEventListener("click", () => {
+  state.sidebar = false;
+  document.getElementById("layout").classList.add("is-collapsed");
+});
+
+(function init(){
+  const opts = CIUDADES.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+  $('#ciudad').innerHTML = opts; $('#fCiudad').innerHTML = opts;
+
+  const fx = leer(LS.fx, null);
+  if (fx){ $('#usdclp').value = fx.usd; $('#eurclp').value = fx.eur; }
+
+  const refrescar = () => { grabar(LS.fx, { usd: $('#usdclp').value, eur: $('#eurclp').value }); renderAll(); };
+  ['#usdclp','#eurclp','#neto'].forEach(s => $(s).addEventListener('input', refrescar));
+  $('#filtroEstado').addEventListener('change', renderTablaPipeline);
+
+  $('#buscar').onclick = () => {
+    const c = ciudadDe($('#ciudad').value);
+    window.open(urlLinkedIn($('#kw').value, c.loc, { fecha: $('#fecha').value, modo: $('#modo').value, nivel: $('#nivel').value }), '_blank', 'noopener');
+  };
+  const pintarAtajos = () => {
+    $('#atajos').innerHTML = '<span class="nota-sm" style="align-self:center">Misma búsqueda en:</span>' +
+      CIUDADES.map(c => `<a href="${urlLinkedIn($('#kw').value, c.loc, { fecha: $('#fecha').value, modo: $('#modo').value, nivel: $('#nivel').value })}" target="_blank" rel="noopener">${c.nombre}</a>`).join('');
+  };
+  ['#kw','#fecha','#modo','#nivel'].forEach(s => $(s).addEventListener('change', pintarAtajos));
+  pintarAtajos();
+
+  $('#guardar').onclick = () => {
+    const cargo = $('#fCargo').value.trim();
+    if (!cargo){ $('#fCargo').focus(); return; }
+    const apps = leer(LS.apps, []);
+    apps.unshift({
+      id: String(Date.now()), cargo, empresa: $('#fEmpresa').value.trim(), ciudad: $('#fCiudad').value,
+      salario: $('#fSalario').value, estado: $('#fEstado').value,
+      link: $('#fLink').value.trim(), nota: $('#fNota').value.trim(),
+      fecha: new Date().toISOString().slice(0,10)
+    });
+    grabar(LS.apps, apps);
+    ['#fCargo','#fEmpresa','#fSalario','#fLink','#fNota'].forEach(s => $(s).value = '');
+    $('#formDet').open = false;
+    renderAll();
+  };
+
+  $('#exportar').onclick = () => {
+    const datos = JSON.stringify(leer(LS.apps, []), null, 2);
+    navigator.clipboard?.writeText(datos).then(
+      () => { $('#exportar').textContent = '✓ copiado'; setTimeout(()=>$('#exportar').textContent='Exportar JSON', 1800); },
+      () => alert(datos)
+    );
+  };
+
+  if (window.innerWidth < 980){ state.sidebar = false; document.getElementById("layout").classList.add("is-collapsed"); }
+
+  buildData();
+  renderAll();
+})();
+</script>
+</body>
+</html>
