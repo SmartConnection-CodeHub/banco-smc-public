@@ -82,6 +82,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .sb-chips{display:flex;flex-wrap:wrap;gap:5px}
 .sb-chip{padding:5px 10px;font-size:11.5px;font-weight:500;background:var(--sap-surface);color:var(--sap-text);border:1px solid var(--sap-line);border-radius:99px;transition:all var(--dur) var(--ease-fiori)}
 .sb-chip:hover{border-color:var(--smc-burdeo);color:var(--smc-burdeo)}
+.sb-chip.is-empty{opacity:.45}
 .sb-chip.is-active{background:var(--smc-burdeo);color:#fff;border-color:var(--smc-burdeo);font-weight:600}
 .sb-chip .n{opacity:.65;font-weight:400;margin-left:3px;font-size:10.5px}
 .sb-chip.is-mod{background:rgba(240,171,0,.08);border-color:rgba(240,171,0,.4);color:#9C7000;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.04em}
@@ -613,13 +614,14 @@ function buildData(){
 }
 
 // ====================== STATE ======================
-const state = { q:'', cities:new Set(), techs:new Set(), sources:new Set(), modality:new Set(), matchMin:0, myPipeline:false, sidebar:true };
+const state = { q:'', countries:new Set(), cities:new Set(), techs:new Set(), sources:new Set(), modality:new Set(), matchMin:0, myPipeline:false, sidebar:true };
 
 function filtered(){
   const apps = leer(LS.apps, []);
   const savedUrls = new Set(apps.map(a => a.link));
   return DATA.filter(e => {
     if (state.matchMin && e.score < state.matchMin) return false;
+    if (state.countries.size && !state.countries.has(e.pais_label || 'Sin determinar')) return false;
     if (state.cities.size && !state.cities.has(e._ciudad)) return false;
     if (state.techs.size && !e._techs.some(t => state.techs.has(t))) return false;
     if (state.sources.size && !state.sources.has(e.fuente)) return false;
@@ -634,10 +636,10 @@ function filtered(){
   });
 }
 function activeFiltersCount(){
-  return state.cities.size + state.techs.size + state.sources.size + state.modality.size + (state.matchMin?1:0) + (state.myPipeline?1:0) + (state.q?1:0);
+  return state.countries.size + state.cities.size + state.techs.size + state.sources.size + state.modality.size + (state.matchMin?1:0) + (state.myPipeline?1:0) + (state.q?1:0);
 }
 function clearFilters(){
-  state.cities.clear(); state.techs.clear(); state.sources.clear(); state.modality.clear();
+  state.countries.clear(); state.cities.clear(); state.techs.clear(); state.sources.clear(); state.modality.clear();
   state.matchMin = 0; state.myPipeline = false; state.q = ''; $('#q').value = '';
   renderAll();
 }
@@ -647,8 +649,10 @@ const CIUDAD_LABEL = { __remoto:'Remoto', __otra:'Otra ubicación' };
 CIUDADES.forEach(c => CIUDAD_LABEL[c.id] = c.nombre);
 
 function renderSidebar(){
-  const cityCount={}, techCount={}, sourceCount={}, modCount={};
+  const cityCount={}, techCount={}, sourceCount={}, modCount={}, paisCount={};
   DATA.forEach(e => {
+    const pl = e.pais_label || 'Sin determinar';
+    paisCount[pl] = (paisCount[pl]||0) + 1;
     cityCount[e._ciudad] = (cityCount[e._ciudad]||0) + 1;
     e._techs.forEach(t => techCount[t] = (techCount[t]||0) + 1);
     sourceCount[e.fuente] = (sourceCount[e.fuente]||0) + 1;
@@ -669,6 +673,13 @@ function renderSidebar(){
         <button class="sb-quick-btn" id="quickClear">
           <b>↺</b><em>Limpiar filtros</em>
         </button>
+      </div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-title">País <span class="count">${Object.keys(paisCount).length}</span></div>
+      <div class="sb-chips">
+        ${['Estados Unidos','España'].concat(Object.keys(paisCount).filter(k=>k!=='Estados Unidos'&&k!=='España').sort())
+          .map(k => `<button class="sb-chip ${state.countries.has(k)?'is-active':''} ${!paisCount[k]?'is-empty':''}" data-pais="${esc(k)}">${esc(k)}<span class="n">${paisCount[k]||0}</span></button>`).join("")}
       </div>
     </div>
     <div class="sb-group">
@@ -766,7 +777,7 @@ function renderTablaPuestos(){
     sello.textContent = 'sin datos';
     fuentesEl.innerHTML = '';
     avisoEl.innerHTML = '';
-    wrap.innerHTML = `<table class="tbl"><tbody>${emptyRowsHTML(7, 'Todavía no se corrió el extractor. En la terminal: <code>python3 ~/Downloads/SmartConnection/sap-jobs/fetch-jobs.py</code>')}</tbody></table>`;
+    wrap.innerHTML = `<table class="tbl"><tbody>${emptyRowsHTML(8, 'Todavía no se corrió el extractor. En la terminal: <code>python3 ~/Downloads/SmartConnection/sap-jobs/fetch-jobs.py</code>')}</tbody></table>`;
     return;
   }
 
@@ -778,12 +789,12 @@ function renderTablaPuestos(){
 
   const rows = filtered();
   if (!rows.length){
-    wrap.innerHTML = `<table class="tbl"><tbody>${emptyRowsHTML(7, activeFiltersCount() ? '📭 Sin resultados con ' + activeFiltersCount() + ' filtro(s) activo(s)' : '📭 Sin avisos')}</tbody></table>`;
+    wrap.innerHTML = `<table class="tbl"><tbody>${emptyRowsHTML(8, activeFiltersCount() ? '📭 Sin resultados con ' + activeFiltersCount() + ' filtro(s) activo(s)' : '📭 Sin avisos')}</tbody></table>`;
   } else {
     const apps = leer(LS.apps, []);
     const savedUrls = new Set(apps.map(a => a.link));
     wrap.innerHTML = `<table class="tbl"><thead><tr>
-      <th>Match</th><th>Cargo</th><th>Empresa</th><th>Ubicación</th><th>Salario</th><th>Fuente</th><th></th>
+      <th>Match</th><th>Cargo</th><th>Empresa</th><th>País</th><th>Ubicación</th><th>Salario</th><th>Fuente</th><th></th>
     </tr></thead><tbody>${rows.map(e => {
       const color = e.score >= 60 ? 'var(--sap-success)' : e.score >= 40 ? 'var(--p1-text)' : e.score >= 20 ? 'var(--sap-blue)' : 'var(--sap-text-muted)';
       const sal = e.salario_min
@@ -796,6 +807,7 @@ function renderTablaPuestos(){
         <td><a href="${escUrl(e.url)}" target="_blank" rel="noopener" style="color:var(--sap-blue)">${esc(e.titulo)}</a>
             ${e.resumen ? `<div class="nota-sm">${esc(e.resumen.slice(0,100))}…</div>` : ''}</td>
         <td>${esc(e.empresa)||'—'}</td>
+        <td style="white-space:nowrap">${esc(e.pais_label || 'Sin determinar')}</td>
         <td>${esc(e.ubicacion)||'—'}${e.remoto?' <span class="pill">remoto</span>':''}</td>
         <td style="white-space:nowrap">${sal}${enClp}</td>
         <td class="nota-sm">${esc(e.fuente)}</td>
@@ -871,6 +883,7 @@ function renderAll(){
 
 // ====================== EVENTOS ======================
 document.addEventListener("click", e => {
+  const pa = e.target.closest("[data-pais]"); if (pa){ const k=pa.dataset.pais; state.countries.has(k)?state.countries.delete(k):state.countries.add(k); renderAll(); return; }
   const ci = e.target.closest("[data-city]"); if (ci){ const k=ci.dataset.city; state.cities.has(k)?state.cities.delete(k):state.cities.add(k); renderAll(); return; }
   const te = e.target.closest("[data-tech]"); if (te){ const k=te.dataset.tech; state.techs.has(k)?state.techs.delete(k):state.techs.add(k); renderAll(); return; }
   const so = e.target.closest("[data-source]"); if (so){ const k=so.dataset.source; state.sources.has(k)?state.sources.delete(k):state.sources.add(k); renderAll(); return; }
